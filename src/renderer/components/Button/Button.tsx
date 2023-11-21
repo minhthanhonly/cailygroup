@@ -1,18 +1,29 @@
 import './Button.scss';
 
-export const Button = () => {
+export const ButtonPrimary = () => {
   return (
-    <>
-      <button className="btn">Button</button>
-      <button className="btn">Button</button>
-    </>
-  );
+    <div>
+      <button className="btn">Đăng ký nghỉ phép</button><br/><br/>
+      <button className="btn btn--medium">Bắt đầu</button>
+    </div>
+  )
 };
 
-export const Button2 = () => {
+
+export const ButtonSecondary = () => {
   return (
-    <>
-      <button className="btn btn--red">Button</button>
-    </>
-  );
+    <div>
+      <button className="btn btn--orange"><a href="#">Đăng xuất</a></button><br/><br/>
+      <button className="btn btn--orange btn--medium">Kết thúc</button>
+    </div>
+  )
+};
+
+export const ButtonThird = () => {
+  return (
+    <div>
+      <button className="btn btn--green btn--small">Yes</button><br/><br/>
+      <button className="btn btn--red btn--small">No</button>
+    </div>
+  )
 };

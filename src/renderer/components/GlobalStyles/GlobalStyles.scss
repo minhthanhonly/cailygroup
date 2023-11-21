@@ -7,6 +7,8 @@
   --yellow: #ffc107;
   --red: #dc3545;
   --purple: #b75aff;
+  --orange: #EF5600;
+  --green:#89B502;
 }
 /* -----------------------------------------------
 Table of Contents (common css)
@@ -2036,7 +2038,6 @@ textarea {
   text-decoration: none;
   vertical-align: middle;
   overflow: hidden;
-  min-width: 28rem;
 }
 .no-touchevents .btn:hover {
   text-decoration: none;

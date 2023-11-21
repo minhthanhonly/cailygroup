@@ -1,4 +1,4 @@
-import { Button, Button2 } from '../../components/Button/Button';
+import { Button, Button2, ButtonPrimary, ButtonSecondary, ButtonThird } from '../../components/Button/Button';
 
 export const Module = () => {
   return (
@@ -15,9 +15,11 @@ export const Module = () => {
 
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
-        <Button />
-        <Button2 />
-
+        {/* <Button />
+        <Button2 /> */}
+        <ButtonPrimary/><br/>
+        <ButtonSecondary/><br/>
+        <ButtonThird/>
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
 
