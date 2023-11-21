@@ -1,3 +1,5 @@
+import { Button, Button2 } from '../../components/Button/Button';
+
 export const Module = () => {
   return (
     <div>
@@ -13,6 +15,8 @@ export const Module = () => {
 
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
+        <Button />
+        <Button2 />
 
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
@@ -29,6 +33,12 @@ export const Module = () => {
           alt="phantu.dev"
           className="fluid-image"
         />
+
+        {/* Dashboard */}
+        <h2 className="hdg-lv2">Dashboard</h2>
+
+        {/* Form */}
+        <h2 className="hdg-lv2">Form</h2>
       </div>
     </div>
   );
