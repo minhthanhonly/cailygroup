@@ -1,6 +1,14 @@
-import { Button, Button2, ButtonPrimary, ButtonSecondary, ButtonThird } from '../../components/Button/Button';
+import { Button, Button2 } from '../../components/Button/Button';
+import TablePage from '../../components/Table/Table';
+
 
 export const Module = () => {
+
+
+   // props table colum 
+    let ArrayTable = [ { index: 1, Textcolum: 'Ngày Tháng'},{index: 2, Textcolum: 'Thứ'}, { index: 3, Textcolum: 'tháng'},{ index: 4,  Textcolum: 'hi'}, { index: 5,  Textcolum: 'cột 5'},{ index: 6, Textcolum: 'cột 6'}];
+
+   
   return (
     <div>
       <div className="wrp-container">
@@ -22,6 +30,7 @@ export const Module = () => {
         <ButtonThird/>
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
+        <TablePage ArrayTablehai={ArrayTable}  />
 
         {/* IMAGE */}
         <h2 className="hdg-lv2">IMAGE</h2>
