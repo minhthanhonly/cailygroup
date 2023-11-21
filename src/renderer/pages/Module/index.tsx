@@ -1,4 +1,4 @@
-import { Button, Button2 } from '../../components/Button/Button';
+import { ButtonPrimary, ButtonSecondary ,ButtonThird} from '../../components/Button/Button';
 import TablePage from '../../components/Table/Table';
 
 
