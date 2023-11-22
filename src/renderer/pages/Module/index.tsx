@@ -8,8 +8,7 @@ export const Module = () => {
    // props table colum 
     // let ArrayTable = [ { index: 1, Textcolum: 'Ngày Tháng'},{index: 2, Textcolum: 'Thứ'}, { index: 3, Textcolum: 'tháng'},{ index: 4,  Textcolum: 'hi'}, { index: 5,  Textcolum: 'cột 5'},{ index: 6, Textcolum: 'cột 6'}];
 
-    let rowCount = 2;
-    let columnCount = 10;
+
    
   return (
     <div>
@@ -32,7 +31,7 @@ export const Module = () => {
         <ButtonThird/>
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
-        <TablePage rowCount={rowCount} columnCount={columnCount}  />
+        <TablePage />
 
         {/* IMAGE */}
         <h2 className="hdg-lv2">IMAGE</h2>
