@@ -1,4 +1,6 @@
 import { Button, Button2 } from '../../components/Button/Button';
+import { FromLogin } from '../../components/Form/Form';
+import { Dashboard } from '../../components/Dashboard/Dashboard';
 
 export const Module = () => {
   return (
@@ -36,9 +38,12 @@ export const Module = () => {
 
         {/* Dashboard */}
         <h2 className="hdg-lv2">Dashboard</h2>
-
+        <Dashboard />
         {/* Form */}
         <h2 className="hdg-lv2">Form</h2>
+        {/* login from */}
+        <h2 className="hdg-lv2">login from</h2>
+        <FromLogin />
       </div>
     </div>
   );
