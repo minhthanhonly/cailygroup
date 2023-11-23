@@ -1,15 +1,19 @@
+
 import { ButtonPrimary, ButtonSecondary ,ButtonThird, ButtonEdited , IconApprove} from '../../components/Button/Button';
+import { FromLogin } from '../../components/Form/Form';
+import { Dashboard } from '../../components/Dashboard/Dashboard';
+import {
+  ButtonPrimary,
+  ButtonSecondary,
+  ButtonThird,
+} from '../../components/Button/Button';
+
 import TablePage from '../../components/Table/Table';
 
-
 export const Module = () => {
+  // props table colum
+  // let ArrayTable = [ { index: 1, Textcolum: 'Ngày Tháng'},{index: 2, Textcolum: 'Thứ'}, { index: 3, Textcolum: 'tháng'},{ index: 4,  Textcolum: 'hi'}, { index: 5,  Textcolum: 'cột 5'},{ index: 6, Textcolum: 'cột 6'}];
 
-
-   // props table colum 
-    // let ArrayTable = [ { index: 1, Textcolum: 'Ngày Tháng'},{index: 2, Textcolum: 'Thứ'}, { index: 3, Textcolum: 'tháng'},{ index: 4,  Textcolum: 'hi'}, { index: 5,  Textcolum: 'cột 5'},{ index: 6, Textcolum: 'cột 6'}];
-
-
-   
   return (
     <div>
       <div className="wrp-container">
@@ -52,9 +56,12 @@ export const Module = () => {
 
         {/* Dashboard */}
         <h2 className="hdg-lv2">Dashboard</h2>
-
+        <Dashboard />
         {/* Form */}
         <h2 className="hdg-lv2">Form</h2>
+        {/* login from */}
+        <h2 className="hdg-lv2">login from</h2>
+        <FromLogin />
       </div>
     </div>
   );
