@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Sidebar } from '../layouts/components/Sidebar/Sidebar';
+import { DefaultLayout } from '../layouts/DefaultLayout/DefaultLayout';
+import { Fragment } from 'react';
 
 type PublicRoutesProps = {
   routes: {
     path: string;
-    component: any;
+    component: string;
+    layout?: any;
   }[];
 };
 
@@ -12,14 +14,24 @@ export const PublicRoutes = (props: PublicRoutesProps) => {
   return (
     <Router>
       <div className="App">
-        <Sidebar />
         <Routes>
           {props.routes.map((route) => {
+            const Page = route.component;
+            let Layout = DefaultLayout;
+
+            if (route.layout) {
+              Layout = route.layout;
+            }
+
             return (
               <Route
                 key={route.path}
                 path={route.path}
-                element={route.component}
+                element={
+                  <Layout>
+                    <Page />
+                  </Layout>
+                }
               />
             );
           })}

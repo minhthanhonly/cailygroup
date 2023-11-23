@@ -1,5 +1,14 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import './Sidebar.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faBarsProgress,
+  faCalendarDays,
+  faClock,
+  faGear,
+  faHouse,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
 
 export const Sidebar = () => {
   return (
@@ -14,70 +23,66 @@ export const Sidebar = () => {
       <nav className="nav-global-wrap">
         <ul className="nav-global">
           <li className="nav-global__item">
-            <Link to="/">
+            <NavLink to="/dashboard">
               <span className="icn">
-                <img
-                  src={require('../../../assets/images/icon-home.png')}
-                  alt=""
-                  className="fluid-image"
-                />
+                <FontAwesomeIcon icon={faHouse} />
               </span>
               Trang chủ
-            </Link>
+            </NavLink>
           </li>
           <li className="nav-global__item">
-            <Link to="/">
+            <NavLink to="/timecard">
               <span className="icn">
-                <img
-                  src={require('../../../assets/images/icon-clock.png')}
-                  alt=""
-                  className="fluid-image"
-                />
+                <FontAwesomeIcon icon={faClock} />
               </span>
               Thẻ giờ
-            </Link>
+            </NavLink>
           </li>
           <li className="nav-global__item">
-            <Link to="/">
+            <NavLink to="/member">
               <span className="icn">
-                <img
-                  src={require('../../../assets/images/icon-member.png')}
-                  alt=""
-                  className="fluid-image"
-                />
+                <FontAwesomeIcon icon={faUsers} />
               </span>
               Thành viên
-            </Link>
+            </NavLink>
           </li>
           <li className="nav-global__item">
-            <Link to="/">
+            <NavLink to="/day-off">
               <span className="icn">
-                <img
-                  src={require('../../../assets/images/icon-calendar.png')}
-                  alt=""
-                  className="fluid-image"
-                />
+                <FontAwesomeIcon icon={faCalendarDays} />
               </span>
               Nghỉ phép
-            </Link>
+            </NavLink>
           </li>
           <li className="nav-global__item">
-            <Link to="/">
+            <NavLink to="/group-manager">
               <span className="icn">
-                <img
-                  src={require('../../../assets/images/icon-group-manager.png')}
-                  alt=""
-                  className="fluid-image"
-                />
+                <FontAwesomeIcon icon={faBarsProgress} />
               </span>
               Quản lý nhóm
-            </Link>
+            </NavLink>
           </li>
           <li className="nav-global__item">
-            <Link to="/module">Module</Link>
+            <NavLink to="/module">
+              <span className="icn">
+                <FontAwesomeIcon icon={faGear} />
+              </span>
+              Module
+            </NavLink>
           </li>
         </ul>
       </nav>
+      <div className="acount">
+        <div className="acount-inner">
+          <figure className="acount__avatar">
+            <img src="" alt="" />
+          </figure>
+          <div className="acount__info">
+            <p className="acount__name">Phan Ho Tu</p>
+            <p className="acount__des">Nhóm: Web</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

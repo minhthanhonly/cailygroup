@@ -1,12 +1,13 @@
 import { Sidebar } from '../components/Sidebar/Sidebar';
+import './DefaultLayout.scss';
 
 type DefaultLayoutProps = {
-  children?: string;
+  children?: React.ReactNode;
 };
 
 export const DefaultLayout = (prop: DefaultLayoutProps) => {
   return (
-    <div className="wrapper">
+    <div className="app-wrapper">
       <Sidebar />
       <div className="container">
         <div className="content">{prop.children}</div>
