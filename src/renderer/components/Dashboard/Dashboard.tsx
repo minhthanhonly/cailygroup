@@ -47,28 +47,29 @@ export const Dashboard = () => {
     <div className="Dashboard">
       <div className="Dashboard-content">
         <div className="Dashboard-time">
-          <p>
-            {currentDay}
-            <span>day</span>
-          </p>
-          :
-          <p>
-            {currentHour}
-            <span>hour</span>
-          </p>
-          :
-          <p>
-            {currentMinute}
-            <span>munite</span>
-          </p>
-          :
-          <p>
-            {currentSecond}
-            <span>second</span>
-          </p>
+          <div className="Dashboard-time--content">
+            <p>
+              {currentDay}
+              <span>day</span>
+            </p>
+            :
+            <p>
+              {currentHour}
+              <span>hour</span>
+            </p>
+            :
+            <p>
+              {currentMinute}
+              <span>munite</span>
+            </p>
+            :
+            <p>
+              {currentSecond}
+              <span>second</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-export default Dashboard;

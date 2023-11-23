@@ -1,4 +1,4 @@
-import { FromLogin } from '../../components/Form/Form';
+import { FromLogin, FromUser } from '../../components/Form/Form';
 import { Dashboard } from '../../components/Dashboard/Dashboard';
 import {
   ButtonPrimary,
@@ -6,6 +6,7 @@ import {
   ButtonThird,
 } from '../../components/Button/Button';
 import TablePage from '../../components/Table/Table';
+import TableCalendar from '../../components/Dashboard/date';
 
 export const Module = () => {
   // props table colum
@@ -52,8 +53,11 @@ export const Module = () => {
         {/* Dashboard */}
         <h2 className="hdg-lv2">Dashboard</h2>
         <Dashboard />
+        <TableCalendar />
+
         {/* Form */}
         <h2 className="hdg-lv2">Form</h2>
+        <FromUser />
         {/* login from */}
         <h2 className="hdg-lv2">login from</h2>
         <FromLogin />
