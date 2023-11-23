@@ -1,0 +1,10 @@
+.sidebar {
+  padding: 3rem 2rem;
+  width: 32rem;
+  .logo {
+    width: 18rem;
+  }
+  & + div {
+    width: calc(100% - 32rem);
+  }
+}

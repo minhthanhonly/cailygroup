@@ -1,0 +1,55 @@
+table{
+      border-radius: 1rem;
+}
+.table{
+   
+    &__custom{
+        border-radius: 1rem;
+        overflow: hidden;
+        border: 0.1rem solid #000;
+        font-family: 'Times New Roman', Times, serif;
+        box-sizing: border-box;
+        color: var(--text-color);
+
+      & thead{
+        background-color: var(--primary);
+        color: var(--white);
+        
+      }
+
+      & tbody{
+        & tr{
+            & td{
+                 &:last-child{
+                    border-right: none;
+                 }
+                
+            }
+        }
+
+      }
+    }
+    th, td{
+            font-size: 2rem;
+            text-align: center;
+            padding: 1rem;
+            border-right: 0.1rem solid var(--white);
+            text-transform: capitalize;
+            border: 0.1rem solid var(--text-color);
+    }
+     & .sunday{
+           background-color: var(--pink);
+        }
+    & .saturday{
+        background-color: var(--blue);
+    }
+    & .accrept{
+        background-color: var(--main);
+    }
+     & .cancel{
+        background-color: var(--red);
+    }
+    & .holiday{
+        background-color: var(--orange);
+    }
+}
