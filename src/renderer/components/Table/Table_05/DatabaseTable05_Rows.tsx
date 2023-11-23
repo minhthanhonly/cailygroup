@@ -1,5 +1,5 @@
 import React, { useEffect , useState } from 'react';
-
+import MonthYearSelector from '../SelectMonthYears';
 
 let DatabaseTable05_Rows = () => {
 
@@ -9,16 +9,18 @@ let DatabaseTable05_Rows = () => {
 		<tr>
 			<td>Huỳnh Thị Thanh Tuyền</td>
 			<td>Năng Lương</td>
-			<td>huynhthithanhtuyen@gmail.com</td>
-			<td>huynhthithanhtuyen@gmail.com</td>
-			<td>0973124567</td>
+			<td>Thành Viên</td>
+			<td><MonthYearSelector /></td>
+			<td><button className="btn">Xem thẻ giờ</button></td>
+			<td><button className="btn btn--green">Xuất thẻ giờ</button></td>
 		</tr>
           <tr>
 			<td>Huỳnh Thị Thanh Tuyền</td>
 			<td>Năng Lương</td>
-			<td>huynhthithanhtuyen@gmail.com</td>
-			<td>huynhthithanhtuyen@gmail.com</td>
-			<td>0973124567</td>
+			<td>Thành Viên</td>
+			<td><MonthYearSelector /></td>
+			<td><button className="btn">Xem thẻ giờ</button></td>
+			<td><button className="btn btn--green">Xuất thẻ giờ</button></td>
 		</tr>
         </>
     )

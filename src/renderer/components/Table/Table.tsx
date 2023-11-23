@@ -80,6 +80,19 @@ const TablePage = () =>  {
 				</tbody>
         	</table>
         </div>
+
+		<h2 className='hdg-lv2'>Timecard-List admin</h2>
+         <div className='table-container table--05'>
+			<table className="table table__custom">
+				<thead>
+					<DatabaseTable05_Columns />
+				</thead>
+				<tbody>
+					{/* RowCounts = {RowCounts} */}
+					<DatabaseTable05_Rows />
+				</tbody>
+        	</table>
+        </div>
     </div>
   );
 };
