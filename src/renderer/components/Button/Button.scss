@@ -26,3 +26,9 @@
   }
 
 }
+.icon {
+  background: none;
+  & img{
+    width: 2rem;
+  }
+}

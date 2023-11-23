@@ -2,16 +2,18 @@
   display: flex;
   justify-content: center;
   &-content {
+  }
+  &-time {
     width: 63rem;
     border: 2px solid #89b502;
     background-color: rgba(160, 198, 42, 30%);
     padding: 4rem 5rem 6rem;
     border-radius: 2rem;
-  }
-  &-time {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    &--content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
     p {
       text-align: center;
       text-transform: uppercase;

@@ -1,0 +1,20 @@
+.select__box{
+        text-align: center;
+    &--flex{
+        justify-content: center;
+        align-items: center;
+
+
+          & > select{
+        padding: 0.2rem;
+        box-sizing: border-box;
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
+        border-radius: 0.5rem;
+    }
+    
+    }
+
+  
+
+}
