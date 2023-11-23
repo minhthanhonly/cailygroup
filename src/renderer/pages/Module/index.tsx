@@ -1,4 +1,4 @@
-import { ButtonPrimary, ButtonSecondary ,ButtonThird} from '../../components/Button/Button';
+import { ButtonPrimary, ButtonSecondary ,ButtonThird, ButtonEdited , IconApprove} from '../../components/Button/Button';
 import TablePage from '../../components/Table/Table';
 
 
@@ -29,10 +29,14 @@ export const Module = () => {
         <ButtonPrimary/><br/>
         <ButtonSecondary/><br/>
         <ButtonThird/>
+
+        <ButtonEdited />
+        <IconApprove />
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
         <TablePage />
 
+      
         {/* IMAGE */}
         <h2 className="hdg-lv2">IMAGE</h2>
         <img

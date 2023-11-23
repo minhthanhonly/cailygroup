@@ -1,20 +1,24 @@
-table{
-      border-radius: 1rem;
-}
+
 .table{
-   
+    & .btn--medium{
+    width: 9.9rem;
+    }
     &__custom{
-        border-radius: 1rem;
-        overflow: hidden;
-        border: 0.1rem solid #000;
-        font-family: 'Times New Roman', Times, serif;
-        box-sizing: border-box;
-        color: var(--text-color);
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 0.1rem solid #000;
+    font-family: "Times New Roman", Times, serif;
+    box-sizing: border-box;
+   
+
+    color: var(--text-color);
+ 
+      border-collapse: collapse;
+      width: 100%;
 
       & thead{
-        background-color: var(--primary);
+        background-color: var(--header-table);
         color: var(--white);
-        
       }
 
       & tbody{
@@ -23,18 +27,17 @@ table{
                  &:last-child{
                     border-right: none;
                  }
-                
             }
         }
-
       }
     }
     th, td{
             font-size: 2rem;
             text-align: center;
+             font-weight: 100;
             padding: 1rem;
             border-right: 0.1rem solid var(--white);
-            text-transform: capitalize;
+           
             border: 0.1rem solid var(--text-color);
     }
      & .sunday{
@@ -52,4 +55,11 @@ table{
     & .holiday{
         background-color: var(--orange);
     }
+}
+
+.table-container{
+    margin-top: 5rem;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid #000; /* Đường viền bên ngoài */
 }
