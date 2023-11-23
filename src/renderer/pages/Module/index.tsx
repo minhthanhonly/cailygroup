@@ -1,10 +1,14 @@
 import { FromLogin, FromUser } from '../../components/Form/Form';
-import { Dashboard } from '../../components/Dashboard/Dashboard';
+
 import {
   ButtonPrimary,
   ButtonSecondary,
   ButtonThird,
+  ButtonEdited,
+  IconApprove,
 } from '../../components/Button/Button';
+import { Dashboard } from '../../components/Dashboard/Dashboard';
+
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
 
@@ -33,6 +37,9 @@ export const Module = () => {
         <ButtonSecondary />
         <br />
         <ButtonThird />
+
+        <ButtonEdited />
+        <IconApprove />
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
         <TablePage />

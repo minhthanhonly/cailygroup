@@ -1,6 +1,6 @@
  import React, { useState, useEffect } from 'react';
 
-
+import './SelectMonthYears.scss'
  
 
 
@@ -34,26 +34,25 @@
   };
 
   return (
-    <div>
-      <label>Tháng:</label>
-      <select value={selectedMonth} onChange={handleMonthChange}>
-        <option value="">Chọn tháng</option>
-        {months.map((month) => (
-          <option key={month} value={month}>{`Tháng ${month}`}</option>
-        ))}
+    <div className='select__box'>
+      <div className='select__box--flex grid-row'>
+        <select value={selectedMonth} onChange={handleMonthChange}>
+            {months.map((month) => (
+              <option key={month} value={month}>{`Tháng ${month}`}</option>
+            ))}
+          </select>
+          <select value={selectedYear} onChange={handleYearChange}>
+            {years.map((year) => (
+              <option key={year} value={year}>{year}</option>
+            ))}
       </select>
 
-      <label>Năm:</label>
-      <select value={selectedYear} onChange={handleYearChange}>
-        <option value="">Chọn năm</option>
-        {years.map((year) => (
-          <option key={year} value={year}>{year}</option>
-        ))}
-      </select>
+      </div>
+     
 
       {/* Hiển thị giá trị được chọn */}
-      <p>Tháng đã chọn: {selectedMonth}</p>
-      <p>Năm đã chọn: {selectedYear}</p>
+      {/* <p>Tháng đã chọn: {selectedMonth}</p>
+      <p>Năm đã chọn: {selectedYear}</p> */}
     </div>
   );
 };
