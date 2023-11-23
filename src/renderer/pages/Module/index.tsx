@@ -1,20 +1,6 @@
-<<<<<<< HEAD
-import { FromLogin } from '../../components/Form/Form';
+import { FromLogin, FromUser } from '../../components/Form/Form';
 import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/Button';
-=======
-import { FromLogin, FromUser } from '../../components/Form/Form';
-
-import {
-  ButtonPrimary,
-  ButtonSecondary,
-  ButtonThird,
-  ButtonEdited,
-  IconApprove,
-} from '../../components/Button/Button';
-import { Dashboard } from '../../components/Dashboard/Dashboard';
-
->>>>>>> 0abc4e7413c2842564b58b36810a82a38f41f0e2
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
 
@@ -39,7 +25,6 @@ export const Module = () => {
         <Button text="Đăng ký nghỉ phép" />
         <br />
         <br />
-<<<<<<< HEAD
         <Button text="Đăng xuất" btnColor="orange" />
         <br />
         <br />
@@ -50,12 +35,6 @@ export const Module = () => {
         <br />
         <br />
         <Button text="No" btnSize="small" btnColor="red" />
-=======
-        <ButtonThird />
-
-        <ButtonEdited />
-        <IconApprove />
->>>>>>> 0abc4e7413c2842564b58b36810a82a38f41f0e2
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
         <TablePage />
