@@ -7,10 +7,10 @@ export const config = [
     path: '/',
     component: Home,
   },
-  {
-    path: '/dashboard',
-    component: Home,
-  },
+  // {
+  //   path: '/dashboard',
+  //   component: Home,
+  // },
   {
     path: '/module',
     component: Module,

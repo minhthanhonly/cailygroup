@@ -9,6 +9,7 @@ import {
   faHouse,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
+import { Button } from '../../../components/Button';
 
 export const Sidebar = () => {
   return (
@@ -23,7 +24,7 @@ export const Sidebar = () => {
       <nav className="nav-global-wrap">
         <ul className="nav-global">
           <li className="nav-global__item">
-            <NavLink to="/dashboard">
+            <NavLink to="/">
               <span className="icn">
                 <FontAwesomeIcon icon={faHouse} />
               </span>
@@ -73,15 +74,22 @@ export const Sidebar = () => {
         </ul>
       </nav>
       <div className="acount">
-        <div className="acount-inner">
+        <div className="acount__inner">
           <figure className="acount__avatar">
-            <img src="" alt="" />
+            <img
+              src={require('../../../assets/images/avatar.jpg')}
+              alt=""
+              className="fluid-image"
+            />
           </figure>
           <div className="acount__info">
             <p className="acount__name">Phan Ho Tu</p>
             <p className="acount__des">Nhóm: Web</p>
           </div>
         </div>
+        <Button color="orange" size="large">
+          Đăng xuất
+        </Button>
       </div>
     </div>
   );
