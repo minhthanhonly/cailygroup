@@ -1,6 +1,5 @@
 import React, { useEffect , useState } from 'react';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format ,isToday , isSameDay } from 'date-fns';
-import { ButtonPrimary, ButtonSecondary ,ButtonThird, ButtonEdited} from '../../Button/Button';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format ,isToday , isSameDay , differenceInMinutes } from 'date-fns';
 
 
 
@@ -28,47 +27,57 @@ let DatabaseTable_Rows = () => {
     // Các class khác nếu cần
     return '';
   };
-
+ 
  
   const otherColumnData = [
 	 { format: (date: number | Date) => format(date, 'EEEE') }, // Định dạng ngày thành thứ
   ];
- 
-
-    // let rows = Array.from({ length: rowCount }, (_, rowIndex) => rowIndex + 1);
-    // let Addclass_Rows = ['', '', '', '', '', '', '', '', '', ''];
-    // let Addclass_Events = ['', 'sunday', 'holiday', 'accrept', 'cancel', 'saturday', '', '', '', ''];
-
 
     const [showStartButton, setShowStartButton] = useState(true);
    const [showEndButton, setShowEndButton] = useState(false);
 
+
+	
+	 // State để lưu số giờ khi click vào nút
+   const [startHours, setStartHours] = useState(0);
+  const [startMinutes, setStartMinutes] = useState(0);
+  const [endHours, setEndHours] = useState(0);
+  const [endMinutes, setEndMinutes] = useState(0);
+
+ 
+
+
+	// Hàm xử lý khi click vào nút bắt đầu 
+  const handleButtonClick = () => {
+
+		{startHours > 7 || (startHours === 7 && startMinutes > 30) ? ( <span className="red-text">(Late)</span> ) : null}
+		const currentHour = new Date().getHours();
+		const currentMinutes = new Date().getMinutes();
+
+		
+		
+		setStartHours(currentHour);
+		setStartMinutes(currentMinutes);
+
+		setShowEndButton(true);
+		setShowStartButton(false);
+    };
   const handleEndButtonClick = () => {
     // Xử lý các tác vụ khi click vào nút kết thúc
     // Ví dụ: Ẩn nút kết thúc
+       const currentHour = new Date().getHours();
+  const currentMinutes = new Date().getMinutes();
+
+
+
+    setEndHours(currentHour);
+    setEndMinutes(currentMinutes);
      setShowStartButton(false);
     setShowEndButton(false);
+
+
+
   };
-	
-	 // State để lưu số giờ khi click vào nút
-	const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-
-    const currentHour = new Date().getHours();
-  const currentMinutes = new Date().getMinutes();
-	// Hàm xử lý khi click vào nút
-	const handleButtonClick = () => {
-
-		setHours(currentHour);
-    setMinutes(currentMinutes);
-
-    setShowEndButton(true);
-     setShowStartButton(false);
-
-     
-	};
-
-
  
 
     // State để theo dõi trạng thái mở rộng của các dòng
@@ -96,29 +105,29 @@ let DatabaseTable_Rows = () => {
 
 
 
-    const isHoliday = (date: number | Date) => holidays.some((holiday) => isSameDay(date, holiday));
+   
   const [holidays, setHolidays] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
     new Date(2023, 10, 1), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
-
-  const accreptLeave = (date: number | Date) => accreptLeaves.some((accrept) => isSameDay(date, accrept));
+ const isHoliday = (date: number | Date) => holidays.some((holiday) => isSameDay(date, holiday));
+  
  const [accreptLeaves, setAccreptLeave] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
     new Date(2023, 10, 15), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
+  const accreptLeave = (date: number | Date) => accreptLeaves.some((accrept) => isSameDay(date, accrept));
 
-  const isCancelLeave = (date: number | Date) => cancelLeave.some((cancel) => isSameDay(date, cancel));
+
  const [cancelLeave, setCancelLeave] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
     new Date(2023, 10, 22), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
+    const isCancelLeave = (date: number | Date) => cancelLeave.some((cancel) => isSameDay(date, cancel));
   
-
-
     return(
         <>
     	 {allDays.map((day, rowIndex) => (
@@ -131,13 +140,15 @@ let DatabaseTable_Rows = () => {
 						{column.format ? column.format(day) : '...'} {/* Sử dụng hàm định dạng nếu có */}
 					</td>
 					))}
-					<td>
-            {isToday(day) && showStartButton  ?  <button className="btn btn--medium" onClick={handleButtonClick}>Bắt đầu</button> : ''}
-
+					<td className={`${startHours > 7 || (startHours === 7 && startMinutes > 30) ? 'late' : '' }`}>
+						{isToday(day) && showStartButton  ?  <button className="btn btn--medium" onClick={handleButtonClick}>Bắt đầu</button> : ''}
+						{isToday(day) ? <>{`${startHours}:${String(startMinutes).padStart(2, '0')}`}</> : ''}
+                   
 					</td>
-					<td>
-            {isToday(day) && showEndButton ?  <button className="btn btn--orange btn--medium" onClick={handleEndButtonClick} >Kết thúc</button> : ''}
-          </td>
+					<td >
+						{isToday(day) && showEndButton  ?  <button className="btn btn--orange btn--medium" onClick={handleEndButtonClick} >Kết thúc</button> : ''}
+						{isToday(day) && showEndButton === false && showStartButton === false  ?  <>{`${endHours}:${endMinutes}`}</> : ''}
+					</td>
 					<td> 8:00 </td>
 					<td> </td>
 					<td> </td>
