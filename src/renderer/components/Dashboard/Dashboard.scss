@@ -32,3 +32,17 @@
     }
   }
 }
+/* Trong file CSS của bạn hoặc inline styles */
+.sunday {
+  background-color: #ffcccc; /* Màu nền cho Chủ nhật */
+}
+
+.saturday {
+  background-color: #cce5ff; /* Màu nền cho Thứ 7 */
+}
+.highlighted {
+  background-color: #ffff99; /* Màu nền cho ngày được chọn */
+}
+.current-day-start {
+  background-color: #ccffcc; /* Màu nền cho ngày hiện tại có nút "Bắt đầu" */
+}

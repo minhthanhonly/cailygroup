@@ -53,14 +53,23 @@ const TableCalendar: React.FC = () => {
     setEndTimes(Array(31).fill('')); // Reset end times
   };
 
+  const [currentDayIndex, setCurrentDayIndex] = useState<number | null>(null);
+
   const handleStartButtonClick = (index: number): void => {
     const newStartTimes = [...startTimes];
-    newStartTimes[index] = new Date().toLocaleTimeString();
-    setStartTimes(newStartTimes);
+    const currentDate = calendarData[index].date;
 
-    const newEndTimes = [...endTimes];
-    newEndTimes[index] = ''; // Reset end time when starting
-    setEndTimes(newEndTimes);
+    if (currentDate.getDate() === new Date().getDate()) {
+      newStartTimes[index] = new Date().toLocaleTimeString();
+      setStartTimes(newStartTimes);
+
+      const newEndTimes = [...endTimes];
+      newEndTimes[index] = ''; // Reset end time when starting
+      setEndTimes(newEndTimes);
+
+      setCurrentDayIndex(index); // Đặt index của ngày hiện tại
+      console.log('Current Day Index:', index);
+    }
   };
 
   const handleEndButtonClick = (index: number): void => {
@@ -70,9 +79,45 @@ const TableCalendar: React.FC = () => {
   };
 
   const calendarData = generateCalendarData(selectedYear, selectedMonth);
+  const getDayRowClass = (date: Date, index: number): string => {
+    const dayOfWeek = date.getDay();
+    const isHighlighted =
+      selectedDate && date.toDateString() === selectedDate.toDateString();
+    const hasStartButton = index === currentDayIndex && !startTimes[index];
+    console.log('Has Start Button:', hasStartButton);
 
+    return dayOfWeek === 0
+      ? 'sunday'
+      : dayOfWeek === 6
+      ? 'saturday'
+      : isHighlighted
+      ? 'highlighted'
+      : hasStartButton
+      ? 'current-day-start'
+      : '';
+  };
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const selectedDateString = e.target.value;
+    const selectedDateObject = new Date(selectedDateString);
+
+    if (!isNaN(selectedDateObject.getTime())) {
+      setSelectedDate(selectedDateObject);
+    } else {
+      // Xử lý khi định dạng ngày không hợp lệ
+      setSelectedDate(null);
+    }
+  };
   return (
     <div>
+      <label>
+        Nhập ngày tháng năm:
+        <input
+          type="date"
+          value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+          onChange={handleDateChange}
+        />
+      </label>
       <label>
         Chọn tháng:
         <select value={selectedMonth} onChange={handleMonthChange}>
@@ -93,55 +138,58 @@ const TableCalendar: React.FC = () => {
           ))}
         </select>
       </label>
-      <table>
-        <thead>
-          <tr>
-            <th>Ngày/Tháng</th>
-            <th>Thứ</th>
-            <th>Bắt đầu</th>
-            <th>Kết thúc</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {calendarData.map((dayData, index) => (
-            <tr key={index}>
-              <td>
-                {dayData.date.getDate()}/{dayData.date.getMonth() + 1}
-              </td>
-              <td>{dayData.dayOfWeek}</td>
-              <td>
-                {dayData.date.getDate() === new Date().getDate() &&
-                  (startTimes[index] ? (
-                    <span>{startTimes[index]}</span>
-                  ) : (
-                    <button onClick={() => handleStartButtonClick(index)}>
-                      Bắt đầu
-                    </button>
-                  ))}
-              </td>
-              <td>
-                {endTimes[index] ? (
-                  <span>{endTimes[index]}</span>
-                ) : (
-                  startTimes[index] && (
-                    <button onClick={() => handleEndButtonClick(index)}>
-                      Kết thúc
-                    </button>
-                  )
-                )}
-              </td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+      <div className="table-container table--01">
+        <table className="table table__custom">
+          <thead>
+            <tr>
+              <th>Ngày/Tháng</th>
+              <th>Thứ</th>
+              <th>Bắt Đầu</th>
+              <th>Kết Thúc</th>
+              <th>Giờ Làm Việc</th>
+              <th>Ngoài Giờ</th>
+              <th>Giờ Nghỉ Trưa</th>
+              <th>Ghi Chú</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {calendarData.map((dayData, index) => (
+              <tr key={index} className={getDayRowClass(dayData.date, index)}>
+                <td>
+                  {dayData.date.getDate()}/{dayData.date.getMonth() + 1}
+                </td>
+                <td>{dayData.dayOfWeek}</td>
+                <td>
+                  {dayData.date.getDate() === new Date().getDate() &&
+                    dayData.date.getMonth() === new Date().getMonth() &&
+                    (startTimes[index] ? (
+                      <span>{startTimes[index]}</span>
+                    ) : (
+                      <button onClick={() => handleStartButtonClick(index)}>
+                        Bắt đầu
+                      </button>
+                    ))}
+                </td>
+                <td>
+                  {endTimes[index] ? (
+                    <span>{endTimes[index]}</span>
+                  ) : (
+                    startTimes[index] && (
+                      <button onClick={() => handleEndButtonClick(index)}>
+                        Kết thúc
+                      </button>
+                    )
+                  )}
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
