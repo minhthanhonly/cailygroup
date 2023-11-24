@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Dashboard.scss';
+import TimeDisplayButton from './TimeDisplayButton';
 
 export const Dashboard = () => {
   const [currentHour, setCurrentHour] = useState(getFormattedHour());
@@ -67,6 +68,31 @@ export const Dashboard = () => {
               {currentSecond}
               <span>second</span>
             </p>
+          </div>
+        </div>
+        <h4>Thời gian làm việc hôm nay</h4>
+        <div className="Dashboard-action">
+          <div className="Dashboard-action--start">
+            <p>Bắt đầu</p>
+            <TimeDisplayButton
+              initialImage={require('../../assets/images/icon-play.png')}
+            />
+          </div>
+          <div className="Dashboard-action--pause">
+            <p>Tạm ngưng</p>
+            <button className="Dashboard-action--circle">
+              <img
+                src={require('../../assets/images/icon-pause.png')}
+                alt=""
+                className="fluid-image"
+              />
+            </button>
+          </div>
+          <div className="Dashboard-action--end">
+            <p>Kết thúc</p>
+            <TimeDisplayButton
+              initialImage={require('../../assets/images/icon-check.png')}
+            />
           </div>
         </div>
       </div>

@@ -183,8 +183,16 @@ const TableCalendar: React.FC = () => {
                 </td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td></td>
+                <td>1:30</td>
+                <td>
+                  <button>
+                    <img
+                      src={require('../../assets/images/icnedit.png')}
+                      alt=""
+                      className="fluid-image"
+                    />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
