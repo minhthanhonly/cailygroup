@@ -55,7 +55,7 @@ let DatabaseTable_Rows = () => {
 	// Hàm xử lý khi click vào nút bắt đầu 
   const handleButtonClick = () => {
 
-		{startHours > 7 || (startHours === 7 && startMinutes > 30) ? ( <span className="red-text">(Late)</span> ) : null}
+		
 		const currentHour = new Date().getHours();
 		const currentMinutes = new Date().getMinutes();
 
@@ -126,12 +126,87 @@ let DatabaseTable_Rows = () => {
   const accreptLeave = (date: number | Date) => accreptLeaves.some((accrept) => isSameDay(date, accrept));
 
 
+
+
  const [cancelLeave, setCancelLeave] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
     new Date(2023, 10, 22), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
-    const isCancelLeave = (date: number | Date) => cancelLeave.some((cancel) => isSameDay(date, cancel));
+  const isCancelLeave = (date: number | Date) => cancelLeave.some((cancel) => isSameDay(date, cancel));
+  
+
+
+
+ // tính thời gian làm việc của ngày hôm đó 
+  const calculateWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
+	
+	const defaultWorkStart = new Date(0, 0, 0, 7, 30); // Thời gian bắt đầu tính giờ làm việc
+  const defaultWorkEnd = new Date(0, 0, 0, 17, 0); // Thời gian kết thúc làm việc
+  const lunchBreakStart = new Date(0, 0, 0, 11, 30); // Thời gian bắt đầu nghỉ trưa
+  const lunchBreakEnd = new Date(0, 0, 0, 13, 0); // Thời gian kết thúc nghỉ trưa
+
+  const start = new Date(0, 0, 0, startHours || 0, startMinutes || 0);
+  const end = new Date(0, 0, 0, endHours || 0, endMinutes || 0);
+
+  if (start >= defaultWorkStart && end <= defaultWorkEnd) {
+    // Nếu thời gian bắt đầu và kết thúc nằm trong khoảng giờ làm việc
+    const lunchBreakMinutes = (lunchBreakEnd.getTime() - lunchBreakStart.getTime()) / (1000 * 60);
+    const differenceInMilliseconds = end.getTime() - start.getTime() - lunchBreakMinutes * 60 * 1000;
+    const workingMinutes = Math.max(0, differenceInMilliseconds / (1000 * 60)); // Tính giờ làm việc, không dưới 0
+
+    const hours = Math.floor(workingMinutes / 60);
+    const minutes = workingMinutes % 60;
+
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
+  } else if (start >= defaultWorkStart && end > defaultWorkEnd) {
+    // Nếu thời gian bắt đầu trong khoảng giờ làm việc và kết thúc sau giờ làm việc
+    const lunchBreakMinutes = (lunchBreakEnd.getTime() - lunchBreakStart.getTime()) / (1000 * 60);
+    const differenceInMilliseconds = defaultWorkEnd.getTime() - start.getTime() - lunchBreakMinutes * 60 * 1000;
+    const workingMinutes = Math.max(0, differenceInMilliseconds / (1000 * 60)); // Tính giờ làm việc, không dưới 0
+
+    const hours = Math.floor(workingMinutes / 60);
+    const minutes = workingMinutes % 60;
+
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
+  }
+
+  // Nếu không nằm trong khoảng giờ làm việc từ 7 giờ 30 đến 17 giờ 00
+  return '0:00';
+
+};
+
+
+
+
+
+// làm thời gian quá giờ.
+const calculateOvertime = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
+  const defaultOvertimeStart = new Date(0, 0, 0, 17, 0); // Thời gian bắt đầu tính giờ làm thêm
+
+  const start = new Date(0, 0, 0, startHours, startMinutes);
+  const end = new Date(0, 0, 0, endHours, endMinutes);
+
+  // Nếu thời gian bắt đầu làm thêm sau thời gian kết thúc làm việc, đặt nó là thời gian kết thúc làm việc
+  if (defaultOvertimeStart < start) {
+    defaultOvertimeStart.setHours(end.getHours());
+    defaultOvertimeStart.setMinutes(end.getMinutes());
+  }
+
+  if (end >= defaultOvertimeStart) {
+    const differenceInMilliseconds = end.getTime() - defaultOvertimeStart.getTime();
+    const totalOvertimeMinutes = Math.max(0, differenceInMilliseconds / (1000 * 60)); // Tính giờ làm thêm, không dưới 0
+
+    const hours = Math.floor(totalOvertimeMinutes / 60);
+    const minutes = totalOvertimeMinutes % 60;
+
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
+  }
+
+  return '0:00';
+};
+
+
   
     return(
         <>
@@ -152,14 +227,16 @@ let DatabaseTable_Rows = () => {
 					</td>
 					<td >
 						{isToday(day) && showEndButton  ?  <button className="btn btn--orange btn--medium" onClick={handleEndButtonClick} >Kết thúc</button> : ''}
-						{isToday(day) && showEndButton === false && showStartButton === false  ?  <>{`${endHours}:${endMinutes}`}</> : ''}
+						{isToday(day) && showEndButton === false && showStartButton === false  ?  <>{`${endHours}:${String(endMinutes).padStart(2, '0')}`}</> : ''}
 					</td>
-					<td> 8:00 </td>
+					<td> 
+						{isToday(day) && !showStartButton && !showEndButton ? (<>{calculateWorkingHours(startHours, startMinutes, endHours, endMinutes)}</> ) : ( '' )} 
+						</td>
+					<td> {isToday(day) && !showStartButton && !showEndButton ? (<>{calculateOvertime(startHours, startMinutes, endHours, endMinutes)}</> ) : ( '')} </td>
+					<td>{isToday(day) && !showStartButton && !showEndButton ? (<>1:30</>) : ( '')} </td>
+					<td><a className="btn btn--green btn--small icon icon--edit"><img src={require('../../../assets/images/icnedit.png')}  alt="edit" className="fluid-image" /></a></td>
 					<td> </td>
-					<td> </td>
-					<td> <a className="btn btn--green btn--small icon icon--edit"><img src={require('../../../assets/images/icnedit.png')}  alt="edit" className="fluid-image" /></a></td>
-					<td> </td>
-                </>
+                </> 
               ) : null}
             </tr>
           ))}
@@ -178,54 +255,3 @@ let DatabaseTable_Rows = () => {
 } 
 
 export default DatabaseTable_Rows;
-
-/* cất code
-//  <>
-//           {rows.map((index) => (
-//             <tr key={index} className={Addclass_Events[index]} >
-//                  {Database_Fake.map((object) => (
-//                     <td className={Addclass_Rows[index]}>{object.data_Rows}</td>
-//                     ))}
-//             </tr>
-//               ))}
-//         </>
-
-
-
-
-
-
-
-
- const currentDate = new Date();
-  	const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-	let current_day = currentDate.getDay();
-	const rows = [];
-
-
-
-
-	for (let day = 1; day <= daysInMonth; day++) {
-    const formattedDate = `${day}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`;
-	const dayOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), day).toLocaleDateString('en-US', { weekday: 'long' });
-
-    rows.push(
-		<>
-		<tr key={day}>
-			<td>{formattedDate}</td>
-			<td>{dayOfWeek}</td>
-			<td><input type="submit" name="timecard_close" value="Kết thúc" /></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-
-	  </>
-    );
-  }
-
-
-*/
