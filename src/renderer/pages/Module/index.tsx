@@ -1,6 +1,6 @@
 import { FromLogin, FromUser } from '../../components/Form/Form';
 import { Dashboard } from '../../components/Dashboard/Dashboard';
-import { Button } from '../../components/Button';
+import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
 
