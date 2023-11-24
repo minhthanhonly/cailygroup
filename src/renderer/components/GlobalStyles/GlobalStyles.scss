@@ -1,4 +1,7 @@
 @charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 :root {
   --main: #89b502;
   --primary: #146b9c;
@@ -7,11 +10,11 @@
   --yellow: #ffc107;
   --red: #dc3545;
   --purple: #b75aff;
-  --orange: #EF5600;
-  --green:#89B502;
-  --blue: #A7C9EB;
-  --pink: #FFDDDD;
-  --header-table: #4682B4;
+  --orange: #ef5600;
+  --green: #89b502;
+  --blue: #a7c9eb;
+  --pink: #ffdddd;
+  --header-table: #4682b4;
 }
 /* -----------------------------------------------
 Table of Contents (common css)
@@ -400,8 +403,7 @@ hr {
 /*>> 1-2. Config
 -------------------------------------------------- */
 html {
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden;
   font-size: 10px;
   height: 100%;
 }
@@ -411,10 +413,7 @@ body {
   background-color: #fafafa;
   line-height: 1.4;
   letter-spacing: 0;
-  font-family: '游ゴシック', 'YuGothic', 'Roboto Regular',
-    'ヒラギノ角ゴ ProN W3', 'HiraKakuProN-W3', 'ヒラギノ角ゴ Pro W3',
-    'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック',
-    'helvetica', 'arial', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-feature-settings: 'palt';
   height: 100%;
   -webkit-overflow-scrolling: touch;
@@ -1942,20 +1941,13 @@ textarea {
 -------------------------------------------------- */
 /*>>> 2-4-1.  Wrapper     [wrp-***]*/
 .wrp-container {
-  margin: 0 4vw;
-  max-width: 130rem;
+  width: 100%;
 }
 .wrp-container:after {
   content: '';
   display: block;
   clear: both;
 }
-
-@media only screen and (min-width: 1380px) {
-  .wrp-container {
-    margin: 0 auto;
-  }
-} /* endMedia */
 
 .wrp-button {
   text-align: center;
@@ -2145,20 +2137,28 @@ textarea {
   margin-top: 5rem;
   &__item {
     padding: 0 2rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
     display: flex;
     align-items: center;
     & > a {
+      padding: 1rem 1.5rem;
       font-size: 1.6rem;
       font-weight: bold;
       color: var(--text-color);
+      border-radius: 1.5rem;
+      &.active {
+        color: var(--main);
+        background: rgba(160, 198, 42, 0.2);
+      }
     }
   }
   .icn {
     display: inline-block;
     margin-right: 1rem;
     width: 3rem;
-    height: 3rem;
+    & svg {
+      font-size: 2.4rem;
+    }
   }
 }
 
