@@ -6,7 +6,7 @@ type PublicRoutesProps = {
   routes: {
     path: string;
     component: string;
-    layout?: any;
+    layout?: any | null;
   }[];
 };
 
