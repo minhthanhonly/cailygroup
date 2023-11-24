@@ -4,23 +4,28 @@ import { startOfMonth, endOfMonth, eachDayOfInterval, format ,isToday , isSameDa
 
 
 let DatabaseTable_Rows = () => {
-
-
   let firstDayOfMonth = startOfMonth(new Date()); // ngày đầu tháng
-  let lastDayOfMonth = endOfMonth(new Date());   // ngày cuối cùng của tháng
+  let lastDayOfMonth = endOfMonth(new Date()); // ngày cuối cùng của tháng
 
-  let daysOfMonth = eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth });
+  let daysOfMonth = eachDayOfInterval({
+    start: firstDayOfMonth,
+    end: lastDayOfMonth,
+  });
 
   // Thêm một số ngày vào đầu tiên của danh sách để nó hiển thị ở cột đầu tiên
-  let paddingDays = Array.from({ length: firstDayOfMonth.getDay() }, (_, index) =>
-    new Date(firstDayOfMonth.getFullYear(), firstDayOfMonth.getMonth(), index + 1 - firstDayOfMonth.getDay())
+  let paddingDays = Array.from(
+    { length: firstDayOfMonth.getDay() },
+    (_, index) =>
+      new Date(
+        firstDayOfMonth.getFullYear(),
+        firstDayOfMonth.getMonth(),
+        index + 1 - firstDayOfMonth.getDay(),
+      ),
   );
 
   let allDays = [...paddingDays, ...daysOfMonth];
 
-
-  
-    const getDayClassName = (date: Date) => {
+  const getDayClassName = (date: Date) => {
     const dayOfWeek = date.getDay();
     if (dayOfWeek === 0) return 'sunday';
     if (dayOfWeek === 6) return 'saturday';
@@ -30,7 +35,7 @@ let DatabaseTable_Rows = () => {
  
  
   const otherColumnData = [
-	 { format: (date: number | Date) => format(date, 'EEEE') }, // Định dạng ngày thành thứ
+    { format: (date: number | Date) => format(date, 'EEEE') }, // Định dạng ngày thành thứ
   ];
 
     const [showStartButton, setShowStartButton] = useState(true);
@@ -91,7 +96,7 @@ let DatabaseTable_Rows = () => {
   //   setExpandedRows((prevRows) => ({ ...prevRows, [rowIndex]: !prevRows[rowIndex] }));
 
   //   console.log("đã click ngày " + date);
-    
+
   //   // Nếu bạn có dữ liệu hiện tại của ghi chú, bạn có thể set nó cho biến noteContent
   //   // setNoteContent(getCurrentNoteForDate(date));
   // };
@@ -174,12 +179,6 @@ let DatabaseTable_Rows = () => {
 
 export default DatabaseTable_Rows;
 
-
-
-
-
-
-
 /* cất code
 //  <>
 //           {rows.map((index) => (
@@ -189,7 +188,7 @@ export default DatabaseTable_Rows;
 //                     ))}
 //             </tr>
 //               ))}
-//         </>  
+//         </>
 
 
 
@@ -202,14 +201,14 @@ export default DatabaseTable_Rows;
   	const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
 	let current_day = currentDate.getDay();
 	const rows = [];
-	
-	
-	
+
+
+
 
 	for (let day = 1; day <= daysInMonth; day++) {
     const formattedDate = `${day}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`;
 	const dayOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), day).toLocaleDateString('en-US', { weekday: 'long' });
-		
+
     rows.push(
 		<>
 		<tr key={day}>
@@ -223,7 +222,7 @@ export default DatabaseTable_Rows;
 			<td></td>
 			<td></td>
 		</tr>
-		
+
 	  </>
     );
   }
