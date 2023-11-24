@@ -3,38 +3,25 @@ import './Button.scss';
 type ButtonProps = {
   to?: string;
   href?: string;
-  disabled?: false;
   size?: string;
   children?: React.ReactNode;
-  className?: any;
-  onClick?: ((event: React.MouseEvent<HTMLButtonElement>) => void) | undefined;
+  // onClick?: ((event: React.MouseEvent<HTMLButtonElement>) => void) | undefined;
   color?: string | null;
-  // passProps?: [];
 };
 
 export const Button = (props: ButtonProps) => {
-  let Comp = 'button';
-  props.href ? (Comp = 'a') : (Comp = 'button');
+  let defineClassName: string[] = ['btn'];
 
-  return (
-    <Comp
-      className={`btn ${props.size ? 'btn--' + props.size : ''} ${
-        props.color ? 'btn--' + props.color : ''
-      }`}
-    >
+  props.size ? defineClassName.push('btn--' + props.size) : defineClassName;
+  props.color ? defineClassName.push('btn--' + props.color) : defineClassName;
+
+  let className: string = defineClassName.join(' ');
+
+  return props.href ? (
+    <a href={props.href} className={className}>
       {props.children}
-    </Comp>
+    </a>
+  ) : (
+    <button className={className}>{props.children}</button>
   );
 };
-
-// export const Button = (props: ButtonProps) => {
-//   return (
-//     <button
-//       className={`btn ${props.btnSize ? 'btn--' + props.btnSize : ''} ${
-//         props.btnColor ? 'btn--' + props.btnColor : ''
-//       }`}
-//     >
-//       {props.text}
-//     </button>
-//   );
-// };

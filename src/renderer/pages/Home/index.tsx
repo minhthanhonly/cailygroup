@@ -4,9 +4,9 @@ export const Home = () => {
   return (
     <div>
       <h2>Home page</h2>
-      {/* <Button color="orange" size="medium">
+      <Button href="/module" color="orange" size="medium" onClick={}>
         Login
-      </Button> */}
+      </Button>
     </div>
   );
 };
