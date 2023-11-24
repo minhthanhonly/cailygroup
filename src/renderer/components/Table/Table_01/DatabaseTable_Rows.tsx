@@ -147,8 +147,8 @@ let DatabaseTable_Rows = () => {
 					))}
 					<td className={`${startHours > 7 || (startHours === 7 && startMinutes > 30) ? 'late' : '' }`}>
 						{isToday(day) && showStartButton  ?  <button className="btn btn--medium" onClick={handleButtonClick}>Bắt đầu</button> : ''}
-						{isToday(day) ? <>{`${startHours}:${String(startMinutes).padStart(2, '0')}`}</> : ''}
-                   
+						{isToday(day) && showStartButton === false ? <>{`${startHours}:${String(startMinutes).padStart(2, '0')}`}</> : ''}
+                    
 					</td>
 					<td >
 						{isToday(day) && showEndButton  ?  <button className="btn btn--orange btn--medium" onClick={handleEndButtonClick} >Kết thúc</button> : ''}
