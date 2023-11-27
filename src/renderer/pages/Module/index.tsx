@@ -7,6 +7,7 @@ import { Heading, Heading2} from '../../components/Heading';
 import { Search} from '../../components/Search';
 import { FormQuantity} from '../../components/FormQuantity';
 import { TextGroup } from '../../components/TextGroup';
+import { Pagination } from '../../components/Pagination';
 
 
 
@@ -36,7 +37,8 @@ export const Module = () => {
           reprehenderit atque, vel dolore, similique eveniet quasi culpa.
           Facilis culpa nisi odio?
         </p> */}
-
+        <h2 className="hdg-lv2">PHÂN TRANG</h2>
+        <Pagination/>
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
         {/* <Button text="Đăng ký nghỉ phép" />
