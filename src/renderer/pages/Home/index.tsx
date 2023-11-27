@@ -1,12 +1,5 @@
-import { Button } from '../../components/Button';
+import { Dashboard } from '../../components/Dashboard/Dashboard';
 
 export const Home = () => {
-  return (
-    <div>
-      <h2>Home page</h2>
-      <Button href="/module" color="orange" size="medium" onClick={}>
-        Login
-      </Button>
-    </div>
-  );
+  return <Dashboard />;
 };
