@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import './Sidebar.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -87,9 +87,7 @@ export const Sidebar = () => {
             <p className="acount__des">Nhóm: Web</p>
           </div>
         </div>
-        <Button color="orange" size="large">
-          Đăng xuất
-        </Button>
+        <NavLink to="/login">Đăng xuất</NavLink>
       </div>
     </div>
   );
