@@ -1,8 +1,8 @@
-import './from.scss';
+import './From.scss';
 
 export const FormLogin = () => {
   return (
-    <div className="form-login">
+    <div className="form-login form">
       <div className="form-content">
         <h2 className="form-login--title">Đăng Nhập</h2>
         <div className="form-group">
@@ -21,7 +21,7 @@ export const FormLogin = () => {
 
 export const FormUser = () => {
   return (
-    <div className="form-user">
+    <div className="form-user form">
       <div className="form-content">
         <div className="form-group">
           <label>
@@ -138,13 +138,13 @@ export const FormUser = () => {
 };
 export const FormLeave = () => {
   return (
-    <div className="form-leave">
+    <div className="form-leave form">
       <div className="form-content">
         <div className="form-group">
           <label>
             Ngày bắt đầu
             <img
-              src={require('../../assets/images/icon-user.jpg')}
+              src={require('../../assets/images/icon-time.jpg')}
               alt=""
               className="fluid-image"
             />
@@ -155,7 +155,7 @@ export const FormLeave = () => {
           <label>
             Ngày kết thúc
             <img
-              src={require('../../assets/images/icon-address.jpg')}
+              src={require('../../assets/images/icon-time.jpg')}
               alt=""
               className="fluid-image"
             />
@@ -164,29 +164,14 @@ export const FormLeave = () => {
         </div>
         <div className="form-group">
           <label>
-            Số Điện Thoại *
+            Lý do nghỉ
             <img
-              src={require('../../assets/images/icon-phone.jpg')}
+              src={require('../../assets/images/icon-practice.jpg')}
               alt=""
               className="fluid-image"
             />
           </label>
-          <input
-            className="form-input"
-            type="text"
-            placeholder="Số Điện Thoại"
-          />
-        </div>
-        <div className="form-group">
-          <label>
-            Email *
-            <img
-              src={require('../../assets/images/icon-email.jpg')}
-              alt=""
-              className="fluid-image"
-            />
-          </label>
-          <input className="form-input" type="text" placeholder="Email" />
+          <textarea className="form-input"></textarea>
         </div>
         <div className="center">
           <button className="btn">Đăng Nhập</button>

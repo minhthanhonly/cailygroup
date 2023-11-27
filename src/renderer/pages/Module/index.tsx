@@ -55,7 +55,7 @@ export const Module = () => {
         {/* Dashboard */}
         <h2 className="hdg-lv2">Dashboard</h2>
         <Dashboard />
-        {/* <TableCalendar /> */}
+        <TableCalendar />
 
         {/* Form User*/}
         <h2 className="hdg-lv2">Form User</h2>

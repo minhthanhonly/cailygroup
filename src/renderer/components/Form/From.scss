@@ -1,9 +1,9 @@
-.from {
+.form {
   &-login {
     display: flex;
     justify-content: center;
     align-items: center;
-    & .from-content {
+    & .form-content {
       width: 54.5rem;
       padding: 6rem 7rem;
       background-color: #fff;
@@ -16,13 +16,16 @@
       color: var(--text-color);
       margin-bottom: 3.5rem;
     }
+    .form-group {
+      width: 100%;
+    }
   }
   &-group {
     margin-bottom: 2rem;
-    width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    width: 61rem;
   }
   &-input {
     width: 100%;
@@ -33,18 +36,24 @@
     color: #888888;
   }
   &-user {
-    width: 61rem;
-    .from-group {
+    .form-group {
     }
-    label {
-      width: 23rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-right: 1.5rem;
-      ~ .from-input {
-        width: calc(100% - 23rem);
-      }
+  }
+  label {
+    width: 23rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 1.5rem;
+    margin-top: 1.5rem;
+    ~ .form-input {
+      width: calc(100% - 23rem);
     }
+  }
+  textarea.form-input {
+    height: 15rem;
+  }
+  .btn {
+    margin-top: 3rem;
   }
 }
