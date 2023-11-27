@@ -18,7 +18,7 @@ export const Module = () => {
   return (
     <div>
       <div className="wrp-container">
-        <h2 className="hdg-lv2">HEADING H2</h2>
+        <h2 className="hdg-lv2">HEADING H2</h2><br/>
         <Heading text='Danh sách xin nghỉ phép'/>
         <br/><br/>
         <TextGroup/>
@@ -38,6 +38,7 @@ export const Module = () => {
           Facilis culpa nisi odio?
         </p> */}
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
+        <br/>
         <Pagination/>
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
