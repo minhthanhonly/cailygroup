@@ -1,6 +1,8 @@
 .Dashboard {
   display: flex;
+  align-items: center;
   justify-content: center;
+  height: 100%;
   &-content {
     text-align: center;
     h4 {
