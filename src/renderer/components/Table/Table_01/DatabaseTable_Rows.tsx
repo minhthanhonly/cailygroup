@@ -40,14 +40,21 @@ let DatabaseTable_Rows = () => {
 
     const [showStartButton, setShowStartButton] = useState(true);
    const [showEndButton, setShowEndButton] = useState(false);
-
-
-	
-	 // State để lưu số giờ khi click vào nút
    const [startHours, setStartHours] = useState(0);
   const [startMinutes, setStartMinutes] = useState(0);
   const [endHours, setEndHours] = useState(0);
   const [endMinutes, setEndMinutes] = useState(0);
+
+    const [totalWorkingHours, setTotalWorkingHours] = useState(0);
+
+	useEffect(() => {
+    calculateAndSetWorkingHours(startHours, startMinutes, endHours, endMinutes);
+    calculateAndSetOvertime(startHours, startMinutes, endHours, endMinutes);
+  }, [startHours, startMinutes, endHours, endMinutes]);
+	 // State để lưu số giờ khi click vào nút
+
+
+  
 
  
 
@@ -139,9 +146,8 @@ let DatabaseTable_Rows = () => {
 
 
  // tính thời gian làm việc của ngày hôm đó 
-  const calculateWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
-	
-	const defaultWorkStart = new Date(0, 0, 0, 7, 30); // Thời gian bắt đầu tính giờ làm việc
+const calculateWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
+  const defaultWorkStart = new Date(0, 0, 0, 7, 30); // Thời gian bắt đầu tính giờ làm việc
   const defaultWorkEnd = new Date(0, 0, 0, 17, 0); // Thời gian kết thúc làm việc
   const lunchBreakStart = new Date(0, 0, 0, 11, 30); // Thời gian bắt đầu nghỉ trưa
   const lunchBreakEnd = new Date(0, 0, 0, 13, 0); // Thời gian kết thúc nghỉ trưa
@@ -149,20 +155,13 @@ let DatabaseTable_Rows = () => {
   const start = new Date(0, 0, 0, startHours || 0, startMinutes || 0);
   const end = new Date(0, 0, 0, endHours || 0, endMinutes || 0);
 
-  if (start >= defaultWorkStart && end <= defaultWorkEnd) {
+  const workStart = start > defaultWorkStart ? start : defaultWorkStart;
+  const workEnd = end < defaultWorkEnd ? end : defaultWorkEnd;
+
+  if (workStart >= defaultWorkStart && workEnd <= defaultWorkEnd) {
     // Nếu thời gian bắt đầu và kết thúc nằm trong khoảng giờ làm việc
     const lunchBreakMinutes = (lunchBreakEnd.getTime() - lunchBreakStart.getTime()) / (1000 * 60);
-    const differenceInMilliseconds = end.getTime() - start.getTime() - lunchBreakMinutes * 60 * 1000;
-    const workingMinutes = Math.max(0, differenceInMilliseconds / (1000 * 60)); // Tính giờ làm việc, không dưới 0
-
-    const hours = Math.floor(workingMinutes / 60);
-    const minutes = workingMinutes % 60;
-
-    return `${hours}:${String(minutes).padStart(2, '0')}`;
-  } else if (start >= defaultWorkStart && end > defaultWorkEnd) {
-    // Nếu thời gian bắt đầu trong khoảng giờ làm việc và kết thúc sau giờ làm việc
-    const lunchBreakMinutes = (lunchBreakEnd.getTime() - lunchBreakStart.getTime()) / (1000 * 60);
-    const differenceInMilliseconds = defaultWorkEnd.getTime() - start.getTime() - lunchBreakMinutes * 60 * 1000;
+    const differenceInMilliseconds = workEnd.getTime() - workStart.getTime() - lunchBreakMinutes * 60 * 1000;
     const workingMinutes = Math.max(0, differenceInMilliseconds / (1000 * 60)); // Tính giờ làm việc, không dưới 0
 
     const hours = Math.floor(workingMinutes / 60);
@@ -173,9 +172,7 @@ let DatabaseTable_Rows = () => {
 
   // Nếu không nằm trong khoảng giờ làm việc từ 7 giờ 30 đến 17 giờ 00
   return '0:00';
-
 };
-
 
 
 
@@ -207,7 +204,39 @@ const calculateOvertime = (startHours: number | undefined, startMinutes: number 
 };
 
 
+
+// ------
+ const calculateAndSetWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
+  const workingHours = calculateWorkingHours(startHours, startMinutes, endHours, endMinutes);
+  const totalWorkingMinutes = convertHoursToMinutes(workingHours);
+
+  // Trừ đi thời gian nghỉ trưa (1 giờ 30 phút) 
+  const adjustedWorkingMinutes = Math.max(0, totalWorkingMinutes - 90); 
+
+  setTotalWorkingHours((prevTotal) => prevTotal + adjustedWorkingMinutes); 
+
+  return formatMinutesToHours(adjustedWorkingMinutes);
+  };  
+
+  // làm thời gian quá giờ và cập nhật tổng
+  const calculateAndSetOvertime = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
+    const overtime = calculateOvertime(startHours, startMinutes, endHours, endMinutes);
+    setTotalWorkingHours((prevTotal) => prevTotal + convertHoursToMinutes(overtime));
+    return overtime;
+  };
+
+  // hàm chuyển đổi giờ thành phút để tính tổng
+  const convertHoursToMinutes = (hours: string) => {
+    const [hoursPart, minutesPart] = hours.split(':');
+    return parseInt(hoursPart, 10) * 60 + parseInt(minutesPart, 10);
+  };
   
+  const formatMinutesToHours = (totalWorkingHours: number) => {
+    const hours = Math.floor(totalWorkingHours / 60);  
+    const minutes = totalWorkingHours % 60;
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
+  };
+
     return(
         <>
     	 {allDays.map((day, rowIndex) => (
@@ -245,7 +274,8 @@ const calculateOvertime = (startHours: number | undefined, startMinutes: number 
             <td></td>
             <td></td>
             <td></td>
-            <td>72:00</td>
+            <td>
+                    {!showStartButton && !showEndButton ? (<>{formatMinutesToHours(totalWorkingHours)}</> ) : ( '')} </td>
             <td>00:00</td>
             <td></td>
             <td></td>
