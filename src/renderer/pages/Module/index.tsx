@@ -3,7 +3,10 @@ import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
-import { Heading ,Heading2 } from '../../components/Heading';
+import { Heading, Heading2} from '../../components/Heading';
+import { Search} from '../../components/Search';
+import { FormQuantity} from '../../components/FormQuantity';
+import { TextGroup } from '../../components/TextGroup';
 
 
 
@@ -16,6 +19,17 @@ export const Module = () => {
       <div className="wrp-container">
         <h2 className="hdg-lv2">HEADING H2</h2>
         <Heading text='Danh sách xin nghỉ phép'/>
+        <br/><br/>
+        <TextGroup/>
+        <br/><br/>
+        <FormQuantity/>
+        <br/><br/>
+        <Search/><br/><br/><br/>
+        <p className='box-group'>
+          <TextGroup/>
+          <FormQuantity/>
+          <Search/>
+        </p>
         {/* <p>
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus velit
           exercitationem hic incidunt ex repellendus, deserunt at asperiores

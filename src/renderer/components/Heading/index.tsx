@@ -11,4 +11,3 @@ export const Heading = (props : attr) => {
         <h2 className="title"><span>{text_title}</span></h2>
     );
 };
-
