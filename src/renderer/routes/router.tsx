@@ -6,6 +6,7 @@ import { Login } from '../pages/Login';
 import { Module } from '../pages/Module';
 import { Timecard } from '../pages/Timecard';
 import { Users } from '../pages/Users';
+import { AccoutEdit } from '../pages/Users/AccoutEdit';
 
 export const config = [
   {
@@ -19,6 +20,10 @@ export const config = [
   {
     path: '/users',
     component: Users,
+  },
+  {
+    path: '/AccoutEdit',
+    component: AccoutEdit,
   },
   {
     path: '/day-off',
