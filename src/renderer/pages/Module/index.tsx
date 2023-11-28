@@ -21,9 +21,9 @@ export const Module = () => {
         <h2 className="hdg-lv2">HEADING H2</h2><br/>
         <Heading2 text='Danh sách xin nghỉ phép'/>
         <br/><br/>
-        <h2 className="hdg-lv2">HEADING H3</h2><br/>
+        <h2 className="hdg-lv2">HEADING H3</h2><br/><br/>
         <Heading3 text='Nhóm: Web'/>
-        <h2 className="hdg-lv2">HEADING H3 center</h2>
+        <h2 className="hdg-lv2">HEADING H3 center</h2><br/><br/>
         <Heading3Center text='Thông tin cá nhân'/><br/>
         <br/>
         <br/><br/>
@@ -42,7 +42,8 @@ export const Module = () => {
             <Heading3Center text='Thông tin cá nhân'/>
             <Menberdetails/>
         </div>
-        
+
+        {/* PHÂN TRANG */}
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
         <br/>
         <Pagination/>
@@ -61,6 +62,18 @@ export const Module = () => {
         <br />
         <br />
         <Button text="No" btnSize="small" btnColor="red" /> */}
+
+        {/* Màu Nền */}
+        <h2 className="hdg-lv2">Màu Nền</h2><br/>
+        <div className='box-bg'>
+            <p className='bg bg-yellow'>Đang chờ xác nhận nghỉ phép</p><br/><br/>
+            <p className='bg bg-green'>Xác nhận nghỉ phép</p>
+            <br/><br/>
+            <p className='bg bg-purple'>Nghỉ lễ</p>
+            <br/><br/>
+            <p className='bg bg-red'><span className='bg-text'>Không xác nhận nghỉ phép</span><span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span></p>
+        </div>
+        
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
         <TablePage />
