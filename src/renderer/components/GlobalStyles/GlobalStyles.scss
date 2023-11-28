@@ -2395,3 +2395,20 @@ textarea {
     page-break-after: avoid;
   }
 } /* endMedia */
+
+.box-group{
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  p{
+    margin-bottom: 2rem;
+  }
+  .titlegroup{
+    padding-right: 5rem;
+    box-sizing: border-box;
+  }
+  .title-quantity{
+    padding-right: 5rem;
+    box-sizing: border-box;
+  }
+}
