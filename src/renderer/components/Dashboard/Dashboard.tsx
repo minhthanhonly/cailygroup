@@ -1,60 +1,72 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './Dashboard.scss';
 import TimeDisplayButton from './TimeDisplayButton';
 
 export const Dashboard = () => {
-  const [currentHour, setCurrentHour] = useState(getFormattedHour());
-  const [currentMinute, setCurrentMinute] = useState(getFormattedMinute());
-  const [currentSecond, setCurrentSecond] = useState(getFormattedSecond());
-  const [currentDay, setCurrentDay] = useState(getDayOfWeek());
-
-  function getFormattedHour() {
-    const today = new Date();
-    const hours = today.getHours().toString().padStart(2, '0');
-    return hours;
-  }
-
-  function getFormattedMinute() {
-    const today = new Date();
-    const mins = today.getMinutes().toString().padStart(2, '0');
-    return mins;
-  }
-
-  function getFormattedSecond() {
-    const today = new Date();
-    const secs = today.getSeconds().toString().padStart(2, '0');
-    return secs;
-  }
-
-  function getDayOfWeek() {
-    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const today = new Date();
-    const dayOfWeek = today.getUTCDay();
-    return daysOfWeek[dayOfWeek];
-  }
+  const [currentDateTime, setCurrentDateTime] = useState('');
+  const [currentDay, setCurrentDay] = useState('');
+  const [currentHour, setCurrentHour] = useState<number>(0); // Đổi kiểu thành số
+  const [currentMinute, setCurrentMinute] = useState<number>(0); // Đổi kiểu thành số
+  const [currentSecond, setCurrentSecond] = useState<number>(0); // Đổi kiểu thành số
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentHour(getFormattedHour());
-      setCurrentMinute(getFormattedMinute());
-      setCurrentSecond(getFormattedSecond());
-      setCurrentDay(getDayOfWeek());
-    }, 1000);
+    const fetchTime = async () => {
+      try {
+        const response = await axios.get(
+          'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh'
+        );
+        const data = response.data;
 
-    return () => clearInterval(intervalId); // Clear interval on component unmount
-  }, []);
+        // Tạo một đối tượng Date từ chuỗi thời gian
+        const dateObject = new Date(data.datetime);
+
+        // Trích xuất thứ, giờ, phút và giây
+        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const formattedDay = weekdays[dateObject.getDay()];
+        const formattedHour = dateObject.getHours();
+        const formattedMinute = dateObject.getMinutes();
+        const formattedSecond = dateObject.getSeconds();
+
+        setCurrentDay(formattedDay);
+        setCurrentHour(formattedHour);
+        setCurrentMinute(formattedMinute);
+        setCurrentSecond(formattedSecond);
+
+        // Định dạng thời gian để hiển thị
+        const formattedDateTime = `${formattedDay} ${formattedHour}:${formattedMinute}:${formattedSecond}`;
+
+        setCurrentDateTime(formattedDateTime);
+      } catch (error) {
+        console.error('Error fetching time:', error);
+      }
+    };
+
+   const intervalId = setInterval(() => {
+    fetchTime();
+  }, 1000);
+
+  // Dọn dẹp interval khi component unmount
+  return () => clearInterval(intervalId);
+}, []);
+
+
 
   return (
+ 
     <div className="Dashboard">
       <div className="Dashboard-content">
         <div className="Dashboard-time">
           <div className="Dashboard-time--content">
             <p>
+               {/* {currentDateTime} */}
+
               {currentDay}
               <span>day</span>
             </p>
             :
             <p>
+              {/* {currentHour} */}
               {currentHour}
               <span>hour</span>
             </p>

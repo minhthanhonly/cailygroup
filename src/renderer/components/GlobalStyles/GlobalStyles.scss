@@ -2398,12 +2398,17 @@ textarea {
 
 .box-group{
   display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  p{
+    margin-bottom: 2rem;
+  }
   .titlegroup{
-    width: 10%;
-    padding-right: 4.5rem;
+    padding-right: 5rem;
+    box-sizing: border-box;
   }
   .title-quantity{
-    width: 25%;
-    padding-right: 4.5rem;
+    padding-right: 5rem;
+    box-sizing: border-box;
   }
 }

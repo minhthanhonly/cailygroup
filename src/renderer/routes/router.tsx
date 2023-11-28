@@ -35,5 +35,6 @@ export const config = [
   {
     path: '/login',
     component: Login,
+    layout: FluidLayout,
   },
 ];

@@ -1,9 +1,44 @@
 import React, { useEffect , useState } from 'react';
+import axios from 'axios';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format ,isToday , isSameDay , differenceInMinutes } from 'date-fns';
 
 
 
 let DatabaseTable_Rows = () => {
+
+  const [currentTime, setCurrentTime] = useState(0);
+  const [showStartButton, setShowStartButton] = useState(true);
+  const [showEndButton, setShowEndButton] = useState(false);
+  const [startHours, setStartHours] = useState(0);
+  const [startMinutes, setStartMinutes] = useState(0);
+  const [endHours, setEndHours] = useState(0);
+  const [endMinutes, setEndMinutes] = useState(0);
+  const [totalWorkingHours, setTotalWorkingHours] = useState(0);
+
+   const fetchCurrentTime = async () => {
+    try {
+      const response = await axios.get('https://worldtimeapi.org/api/ip');
+      const { datetime } = response.data;
+      setCurrentTime(datetime);
+    } catch (error) {
+      console.error('Lỗi khi lấy thời gian hiện tại:', error);
+    }
+  };
+
+
+  useEffect(() => {
+    // Kiểm tra xem có dữ liệu trạng thái đã lưu trong localStorage không
+   
+    fetchCurrentTime();
+  }, []); // useEffect chỉ chạy một lần sau khi component mount
+  // useEffect(() => {
+
+    
+  //   // Xử lý các hoạt động không đồng bộ ở đây
+  //   // Cập nhật trạng thái theo cách cần thiết
+  // }, [/* dependencies */]);
+
+
   let firstDayOfMonth = startOfMonth(new Date()); // ngày đầu tháng
   let lastDayOfMonth = endOfMonth(new Date()); // ngày cuối cùng của tháng
 
@@ -38,56 +73,65 @@ let DatabaseTable_Rows = () => {
     { format: (date: number | Date) => format(date, 'EEEE') }, // Định dạng ngày thành thứ
   ];
 
-    const [showStartButton, setShowStartButton] = useState(true);
-   const [showEndButton, setShowEndButton] = useState(false);
-   const [startHours, setStartHours] = useState(0);
-  const [startMinutes, setStartMinutes] = useState(0);
-  const [endHours, setEndHours] = useState(0);
-  const [endMinutes, setEndMinutes] = useState(0);
+  
 
-    const [totalWorkingHours, setTotalWorkingHours] = useState(0);
-
-	useEffect(() => {
-    calculateAndSetWorkingHours(startHours, startMinutes, endHours, endMinutes);
-    calculateAndSetOvertime(startHours, startMinutes, endHours, endMinutes);
-  }, [startHours, startMinutes, endHours, endMinutes]);
+	// useEffect(() => {
+  //   calculateAndSetWorkingHours(startHours, startMinutes, endHours, endMinutes);
+  //   calculateAndSetOvertime(startHours, startMinutes, endHours, endMinutes);
+  // }, [startHours, startMinutes, endHours, endMinutes]);
 	 // State để lưu số giờ khi click vào nút
 
 
-  
+
+	// Hàm xử lý khi click vào nút bắt đầu 
+  const handleButtonClick = async () => {
+
+     try {
+      const response = await axios.get('https://worldtimeapi.org/api/ip');
+      const { datetime } = response.data;
+      const currentHour = new Date(datetime).getHours();
+      const currentMinutes = new Date(datetime).getMinutes();
+      
+      console.log('currentMinutes', currentMinutes);
+      console.log('currentHour', currentHour);
+      
+      setStartHours(currentHour);
+      setStartMinutes(currentMinutes);
+      setShowEndButton(true);
+      setShowStartButton(false);
 
  
 
-
-	// Hàm xử lý khi click vào nút bắt đầu 
-  const handleButtonClick = () => {
-
+    // Lưu thời gian từ API vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn.
+    // Ví dụ: axios.post('/api/saveEndTime', { endTime: datetime });
+    } catch (error) {
+      console.error('Lỗi khi lấy thời gian từ API:', error);
+    }
 		
-		const currentHour = new Date().getHours();
-		const currentMinutes = new Date().getMinutes();
+  };
+  const handleEndButtonClick = async  () => {
 
-		
-		
-		setStartHours(currentHour);
-		setStartMinutes(currentMinutes);
+    try {
+    const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
+    const { datetime } = response.data;
+    const currentHour = new Date(datetime).getHours();
+    const currentMinutes = new Date(datetime).getMinutes();
 
-		setShowEndButton(true);
-		setShowStartButton(false);
-    };
-  const handleEndButtonClick = () => {
-    // Xử lý các tác vụ khi click vào nút kết thúc
-    // Ví dụ: Ẩn nút kết thúc
-       const currentHour = new Date().getHours();
-  const currentMinutes = new Date().getMinutes();
-
-
-
+    // Thực hiện các thay đổi trạng thái
     setEndHours(currentHour);
     setEndMinutes(currentMinutes);
-     setShowStartButton(false);
+
+    // Ẩn nút "Bắt đầu" và "Kết thúc"
+    setShowStartButton(false);
     setShowEndButton(false);
 
+ 
 
+      // Lưu thời gian từ API vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn.
+      // Ví dụ: axios.post('/api/saveEndTime', { endTime: datetime });
+    } catch (error) {
+      console.error('Lỗi khi lấy thời gian từ API:', error);
+    }
 
   };
  
@@ -97,23 +141,6 @@ let DatabaseTable_Rows = () => {
 
   // State để lưu trữ ghi chú cho từng ngày
   const [noteByDate, setNoteByDate] = useState({});
-
-  // Hàm để xử lý khi click vào nút "Ghi chú"
-  // const handleNoteClick = (rowIndex, date) => {
-  //   setExpandedRows((prevRows) => ({ ...prevRows, [rowIndex]: !prevRows[rowIndex] }));
-
-  //   console.log("đã click ngày " + date);
-
-  //   // Nếu bạn có dữ liệu hiện tại của ghi chú, bạn có thể set nó cho biến noteContent
-  //   // setNoteContent(getCurrentNoteForDate(date));
-  // };
-
-  // Hàm để xử lý khi submit ghi chú mới
-  // const handleNoteSubmit = (date) => {
-  //   setExpandedRows({});
-  //   // Xử lý logic để lưu ghi chú mới cho ngày
-  //   // saveNewNoteForDate(date, noteContent);
-  // };
 
 
 
@@ -162,7 +189,8 @@ const calculateWorkingHours = (startHours: number | undefined, startMinutes: num
     // Nếu thời gian bắt đầu và kết thúc nằm trong khoảng giờ làm việc
     const lunchBreakMinutes = (lunchBreakEnd.getTime() - lunchBreakStart.getTime()) / (1000 * 60);
     const differenceInMilliseconds = workEnd.getTime() - workStart.getTime() - lunchBreakMinutes * 60 * 1000;
-    const workingMinutes = Math.max(0, differenceInMilliseconds / (1000 * 60)); // Tính giờ làm việc, không dưới 0
+     const workingMinutes = Math.max(1, Math.ceil(differenceInMilliseconds / (1000 * 60)));
+
 
     const hours = Math.floor(workingMinutes / 60);
     const minutes = workingMinutes % 60;
@@ -173,7 +201,7 @@ const calculateWorkingHours = (startHours: number | undefined, startMinutes: num
   // Nếu không nằm trong khoảng giờ làm việc từ 7 giờ 30 đến 17 giờ 00
   return '0:00';
 };
-
+ 
 
 
 
@@ -236,6 +264,9 @@ const calculateOvertime = (startHours: number | undefined, startMinutes: number 
     const minutes = totalWorkingHours % 60;
     return `${hours}:${String(minutes).padStart(2, '0')}`;
   };
+
+
+   
 
     return(
         <>

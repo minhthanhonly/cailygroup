@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
 
 interface TimeDisplayButtonProps {
   initialImage: string;
@@ -7,15 +9,47 @@ interface TimeDisplayButtonProps {
 const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
   initialImage,
 }) => {
-  const [currentTime, setCurrentTime] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
   const [buttonImage, setButtonImage] = useState(initialImage);
+  const [startHours, setStartHours] = useState(0);
+  const [startMinutes, setStartMinutes] = useState(0);
+  // const [endHours, setEndHours] = useState(0);
+  // const [endMinutes, setEndMinutes] = useState(0);
+  
+  const fetchCurrentTime = async () => {
+    try {
+      const response = await axios.get('https://worldtimeapi.org/api/ip');
+      const { datetime } = response.data;
+      setCurrentTime(datetime);
+    } catch (error) {
+      console.error('Lỗi khi lấy thời gian hiện tại:', error);
+    }
+  };
 
-  const handleClick = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const formattedTime = `${hours}:${minutes}`;
-    setCurrentTime(formattedTime);
+
+  useEffect(() => {
+   
+    fetchCurrentTime();
+  }, []); // useEffect chỉ chạy một lần sau khi component mount
+
+
+  const handleClick = async () => {
+
+     try {
+      const response = await axios.get('https://worldtimeapi.org/api/ip');
+      const { datetime } = response.data;
+      const hours = new Date(datetime).getHours();
+       const minutes = new Date(datetime).getMinutes();
+      
+         setStartHours(hours);
+      setStartMinutes(minutes);
+      
+        //  const formattedTime = `${startHours}:${startMinutes}`;
+    } catch (error) {
+      console.error('Lỗi khi lấy thời gian từ API:', error);
+    }
+
+  
 
     // Example: Change the image when the button is clicked
     setButtonImage(require('../../assets/images/icon-play.png'));
@@ -26,7 +60,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
       <button className="Dashboard-action--circle" onClick={handleClick}>
         <img src={buttonImage} alt="" className="fluid-image" />
       </button>
-      <b>{currentTime}</b>
+      <b>{String(startHours).padStart(2, '0') }:{ String(startMinutes).padStart(2, '0')}</b>
     </>
   );
 };
