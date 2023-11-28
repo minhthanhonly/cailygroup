@@ -2400,15 +2400,24 @@ textarea {
   display: flex;
   width: 100%;
   flex-wrap: wrap;
+  align-items: center;
   p{
     margin-bottom: 2rem;
   }
-  .titlegroup{
+  .hdglv3{
     padding-right: 5rem;
     box-sizing: border-box;
   }
   .title-quantity{
     padding-right: 5rem;
     box-sizing: border-box;
+  }
+}
+
+.box-menberdetails{
+  .hdglv3{
+    text-align: center;
+    margin-top: 5rem;
+    font-weight: bold;
   }
 }

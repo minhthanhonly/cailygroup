@@ -5,9 +5,9 @@ import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
 import { Heading, Heading2} from '../../components/Heading';
 import { Search} from '../../components/Search';
-import { FormQuantity} from '../../components/FormQuantity';
-import { TextGroup } from '../../components/TextGroup';
 import { Pagination } from '../../components/Pagination';
+import { InputQuantity } from '../../components/InputQuantity';
+import { Menberdetails } from '../../components/Menberdetails';
 
 
 
@@ -21,16 +21,24 @@ export const Module = () => {
         <h2 className="hdg-lv2">HEADING H2</h2><br/>
         <Heading text='Danh sách xin nghỉ phép'/>
         <br/><br/>
-        <TextGroup/>
+        <Heading2 text='Nhóm: Web'/>
         <br/><br/>
-        <FormQuantity/>
+        <InputQuantity/>
         <br/><br/>
         <Search/><br/><br/><br/>
         <div className='box-group'>
-          <p><TextGroup/></p>
-          <p><FormQuantity/></p>
+          <p><Heading2 text='Nhóm: Web'/></p>
+          <p><InputQuantity/></p>
           <p><Search/></p>
         </div>
+        <h2 className="hdg-lv2">Chi tiết thành viên</h2>
+        <br/><br/>
+        <Heading text='Chi tiết thành viên'/>
+        <div className='box-menberdetails'>
+            <Heading2 text='Thông tin cá nhân'/>
+            <Menberdetails/>
+        </div>
+        
         {/* <p>
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus velit
           exercitationem hic incidunt ex repellendus, deserunt at asperiores
