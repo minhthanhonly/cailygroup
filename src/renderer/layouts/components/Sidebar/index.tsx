@@ -87,7 +87,9 @@ export const Sidebar = () => {
             <p className="acount__des">Nhóm: Web</p>
           </div>
         </div>
-        <NavLink to="/login">Đăng xuất</NavLink>
+        <NavLink to="/login" className="btn btn--orange">
+          Đăng xuất
+        </NavLink>
       </div>
     </div>
   );
