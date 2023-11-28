@@ -3,7 +3,11 @@ import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
-import { Heading ,Heading2 } from '../../components/Heading';
+import { Heading, Heading2} from '../../components/Heading';
+import { Search} from '../../components/Search';
+import { FormQuantity} from '../../components/FormQuantity';
+import { TextGroup } from '../../components/TextGroup';
+import { Pagination } from '../../components/Pagination';
 
 
 
@@ -14,15 +18,28 @@ export const Module = () => {
   return (
     <div>
       <div className="wrp-container">
-        <h2 className="hdg-lv2">HEADING H2</h2>
+        <h2 className="hdg-lv2">HEADING H2</h2><br/>
         <Heading text='Danh sách xin nghỉ phép'/>
+        <br/><br/>
+        <TextGroup/>
+        <br/><br/>
+        <FormQuantity/>
+        <br/><br/>
+        <Search/><br/><br/><br/>
+        <div className='box-group'>
+          <p><TextGroup/></p>
+          <p><FormQuantity/></p>
+          <p><Search/></p>
+        </div>
         {/* <p>
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus velit
           exercitationem hic incidunt ex repellendus, deserunt at asperiores
           reprehenderit atque, vel dolore, similique eveniet quasi culpa.
           Facilis culpa nisi odio?
         </p> */}
-
+        <h2 className="hdg-lv2">PHÂN TRANG</h2>
+        <br/>
+        <Pagination/>
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
         {/* <Button text="Đăng ký nghỉ phép" />
