@@ -27,9 +27,9 @@ export const Module = () => {
         <br/><br/>
         <Search/><br/><br/><br/>
         <div className='box-group'>
-          <TextGroup/>
-          <FormQuantity/>
-          <Search/>
+          <p><TextGroup/></p>
+          <p><FormQuantity/></p>
+          <p><Search/></p>
         </div>
         {/* <p>
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus velit
