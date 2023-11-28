@@ -18,7 +18,7 @@ let DatabaseTable_Columns = () => {
           <>
           <tr>
             {columns.map((item, index) => (
-                <th colSpan={colSpan_colums[index]}  >
+                <th key={index} colSpan={colSpan_colums[index]}  >
                     {DatabaseTest[index]}
                 </th>
             ))}
