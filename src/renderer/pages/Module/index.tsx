@@ -39,12 +39,6 @@ export const Module = () => {
             <Menberdetails/>
         </div>
         
-        {/* <p>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus velit
-          exercitationem hic incidunt ex repellendus, deserunt at asperiores
-          reprehenderit atque, vel dolore, similique eveniet quasi culpa.
-          Facilis culpa nisi odio?
-        </p> */}
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
         <br/>
         <Pagination/>
