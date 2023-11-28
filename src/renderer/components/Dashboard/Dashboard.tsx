@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Dashboard.scss';
 import TimeDisplayButton from './TimeDisplayButton';
+import TimeSelect from '../Modal/TimeSelect';
 
 export const Dashboard = () => {
   const [currentDateTime, setCurrentDateTime] = useState('');
@@ -14,7 +15,7 @@ export const Dashboard = () => {
     const fetchTime = async () => {
       try {
         const response = await axios.get(
-          'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh'
+          'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
         );
         const data = response.data;
 
@@ -22,7 +23,15 @@ export const Dashboard = () => {
         const dateObject = new Date(data.datetime);
 
         // Trích xuất thứ, giờ, phút và giây
-        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const weekdays = [
+          'Sunday',
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+        ];
         const formattedDay = weekdays[dateObject.getDay()];
         const formattedHour = dateObject.getHours();
         const formattedMinute = dateObject.getMinutes();
@@ -42,24 +51,21 @@ export const Dashboard = () => {
       }
     };
 
-   const intervalId = setInterval(() => {
-    fetchTime();
-  }, 1000);
+    const intervalId = setInterval(() => {
+      fetchTime();
+    }, 1000);
 
-  // Dọn dẹp interval khi component unmount
-  return () => clearInterval(intervalId);
-}, []);
-
-
+    // Dọn dẹp interval khi component unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
- 
     <div className="Dashboard">
       <div className="Dashboard-content">
         <div className="Dashboard-time">
           <div className="Dashboard-time--content">
             <p>
-               {/* {currentDateTime} */}
+              {/* {currentDateTime} */}
 
               {currentDay}
               <span>day</span>
@@ -108,6 +114,7 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
+      <TimeSelect />
     </div>
   );
 };
