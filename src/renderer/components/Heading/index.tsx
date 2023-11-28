@@ -4,7 +4,7 @@ interface attr {
     text: string;
 }
 
-export const Heading = (props : attr) => {
+export const Heading2 = (props : attr) => {
 
     let text_title = props.text;
     return (
@@ -12,9 +12,16 @@ export const Heading = (props : attr) => {
     );
 };
 
-export const Heading2 = (props : attr) => {
+export const Heading3 = (props : attr) => {
     let text_title = props.text;
     return (
         <h3 className="hdglv3">{text_title}</h3>
+    );
+};
+
+export const Heading3Center = (props : attr) => {
+    let text_title = props.text;
+    return (
+        <h3 className="hdglv3 hdglv3--center">{text_title}</h3>
     );
 };

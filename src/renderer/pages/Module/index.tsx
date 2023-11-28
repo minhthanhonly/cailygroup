@@ -3,7 +3,7 @@ import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
-import { Heading, Heading2} from '../../components/Heading';
+import { Heading2, Heading3, Heading3Center} from '../../components/Heading';
 import { Search} from '../../components/Search';
 import { Pagination } from '../../components/Pagination';
 import { InputQuantity } from '../../components/InputQuantity';
@@ -19,23 +19,27 @@ export const Module = () => {
     <div>
       <div className="wrp-container">
         <h2 className="hdg-lv2">HEADING H2</h2><br/>
-        <Heading text='Danh sách xin nghỉ phép'/>
+        <Heading2 text='Danh sách xin nghỉ phép'/>
         <br/><br/>
-        <Heading2 text='Nhóm: Web'/>
+        <h2 className="hdg-lv2">HEADING H3</h2><br/>
+        <Heading3 text='Nhóm: Web'/>
+        <h2 className="hdg-lv2">HEADING H3 center</h2>
+        <Heading3Center text='Thông tin cá nhân'/><br/>
+        <br/>
         <br/><br/>
         <InputQuantity/>
         <br/><br/>
         <Search/><br/><br/><br/>
         <div className='box-group'>
-          <p><Heading2 text='Nhóm: Web'/></p>
+          <p><Heading3 text='Nhóm: Web'/></p>
           <p><InputQuantity/></p>
           <p><Search/></p>
         </div>
         <h2 className="hdg-lv2">Chi tiết thành viên</h2>
         <br/><br/>
-        <Heading text='Chi tiết thành viên'/>
+        <Heading2 text='Chi tiết thành viên'/>
         <div className='box-menberdetails'>
-            <Heading2 text='Thông tin cá nhân'/>
+            <Heading3Center text='Thông tin cá nhân'/>
             <Menberdetails/>
         </div>
         
