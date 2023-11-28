@@ -28,13 +28,17 @@
     align-items: flex-start;
     width: 61rem;
   }
-  &-input {
+  &-input,
+  input {
     width: 100%;
     border-radius: 2rem;
     border: 1px solid #d8d8d8;
     padding: 1.5rem 2.4rem;
     font-size: 1.6rem;
     color: #888888;
+  }
+  .react-datepicker-wrapper {
+    width: calc(100% - 23rem);
   }
   &-user {
     .form-group {
@@ -56,5 +60,44 @@
   }
   .btn {
     margin-top: 3rem;
+  }
+  h4 {
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 4rem 0 2rem;
+  }
+}
+.user {
+  &-image {
+    width: 30rem;
+    height: 30rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    img {
+      width: 100%;
+      opacity: 0.7;
+    }
+    button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0 !important;
+      width: 12rem;
+    }
+  }
+}
+.row {
+  display: flex;
+  .col {
+    &-6 {
+      @media (min-width: 100rem) {
+        width: 50%;
+      }
+    }
   }
 }
