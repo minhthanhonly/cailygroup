@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Modal from '../Modal/Modal';
 
 interface CalendarDataItem {
   date: Date;
@@ -108,6 +109,15 @@ const TableCalendar: React.FC = () => {
       setSelectedDate(null);
     }
   };
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
   return (
     <div>
       <label>
@@ -185,7 +195,7 @@ const TableCalendar: React.FC = () => {
                 <td></td>
                 <td>1:30</td>
                 <td>
-                  <button>
+                  <button onClick={openModal}>
                     <img
                       src={require('../../assets/images/icnedit.png')}
                       alt=""
@@ -198,6 +208,14 @@ const TableCalendar: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        {
+          <>
+            <h3>Ghi Chú</h3>
+            <textarea></textarea>
+          </>
+        }
+      </Modal>
     </div>
   );
 };

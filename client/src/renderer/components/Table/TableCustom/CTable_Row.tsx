@@ -15,7 +15,7 @@ let CTable_Row = (Props : tableRows) => {
         <>
 		<tr>
 			  {rows.map((item, index) => (
-                <><td key={index}>Huỳnh Thị Thanh Tuyền</td></>
+               <td key={index}>{item}</td>
             ))}
 		</tr>
         </>
