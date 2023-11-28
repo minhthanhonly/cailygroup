@@ -2398,12 +2398,16 @@ textarea {
 
 .box-group{
   display: flex;
+  width: 100%;
   .titlegroup{
-    width: 10%;
+    width: 15%;
     padding-right: 4.5rem;
   }
   .title-quantity{
     width: 25%;
     padding-right: 4.5rem;
+  }
+  .search{
+    width: 60%;
   }
 }

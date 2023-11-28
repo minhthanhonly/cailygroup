@@ -26,11 +26,11 @@ export const Module = () => {
         <FormQuantity/>
         <br/><br/>
         <Search/><br/><br/><br/>
-        <p className='box-group'>
+        <div className='box-group'>
           <TextGroup/>
           <FormQuantity/>
           <Search/>
-        </p>
+        </div>
         {/* <p>
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus velit
           exercitationem hic incidunt ex repellendus, deserunt at asperiores
