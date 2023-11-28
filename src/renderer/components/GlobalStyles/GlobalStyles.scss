@@ -2420,3 +2420,46 @@ textarea {
     font-weight: bold;
   }
 }
+
+.box-bg{
+  width: 60rem;
+  .bg{
+    text-align: center;
+    padding: 1.1rem 0;
+    box-sizing: border-box;
+    font-size: 1.6rem;
+  }
+  .bg-yellow{
+    background-color: var(--yellow);
+  }
+  .bg-green{
+    background-color: var(--green);
+    color: var(--white);
+  }
+  .bg-purple{
+    background-color: var(--purple);
+    color: var(--white);
+  }
+  .bg-red{
+    background-color: var(--red);
+    color: var(--white);
+    display: flex;
+    width: 100%;
+    align-items: center;
+    .bg-text{
+      width: 60%;
+      text-align: center;
+    }
+    &__btn{
+      width: 40%;
+      text-align: right;
+      padding-right: 2rem;
+
+      .btn-white{
+        background-color: var(--white);
+        color: var(--red);
+      }
+    }
+  }
+
+}

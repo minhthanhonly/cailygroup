@@ -75,6 +75,18 @@ export const Module = () => {
         <br />
         <br />
         <Button text="No" btnSize="small" btnColor="red" /> */}
+
+        {/* Màu Nền */}
+        <h2 className="hdg-lv2">Màu Nền</h2><br/>
+        <div className='box-bg'>
+            <p className='bg bg-yellow'>Đang chờ xác nhận nghỉ phép</p><br/><br/>
+            <p className='bg bg-green'>Xác nhận nghỉ phép</p>
+            <br/><br/>
+            <p className='bg bg-purple'>Nghỉ lễ</p>
+            <br/><br/>
+            <p className='bg bg-red'><span className='bg-text'>Không xác nhận nghỉ phép</span><span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span></p>
+        </div>
+        
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
         <TablePage />
