@@ -3,11 +3,11 @@ import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
-import { Heading } from '../../components/Heading';
+import { Heading2, Heading3, Heading3Center } from '../../components/Heading';
 import { Search } from '../../components/Search';
-import { FormQuantity } from '../../components/FormQuantity';
-import { TextGroup } from '../../components/TextGroup';
 import { Pagination } from '../../components/Pagination';
+import { InputQuantity } from '../../components/InputQuantity';
+import { Menberdetails } from '../../components/Menberdetails';
 
 export const Module = () => {
   // props table colum
@@ -18,13 +18,19 @@ export const Module = () => {
       <div className="wrp-container">
         <h2 className="hdg-lv2">HEADING H2</h2>
         <br />
-        <Heading text="Danh sách xin nghỉ phép" />
+        <Heading2 text="Danh sách xin nghỉ phép" />
         <br />
         <br />
-        <TextGroup />
+        <h2 className="hdg-lv2">HEADING H3</h2>
+        <br />
+        <Heading3 text="Nhóm: Web" />
+        <h2 className="hdg-lv2">HEADING H3 center</h2>
+        <Heading3Center text="Thông tin cá nhân" />
         <br />
         <br />
-        <FormQuantity />
+        <br />
+        <br />
+        <InputQuantity />
         <br />
         <br />
         <Search />
@@ -33,21 +39,24 @@ export const Module = () => {
         <br />
         <div className="box-group">
           <p>
-            <TextGroup />
+            <Heading3 text="Nhóm: Web" />
           </p>
           <p>
-            <FormQuantity />
+            <InputQuantity />
           </p>
           <p>
             <Search />
           </p>
         </div>
-        {/* <p>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus velit
-          exercitationem hic incidunt ex repellendus, deserunt at asperiores
-          reprehenderit atque, vel dolore, similique eveniet quasi culpa.
-          Facilis culpa nisi odio?
-        </p> */}
+        <h2 className="hdg-lv2">Chi tiết thành viên</h2>
+        <br />
+        <br />
+        <Heading2 text="Chi tiết thành viên" />
+        <div className="box-menberdetails">
+          <Heading3Center text="Thông tin cá nhân" />
+          <Menberdetails />
+        </div>
+
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
         <br />
         <Pagination />
