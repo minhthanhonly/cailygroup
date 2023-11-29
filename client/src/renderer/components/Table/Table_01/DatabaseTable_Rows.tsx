@@ -1,10 +1,28 @@
 import React, { useEffect , useState } from 'react';
 import axios from 'axios';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format ,isToday , isSameDay , differenceInMinutes } from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format ,isToday , isSameDay , differenceInMinutes , startOfDay } from 'date-fns';
+
+interface SelectMY  {
+selectedMonth: string;
+ selectedYear: string;
+ daysInMonth : Date[];
+}
 
 
+let DatabaseTable_Rows = ( Props : SelectMY ) => {
 
-let DatabaseTable_Rows = () => {
+  // const [selectedMonth, setSelectedMonth] = useState(Props.selectedMonth);
+  // const [selectedYear, setSelectedYear] = useState(Props.selectedYear);
+  const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
+  
+  const selectedMonth = Props.selectedMonth;
+    const selectedYear = Props.selectedYear;
+
+    console.log('selectedMonth',selectedMonth);
+    console.log('selectedYear',selectedYear);
+
+
+    
 
   const [currentTime, setCurrentTime] = useState(0);
   const [showStartButton, setShowStartButton] = useState(true);
@@ -13,11 +31,60 @@ let DatabaseTable_Rows = () => {
   const [startMinutes, setStartMinutes] = useState(0);
   const [endHours, setEndHours] = useState(0);
   const [endMinutes, setEndMinutes] = useState(0);
-  const [totalWorkingHours, setTotalWorkingHours] = useState(0);
+  const [totalWorkingHours, setTotalWorkingHours] = useState(0); // Sửa thành totalWorkingHours
+  const [totalWorkingHoursInMonth, setTotalWorkingHoursInMonth] = useState(0);
+
+
+
+   useEffect(() => {
+    // Gọi hàm để cập nhật ngày trong tháng khi selectedMonth và selectedYear thay đổi
+    updateDaysInMonth(selectedMonth, selectedYear);
+  }, [selectedMonth, selectedYear]);
+
+   console.log('selectedMonth',selectedMonth); 
+     console.log('selectedYear',selectedYear); 
+
+
+   const updateDaysInMonth = (month: string, year: string) => {
+    const firstDayOfMonth = startOfMonth(new Date(parseInt(year), parseInt(month) - 1));
+    const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1));
+
+     console.log('firstDayOfMonth',firstDayOfMonth.toDateString()); 
+     console.log('lastDayOfMonth',lastDayOfMonth.toDateString()); 
+   if (firstDayOfMonth <= lastDayOfMonth) {
+    const daysOfMonth = eachDayOfInterval({
+      start: firstDayOfMonth,
+      end: lastDayOfMonth,
+    });
+    setDaysInMonth(daysOfMonth);
+
+    
+  
+  } else {
+    console.error('Invalid interval: start date is after end date');
+    console.log('daysOfMonth',daysOfMonth); 
+    // Xử lý lỗi hoặc thông báo cho người dùng về sự cố này.
+  }
+  };
+
+  
+
+  const convertHoursToMinutes = (hours: string) => {
+    const [hoursPart, minutesPart] = hours.split(':');
+    return parseInt(hoursPart, 10) * 60 + parseInt(minutesPart, 10);
+  };
+
+const [timeTracking, setTimeTracking] = useState({
+    startHours: 0,
+    startMinutes: 0,
+    endHours: 0,
+    endMinutes: 0,
+  });
+
 
    const fetchCurrentTime = async () => {
     try {
-      const response = await axios.get('https://worldtimeapi.org/api/ip');
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
       const { datetime } = response.data;
       setCurrentTime(datetime);
     } catch (error) {
@@ -25,26 +92,16 @@ let DatabaseTable_Rows = () => {
     }
   };
 
-
-  useEffect(() => {
-    // Kiểm tra xem có dữ liệu trạng thái đã lưu trong localStorage không
-   
-    fetchCurrentTime();
-  }, []); // useEffect chỉ chạy một lần sau khi component mount
-  // useEffect(() => {
-
-    
-  //   // Xử lý các hoạt động không đồng bộ ở đây
-  //   // Cập nhật trạng thái theo cách cần thiết
-  // }, [/* dependencies */]);
+const year = '2023';
+const month = '11';
 
 
-  let firstDayOfMonth = startOfMonth(new Date()); // ngày đầu tháng
-  let lastDayOfMonth = endOfMonth(new Date()); // ngày cuối cùng của tháng
+const firstDayOfMonth = startOfMonth(new Date(parseInt(year), parseInt(month) - 1));
+const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1));
 
   let daysOfMonth = eachDayOfInterval({
-    start: firstDayOfMonth,
-    end: lastDayOfMonth,
+     start: startOfMonth(new Date(parseInt(year), parseInt(month) - 1)),
+  end: endOfMonth(new Date(parseInt(year), parseInt(month) - 1)),
   });
 
   // Thêm một số ngày vào đầu tiên của danh sách để nó hiển thị ở cột đầu tiên
@@ -57,8 +114,12 @@ let DatabaseTable_Rows = () => {
         index + 1 - firstDayOfMonth.getDay(),
       ),
   );
+         
+ 
+  let allDays = [...paddingDays, ...daysInMonth];
 
-  let allDays = [...paddingDays, ...daysOfMonth];
+  console.log('allDays',allDays);
+  
 
   const getDayClassName = (date: Date) => {
     const dayOfWeek = date.getDay();
@@ -70,24 +131,16 @@ let DatabaseTable_Rows = () => {
  
  
   const otherColumnData = [
-    { format: (date: number | Date) => format(date, 'EEEE') }, // Định dạng ngày thành thứ
+    { format: (date: number | Date) => format(startOfDay(date), 'EEEE') }, // Định dạng ngày thành thứ
   ];
 
   
-
-	// useEffect(() => {
-  //   calculateAndSetWorkingHours(startHours, startMinutes, endHours, endMinutes);
-  //   calculateAndSetOvertime(startHours, startMinutes, endHours, endMinutes);
-  // }, [startHours, startMinutes, endHours, endMinutes]);
-	 // State để lưu số giờ khi click vào nút
-
-
 
 	// Hàm xử lý khi click vào nút bắt đầu 
   const handleButtonClick = async () => {
 
      try {
-      const response = await axios.get('https://worldtimeapi.org/api/ip');
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
       const { datetime } = response.data;
       const currentHour = new Date(datetime).getHours();
       const currentMinutes = new Date(datetime).getMinutes();
@@ -97,13 +150,12 @@ let DatabaseTable_Rows = () => {
       
       setStartHours(currentHour);
       setStartMinutes(currentMinutes);
+
+
       setShowEndButton(true);
       setShowStartButton(false);
 
  
-
-    // Lưu thời gian từ API vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn.
-    // Ví dụ: axios.post('/api/saveEndTime', { endTime: datetime });
     } catch (error) {
       console.error('Lỗi khi lấy thời gian từ API:', error);
     }
@@ -112,20 +164,26 @@ let DatabaseTable_Rows = () => {
   const handleEndButtonClick = async  () => {
 
     try {
-    const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
-    const { datetime } = response.data;
-    const currentHour = new Date(datetime).getHours();
-    const currentMinutes = new Date(datetime).getMinutes();
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
+      const { datetime } = response.data;
+      const currentHour = new Date(datetime).getHours();
+      const currentMinutes = new Date(datetime).getMinutes();
 
     // Thực hiện các thay đổi trạng thái
     setEndHours(currentHour);
     setEndMinutes(currentMinutes);
 
+
     // Ẩn nút "Bắt đầu" và "Kết thúc"
     setShowStartButton(false);
     setShowEndButton(false);
 
- 
+      const updatedWorkingHours = calculateAndSetWorkingHours(
+      startHours,
+      startMinutes,
+      currentHour,
+      currentMinutes,
+    );
 
       // Lưu thời gian từ API vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn.
       // Ví dụ: axios.post('/api/saveEndTime', { endTime: datetime });
@@ -141,8 +199,6 @@ let DatabaseTable_Rows = () => {
 
   // State để lưu trữ ghi chú cho từng ngày
   const [noteByDate, setNoteByDate] = useState({});
-
-
 
    
   const [holidays, setHolidays] = useState([
@@ -161,7 +217,6 @@ let DatabaseTable_Rows = () => {
 
 
 
-
  const [cancelLeave, setCancelLeave] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
     new Date(2023, 10, 22), // 1/12/2023
@@ -174,10 +229,8 @@ let DatabaseTable_Rows = () => {
 
  // tính thời gian làm việc của ngày hôm đó 
 const calculateWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
-  const defaultWorkStart = new Date(0, 0, 0, 7, 30); // Thời gian bắt đầu tính giờ làm việc
+   const defaultWorkStart = new Date(0, 0, 0, 7, 30); // Thời gian bắt đầu tính giờ làm việc
   const defaultWorkEnd = new Date(0, 0, 0, 17, 0); // Thời gian kết thúc làm việc
-  const lunchBreakStart = new Date(0, 0, 0, 11, 30); // Thời gian bắt đầu nghỉ trưa
-  const lunchBreakEnd = new Date(0, 0, 0, 13, 0); // Thời gian kết thúc nghỉ trưa
 
   const start = new Date(0, 0, 0, startHours || 0, startMinutes || 0);
   const end = new Date(0, 0, 0, endHours || 0, endMinutes || 0);
@@ -187,10 +240,8 @@ const calculateWorkingHours = (startHours: number | undefined, startMinutes: num
 
   if (workStart >= defaultWorkStart && workEnd <= defaultWorkEnd) {
     // Nếu thời gian bắt đầu và kết thúc nằm trong khoảng giờ làm việc
-    const lunchBreakMinutes = (lunchBreakEnd.getTime() - lunchBreakStart.getTime()) / (1000 * 60);
-    const differenceInMilliseconds = workEnd.getTime() - workStart.getTime() - lunchBreakMinutes * 60 * 1000;
-     const workingMinutes = Math.max(1, Math.ceil(differenceInMilliseconds / (1000 * 60)));
-
+    const differenceInMilliseconds = workEnd.getTime() - workStart.getTime();
+    const workingMinutes = Math.max(1, Math.ceil(differenceInMilliseconds / (1000 * 60)));
 
     const hours = Math.floor(workingMinutes / 60);
     const minutes = workingMinutes % 60;
@@ -200,6 +251,7 @@ const calculateWorkingHours = (startHours: number | undefined, startMinutes: num
 
   // Nếu không nằm trong khoảng giờ làm việc từ 7 giờ 30 đến 17 giờ 00
   return '0:00';
+
 };
  
 
@@ -232,52 +284,53 @@ const calculateOvertime = (startHours: number | undefined, startMinutes: number 
 };
 
 
-
-// ------
  const calculateAndSetWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
-  const workingHours = calculateWorkingHours(startHours, startMinutes, endHours, endMinutes);
-  const totalWorkingMinutes = convertHoursToMinutes(workingHours);
+    const workingHours = calculateWorkingHours(startHours, startMinutes, endHours, endMinutes);
+    const totalWorkingMinutes = convertHoursToMinutes(workingHours);
 
-  // Trừ đi thời gian nghỉ trưa (1 giờ 30 phút) 
-  const adjustedWorkingMinutes = Math.max(0, totalWorkingMinutes - 90); 
+    // Trừ đi thời gian nghỉ trưa (1 giờ 30 phút)
+    const adjustedWorkingMinutes = Math.max(0, totalWorkingMinutes);
 
-  setTotalWorkingHours((prevTotal) => prevTotal + adjustedWorkingMinutes); 
+    console.log("adjustedWorkingMinutes",adjustedWorkingMinutes);
+    
 
-  return formatMinutesToHours(adjustedWorkingMinutes);
-  };  
+    setTotalWorkingHours((prevTotal) => prevTotal + adjustedWorkingMinutes);
+    setTotalWorkingHoursInMonth((prevTotal) => prevTotal + adjustedWorkingMinutes); // Cập nhật tổng thời gian làm việc trong tháng
 
-  // làm thời gian quá giờ và cập nhật tổng
-  const calculateAndSetOvertime = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
-    const overtime = calculateOvertime(startHours, startMinutes, endHours, endMinutes);
-    setTotalWorkingHours((prevTotal) => prevTotal + convertHoursToMinutes(overtime));
-    return overtime;
+    return formatMinutesToHours(adjustedWorkingMinutes);
   };
 
-  // hàm chuyển đổi giờ thành phút để tính tổng
-  const convertHoursToMinutes = (hours: string) => {
-    const [hoursPart, minutesPart] = hours.split(':');
-    return parseInt(hoursPart, 10) * 60 + parseInt(minutesPart, 10);
-  };
-  
-  const formatMinutesToHours = (totalWorkingHours: number) => {
+
+ const formatMinutesToHours = (totalWorkingHours: number) => {
     const hours = Math.floor(totalWorkingHours / 60);  
     const minutes = totalWorkingHours % 60;
+
+    console.log('hours',hours);
+    console.log('minutes',minutes);
+    
+    
     return `${hours}:${String(minutes).padStart(2, '0')}`;
   };
 
 
-   
+
+  console.log("firstDayOfMonth.getMonth()",firstDayOfMonth.getMonth());
+    
+    console.log("daysOfMonth",daysOfMonth);
+        console.log('daysInMonth',daysInMonth);
+  // console.log(" Date(day).getMonth()",  Date(day).getMonth());
+  
 
     return(
         <>
     	 {allDays.map((day, rowIndex) => (
             <tr key={rowIndex} className={`${getDayClassName(day)}${isToday(day) ? 'today' : '' } ${isHoliday(day) ? 'holiday' : ''} ${accreptLeave(day) ? 'accrept' : ''} ${isCancelLeave(day) ? 'cancel' : ''}`}>
-              {new Date(day).getMonth() === firstDayOfMonth.getMonth() ? (
+              {new Date(day).getMonth() === parseInt(selectedMonth) - 1 ? (
                 <>
                   <td>{format(day, 'dd/MM/yyyy')}</td>
                   {otherColumnData.map((column, colIndex) => (
 					<td key={colIndex}>
-						{column.format ? column.format(day) : '...'} {/* Sử dụng hàm định dạng nếu có */}
+						{column.format ? column.format(day) : '...'}
 					</td>
 					))}
 					<td className={`${startHours > 7 || (startHours === 7 && startMinutes > 30) ? 'late' : '' }`}>
@@ -305,8 +358,7 @@ const calculateOvertime = (startHours: number | undefined, startMinutes: number 
             <td></td>
             <td></td>
             <td></td>
-            <td>
-                    {!showStartButton && !showEndButton ? (<>{formatMinutesToHours(totalWorkingHours)}</> ) : ( '')} </td>
+           <td>{!showStartButton && !showEndButton ? <>{formatMinutesToHours(totalWorkingHoursInMonth)}</> : ''}</td>
             <td>00:00</td>
             <td></td>
             <td></td>

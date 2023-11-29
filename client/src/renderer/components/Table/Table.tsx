@@ -17,16 +17,23 @@ import './Table.scss';
 
   let Col_count_rows = 5;
   const Col_title = {col_1: 'Họ Và Tên', col_2: 'Nhóm', col_3: 'Email', col_4: 'Skype ID', col_5: 'Phone',};
-//   const Data_col = ['Họ Và Tên','Nhóm', 'Email', 'Skype ID', 'Phone'];
- 
+
 
 const TablePage = () =>  {
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
 
+    const handleDateChange = (month: string, year: string, daysInMonth: Date[]) => {
+    setSelectedMonth(month);
+    setSelectedYear(year);
+    setDaysInMonth(daysInMonth);
+  };
 
   return (
     <div>
       <h2>Table Page</h2>
-        <MonthYearSelector />
+        <MonthYearSelector onChange={handleDateChange} />
 		<h2 className='hdg-lv2'>Thẻ giờ</h2>
         <div className='table-container table--01'>
           <table className="table table__custom">
@@ -35,7 +42,7 @@ const TablePage = () =>  {
           </thead>
           <tbody>
             {/* RowCounts = {RowCounts} */}
-            <DatabaseTable_Rows  />
+            <DatabaseTable_Rows selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth}  />
           </tbody>
        	 </table>
         </div>

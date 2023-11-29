@@ -73,17 +73,18 @@ export const Dashboard = () => {
             :
             <p>
               {/* {currentHour} */}
-              {currentHour}
+                {String(currentHour).padStart(2, '0') }
+
               <span>hour</span>
             </p>
             :
             <p>
-              {currentMinute}
+              {String(currentMinute).padStart(2, '0') }
               <span>munite</span>
             </p>
             :
             <p>
-              {currentSecond}
+                 {String(currentSecond).padStart(2, '0') }
               <span>second</span>
             </p>
           </div>
