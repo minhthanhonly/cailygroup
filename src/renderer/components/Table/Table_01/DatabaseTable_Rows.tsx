@@ -31,12 +31,12 @@ let DatabaseTable_Rows = () => {
    
     fetchCurrentTime();
   }, []); // useEffect chỉ chạy một lần sau khi component mount
-  useEffect(() => {
+  // useEffect(() => {
 
     
-    // Xử lý các hoạt động không đồng bộ ở đây
-    // Cập nhật trạng thái theo cách cần thiết
-  }, [/* dependencies */]);
+  //   // Xử lý các hoạt động không đồng bộ ở đây
+  //   // Cập nhật trạng thái theo cách cần thiết
+  // }, [/* dependencies */]);
 
 
   let firstDayOfMonth = startOfMonth(new Date()); // ngày đầu tháng
@@ -112,7 +112,7 @@ let DatabaseTable_Rows = () => {
   const handleEndButtonClick = async  () => {
 
     try {
-    const response = await axios.get('https://worldtimeapi.org/api/ip');
+    const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
     const { datetime } = response.data;
     const currentHour = new Date(datetime).getHours();
     const currentMinutes = new Date(datetime).getMinutes();
