@@ -14,7 +14,7 @@ let DatabaseTable_Rows = ( Props : SelectMY ) => {
   // const [selectedMonth, setSelectedMonth] = useState(Props.selectedMonth);
   // const [selectedYear, setSelectedYear] = useState(Props.selectedYear);
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
-  
+
   const selectedMonth = Props.selectedMonth;
     const selectedYear = Props.selectedYear;
 
@@ -22,7 +22,7 @@ let DatabaseTable_Rows = ( Props : SelectMY ) => {
     console.log('selectedYear',selectedYear);
 
 
-    
+
 
   const [currentTime, setCurrentTime] = useState(0);
   const [showStartButton, setShowStartButton] = useState(true);
@@ -41,16 +41,16 @@ let DatabaseTable_Rows = ( Props : SelectMY ) => {
     updateDaysInMonth(selectedMonth, selectedYear);
   }, [selectedMonth, selectedYear]);
 
-   console.log('selectedMonth',selectedMonth); 
-     console.log('selectedYear',selectedYear); 
+   console.log('selectedMonth',selectedMonth);
+     console.log('selectedYear',selectedYear);
 
 
    const updateDaysInMonth = (month: string, year: string) => {
     const firstDayOfMonth = startOfMonth(new Date(parseInt(year), parseInt(month) - 1));
     const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1));
 
-     console.log('firstDayOfMonth',firstDayOfMonth.toDateString()); 
-     console.log('lastDayOfMonth',lastDayOfMonth.toDateString()); 
+     console.log('firstDayOfMonth',firstDayOfMonth.toDateString());
+     console.log('lastDayOfMonth',lastDayOfMonth.toDateString());
    if (firstDayOfMonth <= lastDayOfMonth) {
     const daysOfMonth = eachDayOfInterval({
       start: firstDayOfMonth,
@@ -58,16 +58,16 @@ let DatabaseTable_Rows = ( Props : SelectMY ) => {
     });
     setDaysInMonth(daysOfMonth);
 
-    
-  
+
+
   } else {
     console.error('Invalid interval: start date is after end date');
-    console.log('daysOfMonth',daysOfMonth); 
+    console.log('daysOfMonth',daysOfMonth);
     // Xử lý lỗi hoặc thông báo cho người dùng về sự cố này.
   }
   };
 
-  
+
 
   const convertHoursToMinutes = (hours: string) => {
     const [hoursPart, minutesPart] = hours.split(':');
@@ -114,12 +114,12 @@ const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1))
         index + 1 - firstDayOfMonth.getDay(),
       ),
   );
-         
- 
+
+
   let allDays = [...paddingDays, ...daysInMonth];
 
   console.log('allDays',allDays);
-  
+
 
   const getDayClassName = (date: Date) => {
     const dayOfWeek = date.getDay();
@@ -128,15 +128,15 @@ const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1))
     // Các class khác nếu cần
     return '';
   };
- 
- 
+
+
   const otherColumnData = [
     { format: (date: number | Date) => format(startOfDay(date), 'EEEE') }, // Định dạng ngày thành thứ
   ];
 
-  
 
-	// Hàm xử lý khi click vào nút bắt đầu 
+
+	// Hàm xử lý khi click vào nút bắt đầu
   const handleButtonClick = async () => {
 
      try {
@@ -144,10 +144,10 @@ const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1))
       const { datetime } = response.data;
       const currentHour = new Date(datetime).getHours();
       const currentMinutes = new Date(datetime).getMinutes();
-      
+
       console.log('currentMinutes', currentMinutes);
       console.log('currentHour', currentHour);
-      
+
       setStartHours(currentHour);
       setStartMinutes(currentMinutes);
 
@@ -155,11 +155,11 @@ const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1))
       setShowEndButton(true);
       setShowStartButton(false);
 
- 
+
     } catch (error) {
       console.error('Lỗi khi lấy thời gian từ API:', error);
     }
-		
+
   };
   const handleEndButtonClick = async  () => {
 
@@ -192,7 +192,7 @@ const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1))
     }
 
   };
- 
+
 
     // State để theo dõi trạng thái mở rộng của các dòng
   const [expandedRows, setExpandedRows] = useState({});
@@ -200,14 +200,14 @@ const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1))
   // State để lưu trữ ghi chú cho từng ngày
   const [noteByDate, setNoteByDate] = useState({});
 
-   
+
   const [holidays, setHolidays] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
     new Date(2023, 10, 1), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
  const isHoliday = (date: number | Date) => holidays.some((holiday) => isSameDay(date, holiday));
-  
+
  const [accreptLeaves, setAccreptLeave] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
     new Date(2023, 10, 15), // 1/12/2023
@@ -223,11 +223,11 @@ const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1))
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
   const isCancelLeave = (date: number | Date) => cancelLeave.some((cancel) => isSameDay(date, cancel));
-  
 
 
 
- // tính thời gian làm việc của ngày hôm đó 
+
+ // tính thời gian làm việc của ngày hôm đó
 const calculateWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
    const defaultWorkStart = new Date(0, 0, 0, 7, 30); // Thời gian bắt đầu tính giờ làm việc
   const defaultWorkEnd = new Date(0, 0, 0, 17, 0); // Thời gian kết thúc làm việc
@@ -253,7 +253,7 @@ const calculateWorkingHours = (startHours: number | undefined, startMinutes: num
   return '0:00';
 
 };
- 
+
 
 
 
@@ -292,7 +292,7 @@ const calculateOvertime = (startHours: number | undefined, startMinutes: number 
     const adjustedWorkingMinutes = Math.max(0, totalWorkingMinutes);
 
     console.log("adjustedWorkingMinutes",adjustedWorkingMinutes);
-    
+
 
     setTotalWorkingHours((prevTotal) => prevTotal + adjustedWorkingMinutes);
     setTotalWorkingHoursInMonth((prevTotal) => prevTotal + adjustedWorkingMinutes); // Cập nhật tổng thời gian làm việc trong tháng
@@ -302,24 +302,24 @@ const calculateOvertime = (startHours: number | undefined, startMinutes: number 
 
 
  const formatMinutesToHours = (totalWorkingHours: number) => {
-    const hours = Math.floor(totalWorkingHours / 60);  
+    const hours = Math.floor(totalWorkingHours / 60);
     const minutes = totalWorkingHours % 60;
 
     console.log('hours',hours);
     console.log('minutes',minutes);
-    
-    
+
+
     return `${hours}:${String(minutes).padStart(2, '0')}`;
   };
 
 
 
   console.log("firstDayOfMonth.getMonth()",firstDayOfMonth.getMonth());
-    
+
     console.log("daysOfMonth",daysOfMonth);
         console.log('daysInMonth',daysInMonth);
   // console.log(" Date(day).getMonth()",  Date(day).getMonth());
-  
+
 
     return(
         <>
@@ -336,20 +336,20 @@ const calculateOvertime = (startHours: number | undefined, startMinutes: number 
 					<td className={`${startHours > 7 || (startHours === 7 && startMinutes > 30) ? 'late' : '' }`}>
 						{isToday(day) && showStartButton  ?  <button className="btn btn--medium" onClick={handleButtonClick}>Bắt đầu</button> : ''}
 						{isToday(day) && showStartButton === false ? <>{`${startHours}:${String(startMinutes).padStart(2, '0')}`}</> : ''}
-                    
+
 					</td>
 					<td >
 						{isToday(day) && showEndButton  ?  <button className="btn btn--orange btn--medium" onClick={handleEndButtonClick} >Kết thúc</button> : ''}
 						{isToday(day) && showEndButton === false && showStartButton === false  ?  <>{`${endHours}:${String(endMinutes).padStart(2, '0')}`}</> : ''}
 					</td>
-					<td> 
-						{isToday(day) && !showStartButton && !showEndButton ? (<>{calculateWorkingHours(startHours, startMinutes, endHours, endMinutes)}</> ) : ( '' )} 
+					<td>
+						{isToday(day) && !showStartButton && !showEndButton ? (<>{calculateWorkingHours(startHours, startMinutes, endHours, endMinutes)}</> ) : ( '' )}
 						</td>
 					<td> {isToday(day) && !showStartButton && !showEndButton ? (<>{calculateOvertime(startHours, startMinutes, endHours, endMinutes)}</> ) : ( '')} </td>
 					<td>{isToday(day) && !showStartButton && !showEndButton ? (<>1:30</>) : ( '')} </td>
 					<td><a className="btn btn--green btn--small icon icon--edit"><img src={require('../../../assets/images/icnedit.png')}  alt="edit" className="fluid-image" /></a></td>
 					<td> </td>
-                </> 
+                </>
               ) : null}
             </tr>
           ))}
@@ -365,6 +365,6 @@ const calculateOvertime = (startHours: number | undefined, startMinutes: number 
           </tr>
         </>
     )
-} 
+}
 
 export default DatabaseTable_Rows;

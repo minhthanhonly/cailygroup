@@ -1,6 +1,6 @@
 import './Heading.scss';
 
-interface attr {
+type attr = {
     text: string;
 }
 

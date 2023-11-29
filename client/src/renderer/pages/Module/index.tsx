@@ -38,9 +38,9 @@ export const Module = () => {
         <br />
         <br />
         <div className="box-group">
-          <p>
+
             <Heading3 text="Nhóm: Web" />
-          </p>
+
           <p>
             <InputQuantity />
           </p>
@@ -86,7 +86,7 @@ export const Module = () => {
             <br/><br/>
             <p className='bg bg-red'><span className='bg-text'>Không xác nhận nghỉ phép</span><span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span></p>
         </div>
-        
+
         {/* TABLE */}
         <h2 className="hdg-lv2">TABLE</h2>
         <TablePage />

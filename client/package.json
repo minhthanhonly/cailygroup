@@ -99,18 +99,16 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "axios": "^1.6.2",
     "classnames": "^2.3.2",
     "date-fns": "^2.30.0",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^6.1.4",
-<<<<<<< HEAD:client/package.json
-=======
     "express": "^4.18.2",
     "js-cookie": "^3.0.5",
     "mysql": "^2.18.1",
     "nodemon": "^3.0.1",
->>>>>>> 2f8cdea12328c3ac9e31e96b2abb19fae2637baf:package.json
     "react": "^18.2.0",
     "react-datepicker": "^4.23.0",
     "react-dom": "^18.2.0",
