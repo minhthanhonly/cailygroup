@@ -13,6 +13,7 @@ import MonthYearSelector from './SelectMonthYears';
 // import  TestOne  from "./TestOne";
 import './Table.scss';
 import '../GlobalStyles/GlobalStyles.scss';
+import SelectCustom from './SelectCustom';
 
 
 let Col_count_rows = 9;
@@ -33,6 +34,8 @@ const TablePage = () => {
   return (
     <div>
       <h2>Table Page</h2>
+
+      <SelectCustom />
       <MonthYearSelector onChange={handleDateChange} />
       <h2 className='hdg-lv2'>Thẻ giờ</h2>
       <div className='table-container table--01'>
@@ -60,8 +63,8 @@ const TablePage = () => {
         </table>
       </div>
 
-      {/* 
-		<TestOne /> */}
+
+
     </div>
   );
 };
