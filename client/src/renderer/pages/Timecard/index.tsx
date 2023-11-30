@@ -1,22 +1,10 @@
 import { Button } from '../../components/Button';
-import MonthYearSelector from '../../components/Table/SelectMonthYears';
-import DatabaseTable_Columns from '../../components/Table/Table_01/DatabaseTable_Columns';
-import DatabaseTable_Rows from '../../components/Table/Table_01/DatabaseTable_Rows';
+import { Heading2 } from '../../components/Heading';
 
 export const Timecard = () => {
   return (
-    <div>
-      <div className="table-container table--01">
-        <table className="table table__custom">
-          <thead>
-
-          </thead>
-          <tbody>
-
-
-          </tbody>
-        </table>
-      </div>
+    <>
+      <Heading2 text="Thẻ Giờ" />
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
       <div className="wrp-button">
         <Button size="medium" color="green">
@@ -24,6 +12,6 @@ export const Timecard = () => {
         </Button>
         <Button>Đăng ký nghỉ phép</Button>
       </div>
-    </div>
+    </>
   );
 };
