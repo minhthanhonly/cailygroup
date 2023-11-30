@@ -33,12 +33,22 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
   const [endMinutes, setEndMinutes] = useState(0);
   const [totalWorkingHours, setTotalWorkingHours] = useState(0); // Sửa thành totalWorkingHours
   const [totalWorkingHoursInMonth, setTotalWorkingHoursInMonth] = useState(0);
-
+  const yourDateObject = new Date();
 
 
   useEffect(() => {
-    // Gọi hàm để cập nhật ngày trong tháng khi selectedMonth và selectedYear thay đổi
-    updateDaysInMonth(selectedMonth, selectedYear);
+    // Nếu selectedMonth hoặc selectedYear chưa được chọn, gán giá trị mặc định là tháng và năm hiện tại
+    if (!selectedMonth || !selectedYear) {
+      const currentDate = new Date();
+      const currentMonth = String(currentDate.getMonth() + 1); // Tháng trong JavaScript bắt đầu từ 0
+      const currentYear = String(currentDate.getFullYear());
+
+      // Gọi hàm update với tháng và năm hiện tại
+      updateDaysInMonth(currentMonth, currentYear);
+    } else {
+      // Nếu đã có giá trị cho selectedMonth và selectedYear, thì gọi hàm update như bình thường
+      updateDaysInMonth(selectedMonth, selectedYear);
+    }
   }, [selectedMonth, selectedYear]);
 
   console.log('selectedMonth', selectedMonth);
@@ -62,7 +72,6 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
 
     } else {
       console.error('Invalid interval: start date is after end date');
-      console.log('daysOfMonth', daysOfMonth);
       // Xử lý lỗi hoặc thông báo cho người dùng về sự cố này.
     }
   };
@@ -93,7 +102,7 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
   };
 
   const year = '2023';
-  const month = '11';
+  const month = '0';
 
 
   const firstDayOfMonth = startOfMonth(new Date(parseInt(year), parseInt(month) - 1));
@@ -314,20 +323,18 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
 
 
 
-  console.log("firstDayOfMonth.getMonth()", firstDayOfMonth.getMonth());
 
-  console.log("daysOfMonth", daysOfMonth);
-  console.log('daysInMonth', daysInMonth);
   // console.log(" Date(day).getMonth()",  Date(day).getMonth());
 
 
-
-
+  const currentMonth = new Date().getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
+  const currentYear = new Date().getFullYear();
   return (
     <>
       {allDays.map((day, rowIndex) => (
+
         <tr key={rowIndex} className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''} ${isHoliday(day) ? 'holiday bg-purple' : ''} ${accreptLeave(day) ? 'accrept bg-green' : ''} ${isCancelLeave(day) ? 'cancel bg-red' : ''}`}>
-          {new Date(day).getMonth() === parseInt(selectedMonth) - 1 ? (
+          {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) && new Date(day).getFullYear() === parseInt(selectedYear)) || (new Date(day).getMonth() + 1 === currentMonth && new Date(day).getFullYear() === currentYear) ? (
             <>
               <td>{format(day, 'dd/MM/yyyy')}</td>
               {otherColumnData.map((column, colIndex) => (

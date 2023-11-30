@@ -59,7 +59,9 @@ const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({ onChange }) => {
           ))}
         </select>
       </div>
+      {selectedMonth} + {selectedYear}
     </div>
+
   );
 };
 
