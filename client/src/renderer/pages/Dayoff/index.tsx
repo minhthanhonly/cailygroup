@@ -1,19 +1,12 @@
 import { Heading2 } from "../../components/Heading";
 import { Pagination } from "../../components/Pagination";
-import { CTableBody } from "../../components/Table/CTableBody";
-import { CTableHead } from "../../components/Table/CTableHead";
+import { CTable } from "../../components/Table/CTable";
 
 export const Dayoff = () => {
-  const info = ["h4", "h5", "h6"]
   return (
     <>
       <Heading2 text="Danh sách xin nghỉ phép" />
-      <div className='table-container'>
-        <table className="table table__custom">
-          <CTableHead heads={["h1", "h2", "h3"]} />
-          <CTableBody/>
-        </table>
-      </div>
+      <CTable heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Ghi Chú", "Hủy đăng ký nghỉ"]} contents={["h4", "h5", "h6", "h4", "h5", "h6"]}/>
       <Pagination />
     </>
   );
