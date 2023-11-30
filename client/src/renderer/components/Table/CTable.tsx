@@ -1,17 +1,12 @@
-import { CTableBody } from "./CTableBody"
-import { CTableHead } from "./CTableHead"
-
 type CTableProps = {
-  heads: string[];
-  contents: string[];
+  children: React.ReactNode
 }
 
 export const CTable = (props: CTableProps) => {
   return (
     <div className='table-container'>
       <table className="table table__custom">
-        <CTableHead heads={props.heads}/>
-        <CTableBody contents={props.contents}/>
+        {props.children}
       </table>
     </div>
   )

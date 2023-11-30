@@ -19,17 +19,7 @@ export const Timecard = () => {
     <>
       <Heading2 text="Thẻ Giờ" />
       <MonthYearSelector onChange={handleDateChange} />
-      <div className='table-container table--01'>
-        <table className="table table__custom">
-          <thead>
-            <DatabaseTable_Columns />
-          </thead>
-          <tbody>
-            {/* RowCounts = {RowCounts} */}
-            <DatabaseTable_Rows selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} />
-          </tbody>
-        </table>
-      </div>
+
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
       <div className="wrp-button">
         <Button size="medium" color="green">
