@@ -92,7 +92,7 @@ export const Module = () => {
         <TablePage />
 
         {/* IMAGE */}
-        <h2 className="hdg-lv2">IMAGE</h2>
+        {/* <h2 className="hdg-lv2">IMAGE</h2>
         <img
           src={require('../../assets/images/icon-home.png')}
           alt="phantu.dev"
@@ -102,7 +102,7 @@ export const Module = () => {
           src={require('../../assets/images/icon-home-active.png')}
           alt="phantu.dev"
           className="fluid-image"
-        />
+        /> */}
 
         {/* Dashboard */}
         <h2 className="hdg-lv2">Dashboard</h2>

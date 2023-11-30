@@ -1,7 +1,15 @@
-export const CTableBody = () => {
+type CTableBodyProps = {
+  contents: string[];
+};
+
+export const CTableBody = (props: CTableBodyProps) => {
   return (
     <tbody>
-      <tr><td></td></tr>
+      <tr>
+        {props.contents.map((value, index) => (
+          <td key={index}>{value}</td>
+        ))}
+      </tr>
     </tbody>
   )
 }
