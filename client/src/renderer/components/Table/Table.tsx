@@ -16,7 +16,7 @@ import '../GlobalStyles/GlobalStyles.scss';
 
 
 let Col_count_rows = 9;
-const Col_title = { col_1: 'Họ Và Tên', col_2: 'Nhóm', col_3: 'Email', col_4: 'Skype ID', col_5: 'Phone', col_6: 'Phone', col_7: 'Phone', col_8: 'Ghi Chú', col_9: 'hành động', };
+const Col_title = { col_1: 'Họ Và Tên', col_2: 'Nhóm', col_3: 'Email', col_4: 'Skype ID', col_5: 'Tháng Năm', col_6: 'Phone', col_7: 'Phone', col_8: 'Ghi Chú', };
 
 
 const TablePage = () => {

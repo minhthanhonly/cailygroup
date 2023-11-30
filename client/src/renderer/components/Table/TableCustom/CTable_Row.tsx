@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import MonthYearSelector from '../SelectMonthYears';
+
 
 interface tableRows {
     Rows_count: number;
 }
+
+const handleDateChange = (month: string, year: string) => {
+    setSelectedMonth(month);
+    setSelectedYear(year);
+};
+
 
 let CTable_Row = (Props: tableRows) => {
 
@@ -22,7 +30,6 @@ let CTable_Row = (Props: tableRows) => {
 
                 ))}
                 <td><a className="btn btn--green btn--small icon icon--edit"><img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" /></a></td>
-                <td>ss</td>
                 <td><button className="btn btn--orange btn--small">huỷ</button> </td>
                 <td><button className="btn btn--medium">xác nhận</button></td>
                 <td><button className="btn btn--medium">cập nhật</button></td>
@@ -36,11 +43,12 @@ let CTable_Row = (Props: tableRows) => {
                 <td><input className='input__edit' disabled type="text" value='12:12' /></td>
                 <td><input className='input__edit' type="text" /></td>
                 <td><input className='input__edit' type="text" /></td>
+
+                <td><input className='input__edit' type="text" /></td>
+                <td><MonthYearSelector onChange={handleDateChange} /></td>
                 <td><input className='input__edit' type="text" /></td>
                 <td><input className='input__edit' type="text" /></td>
-                <td><input className='input__edit' type="text" /></td>
-                <td><input className='input__edit' type="text" /></td>
-                <td><input className='input__edit' type="text" /></td>
+
 
             </tr>
         </>
@@ -50,4 +58,12 @@ let CTable_Row = (Props: tableRows) => {
 export default CTable_Row;
 
 
+
+function setSelectedMonth(month: string) {
+    throw new Error('Function not implemented.');
+}
+
+function setSelectedYear(year: string) {
+    throw new Error('Function not implemented.');
+}
 
