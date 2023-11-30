@@ -1,7 +1,7 @@
 
 .table{
     & .btn--medium{
-    width: 9.9rem;
+    width: auto;
     }
     &__custom{
     border-radius: 1rem;
@@ -46,15 +46,15 @@
     & .saturday{
         background-color: var(--blue);
     }
-    & .accrept{
-        background-color: var(--main);
-    }
-     & .cancel{
-        background-color: var(--red);
-    }
-    & .holiday{
-        background-color: var(--orange);
-    }
+    // & .accrept{
+    //     background-color: var(--main);
+    // }
+    //  & .cancel{
+    //     background-color: var(--red);
+    // }
+    // & .holiday{
+    //     background-color: var(--orange);
+    // }
 }
 
 .table-container{
@@ -65,4 +65,21 @@
 }
 .late{
     color: var(--red);
+}
+
+.input__edit{
+    width: 100%;
+    border-radius: 1rem;
+    text-align: center;
+    font-size: 2rem;
+        text-align: center;
+        font-weight: 100;
+
+    &:focus{
+        border: 1px solid var(--blue);
+    }
+    &:disabled{
+        border: none;
+        background: none;
+    }
 }

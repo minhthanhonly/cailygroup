@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
+import './SelectMonthYears.scss'
 
 interface MonthYearSelectorProps {
   onChange: (selectedMonth: string, selectedYear: string, daysInMonth: Date[]) => void;

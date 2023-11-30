@@ -6,17 +6,27 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 export const FormLogin = () => {
   return (
-    <div className="form-login form">
-      <div className="form-content">
-        <h2 className="form-login--title">Đăng Nhập</h2>
-        <div className="form-group">
-          <input className="form-input" type="text" placeholder="Tài Khoản" />
+    <div className="form-login">
+      <div className="form">
+        <div className="form-login--logo">
+          <img
+            src={require('../../assets/images/logo-site.png')}
+            alt=""
+            className="fluid-image"
+          />
+          <h3>SMART IDEAS FOR A BETTER LIFE </h3>
         </div>
-        <div className="form-group">
-          <input className="form-input" type="text" placeholder="Mật Khẩu" />
-        </div>
-        <div className="center">
-          <button className="btn">Đăng Nhập</button>
+        <div className="form-content">
+          <h2 className="form-login--title">Đăng Nhập</h2>
+          <div className="form-group">
+            <input className="form-input" type="text" placeholder="Tài Khoản" />
+          </div>
+          <div className="form-group">
+            <input className="form-input" type="text" placeholder="Mật Khẩu" />
+          </div>
+          <div className="center">
+            <button className="btn">Đăng Nhập</button>
+          </div>
         </div>
       </div>
     </div>
