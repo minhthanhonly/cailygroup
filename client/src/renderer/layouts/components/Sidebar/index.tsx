@@ -71,14 +71,6 @@ export const Sidebar = () => {
               Module
             </NavLink>
           </li>
-          <li className="nav-global__item">
-            <NavLink to="/tutorials">
-              <span className="icn">
-                <FontAwesomeIcon icon={faGear} />
-              </span>
-              Tutorials
-            </NavLink>
-          </li>
         </ul>
       </nav>
       <div className="acount">
@@ -91,7 +83,7 @@ export const Sidebar = () => {
             />
           </figure>
           <div className="acount__info">
-            <NavLink to="/AccoutEdit" className="acount__name">
+            <NavLink to="/users-edit" className="acount__name">
               Phan Ho Tu
             </NavLink>
             <p className="acount__des">Nhóm: Web</p>
