@@ -47,7 +47,7 @@ const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({ onChange }) => {
         <select value={selectedMonth} onChange={handleMonthChange}>
           {months.map((month) => (
             <option key={month} value={month}>
-              {`Tháng ${month}`}
+              {month}
             </option>
           ))}
         </select>
