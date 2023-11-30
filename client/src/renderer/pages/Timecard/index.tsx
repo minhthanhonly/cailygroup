@@ -6,15 +6,14 @@ import DatabaseTable_Rows from '../../components/Table/Table_01/DatabaseTable_Ro
 export const Timecard = () => {
   return (
     <div>
-      <MonthYearSelector />
       <div className="table-container table--01">
         <table className="table table__custom">
           <thead>
-            <DatabaseTable_Columns />
+
           </thead>
           <tbody>
-            {/* RowCounts = {RowCounts} */}
-            <DatabaseTable_Rows />
+
+
           </tbody>
         </table>
       </div>
