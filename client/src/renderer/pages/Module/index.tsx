@@ -38,15 +38,9 @@ export const Module = () => {
         <br />
         <br />
         <div className="box-group">
-
-            <Heading3 text="Nhóm: Web" />
-
-          <p>
-            <InputQuantity />
-          </p>
-          <p>
-            <Search />
-          </p>
+          <div className="box-group__item"><Heading3 text="Nhóm: Web" /></div>
+          <div className="box-group__item"><InputQuantity /></div>
+          <div className="box-group__item"><Search /></div>
         </div>
         <h2 className="hdg-lv2">Chi tiết thành viên</h2>
         <br />
