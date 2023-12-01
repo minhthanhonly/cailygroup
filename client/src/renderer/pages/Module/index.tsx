@@ -20,20 +20,9 @@ import {
 } from '../../components/Table/SelectCustom';
 import { ButtonDelete } from '../../components/Button/ButtonDelete';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
-import ListBranch from '../../components/List/ListBranch';
+import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 
 export const Module = () => {
-  const Branch = [{
-    text: "Thẻ Giờ",
-    to: "/"
-  },{
-    text: "Danh sách thẻ giờ",
-    to: "/"
-  },{
-    text: "Chỉnh Sửa Thẻ Giờ",
-    to: "/"
-  },]
-
   return (
     <div>
       <div className="wrp-container">
@@ -47,7 +36,7 @@ export const Module = () => {
         <br />
         <br />
         <h2 className="hdg-lv2">ListBranch</h2>
-        <ListBranch branch={Branch} />
+        <NavTimcard role="admin"/>
         <br />
         <br />
         <h2 className="hdg-lv2">SELECT</h2>

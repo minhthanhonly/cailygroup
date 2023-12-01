@@ -1,8 +1,11 @@
+import CardTime from "../../components/Card/Card";
 import { AddGroup } from "../../components/Form/Form";
 import { Heading3 } from "../../components/Heading";
+import ListBranch from "../../components/List/ListBranch";
 import { CTable } from "../../components/Table/CTable";
 import CTableBody from "../../components/Table/CTableBody";
 import { CTableHead } from "../../components/Table/CTableHead";
+import NavTimcard from "../../layouts/components/Nav/NavTimcard";
 
 
 export const TimecardSetting = () => {
@@ -12,7 +15,20 @@ export const TimecardSetting = () => {
   ]
   return (
     <>
+      <NavTimcard role="admin"/>
       <Heading3 text="Cấu hình giờ vào - giờ ra"/>
+      <div className="card-box">
+        <div className="card-box--center">
+          <h4>Giờ vào</h4>
+          <CardTime />
+          <button className="btn btn--widthAuto">Cập nhật</button>
+        </div>
+        <div className="card-box--center">
+          <h4>Giờ ra</h4>
+          <CardTime />
+          <button className="btn btn--widthAuto">Cập nhật</button>
+        </div>
+      </div>
       <Heading3 text="Cấu hình ngày lễ"/>
       <AddGroup/>
       <CTable>
