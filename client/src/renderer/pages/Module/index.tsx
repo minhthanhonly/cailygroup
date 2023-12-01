@@ -14,7 +14,7 @@ import { Pagination } from '../../components/Pagination';
 import { InputQuantity } from '../../components/InputQuantity';
 import { Menberdetails } from '../../components/Menberdetails';
 import { CardTime } from '../../components/Card/Card';
-import SelectCustom from '../../components/Table/SelectCustom';
+import {SelectCustom, SelectCustomName} from '../../components/Table/SelectCustom';
 import { ButtonDelete } from '../../components/Button/ButtonDelete';
 
 export const Module = () => {
@@ -56,6 +56,19 @@ export const Module = () => {
         <br />
         <Search />
         <br />
+        <br />
+        <br />
+        <div className="box-group box-group--second">
+          <div className="box-group__item">
+            <p className='txt-title'>Nhóm: Web</p>
+          </div>
+          <div className="box-group__item left">
+              <SelectCustom />
+          </div>
+          <div className="box-group__item">
+             <SelectCustomName />
+          </div>
+        </div>
         <br />
         <br />
         <div className="box-group">
@@ -162,10 +175,17 @@ export const Module = () => {
         <br />
         <br />
         <h2 className="hdg-lv2">Thẻ giờ</h2>
-        <div className="card-box card-box--center">
-          <h4>Giờ vào</h4>
-          <CardTime />
-          <button className="btn btn--widthAuto">Cập nhật</button>
+        <div className="card-box">
+          <div className="card-box--center">
+            <h4>Giờ vào</h4>
+            <CardTime />
+            <button className="btn btn--widthAuto">Cập nhật</button>
+          </div>
+          <div className="card-box--center">
+            <h4>Giờ ra</h4>
+            <CardTime />
+            <button className="btn btn--widthAuto">Cập nhật</button>
+          </div>
         </div>
       </div>
     </div>
