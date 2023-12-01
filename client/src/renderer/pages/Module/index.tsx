@@ -16,6 +16,7 @@ import { Menberdetails } from '../../components/Menberdetails';
 import { CardTime } from '../../components/Card/Card';
 import {SelectCustom, SelectCustomName} from '../../components/Table/SelectCustom';
 import { ButtonDelete } from '../../components/Button/ButtonDelete';
+import { ButtonCenter } from '../../components/Button/ButtonCenter';
 
 export const Module = () => {
   // props table colum
@@ -115,6 +116,17 @@ export const Module = () => {
         <br />
         <br />
         <ButtonDelete/>
+        <br />
+        <br />
+        <ButtonCenter>
+          <Button color="green" size="medium">Xuất Thẻ Giờ</Button>
+          <Button>Đăng ký nghỉ phép</Button>
+        </ButtonCenter>
+        <br />
+        <br />
+        <ButtonCenter>
+          <Button color="green" size="medium">Xuất Thẻ Giờ</Button>
+        </ButtonCenter>
 
         {/* Màu Nền */}
         <h2 className="hdg-lv2">Màu Nền</h2>
