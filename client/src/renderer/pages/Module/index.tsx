@@ -1,4 +1,9 @@
-import { FormLogin, FormUser, FormLeave, AddGroup } from '../../components/Form/Form';
+import {
+  FormLogin,
+  FormUser,
+  FormLeave,
+  AddGroup,
+} from '../../components/Form/Form';
 import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
@@ -8,6 +13,7 @@ import { Search } from '../../components/Search';
 import { Pagination } from '../../components/Pagination';
 import { InputQuantity } from '../../components/InputQuantity';
 import { Menberdetails } from '../../components/Menberdetails';
+import { CardTime } from '../../components/Card/Card';
 import SelectCustom from '../../components/Table/SelectCustom';
 
 export const Module = () => {
@@ -25,9 +31,21 @@ export const Module = () => {
         <Heading3 text="Thông tin cá nhân" />
         <br />
         <br />
-        <h2 className="hdg-lv2">SELECT</h2><br/>
-        <div className='left'><SelectCustom/></div><br/>
-        <div className='center'><SelectCustom/></div>
+        <h2 className="hdg-lv2">SELECT</h2>
+        <br />
+        <div className="left">
+          <SelectCustom />
+        </div>
+        <br />
+        <div className="center">
+          <SelectCustom />
+        </div>
+        <br />
+        <br />
+        <h2 className="hdg-lv2">HEADING H3</h2>
+        <Heading3 text="Thông tin cá nhân" />
+        <br />
+        <p className='txt-title'>Nhóm: Web</p>
         <br />
         <br />
         <br />
@@ -40,9 +58,15 @@ export const Module = () => {
         <br />
         <br />
         <div className="box-group">
-          <div className="box-group__item"><p className='txt-title'>Nhóm: Web</p></div>
-          <div className="box-group__item"><InputQuantity /></div>
-          <div className="box-group__item"><Search /></div>
+          <div className="box-group__item">
+            <p className='txt-title'>Nhóm: Web</p>
+          </div>
+          <div className="box-group__item">
+            <InputQuantity />
+          </div>
+          <div className="box-group__item">
+            <Search />
+          </div>
         </div>
         <h2 className="hdg-lv2">Chi tiết thành viên</h2>
         <br />
@@ -55,7 +79,7 @@ export const Module = () => {
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
         <br />
         <Pagination />
-        
+
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
         {/* <Button text="Đăng ký nghỉ phép" />
@@ -73,14 +97,24 @@ export const Module = () => {
         <Button text="No" btnSize="small" btnColor="red" /> */}
 
         {/* Màu Nền */}
-        <h2 className="hdg-lv2">Màu Nền</h2><br/>
-        <div className='box-bg'>
-            <p className='bg bg-yellow'>Đang chờ xác nhận nghỉ phép</p><br/><br/>
-            <p className='bg bg-green'>Xác nhận nghỉ phép</p>
-            <br/><br/>
-            <p className='bg bg-purple'>Nghỉ lễ</p>
-            <br/><br/>
-            <p className='bg bg-red'><span className='bg-text'>Không xác nhận nghỉ phép</span><span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span></p>
+        <h2 className="hdg-lv2">Màu Nền</h2>
+        <br />
+        <div className="box-bg">
+          <p className="bg bg-yellow">Đang chờ xác nhận nghỉ phép</p>
+          <br />
+          <br />
+          <p className="bg bg-green">Xác nhận nghỉ phép</p>
+          <br />
+          <br />
+          <p className="bg bg-purple">Nghỉ lễ</p>
+          <br />
+          <br />
+          <p className="bg bg-red">
+            <span className="bg-text">Không xác nhận nghỉ phép</span>
+            <span className="bg-red__btn">
+              <button className="btn btn-white">Hủy bỏ nghỉ phép</button>
+            </span>
+          </p>
         </div>
 
         {/* TABLE */}
@@ -114,8 +148,18 @@ export const Module = () => {
         {/* leave from */}
         <h2 className="hdg-lv2">leave form</h2>
         <FormLeave />
-        <h2 className="hdg-lv2">Quản lý nhóm</h2><br/><br/>
-        <AddGroup/>
+        <h2 className="hdg-lv2">Quản lý nhóm</h2>
+        <br />
+        <br />
+        <AddGroup />
+        <br />
+        <br />
+        <h2 className="hdg-lv2">Thẻ giờ</h2>
+        <div className="card-box card-box--center">
+          <h4>Giờ vào</h4>
+          <CardTime />
+          <button className="btn btn--widthAuto">Cập nhật</button>
+        </div>
       </div>
     </div>
   );

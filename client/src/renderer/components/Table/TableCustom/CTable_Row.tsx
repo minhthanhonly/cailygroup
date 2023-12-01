@@ -36,7 +36,11 @@ let CTable_Row = (Props: tableRows) => {
                 <td><button className="btn btn--medium">Đăng Ký Nghỉ Phép</button></td>
                 <td><span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span></td>
                 <td><p className="icon icon--edit"><img src={require('../../../assets/images/check.png')} alt="edit" className="fluid-image" /></p></td>
-                <td><p className="icon icon--save"><img src={require('../../../assets/images/diskette.png')} alt="edit" className="fluid-image" /></p><p className="icon icon--deleted"><img src={require('../../../assets/images/icndelete.png')} alt="edit" className="fluid-image" /></p></td>
+                <td> <div className='grid-row icon-flex' >
+                    <p className="icon icon--save"><img src={require('../../../assets/images/diskette.png')} alt="edit" className="fluid-image" /></p><p className="icon icon--deleted"><img src={require('../../../assets/images/icndelete.png')} alt="edit" className="fluid-image" /></p>
+
+                </div>
+                </td>
             </tr>
             <tr>
                 <td><input className='input__edit' type="text" value='12:12' /></td>

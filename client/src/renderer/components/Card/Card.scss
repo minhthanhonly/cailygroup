@@ -1,0 +1,37 @@
+.card {
+  &-time {
+    border-radius: 1rem;
+    border: 1px solid #146b9c;
+    color: #146b9c;
+    font-size: 2.4rem;
+    width: 12rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    padding: 2rem 2rem 0.2rem;
+    box-sizing: border-box;
+    & > div {
+      position: relative;
+    }
+    small {
+      font-size: 1rem;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -1.5rem;
+      //   margin-top: 0.5rem;
+    }
+  }
+  &-box {
+    width: 12rem;
+    text-align: center;
+    h4 {
+      font-size: 2rem;
+      margin: 0 0 1.5rem;
+    }
+    .btn {
+      margin: 2rem auto 0;
+    }
+  }
+}

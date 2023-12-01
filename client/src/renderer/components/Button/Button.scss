@@ -6,29 +6,33 @@
   font-size: 1.6rem;
   font-weight: bold;
   transition: all 0.3s ease;
-  &--orange{
+  &--orange {
     background: var(--orange);
   }
   &--red {
     background: var(--red);
   }
-  &:hover{
+  &:hover {
     opacity: 0.7;
   }
-  &--medium{
+  &--medium {
     width: 14.9rem;
   }
-  &--small{
+  &--small {
     width: 6.6rem;
   }
-  &--green{
+  &--green {
     background: var(--green);
   }
-
+  &--widthAuto {
+    width: auto;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
 }
 .icon {
   background: none;
-  & img{
+  & img {
     width: 2rem;
   }
 }
