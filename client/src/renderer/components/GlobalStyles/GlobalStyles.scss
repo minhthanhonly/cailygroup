@@ -2406,13 +2406,9 @@ textarea {
   &__item{
     display: inline-flex;
     margin-bottom: 2rem;
-  }
-  .hdglv3{
     padding-right: 5rem;
-    box-sizing: border-box;
   }
   .title-quantity{
-    padding-right: 5rem;
     box-sizing: border-box;
     align-items: center;
   }
@@ -2472,7 +2468,8 @@ textarea {
     box-sizing: border-box;
     font-size: 1.6rem;
   }
- 
-  
-
+}
+.txt-title{
+  font-size: 1.6rem;
+  font-weight: bold;
 }

@@ -38,6 +38,9 @@ export const Sidebar = () => {
               </span>
               Thẻ giờ
             </NavLink>
+              <ul>
+                <li><NavLink to="/timecard-setting">Cấu hình thẻ giờ</NavLink></li>
+              </ul>
           </li>
           <li className="nav-global__item">
             <NavLink to="/users">
