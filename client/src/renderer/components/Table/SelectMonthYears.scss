@@ -1,5 +1,4 @@
 .select__box{
-        text-align: center;
     &--flex{
         justify-content: center;
         align-items: center;
@@ -23,21 +22,40 @@
           margin-left: -1rem;
           display: flex;
           flex-wrap: wrap;
-          justify-content: center;
-      
+          justify-content: left;
           & > div{
                 padding: 0.2rem;
                 box-sizing: border-box;
-                margin-right: 0.5rem;
-                margin-left: 0.5rem;
                 border-radius: 0.5rem;
+          }
+          select{
+            width: 150px;
+            font-size: 1.6rem;
+            padding: 0.9rem 1rem;
+            box-sizing: border-box;
+            border-radius: 1rem;
+            margin:0 2rem;
           }
     }
     &--title{
-
-          font-size: 1.6rem;
+          font-size: 2.2rem;
           text-transform: capitalize;
     }
+}
+.center{
+  .group{
+    justify-content: center;
+  }
+}
+.right{
+  .group{
+    justify-content: right;
+  }
+}
+.left{
+  .group{
+    justify-content: left;
+  }
 }
 
 

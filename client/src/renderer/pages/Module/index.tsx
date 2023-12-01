@@ -14,6 +14,7 @@ import { Pagination } from '../../components/Pagination';
 import { InputQuantity } from '../../components/InputQuantity';
 import { Menberdetails } from '../../components/Menberdetails';
 import { CardTime } from '../../components/Card/Card';
+import SelectCustom from '../../components/Table/SelectCustom';
 
 export const Module = () => {
   // props table colum
@@ -25,6 +26,17 @@ export const Module = () => {
         <h2 className="hdg-lv2">HEADING H2</h2>
         <br />
         <Heading2 text="Danh sách xin nghỉ phép" />
+        <br />
+        <br />
+        <h2 className="hdg-lv2">SELECT</h2>
+        <br />
+        <div className="left">
+          <SelectCustom />
+        </div>
+        <br />
+        <div className="center">
+          <SelectCustom />
+        </div>
         <br />
         <br />
         <h2 className="hdg-lv2">HEADING H3</h2>
@@ -62,10 +74,10 @@ export const Module = () => {
           <Heading3Center text="Thông tin cá nhân" />
           <Menberdetails />
         </div>
-
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
         <br />
         <Pagination />
+
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
         {/* <Button text="Đăng ký nghỉ phép" />

@@ -1,5 +1,7 @@
 .list-page{
     display: flex;
+    margin-top: 3rem;
+    justify-content: right;
     li{
         a{
            width: 4rem;
@@ -24,6 +26,7 @@
         &:last-child{
             a{
                 width: 5.2rem;
+                margin-right: 0;
             } 
         }
     }
