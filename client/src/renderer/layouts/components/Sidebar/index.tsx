@@ -9,7 +9,6 @@ import {
   faHouse,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '../../../components/Button';
 
 export const Sidebar = () => {
   return (
