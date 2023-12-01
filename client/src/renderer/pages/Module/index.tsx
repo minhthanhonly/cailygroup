@@ -23,16 +23,20 @@ import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import ListBranch from '../../components/List/ListBranch';
 
 export const Module = () => {
-  const Branch = [{
-    text: "Thẻ Giờ",
-    to: "/"
-  },{
-    text: "Danh sách thẻ giờ",
-    to: "/"
-  },{
-    text: "Chỉnh Sửa Thẻ Giờ",
-    to: "/"
-  },]
+  const Branch = [
+    {
+      text: 'Thẻ Giờ',
+      to: '/',
+    },
+    {
+      text: 'Danh sách thẻ giờ',
+      to: '/',
+    },
+    {
+      text: 'Chỉnh Sửa Thẻ Giờ',
+      to: '/',
+    },
+  ];
 
   return (
     <div>
@@ -136,17 +140,21 @@ export const Module = () => {
         </Button>
         <br />
         <br />
-        <ButtonDelete/>
+        <ButtonDelete />
         <br />
         <br />
         <ButtonCenter>
-          <Button color="green" size="medium">Xuất Thẻ Giờ</Button>
+          <Button color="green" size="medium">
+            Xuất Thẻ Giờ
+          </Button>
           <Button>Đăng ký nghỉ phép</Button>
         </ButtonCenter>
         <br />
         <br />
         <ButtonCenter>
-          <Button color="green" size="medium">Xuất Thẻ Giờ</Button>
+          <Button color="green" size="medium">
+            Xuất Thẻ Giờ
+          </Button>
         </ButtonCenter>
 
         {/* Màu Nền */}
@@ -210,7 +218,7 @@ export const Module = () => {
         <h2 className="hdg-lv2">Thẻ giờ</h2>
         <div className="card-box">
           <div className="card-box--center">
-            <h4>Giờ vào</h4>
+            <h3>Giờ vào</h3>
             <CardTime />
             <button className="btn btn--widthAuto">Cập nhật</button>
           </div>

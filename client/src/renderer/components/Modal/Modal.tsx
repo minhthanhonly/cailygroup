@@ -12,12 +12,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
     <div className="modal">
       <div className="modal-content">
         {children}
-        <button className="btn" onClick={onClose}>
-          Xác nhận
-        </button>
-        <button className="btn btn--orange" onClick={onClose}>
-          Hủy
-        </button>
+        <div className="wrp-button">
+          <button className="btn" onClick={onClose}>
+            Xác nhận
+          </button>
+          <button className="btn btn--orange" onClick={onClose}>
+            Hủy
+          </button>
+        </div>
       </div>
       <div onClick={onClose} className="modal-close"></div>
     </div>

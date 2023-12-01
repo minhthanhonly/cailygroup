@@ -38,7 +38,7 @@ export const FormUser = () => {
   return (
     <div className="form-user form">
       <div className="form-content">
-        <h2 className="title">
+        <h2 className="hdglv2">
           <span>Thiết lập cá nhân</span>
         </h2>
         <div className="row">
@@ -157,8 +157,9 @@ export const FormUser = () => {
                 placeholder="Xác nhận lại mật khẩu"
               />
             </div>
-            <div className="center">
-              <button className="btn">Đăng Nhập</button>
+            <div className="wrp-button">
+              <button className="btn">Xác nhận</button>
+              <button className="btn btn--orange">Hủy</button>
             </div>
           </div>
           <div className="col-6">
