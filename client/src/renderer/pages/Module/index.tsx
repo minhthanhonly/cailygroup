@@ -20,6 +20,7 @@ import {
 } from '../../components/Table/SelectCustom';
 import { ButtonDelete } from '../../components/Button/ButtonDelete';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
+import { LinkBranch } from '../../components/LinkBranch';
 
 export const Module = () => {
   // props table colum
