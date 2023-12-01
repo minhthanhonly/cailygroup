@@ -22,6 +22,10 @@ export const Module = () => {
         <Heading2 text="Danh sách xin nghỉ phép" />
         <br />
         <br />
+        <h2 className="hdg-lv2">SELECT</h2><br/>
+        <div className='left'><SelectCustom/></div><br/>
+        <div className='center'><SelectCustom/></div>
+        <br/><br/>
         <h2 className="hdg-lv2">HEADING H3</h2>
         <br />
         <Heading3 text="Nhóm: Web" />
@@ -51,12 +55,10 @@ export const Module = () => {
           <Heading3Center text="Thông tin cá nhân" />
           <Menberdetails />
         </div>
-
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
         <br />
         <Pagination />
-        <br/>
-        <SelectCustom/>
+        
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
         {/* <Button text="Đăng ký nghỉ phép" />
