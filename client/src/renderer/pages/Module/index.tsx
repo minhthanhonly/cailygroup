@@ -20,10 +20,19 @@ import {
 } from '../../components/Table/SelectCustom';
 import { ButtonDelete } from '../../components/Button/ButtonDelete';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
+import ListBranch from '../../components/List/ListBranch';
 
 export const Module = () => {
-  // props table colum
-  // let ArrayTable = [ { index: 1, Textcolum: 'Ngày Tháng'},{index: 2, Textcolum: 'Thứ'}, { index: 3, Textcolum: 'tháng'},{ index: 4,  Textcolum: 'hi'}, { index: 5,  Textcolum: 'cột 5'},{ index: 6, Textcolum: 'cột 6'}];
+  const Branch = [{
+    text: "Thẻ Giờ",
+    to: "/"
+  },{
+    text: "Danh sách thẻ giờ",
+    to: "/"
+  },{
+    text: "Chỉnh Sửa Thẻ Giờ",
+    to: "/"
+  },]
 
   return (
     <div>
@@ -37,13 +46,8 @@ export const Module = () => {
         <Heading3 text="Thông tin cá nhân" />
         <br />
         <br />
-        <h2 className="hdg-lv2">LinkBranch</h2>
-        <ul className='lst-branch'>
-            <li><a className='active'>Thẻ Giờ</a></li>
-            <li><a href="#">Danh sách thẻ giờ</a></li>
-            <li><a href="#">Chỉnh Sửa Thẻ Giờ</a></li>
-        </ul>
-        
+        <h2 className="hdg-lv2">ListBranch</h2>
+        <ListBranch branch={Branch} />
         <br />
         <br />
         <h2 className="hdg-lv2">SELECT</h2>
