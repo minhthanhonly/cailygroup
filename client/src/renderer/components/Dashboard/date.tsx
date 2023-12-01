@@ -211,7 +211,7 @@ const TableCalendar: React.FC = () => {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {
           <>
-            <h3>Ghi Chú</h3>
+            <h3 className="hdglv3">Ghi Chú</h3>
             <textarea></textarea>
           </>
         }
