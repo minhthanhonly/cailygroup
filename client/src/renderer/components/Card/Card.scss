@@ -24,14 +24,20 @@
     }
   }
   &-box {
-    width: 12rem;
-    text-align: center;
+    width: 30rem;
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
     h4 {
       font-size: 2rem;
       margin: 0 0 1.5rem;
     }
     .btn {
       margin: 2rem auto 0;
+    }
+    &--center {
+      width: 12rem;
+      text-align: center;
     }
   }
 }

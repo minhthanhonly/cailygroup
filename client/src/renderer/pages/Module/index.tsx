@@ -166,10 +166,17 @@ export const Module = () => {
         <br />
         <br />
         <h2 className="hdg-lv2">Thẻ giờ</h2>
-        <div className="card-box card-box--center">
-          <h4>Giờ vào</h4>
-          <CardTime />
-          <button className="btn btn--widthAuto">Cập nhật</button>
+        <div className="card-box">
+          <div className="card-box--center">
+            <h4>Giờ vào</h4>
+            <CardTime />
+            <button className="btn btn--widthAuto">Cập nhật</button>
+          </div>
+          <div className="card-box--center">
+            <h4>Giờ ra</h4>
+            <CardTime />
+            <button className="btn btn--widthAuto">Cập nhật</button>
+          </div>
         </div>
       </div>
     </div>
