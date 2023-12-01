@@ -272,8 +272,9 @@ export const FormLeave = () => {
             <textarea className="form-input"></textarea>
           </div>
         </div>
-        <div className="center">
-          <button className="btn">Đăng ký nghỉ</button>
+        <div className="">
+          <button className="btn btn--green">Xác nhận</button>
+          <button className="btn btn--orange">Hủy</button>
         </div>
       </div>
     </div>
@@ -281,22 +282,20 @@ export const FormLeave = () => {
 };
 
 export const AddGroup = () => {
-  return(
+  return (
     <div className="form-group form-addgroup">
-      <label>
-        Nhập Tên Nhóm:
-      </label>
+      <label>Nhập Tên Nhóm:</label>
       <img
-          src={require('../../assets/images/icn-group.png')}
-          alt=""
-          className="fluid-image form-addgroup__image"
-        />
+        src={require('../../assets/images/icn-group.png')}
+        alt=""
+        className="fluid-image form-addgroup__image"
+      />
       <input
         className="form-input"
         type="text"
         placeholder="Tên nhóm muốn thêm"
       />
-      <button className='btn'>Thêm</button>
+      <button className="btn">Thêm</button>
     </div>
-  )
-}
+  );
+};

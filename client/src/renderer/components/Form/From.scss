@@ -119,11 +119,11 @@
     }
   }
 }
-.form-addgroup{
+.form-addgroup {
   width: 90rem;
   align-items: center;
   margin: 0 auto;
-  label{
+  label {
     width: 23rem;
     display: flex;
     justify-content: center;
@@ -132,17 +132,37 @@
     font-size: 1.6rem;
     font-weight: bold;
   }
-  .form-input{
+  .form-input {
     border-radius: 2rem;
     border: 1px solid #d8d8d8;
     padding: 1.5rem 2.4rem;
     font-size: 1.6rem;
     color: #888888;
   }
-  .btn{
+  .btn {
     margin-left: 2rem;
   }
-  &__image{
+  &__image {
     padding-right: 1.5rem;
   }
+}
+.react-datepicker {
+  font-size: 1.3rem !important;
+}
+
+.react-datepicker__current-month {
+  font-size: 1.5rem !important;
+}
+
+.react-datepicker__header {
+  padding-top: 6px !important;
+}
+
+.react-datepicker__navigation {
+  top: 13px !important;
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day {
+  margin: 0.5rem !important;
 }

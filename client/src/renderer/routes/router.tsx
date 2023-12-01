@@ -1,5 +1,6 @@
 import { FluidLayout } from '../layouts/FluidLayout/FluidLayout';
 import { Dayoff } from '../pages/Dayoff';
+import { ApplyForLeave } from '../pages/Dayoff/ApplyForLeave';
 import { Group } from '../pages/Group';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
@@ -33,6 +34,10 @@ export const config = [
   {
     path: '/day-off',
     component: Dayoff,
+  },
+  {
+    path: '/day-off/ApplyForLeave',
+    component: ApplyForLeave,
   },
   {
     path: '/group',

@@ -124,10 +124,7 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
       ),
   );
 
-
   let allDays = [...paddingDays, ...daysInMonth];
-
-  console.log('allDays', allDays);
 
 
   const getDayClassName = (date: Date) => {
@@ -144,7 +141,6 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
   ];
 
 
-
   // Hàm xử lý khi click vào nút bắt đầu 
   const handleButtonClick = async () => {
 
@@ -153,14 +149,8 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
       const { datetime } = response.data;
       const currentHour = new Date(datetime).getHours();
       const currentMinutes = new Date(datetime).getMinutes();
-
-      console.log('currentMinutes', currentMinutes);
-      console.log('currentHour', currentHour);
-
       setStartHours(currentHour);
       setStartMinutes(currentMinutes);
-
-
       setShowEndButton(true);
       setShowStartButton(false);
 
@@ -212,14 +202,14 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
 
   const [holidays, setHolidays] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
-    new Date(2023, 10, 1), // 1/12/2023
+    new Date(2023, 11, 11), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
   const isHoliday = (date: number | Date) => holidays.some((holiday) => isSameDay(date, holiday));
 
   const [accreptLeaves, setAccreptLeave] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
-    new Date(2023, 10, 15), // 1/12/2023
+    new Date(2023, 11, 15), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
   const accreptLeave = (date: number | Date) => accreptLeaves.some((accrept) => isSameDay(date, accrept));
@@ -228,22 +218,25 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
 
   const [cancelLeave, setCancelLeave] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
-    new Date(2023, 10, 22), // 1/12/2023
+    new Date(2023, 11, 22), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
   const isCancelLeave = (date: number | Date) => cancelLeave.some((cancel) => isSameDay(date, cancel));
 
 
-
+  const [waiting, setWaiting] = useState([
+    // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
+    new Date(2023, 11, 25), // 1/12/2023
+    // new Date(2023, 11, 15), // 15/12/2023
+  ]);
+  const isWaiting = (date: number | Date) => waiting.some((cancel) => isSameDay(date, cancel));
 
   // tính thời gian làm việc của ngày hôm đó 
   const calculateWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
     const defaultWorkStart = new Date(0, 0, 0, 7, 30); // Thời gian bắt đầu tính giờ làm việc
     const defaultWorkEnd = new Date(0, 0, 0, 17, 0); // Thời gian kết thúc làm việc
-
     const start = new Date(0, 0, 0, startHours || 0, startMinutes || 0);
     const end = new Date(0, 0, 0, endHours || 0, endMinutes || 0);
-
     const workStart = start > defaultWorkStart ? start : defaultWorkStart;
     const workEnd = end < defaultWorkEnd ? end : defaultWorkEnd;
 
@@ -251,10 +244,8 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
       // Nếu thời gian bắt đầu và kết thúc nằm trong khoảng giờ làm việc
       const differenceInMilliseconds = workEnd.getTime() - workStart.getTime();
       const workingMinutes = Math.max(1, Math.ceil(differenceInMilliseconds / (1000 * 60)));
-
       const hours = Math.floor(workingMinutes / 60);
       const minutes = workingMinutes % 60;
-
       return `${hours}:${String(minutes).padStart(2, '0')}`;
     }
 
@@ -269,7 +260,6 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
   // làm thời gian quá giờ.
   const calculateOvertime = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
     const defaultOvertimeStart = new Date(0, 0, 0, 17, 0); // Thời gian bắt đầu tính giờ làm thêm
-
     const start = new Date(0, 0, 0, startHours, startMinutes);
     const end = new Date(0, 0, 0, endHours, endMinutes);
 
@@ -282,16 +272,13 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
     if (end >= defaultOvertimeStart) {
       const differenceInMilliseconds = end.getTime() - defaultOvertimeStart.getTime();
       const totalOvertimeMinutes = Math.max(0, differenceInMilliseconds / (1000 * 60)); // Tính giờ làm thêm, không dưới 0
-
       const hours = Math.floor(totalOvertimeMinutes / 60);
       const minutes = totalOvertimeMinutes % 60;
-
       return `${hours}:${String(minutes).padStart(2, '0')}`;
     }
 
     return '0:00';
   };
-
 
   const calculateAndSetWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
     const workingHours = calculateWorkingHours(startHours, startMinutes, endHours, endMinutes);
@@ -299,32 +286,19 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
 
     // Trừ đi thời gian nghỉ trưa (1 giờ 30 phút)
     const adjustedWorkingMinutes = Math.max(0, totalWorkingMinutes);
-
-    console.log("adjustedWorkingMinutes", adjustedWorkingMinutes);
-
-
     setTotalWorkingHours((prevTotal) => prevTotal + adjustedWorkingMinutes);
     setTotalWorkingHoursInMonth((prevTotal) => prevTotal + adjustedWorkingMinutes); // Cập nhật tổng thời gian làm việc trong tháng
-
     return formatMinutesToHours(adjustedWorkingMinutes);
   };
+
 
 
   const formatMinutesToHours = (totalWorkingHours: number) => {
     const hours = Math.floor(totalWorkingHours / 60);
     const minutes = totalWorkingHours % 60;
-
-    console.log('hours', hours);
-    console.log('minutes', minutes);
-
-
     return `${hours}:${String(minutes).padStart(2, '0')}`;
   };
 
-
-
-
-  // console.log(" Date(day).getMonth()",  Date(day).getMonth());
 
 
   const currentMonth = new Date().getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
@@ -333,7 +307,7 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
     <>
       {allDays.map((day, rowIndex) => (
 
-        <tr key={rowIndex} className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''} ${isHoliday(day) ? 'holiday bg-purple' : ''} ${accreptLeave(day) ? 'accrept bg-green' : ''} ${isCancelLeave(day) ? 'cancel bg-red' : ''}`}>
+        <tr key={rowIndex} className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''}${isHoliday(day) ? 'holiday bg-purple' : ''}${isWaiting(day) ? 'waiting bg-yellow' : ''}${accreptLeave(day) ? 'accrept bg-green' : ''}${isCancelLeave(day) ? 'cancel bg-red' : ''} `}>
           {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) && new Date(day).getFullYear() === parseInt(selectedYear)) || (new Date(day).getMonth() + 1 === currentMonth && new Date(day).getFullYear() === currentYear) ? (
             <>
               <td>{format(day, 'dd/MM/yyyy')}</td>
@@ -359,16 +333,15 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
               <td>
                 {accreptLeave(day) ? 'Xác nhận nghỉ phép' : isCancelLeave(day) ? <>Không xác nhận nghỉ phép <a className="btn btn--green btn--small icon icon--edit"><img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" /></a></> : isHoliday(day) ? 'Ngày Nghỉ lễ' : <a className="btn btn--green btn--small icon icon--edit"><img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" /></a>
                 }
-
-
-
               </td>
-              <td></td>
+              <td>{isCancelLeave(day) ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
             </>
           ) : null}
         </tr>
       ))}
       <tr>
+
+
         <td> Tổng số giờ</td>
         <td></td>
         <td></td>
