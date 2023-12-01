@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import CardTime from '../Card/Card';
 
 interface TimeDisplayButtonProps {
   initialImage: string;
@@ -45,7 +46,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
     }
 
     // Example: Change the image when the button is clicked
-    setButtonImage(require('../../assets/images/icon-play.png'));
+    // setButtonImage(require('../../assets/images/icon-play.png'));
   };
 
   return (
@@ -53,10 +54,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
       <button className="Dashboard-action--circle" onClick={handleClick}>
         <img src={buttonImage} alt="" className="fluid-image" />
       </button>
-      <b>
-        {String(startHours).padStart(2, '0')}:
-        {String(startMinutes).padStart(2, '0')}
-      </b>
+      <CardTime hours={startHours} minutes={startMinutes} />
     </>
   );
 };

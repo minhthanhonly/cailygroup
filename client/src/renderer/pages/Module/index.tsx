@@ -8,13 +8,16 @@ import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
-import { Heading2, Heading3} from '../../components/Heading';
+import { Heading2, Heading3 } from '../../components/Heading';
 import { Search } from '../../components/Search';
 import { Pagination } from '../../components/Pagination';
 import { InputQuantity } from '../../components/InputQuantity';
 import { Menberdetails } from '../../components/Menberdetails';
-import { CardTime } from '../../components/Card/Card';
-import {SelectCustom, SelectCustomName} from '../../components/Table/SelectCustom';
+import CardTime from '../../components/Card/Card';
+import {
+  SelectCustom,
+  SelectCustomName,
+} from '../../components/Table/SelectCustom';
 
 export const Module = () => {
   // props table colum
@@ -26,7 +29,8 @@ export const Module = () => {
         <h2 className="hdg-lv2">HEADING H2</h2>
         <br />
         <Heading2 text="Danh sách xin nghỉ phép" />
-        <br/><br/>
+        <br />
+        <br />
         <h2 className="hdg-lv2">HEADING H3</h2>
         <Heading3 text="Thông tin cá nhân" />
         <br />
@@ -45,7 +49,7 @@ export const Module = () => {
         <h2 className="hdg-lv2">HEADING H3</h2>
         <Heading3 text="Thông tin cá nhân" />
         <br />
-        <p className='txt-title'>Nhóm: Web</p>
+        <p className="txt-title">Nhóm: Web</p>
         <br />
         <br />
         <br />
@@ -59,18 +63,18 @@ export const Module = () => {
         <br />
         <div className="box-group box-group--second">
           <div className="box-group__item">
-            <p className='txt-title'>Nhóm: Web</p>
+            <p className="txt-title">Nhóm: Web</p>
           </div>
           <div className="box-group__item left">
-              <SelectCustom />
+            <SelectCustom />
           </div>
           <div className="box-group__item">
-             <SelectCustomName />
+            <SelectCustomName />
           </div>
         </div>
         <div className="box-group">
           <div className="box-group__item">
-            <p className='txt-title'>Nhóm: Web</p>
+            <p className="txt-title">Nhóm: Web</p>
           </div>
           <div className="box-group__item">
             <InputQuantity />
