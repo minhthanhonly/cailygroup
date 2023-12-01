@@ -14,7 +14,7 @@ import { Pagination } from '../../components/Pagination';
 import { InputQuantity } from '../../components/InputQuantity';
 import { Menberdetails } from '../../components/Menberdetails';
 import { CardTime } from '../../components/Card/Card';
-import SelectCustom from '../../components/Table/SelectCustom';
+import {SelectCustom, SelectCustomName} from '../../components/Table/SelectCustom';
 
 export const Module = () => {
   // props table colum
@@ -57,6 +57,17 @@ export const Module = () => {
         <br />
         <br />
         <br />
+        <div className="box-group box-group--second">
+          <div className="box-group__item">
+            <p className='txt-title'>Nhóm: Web</p>
+          </div>
+          <div className="box-group__item left">
+              <SelectCustom />
+          </div>
+          <div className="box-group__item">
+             <SelectCustomName />
+          </div>
+        </div>
         <div className="box-group">
           <div className="box-group__item">
             <p className='txt-title'>Nhóm: Web</p>

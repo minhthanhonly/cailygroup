@@ -1,6 +1,6 @@
 import './SelectMonthYears.scss'
 
-const SelectCustom = () => {
+export const SelectCustom = () => {
     return (
         <>
 
@@ -21,4 +21,24 @@ const SelectCustom = () => {
     )
 }
 
-export default SelectCustom;
+export const SelectCustomName = () => {
+    return (
+        <>
+
+            <div className='select__box group'>
+                <div className='select__box--flex grid-row'>
+                    <select>
+                        <option value='1'>Phan Hồ Tú</option>
+                        <option value='2'>Phan Hồ Tú</option>
+                        <option value='3'>Phan Hồ Tú</option>
+                        <option value='4'>Phan Hồ Tú</option>
+                        <option value=''>Phan Hồ Tú</option>
+                    </select>
+                </div>
+            </div>
+        </>
+
+    )
+}
+
+

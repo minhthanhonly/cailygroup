@@ -2403,10 +2403,14 @@ textarea {
   width: 100%;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   &__item{
     display: inline-flex;
     margin-bottom: 2rem;
-    padding-right: 5rem;
+    padding-right: 4rem;
+    &:last-child{
+      padding-right: 0;
+    }
   }
   .title-quantity{
     box-sizing: border-box;
@@ -2414,6 +2418,13 @@ textarea {
   }
   .search{
     align-items: center;
+  }
+  &--second{
+    justify-content: right;
+    .box-group__item{
+      padding-right: 0;
+      padding-left: 5rem;
+    }
   }
 }
 
