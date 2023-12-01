@@ -15,6 +15,7 @@ import { InputQuantity } from '../../components/InputQuantity';
 import { Menberdetails } from '../../components/Menberdetails';
 import { CardTime } from '../../components/Card/Card';
 import {SelectCustom, SelectCustomName} from '../../components/Table/SelectCustom';
+import { LinkBranch } from '../../components/LinkBranch';
 
 export const Module = () => {
   // props table colum
@@ -29,6 +30,10 @@ export const Module = () => {
         <br/><br/>
         <h2 className="hdg-lv2">HEADING H3</h2>
         <Heading3 text="Thông tin cá nhân" />
+        <br />
+        <br />
+        <h2 className="hdg-lv2">LinkBranch</h2>
+        <LinkBranch/>
         <br />
         <br />
         <h2 className="hdg-lv2">SELECT</h2>
