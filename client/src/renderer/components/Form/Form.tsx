@@ -169,7 +169,7 @@ export const FormUser = () => {
                 alt=""
                 className="fluid-image"
               />
-              <button className="btn btn-red">Sửa</button>
+              <button className="btn btn--orange">Sửa</button>
             </div>
           </div>
         </div>
