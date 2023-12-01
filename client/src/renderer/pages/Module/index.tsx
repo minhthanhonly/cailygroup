@@ -68,6 +68,8 @@ export const Module = () => {
              <SelectCustomName />
           </div>
         </div>
+        <br />
+        <br />
         <div className="box-group">
           <div className="box-group__item">
             <p className='txt-title'>Nhóm: Web</p>
