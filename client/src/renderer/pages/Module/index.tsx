@@ -8,6 +8,7 @@ import { Search } from '../../components/Search';
 import { Pagination } from '../../components/Pagination';
 import { InputQuantity } from '../../components/InputQuantity';
 import { Menberdetails } from '../../components/Menberdetails';
+import SelectCustom from '../../components/Table/SelectCustom';
 
 export const Module = () => {
   // props table colum
@@ -54,6 +55,8 @@ export const Module = () => {
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
         <br />
         <Pagination />
+        <br/>
+        <SelectCustom/>
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
         {/* <Button text="Đăng ký nghỉ phép" />
