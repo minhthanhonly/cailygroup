@@ -33,7 +33,7 @@ export const TimecardSetting = () => {
       <AddGroup/>
       <CTable>
         <CTableHead heads={["Ngày Tháng", "Thứ", "Ngày lễ - Ngày nghỉ", "Hành Động"]}/>
-        <CTableBody data={Data} admin={true} action="delete"/>
+        <CTableBody data={Data} admin={true} deleteData={true}/>
       </CTable>
     </>
   );
