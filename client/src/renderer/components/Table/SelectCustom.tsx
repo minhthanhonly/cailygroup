@@ -5,10 +5,10 @@ const SelectCustom = () => {
         <>
 
             <div className='select__box group'>
-                <div className='select__box--title'><p>nhóm</p></div>
+                <div className='select__box--title'><p>Nhóm:</p></div>
                 <div className='select__box--flex grid-row'>
                     <select>
-                        <option value='thietbia'>Thiết bị A</option>
+                        <option value='thietbia'>Năng Lượng</option>
                         <option value='thietbic'>Thiết bị C</option>
                         <option value='kientruc'>Kiến Trúc</option>
                         <option value='web'>Website</option>
