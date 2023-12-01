@@ -20,7 +20,6 @@ import {
 } from '../../components/Table/SelectCustom';
 import { ButtonDelete } from '../../components/Button/ButtonDelete';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
-import { LinkBranch } from '../../components/LinkBranch';
 
 export const Module = () => {
   // props table colum
@@ -39,7 +38,12 @@ export const Module = () => {
         <br />
         <br />
         <h2 className="hdg-lv2">LinkBranch</h2>
-        <LinkBranch/>
+        <ul className='lst-branch'>
+            <li><a className='active'>Thẻ Giờ</a></li>
+            <li><a href="#">Danh sách thẻ giờ</a></li>
+            <li><a href="#">Chỉnh Sửa Thẻ Giờ</a></li>
+        </ul>
+        
         <br />
         <br />
         <h2 className="hdg-lv2">SELECT</h2>
