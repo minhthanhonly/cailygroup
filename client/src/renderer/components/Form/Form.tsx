@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 
 import './From.scss';
 import 'react-datepicker/dist/react-datepicker.css';
+import TimeSelect from '../Modal/TimeSelect';
 
 export const FormLogin = () => {
   return (
@@ -193,54 +194,86 @@ export const FormLeave = () => {
   return (
     <div className="form-leave form">
       <div className="form-content">
-        <div className="form-group">
-          <label>
-            Ngày bắt đầu
-            <img
-              src={require('../../assets/images/icon-time.jpg')}
-              alt=""
-              className="fluid-image"
-            />
-          </label>
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => handleStartDateChange(date)}
-            selectsStart
-            startDate={startDate}
-            endDate={endDate}
-          />
-        </div>
-        <div className="form-group">
-          <label>
-            Ngày kết thúc
-            <img
-              src={require('../../assets/images/icon-time.jpg')}
-              alt=""
-              className="fluid-image"
-            />
-          </label>
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => handleEndDateChange(date)}
-            selectsEnd
-            startDate={startDate}
-            endDate={endDate}
-            minDate={startDate}
-          />
-        </div>
-        <div className="form-group">
-          <label>
-            Lý do nghỉ
-            <img
-              src={require('../../assets/images/icon-practice.jpg')}
-              alt=""
-              className="fluid-image"
-            />
-          </label>
-          <textarea className="form-input"></textarea>
+        <div className="row">
+          <div className="col-6">
+            <div className="form-group">
+              <label>
+                Ngày bắt đầu
+                <img
+                  src={require('../../assets/images/icon-time.jpg')}
+                  alt=""
+                  className="fluid-image"
+                />
+              </label>
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => handleStartDateChange(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+              />
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="form-group form-group--small">
+              <label>
+                Giờ bắt đầu
+                <img
+                  src={require('../../assets/images/icon-time.jpg')}
+                  alt=""
+                  className="fluid-image"
+                />
+              </label>
+              <TimeSelect />
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="form-group">
+              <label>
+                Ngày kết thúc
+                <img
+                  src={require('../../assets/images/icon-time.jpg')}
+                  alt=""
+                  className="fluid-image"
+                />
+              </label>
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => handleEndDateChange(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+              />
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="form-group form-group--small">
+              <label>
+                Giờ kết thúc
+                <img
+                  src={require('../../assets/images/icon-time.jpg')}
+                  alt=""
+                  className="fluid-image"
+                />
+              </label>
+              <TimeSelect />
+            </div>
+          </div>
+          <div className="form-group">
+            <label>
+              Lý do nghỉ
+              <img
+                src={require('../../assets/images/icon-practice.jpg')}
+                alt=""
+                className="fluid-image"
+              />
+            </label>
+            <textarea className="form-input"></textarea>
+          </div>
         </div>
         <div className="center">
-          <button className="btn">Đăng Nhập</button>
+          <button className="btn">Đăng ký nghỉ</button>
         </div>
       </div>
     </div>

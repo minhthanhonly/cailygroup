@@ -33,9 +33,17 @@
   &-group {
     margin-bottom: 2rem;
     display: flex;
-    justify-content: center;
     align-items: flex-start;
     width: 61rem;
+    &--small {
+      label {
+        // width: 14rem !important;
+      }
+      .form-input {
+        width: 10rem !important;
+        text-align: center;
+      }
+    }
   }
   &-input,
   input {
@@ -59,7 +67,7 @@
     justify-content: space-between;
     align-items: center;
     padding-right: 1.5rem;
-    margin-top: 1.5rem;
+    margin: 1.5rem 0;
     ~ .form-input {
       width: calc(100% - 23rem);
     }
@@ -102,6 +110,7 @@
 }
 .row {
   display: flex;
+  flex-wrap: wrap;
   .col {
     &-6 {
       @media (min-width: 100rem) {

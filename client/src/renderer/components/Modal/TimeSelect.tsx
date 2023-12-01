@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { format, addHours, addMinutes, setHours, setMinutes } from 'date-fns';
+import Modal from './Modal';
 
 const TimePickerButton = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState(new Date());
-  const [inputValue, setInputValue] = useState('08:00'); // Giá trị mặc định
-  const [tempHours, setTempHours] = useState(8); // Giá trị giờ tạm thời
-  const [tempMinutes, setTempMinutes] = useState(0); // Giá trị phút tạm thời
+  const [inputValue, setInputValue] = useState('');
+  const [tempHours, setTempHours] = useState(8);
+  const [tempMinutes, setTempMinutes] = useState(0);
 
   useEffect(() => {
     const updatedTime = setHours(
@@ -15,18 +16,9 @@ const TimePickerButton = () => {
     );
     if (!selectedTime || updatedTime.getTime() !== selectedTime.getTime()) {
       setSelectedTime(updatedTime);
+      setInputValue(format(updatedTime, 'HH:mm'));
     }
   }, [tempHours, tempMinutes, selectedTime]);
-
-  const openModal = () => {
-    setModalOpen(true);
-    setTempHours(selectedTime.getHours());
-    setTempMinutes(selectedTime.getMinutes());
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-  };
 
   const increaseHour = () => {
     setTempHours((prevHours) => prevHours + 1);
@@ -56,14 +48,27 @@ const TimePickerButton = () => {
     closeModal();
   };
 
+  const openModal = () => {
+    setModalOpen(true);
+    setTempHours(selectedTime.getHours());
+    setTempMinutes(selectedTime.getMinutes());
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   return (
     <div>
-      <button onClick={openModal}>{inputValue}</button>
-
-      {isModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div>
+      <input
+        className="form-input"
+        onClick={openModal}
+        value={inputValue || '16:00'}
+      />
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        {
+          <>
+            <div className="">
               <button onClick={decreaseHour}>-</button>
               <span>{tempHours}</span>
               <button onClick={increaseHour}>+</button>
@@ -73,11 +78,12 @@ const TimePickerButton = () => {
               <span>{tempMinutes}</span>
               <button onClick={increaseMinute}>+</button>
             </div>
-            <button onClick={handleSetTime}>Save</button>
-            <button onClick={closeModal}>Cancel</button>
-          </div>
-        </div>
-      )}
+            <button className="btn" onClick={handleSetTime}>
+              Save
+            </button>
+          </>
+        }
+      </Modal>
     </div>
   );
 };

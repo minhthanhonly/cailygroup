@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Dashboard.scss';
 import TimeDisplayButton from './TimeDisplayButton';
-import TimeSelect from '../Modal/TimeSelect';
 
 export const Dashboard = () => {
   const [currentDateTime, setCurrentDateTime] = useState('');
@@ -73,18 +72,18 @@ export const Dashboard = () => {
             :
             <p>
               {/* {currentHour} */}
-                {String(currentHour).padStart(2, '0') }
+              {String(currentHour).padStart(2, '0')}
 
               <span>hour</span>
             </p>
             :
             <p>
-              {String(currentMinute).padStart(2, '0') }
+              {String(currentMinute).padStart(2, '0')}
               <span>munite</span>
             </p>
             :
             <p>
-                 {String(currentSecond).padStart(2, '0') }
+              {String(currentSecond).padStart(2, '0')}
               <span>second</span>
             </p>
           </div>
@@ -99,13 +98,16 @@ export const Dashboard = () => {
           </div>
           <div className="Dashboard-action--pause">
             <p>Tạm ngưng</p>
-            <button className="Dashboard-action--circle">
+            <TimeDisplayButton
+              initialImage={require('../../assets/images/icon-pause.png')}
+            />
+            {/* <button className="Dashboard-action--circle">
               <img
                 src={require('../../assets/images/icon-pause.png')}
                 alt=""
                 className="fluid-image"
               />
-            </button>
+            </button> */}
           </div>
           <div className="Dashboard-action--end">
             <p>Kết thúc</p>
@@ -115,7 +117,6 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
-      <TimeSelect />
     </div>
   );
 };
