@@ -3,7 +3,7 @@ import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
-import { Heading2, Heading3, Heading3Center } from '../../components/Heading';
+import { Heading2, Heading3} from '../../components/Heading';
 import { Search } from '../../components/Search';
 import { Pagination } from '../../components/Pagination';
 import { InputQuantity } from '../../components/InputQuantity';
@@ -20,17 +20,14 @@ export const Module = () => {
         <h2 className="hdg-lv2">HEADING H2</h2>
         <br />
         <Heading2 text="Danh sách xin nghỉ phép" />
+        <br/><br/>
+        <h2 className="hdg-lv2">HEADING H3</h2>
+        <Heading3 text="Thông tin cá nhân" />
         <br />
         <br />
         <h2 className="hdg-lv2">SELECT</h2><br/>
         <div className='left'><SelectCustom/></div><br/>
         <div className='center'><SelectCustom/></div>
-        <br/><br/>
-        <h2 className="hdg-lv2">HEADING H3</h2>
-        <br />
-        <Heading3 text="Nhóm: Web" />
-        <h2 className="hdg-lv2">HEADING H3 center</h2>
-        <Heading3Center text="Thông tin cá nhân" />
         <br />
         <br />
         <br />
@@ -43,7 +40,7 @@ export const Module = () => {
         <br />
         <br />
         <div className="box-group">
-          <div className="box-group__item"><Heading3 text="Nhóm: Web" /></div>
+          <div className="box-group__item"><p className='txt-title'>Nhóm: Web</p></div>
           <div className="box-group__item"><InputQuantity /></div>
           <div className="box-group__item"><Search /></div>
         </div>
@@ -52,7 +49,7 @@ export const Module = () => {
         <br />
         <Heading2 text="Chi tiết thành viên" />
         <div className="box-menberdetails">
-          <Heading3Center text="Thông tin cá nhân" />
+          <Heading3 text="Thông tin cá nhân" />
           <Menberdetails />
         </div>
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
