@@ -13,7 +13,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       <div className="modal-content">
         {children}
         <button className="btn" onClick={onClose}>
-          Close Modal
+          Xác nhận
+        </button>
+        <button className="btn btn--orange" onClick={onClose}>
+          Hủy
         </button>
       </div>
       <div onClick={onClose} className="modal-close"></div>
