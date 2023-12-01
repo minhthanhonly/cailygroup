@@ -6,6 +6,7 @@ import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { Module } from '../pages/Module';
 import { Timecard } from '../pages/Timecard';
+import { TimecardSetting } from '../pages/Timecard/TimecardSetting';
 import { Users } from '../pages/Users';
 import { UserEdit } from '../pages/Users/UserEdit';
 
@@ -17,6 +18,10 @@ export const config = [
   {
     path: '/timecard',
     component: Timecard,
+  },
+  {
+    path: '/timecard-setting',
+    component: TimecardSetting,
   },
   {
     path: '/users',

@@ -5,7 +5,7 @@ type ButtonProps = {
   href?: string;
   size?: string;
   children?: React.ReactNode;
-  // onClick?: ((event: React.MouseEvent<HTMLButtonElement>) => void) | undefined;
+  onButtonClick?: () => void;
   color?: string | null;
 };
 
