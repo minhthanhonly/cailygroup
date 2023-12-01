@@ -1,4 +1,5 @@
-import { CardTime } from '../../components/Card/Card';
+// import { Time } from '../../components/Card/Card';
+import CardTime from '../../components/Card/Card';
 import { FormLeave } from '../../components/Form/Form';
 
 export const ApplyForLeave = () => {
