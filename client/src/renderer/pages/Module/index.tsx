@@ -1,4 +1,4 @@
-import { FormLogin, FormUser, FormLeave } from '../../components/Form/Form';
+import { FormLogin, FormUser, FormLeave, AddGroup } from '../../components/Form/Form';
 import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
@@ -38,15 +38,9 @@ export const Module = () => {
         <br />
         <br />
         <div className="box-group">
-
-            <Heading3 text="Nhóm: Web" />
-
-          <p>
-            <InputQuantity />
-          </p>
-          <p>
-            <Search />
-          </p>
+          <div className="box-group__item"><Heading3 text="Nhóm: Web" /></div>
+          <div className="box-group__item"><InputQuantity /></div>
+          <div className="box-group__item"><Search /></div>
         </div>
         <h2 className="hdg-lv2">Chi tiết thành viên</h2>
         <br />
@@ -92,7 +86,7 @@ export const Module = () => {
         <TablePage />
 
         {/* IMAGE */}
-        <h2 className="hdg-lv2">IMAGE</h2>
+        {/* <h2 className="hdg-lv2">IMAGE</h2>
         <img
           src={require('../../assets/images/icon-home.png')}
           alt="phantu.dev"
@@ -102,7 +96,7 @@ export const Module = () => {
           src={require('../../assets/images/icon-home-active.png')}
           alt="phantu.dev"
           className="fluid-image"
-        />
+        /> */}
 
         {/* Dashboard */}
         <h2 className="hdg-lv2">Dashboard</h2>
@@ -118,6 +112,8 @@ export const Module = () => {
         {/* leave from */}
         <h2 className="hdg-lv2">leave form</h2>
         <FormLeave />
+        <h2 className="hdg-lv2">Quản lý nhóm</h2><br/><br/>
+        <AddGroup/>
       </div>
     </div>
   );

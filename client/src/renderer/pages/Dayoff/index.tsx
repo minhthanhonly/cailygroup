@@ -1,18 +1,26 @@
-import DatabaseTable02_Columns from '../../components/Table/Table_02/DatabaseTable02_Columns';
-import DatabaseTable02_Rows from '../../components/Table/Table_02/DatabaseTable02_Rows';
+import { Button } from "../../components/Button";
+import { Heading2 } from "../../components/Heading";
+import { Pagination } from "../../components/Pagination";
+import { CTable } from "../../components/Table/CTable";
+import CTableBody from "../../components/Table/CTableBody";
+import { CTableHead } from "../../components/Table/CTableHead";
 
 export const Dayoff = () => {
+
+const Data = [
+  ["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", ""],
+  ["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", ""]
+]
+
   return (
-    <div className="table-container table--02">
-      <table className="table table__custom">
-        <thead>
-          <DatabaseTable02_Columns />
-        </thead>
-        <tbody>
-          {/* RowCounts = {RowCounts} */}
-          <DatabaseTable02_Rows />
-        </tbody>
-      </table>
-    </div>
+    <>
+
+      <Heading2 text="Danh sách xin nghỉ phép" />
+      <CTable>
+        <CTableHead heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", ""]}/>
+        <CTableBody data={Data}/>
+      </CTable>
+      <Pagination />
+    </>
   );
 };

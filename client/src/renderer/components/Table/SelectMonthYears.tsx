@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
+import './SelectMonthYears.scss'
 
 interface MonthYearSelectorProps {
   onChange: (selectedMonth: string, selectedYear: string, daysInMonth: Date[]) => void;
@@ -46,7 +47,7 @@ const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({ onChange }) => {
         <select value={selectedMonth} onChange={handleMonthChange}>
           {months.map((month) => (
             <option key={month} value={month}>
-              {`Tháng ${month}`}
+              {month}
             </option>
           ))}
         </select>
@@ -58,7 +59,9 @@ const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({ onChange }) => {
           ))}
         </select>
       </div>
+      {selectedMonth} + {selectedYear}
     </div>
+
   );
 };
 
