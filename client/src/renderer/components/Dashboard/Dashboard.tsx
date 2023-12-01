@@ -9,6 +9,8 @@ export const Dashboard = () => {
   const [currentHour, setCurrentHour] = useState<number>(0); // Đổi kiểu thành số
   const [currentMinute, setCurrentMinute] = useState<number>(0); // Đổi kiểu thành số
   const [currentSecond, setCurrentSecond] = useState<number>(0); // Đổi kiểu thành số
+  const [startHours, setStartHours] = useState(0);
+  const [startMinutes, setStartMinutes] = useState(0);
 
   useEffect(() => {
     const fetchTime = async () => {
