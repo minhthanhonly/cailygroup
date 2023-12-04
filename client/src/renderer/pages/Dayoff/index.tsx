@@ -16,13 +16,16 @@ const Data = [
     <>
 
       <Heading2 text="Danh sách xin nghỉ phép" />
-      <Link to="/day-off-list">Danh sách duyệt nghỉ phép</Link>
+      <Link to="/day-off-list">Danh sách xin nghỉ phép</Link>
       <br/>
       <br/>
       <Link to="/day-off-register">Đăng ký nghỉ phép</Link>
+      <br/>
+      <br/>
+      <Link to="/day-off-register">Danh sách duyệt nghỉ phép</Link>
       <CTable>
         <CTableHead heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", ""]}/>
-        <CTableBody data={Data}/>
+        <CTableBody data={Data} admin={true} accreptData={true}/>
       </CTable>
       <Pagination />
     </>

@@ -8,7 +8,7 @@ import {SelectCustom,
 } from '../../components/Table/SelectCustom';
 export const DayoffList = () => {
   const Data = [
-    ["Huỳnh Thị Thanh Tuyền","Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", "", ""]
+    ["Huỳnh Thị Thanh Tuyền","Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm",]
   ]
   return <>
     <Heading2 text="Danh sách duyệt nghỉ phép" />
@@ -17,7 +17,7 @@ export const DayoffList = () => {
     </div>
     <CTable>
         <CTableHead heads={["Họ Và Tên","Nhóm", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Ghi Chú", "Đồng Ý", "Từ Chối"]}/>
-        <CTableBody data={Data}/>
+        <CTableBody data={Data} accreptData={true} refuseData={true}/>
     </CTable>
     <Pagination />
   </>;

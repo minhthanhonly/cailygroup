@@ -10,9 +10,11 @@ interface TableRowProps {
   showData?: boolean;
   exportData?: boolean;
   editData?: boolean;
+  accreptData? : boolean; // đồng ý
+  refuseData? : boolean; // đồng ý
 }
 
-const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, deleteData, showData, exportData, editData }) => {
+const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, deleteData, showData, exportData, editData ,accreptData , refuseData }) => {
   return (
     <tr>
       {rowData.map((data, index) => (
@@ -30,6 +32,16 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
         <Button href="/" size='medium' color="green">Xuất Thẻ Giờ</Button>
       </td>
         : ""}
+      {accreptData == true ? <td>
+        <Button href="/" size='medium' color="green">Xác Nhận</Button>
+      </td>
+        : "" }
+        {refuseData == true ? <td>
+        <Button href="/" size='medium' color="orange">Hủy</Button>
+      </td>
+        : "" }
+
+
       {editData == true ? <td>
         <div className="grid-row icon-flex">
           <p className="icon icon--save">
@@ -54,20 +66,22 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
 };
 
 interface TableProps {
-  data: string[][]; // Dữ liệu cho bảng
+  data: string[][]; // Dữ liệu cho bảng 
   admin?: boolean;
   deleteData?: boolean;
   showData?: boolean;
   exportData?: boolean;
   editData?: boolean;
+  accreptData? : boolean; // đồng ý
+  refuseData? : boolean; // đồng ý
 }
 
-const CTableBody: React.FC<TableProps> = ({ data, admin, deleteData, showData, exportData, editData }) => {
+const CTableBody: React.FC<TableProps> = ({ data, admin, deleteData, showData, exportData, editData, accreptData , refuseData }) => {
   return (
     <tbody>
       {data.map((rowData, index) => (
         // <TableRow key={index} rowData={rowData} onButtonClick={() => console.log(`Button clicked for row ${index}`)} />
-        <TableRow key={index} rowData={rowData} admin={admin} deleteData={deleteData} showData={showData} exportData={exportData} editData={editData} />
+        <TableRow key={index} rowData={rowData} admin={admin} deleteData={deleteData} showData={showData} exportData={exportData} editData={editData} accreptData={accreptData} refuseData={refuseData} />
       ))}
     </tbody>
   );
