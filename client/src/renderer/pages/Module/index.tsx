@@ -3,7 +3,7 @@ import {
   FormUser,
   FormLeave,
   AddGroup,
-  AddMember,
+  AddEditMember,
 } from '../../components/Form/Form';
 import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
@@ -190,7 +190,7 @@ export const Module = () => {
         <h2 className="hdg-lv2">Form User</h2>
         <FormUser />
 
-        <AddMember />
+        <AddEditMember />
         {/* login from */}
         <h2 className="hdg-lv2">login form</h2>
         <FormLogin />
