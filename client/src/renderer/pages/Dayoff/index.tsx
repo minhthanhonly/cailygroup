@@ -22,7 +22,7 @@ const Data = [
       <Link to="/day-off-register">Đăng ký nghỉ phép</Link>
       <br/>
       <br/>
-      <Link to="/day-off-register">Danh sách duyệt nghỉ phép</Link>
+      <Link to="/day-off-apply">Danh sách duyệt nghỉ phép</Link>
       <CTable>
         <CTableHead heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", ""]}/>
         <CTableBody data={Data}/>
