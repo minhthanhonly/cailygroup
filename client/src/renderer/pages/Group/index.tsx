@@ -1,3 +1,5 @@
+import { TableGroup } from '../../components/Table/TableGroup';
+
 export const Group = () => {
-  return <div>Quản lý nhóm</div>;
+  return <TableGroup />;
 };

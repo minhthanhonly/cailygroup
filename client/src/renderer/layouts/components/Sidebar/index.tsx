@@ -82,7 +82,7 @@ export const Sidebar = () => {
             />
           </figure>
           <div className="acount__info">
-            <NavLink to="/users-edit" className="acount__name">
+            <NavLink to="/users" className="acount__name">
               Phan Ho Tu
             </NavLink>
             <p className="acount__des">Nhóm: Web</p>
