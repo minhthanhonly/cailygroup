@@ -39,7 +39,7 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
-            <NavLink to="/users">
+            <NavLink to="/member">
               <span className="icn">
                 <FontAwesomeIcon icon={faUsers} />
               </span>
