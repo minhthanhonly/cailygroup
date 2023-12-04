@@ -25,7 +25,7 @@ const Data = [
       <Link to="/day-off-register">Danh sách duyệt nghỉ phép</Link>
       <CTable>
         <CTableHead heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", ""]}/>
-        <CTableBody data={Data} admin={true} accreptData={true}/>
+        <CTableBody data={Data}/>
       </CTable>
       <Pagination />
     </>
