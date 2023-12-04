@@ -44,10 +44,10 @@ export const Member = () => {
         <CTableBody data={Data} editData={true} />
       </CTable>
       <Pagination />
-      {/* <Link to="/member-add">Thêm thành viên</Link>
-      <br/>
-      <br/>
-      <Link to="/member-edit">Sửa thành viên</Link> */}
+      <Link to="/member-add">Thêm thành viên</Link>
+      <br />
+      <br />
+      <Link to="/member-edit">Sửa thành viên</Link>
     </>
   )
 };

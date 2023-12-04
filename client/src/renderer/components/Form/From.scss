@@ -28,6 +28,8 @@
     }
     .form-group {
       width: 100%;
+      
+    
     }
   }
   &-group {
@@ -43,6 +45,26 @@
         width: 10rem !important;
         text-align: center;
       }
+    }
+
+    .select__box--title{
+      display: none;
+    }
+
+        .select__box.group select{
+              border-radius: 2rem;
+    border: 1px solid #d8d8d8;
+    padding: 1.5rem 2.4rem;
+    font-size: 1.6rem;
+    width: 369px;
+    width: 100%;
+    color: #888888;
+    min-width: 370px;
+          
+    }
+
+    img{
+      width: 3rem;
     }
   }
   &-input,

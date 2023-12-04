@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import './From.scss';
 import 'react-datepicker/dist/react-datepicker.css';
 import TimeSelect from '../Modal/TimeSelect';
+import { SelectCustom } from '../Table/SelectCustom';
 
 export const FormLogin = () => {
   return (
@@ -300,3 +301,91 @@ export const AddGroup = () => {
     </div>
   );
 };
+
+
+export const AddEditMember = () => {
+  return (
+    <>
+      <div className="form-user form">
+        <div className="form-content">
+          <div className="row">
+            <div className="col-6">
+              <div className="form-group">
+                <label>
+                  ID User *
+                  <img
+                    src={require('../../assets/images/icn-id.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="Tài Khoản"
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  Mật khẩu *
+                  <img
+                    src={require('../../assets/images/icon-password.jpg')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="Mật khẩu"
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  Họ và tên *
+                  <img
+                    src={require('../../assets/images/icon-user.jpg')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="Tài Khoản"
+                />
+              </div>
+              <div className="form-group box-group__item left">
+                <label>
+                  Nhóm *
+                  <img
+                    src={require('../../assets/images/icn-group.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <SelectCustom />
+              </div>
+
+              <div className="form-group box-group__item left">
+                <label>
+                  Quyền Truy cập *
+                  <img
+                    src={require('../../assets/images/authorization.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <SelectCustom />
+              </div>
+              <div className="wrp-button">
+                <button className="btn btn--green">Xác nhận</button>
+                <button className="btn btn--orange">Hủy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
