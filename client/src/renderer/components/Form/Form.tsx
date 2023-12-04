@@ -273,7 +273,7 @@ export const FormLeave = () => {
             <textarea className="form-input"></textarea>
           </div>
         </div>
-        <div className="">
+        <div className="wrp-button">
           <button className="btn btn--green">Xác nhận</button>
           <button className="btn btn--orange">Hủy</button>
         </div>
