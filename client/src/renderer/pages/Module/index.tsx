@@ -36,7 +36,7 @@ export const Module = () => {
         <br />
         <br />
         <h2 className="hdg-lv2">ListBranch</h2>
-        <NavTimcard role="admin"/>
+        <NavTimcard role="admin" />
         <br />
         <br />
         <h2 className="hdg-lv2">SELECT</h2>
@@ -203,7 +203,7 @@ export const Module = () => {
         <h2 className="hdg-lv2">Thẻ giờ</h2>
         <div className="card-box">
           <div className="card-box--center">
-            <h3>Giờ vào</h3>
+            <h4>Giờ vào</h4>
             <CardTime />
             <button className="btn btn--widthAuto">Cập nhật</button>
           </div>

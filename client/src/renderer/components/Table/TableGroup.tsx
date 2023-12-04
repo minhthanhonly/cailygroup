@@ -1,21 +1,42 @@
-import CTable_Col from './TableCustom/CTable_Col';
-import CTable_Row from './TableCustom/CTable_Row';
+import { AddGroup } from '../Form/Form';
+import { Heading2, Heading3 } from '../Heading';
+import CTableBody from './CTableBody';
+import { CTableHead } from './CTableHead';
 
-let Col_count_rows = 3;
-const Col_title = {
-  col_1: 'STT',
-  col_2: 'Tên Nhóm',
-  col_3: 'Hành động',
-};
+const action = (
+  <div className="grid-row icon-flex">
+    <p className="icon icon--save">
+      <img
+        src={require('../../assets/images/icnedit.png')}
+        alt="edit"
+        className="fluid-image"
+      />
+    </p>
+    <p className="icon icon--deleted">
+      <img
+        src={require('../../assets/images/icndelete.png')}
+        alt="edit"
+        className="fluid-image"
+      />
+    </p>
+  </div>
+);
+const Data = [
+  ['1', 'WEB', action],
+  ['2', 'Nhom A', action],
+];
 export const TableGroup = () => {
   return (
-    <div className="table-container">
-      <table className="table table__custom">
-        <thead>
-          <CTable_Col Col_count={Col_count_rows} Col_title={Col_title} />
-        </thead>
-        <tbody>{/* <CTable_Row Rows_count={Col_count_rows} /> */}</tbody>
-      </table>
+    <div>
+      <Heading2 text="Quản lý các nhóm" />
+      <Heading3 text="Quản lý các nhóm" />
+      <AddGroup />
+      <div className="table-container table-group">
+        <table className="table table__custom">
+          <CTableHead heads={['STT', 'Tên Nhóm', 'Hành Động']} />
+          <CTableBody data={Data} />
+        </table>
+      </div>
     </div>
   );
 };
