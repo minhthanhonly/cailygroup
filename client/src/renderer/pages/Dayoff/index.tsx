@@ -15,7 +15,7 @@ const Data = [
     <>
       <NavDayoff role="admin"/>
       <CTable>
-        <CTableHead heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", ""]}/>
+        <CTableHead heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc"]}/>
         <CTableBody data={Data}/>
       </CTable>
       <Pagination />

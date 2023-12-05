@@ -17,17 +17,20 @@ interface TableRowProps {
 
 
 
-  const rowDataIndexLast = rowData[rowData.length-1];
-  
-  // console.log("rowData.length-1",rowDataIndexLast[]);
-    // const columnsToHide = Object.keys(rowData[0]).filter(key => {
-    // return rowData.every(rowData => typeof rowData[key] === 'boolean');
-    //style={{ display: columnsToHide.includes(data) ? 'none' : 'table-cell' }}
-  // });
+const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, deleteData, showData, exportData, editData, accreptAdminData, }) => {
+
+
+
+
+  // const filteredRowData = rowData.filter((item, index) => !(index === rowData.length - 1 && (item === '0' || item === '1')));
+
+  // const rowDataIndexLast = rowData[rowData.length - 1];
+
+
   return (
     <tr>
       {rowData.map((data, index) => (
-        <td key={index} >{data}</td>
+        <td key={index}>{data}</td>
       ))}
 
       {admin == true && deleteData == true ? <td>
@@ -62,7 +65,7 @@ interface TableRowProps {
       </td> : <td>
         <Button href="/" size='medium' color="orange">Hủy</Button>
       </td> } */}
-      {rowDataIndexLast === '1' ? <td>
+      {/* {rowDataIndexLast === '1' ? <td>
         <p className="icon icon--check">
           <img
             src={require('../../assets/images/check.png')}
@@ -72,7 +75,7 @@ interface TableRowProps {
         </p>
       </td> : <td>
         <Button href="/" size='medium' color="orange">Hủy</Button>
-      </td>}
+      </td>} */}
 
       {/* {accreptMemberView == true ?  <td>
           <p className="icon icon--check">
