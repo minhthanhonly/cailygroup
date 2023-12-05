@@ -10,12 +10,11 @@ interface TableRowProps {
   showData?: boolean;
   exportData?: boolean;
   editData?: boolean;
-  accreptAdminData? : boolean; // đồng ý
+  accreptAdminData?: boolean; // đồng ý
   // refuseData? : boolean; // hủy
   // accreptMemberView ?: boolean;
 }
 
-const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, deleteData, showData, exportData, editData ,accreptAdminData,  }) => {
 
 
   const rowDataIndexLast = rowData[rowData.length-1];
@@ -30,6 +29,7 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
       {rowData.map((data, index) => (
         <td key={index} >{data}</td>
       ))}
+
       {admin == true && deleteData == true ? <td>
         <ButtonDelete onButtonClick={onButtonClick} />
       </td>
@@ -45,8 +45,8 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
       {accreptAdminData == true ? <td>
         <Button href="/" size='medium' color="green">Xác Nhận</Button>
       </td>
-        : "" }
-        {/* {refuseData == true ? <td>
+        : ""}
+      {/* {refuseData == true ? <td>
         <Button href="/" size='medium' color="orange">Hủy</Button>
       </td>
         : "" } */}
@@ -62,8 +62,19 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
       </td> : <td>
         <Button href="/" size='medium' color="orange">Hủy</Button>
       </td> } */}
+      {rowDataIndexLast === '1' ? <td>
+        <p className="icon icon--check">
+          <img
+            src={require('../../assets/images/check.png')}
+            alt="edit"
+            className="fluid-image"
+          />
+        </p>
+      </td> : <td>
+        <Button href="/" size='medium' color="orange">Hủy</Button>
+      </td>}
 
-        {/* {accreptMemberView == true ?  <td>
+      {/* {accreptMemberView == true ?  <td>
           <p className="icon icon--check">
             <img
               src={require('../../assets/images/check.png')}
@@ -105,12 +116,12 @@ interface TableProps {
   showData?: boolean;
   exportData?: boolean;
   editData?: boolean;
-  accreptAdminData? : boolean; // đồng ý
+  accreptAdminData?: boolean; // đồng ý
   // refuseData? : boolean; // huy bo
   // accreptMemberView? :boolean;
 }
 // refuseData , accreptMemberView
-const CTableBody: React.FC<TableProps> = ({ data, admin, deleteData, showData, exportData, editData, accreptAdminData , }) => {
+const CTableBody: React.FC<TableProps> = ({ data, admin, deleteData, showData, exportData, editData, accreptAdminData, }) => {
   return (
     <tbody>
       {data.map((rowData, index) => (

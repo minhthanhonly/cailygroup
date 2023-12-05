@@ -4,9 +4,9 @@ export const SelectCustom = () => {
     return (
         <>
 
-            <div className='select__box group'>
+            <div className='select__box group '>
                 <div className='select__box--title'><p>Nhóm:</p></div>
-                <div className='select__box--flex grid-row'>
+                <div className='select__box--flex grid-row select-dropdown'>
                     <select>
                         <option value='thietbia'>Năng Lượng</option>
                         <option value='thietbic'>Thiết bị C</option>
