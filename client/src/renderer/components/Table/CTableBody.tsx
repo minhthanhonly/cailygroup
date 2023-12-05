@@ -21,10 +21,14 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
   const rowDataIndexLast = rowData[rowData.length-1];
   
   // console.log("rowData.length-1",rowDataIndexLast[]);
+    // const columnsToHide = Object.keys(rowData[0]).filter(key => {
+    // return rowData.every(rowData => typeof rowData[key] === 'boolean');
+    //style={{ display: columnsToHide.includes(data) ? 'none' : 'table-cell' }}
+  // });
   return (
     <tr>
       {rowData.map((data, index) => (
-        <td key={index}>{data}</td>
+        <td key={index} >{data}</td>
       ))}
       {admin == true && deleteData == true ? <td>
         <ButtonDelete onButtonClick={onButtonClick} />
