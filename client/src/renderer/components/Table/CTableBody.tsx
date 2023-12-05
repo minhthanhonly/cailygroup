@@ -10,22 +10,29 @@ interface TableRowProps {
   showData?: boolean;
   exportData?: boolean;
   editData?: boolean;
-  accreptAdminData? : boolean; // đồng ý
+  accreptAdminData?: boolean; // đồng ý
   // refuseData? : boolean; // hủy
   // accreptMemberView ?: boolean;
 }
 
-const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, deleteData, showData, exportData, editData ,accreptAdminData,  }) => {
 
 
-  const rowDataIndexLast = rowData[rowData.length-1];
-  
-  // console.log("rowData.length-1",rowDataIndexLast[]);
+const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, deleteData, showData, exportData, editData, accreptAdminData, }) => {
+
+
+
+
+  const filteredRowData = rowData.filter((item, index) => !(index === rowData.length - 1 && (item === '0' || item === '1')));
+
+  const rowDataIndexLast = rowData[rowData.length - 1];
+
+
   return (
     <tr>
-      {rowData.map((data, index) => (
+      {filteredRowData.map((data, index) => (
         <td key={index}>{data}</td>
       ))}
+
       {admin == true && deleteData == true ? <td>
         <ButtonDelete onButtonClick={onButtonClick} />
       </td>
@@ -41,25 +48,25 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
       {accreptAdminData == true ? <td>
         <Button href="/" size='medium' color="green">Xác Nhận</Button>
       </td>
-        : "" }
-        {/* {refuseData == true ? <td>
+        : ""}
+      {/* {refuseData == true ? <td>
         <Button href="/" size='medium' color="orange">Hủy</Button>
       </td>
         : "" } */}
 
-          {rowDataIndexLast === '0' ? <td>
-          <p className="icon icon--check">
-            <img
-              src={require('../../assets/images/check.png')}
-              alt="edit"
-              className="fluid-image"
-            />
-          </p>
+      {rowDataIndexLast === '1' ? <td>
+        <p className="icon icon--check">
+          <img
+            src={require('../../assets/images/check.png')}
+            alt="edit"
+            className="fluid-image"
+          />
+        </p>
       </td> : <td>
         <Button href="/" size='medium' color="orange">Hủy</Button>
-      </td> }
+      </td>}
 
-        {/* {accreptMemberView == true ?  <td>
+      {/* {accreptMemberView == true ?  <td>
           <p className="icon icon--check">
             <img
               src={require('../../assets/images/check.png')}
@@ -101,12 +108,12 @@ interface TableProps {
   showData?: boolean;
   exportData?: boolean;
   editData?: boolean;
-  accreptAdminData? : boolean; // đồng ý
+  accreptAdminData?: boolean; // đồng ý
   // refuseData? : boolean; // huy bo
   // accreptMemberView? :boolean;
 }
 // refuseData , accreptMemberView
-const CTableBody: React.FC<TableProps> = ({ data, admin, deleteData, showData, exportData, editData, accreptAdminData , }) => {
+const CTableBody: React.FC<TableProps> = ({ data, admin, deleteData, showData, exportData, editData, accreptAdminData, }) => {
   return (
     <tbody>
       {data.map((rowData, index) => (
