@@ -8,9 +8,25 @@ import {SelectCustom,
 } from '../../components/Table/SelectCustom';
 import NavDayoff from "../../layouts/components/Nav/NavDayoff";
 export const DayoffList = () => {
+  const actionCheck = (
+    <p className="icon icon--check">
+      <img
+        src={require('../../assets/images/check.png')}
+        alt="edit"
+        className="fluid-image"
+      />
+    </p>
+  );
+  const actionButon = (
+    <Button href="/" size='medium' color="orange">Hủy</Button>
+  );
+
+  
+
   const Data = [
-    ["Huỳnh Thị Thanh Tuyền","1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm",true],
-    ["Huỳnh Thị Thanh Tuyền","1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", false]
+    ["Huỳnh Thị Thanh Tuyền","1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm",actionButon],
+    ["Huỳnh Thị Thanh Tuyền","1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionCheck],
+    ["Huỳnh Thị Thanh Tuyền","1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionCheck]
   ]
   return <>
     <NavDayoff role="admin"/>

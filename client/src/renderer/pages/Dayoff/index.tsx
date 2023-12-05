@@ -7,8 +7,8 @@ import NavDayoff from "../../layouts/components/Nav/NavDayoff";
 export const Dayoff = () => {
 
 const Data = [
-  ["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", ""],
-  ["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", ""]
+  ["Huỳnh Thị Thanh Tuyền", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023"],
+  ["Huỳnh Thị Thanh Tuyền", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023"],
 ]
 
   return (

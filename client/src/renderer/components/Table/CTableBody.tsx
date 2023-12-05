@@ -51,7 +51,7 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
       </td>
         : "" } */}
 
-          {rowDataIndexLast === '0' ? <td>
+          {/* {rowDataIndexLast === '0' ? <td>
           <p className="icon icon--check">
             <img
               src={require('../../assets/images/check.png')}
@@ -61,7 +61,7 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
           </p>
       </td> : <td>
         <Button href="/" size='medium' color="orange">Hủy</Button>
-      </td> }
+      </td> } */}
 
         {/* {accreptMemberView == true ?  <td>
           <p className="icon icon--check">
