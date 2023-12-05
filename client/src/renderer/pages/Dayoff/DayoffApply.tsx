@@ -1,4 +1,3 @@
-import { Heading2 } from "../../components/Heading";
 import { Pagination } from "../../components/Pagination";
 import { CTable } from "../../components/Table/CTable";
 import CTableBody from "../../components/Table/CTableBody";
@@ -6,7 +5,7 @@ import { CTableHead } from "../../components/Table/CTableHead";
 import { Button } from "../../components/Button";
 import {SelectCustom,
 } from '../../components/Table/SelectCustom';
-import { Link } from "react-router-dom";
+import NavDayoff from "../../layouts/components/Nav/NavDayoff";
 export const DayoffApply = () => {
   const Data = [
     ["Huỳnh Thị Thanh Tuyền","Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm",],
@@ -14,8 +13,8 @@ export const DayoffApply = () => {
   ]
 
   return <>
-    <Heading2 text="Danh sách duyệt nghỉ phép" />
-    <div className="left">
+    <NavDayoff role="admin"/>
+    <div className="left mt50">
       <SelectCustom />
     </div>
     <CTable>

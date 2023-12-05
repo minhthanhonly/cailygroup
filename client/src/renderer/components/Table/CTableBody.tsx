@@ -17,6 +17,7 @@ interface TableRowProps {
 
 
 
+<<<<<<< HEAD
 const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, deleteData, showData, exportData, editData, accreptAdminData, }) => {
 
 
@@ -31,6 +32,19 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
     <tr>
       {filteredRowData.map((data, index) => (
         <td key={index}>{data}</td>
+=======
+  const rowDataIndexLast = rowData[rowData.length-1];
+  
+  // console.log("rowData.length-1",rowDataIndexLast[]);
+    // const columnsToHide = Object.keys(rowData[0]).filter(key => {
+    // return rowData.every(rowData => typeof rowData[key] === 'boolean');
+    //style={{ display: columnsToHide.includes(data) ? 'none' : 'table-cell' }}
+  // });
+  return (
+    <tr>
+      {rowData.map((data, index) => (
+        <td key={index} >{data}</td>
+>>>>>>> 598f9700fbfb817e33ed3026bc2da0d604913b90
       ))}
 
       {admin == true && deleteData == true ? <td>
