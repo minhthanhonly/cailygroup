@@ -90,12 +90,12 @@ const TableCalendar: React.FC = () => {
     return dayOfWeek === 0
       ? 'sunday'
       : dayOfWeek === 6
-      ? 'saturday'
-      : isHighlighted
-      ? 'highlighted'
-      : hasStartButton
-      ? 'current-day-start'
-      : '';
+        ? 'saturday'
+        : isHighlighted
+          ? 'highlighted'
+          : hasStartButton
+            ? 'current-day-start'
+            : '';
   };
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
