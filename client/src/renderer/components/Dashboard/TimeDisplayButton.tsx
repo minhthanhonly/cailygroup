@@ -18,7 +18,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
 
   const fetchCurrentTime = async () => {
     try {
-      const response = await axios.get('https://worldtimeapi.org/api/ip');
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
       const { datetime } = response.data;
       setCurrentTime(datetime);
     } catch (error) {
@@ -32,7 +32,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
 
   const handleClick = async () => {
     try {
-      const response = await axios.get('https://worldtimeapi.org/api/ip');
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
       const { datetime } = response.data;
       const hours = new Date(datetime).getHours();
       const minutes = new Date(datetime).getMinutes();

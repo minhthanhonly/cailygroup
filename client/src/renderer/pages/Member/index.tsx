@@ -10,6 +10,7 @@ import { CTable } from "../../components/Table/CTable";
 import { CTableHead } from "../../components/Table/CTableHead";
 import CTableBody from "../../components/Table/CTableBody";
 import { Pagination } from "../../components/Pagination";
+import { useState } from "react";
 
 
 
@@ -21,6 +22,15 @@ export const Member = () => {
     ["Huỳnh Thị Thanh Tuyền", "Năng Lương", "huynhthithanhtuyen@gmail.com", "huynhthithanhtuyen@gmail.com", '0973124567'],
     ["Huỳnh Thị Thanh Tuyền", "Năng Lương", "huynhthithanhtuyen@gmail.com", "huynhthithanhtuyen@gmail.com", '0973124567'],
   ]
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
+  // Tính tổng số trang
+  const totalPages = Math.ceil(Data.length / itemsPerPage);
+
+  const handlePageChange = (page: any) => {
+    setCurrentPage(page);
+  };
   return (
     <>
       <Heading2 text="Thông tin thành viên" />
@@ -41,9 +51,9 @@ export const Member = () => {
 
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Email", "Skype ID", "Phone", "Hành Động"]} />
-        <CTableBody data={Data} editData={true} />
+        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} editData={true} />
       </CTable>
-      <Pagination />
+      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
       <Link to="/member-add">Thêm thành viên</Link>
       <br />
       <br />

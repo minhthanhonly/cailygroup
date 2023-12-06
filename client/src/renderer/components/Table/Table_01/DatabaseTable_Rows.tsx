@@ -18,10 +18,6 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
   const selectedMonth = Props.selectedMonth;
   const selectedYear = Props.selectedYear;
 
-  console.log('selectedMonth', selectedMonth);
-  console.log('selectedYear', selectedYear);
-
-
 
 
   const [currentTime, setCurrentTime] = useState(0);
@@ -51,16 +47,14 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
     }
   }, [selectedMonth, selectedYear]);
 
-  console.log('selectedMonth', selectedMonth);
-  console.log('selectedYear', selectedYear);
+
 
 
   const updateDaysInMonth = (month: string, year: string) => {
     const firstDayOfMonth = startOfMonth(new Date(parseInt(year), parseInt(month) - 1));
     const lastDayOfMonth = endOfMonth(new Date(parseInt(year), parseInt(month) - 1));
 
-    console.log('firstDayOfMonth', firstDayOfMonth.toDateString());
-    console.log('lastDayOfMonth', lastDayOfMonth.toDateString());
+
     if (firstDayOfMonth <= lastDayOfMonth) {
       const daysOfMonth = eachDayOfInterval({
         start: firstDayOfMonth,
