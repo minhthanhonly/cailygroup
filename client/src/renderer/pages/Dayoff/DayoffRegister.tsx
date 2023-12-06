@@ -3,9 +3,10 @@ import { Button } from "../../components/Button";
 import {
   FormLeave
 } from '../../components/Form/Form';
+import NavDayoff from "../../layouts/components/Nav/NavDayoff";
 export const DayoffRegister = () => {
   return <>
-    <Heading2 text="Đăng ký nghỉ phép" />
-    <FormLeave />
+    <NavDayoff role="admin"/>
+    <div className="mt100"><FormLeave /></div>
   </>;
 };
