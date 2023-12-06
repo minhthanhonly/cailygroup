@@ -21,6 +21,9 @@ export const Timecard = () => {
   return (
     <>
       <NavTimcard role="admin"/>
+      <div className="left">
+        <SelectCustom />
+      </div>
       <MonthYearSelector onChange={handleDateChange} />
       <div className='table-container table--01'>
         <table className="table table__custom">
