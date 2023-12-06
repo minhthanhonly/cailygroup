@@ -47,7 +47,7 @@ export const Member = () => {
         </div>
       </div>
 
-      <Button size="medium">Bắt đầu</Button>
+        <Link className="btn btn--medium" to="/member-add">Thêm Mới</Link>
 
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Email", "Skype ID", "Phone", "Hành Động"]} />
