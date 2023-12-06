@@ -2,7 +2,13 @@
     display: flex;
     margin-top: 3rem;
     justify-content: right;
-    li{
+    li{ 
+        &.active{
+           
+            & a{
+                background: var(--orange);
+            }
+        }
         a{
            width: 4rem;
            height: 3.5rem;
