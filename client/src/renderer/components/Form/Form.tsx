@@ -302,7 +302,6 @@ export const AddGroup = () => {
   );
 };
 
-
 export const AddEditMember = () => {
   return (
     <>
@@ -387,5 +386,5 @@ export const AddEditMember = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};

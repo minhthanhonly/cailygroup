@@ -14,8 +14,7 @@ import { useState } from "react";
 
 
 export const DayoffList = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
+
 
   const actionCheck = (
     <p className="icon icon--check">
@@ -43,6 +42,9 @@ export const DayoffList = () => {
 
   ]
 
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
   const totalPages = Math.ceil(Data.length / itemsPerPage);
 
