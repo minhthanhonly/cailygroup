@@ -28,15 +28,15 @@ export const config = [
     component: Timecard,
   },
   {
-    path: '/timecard-setting',
+    path: '/timecard/setting',
     component: TimecardSetting,
   },
   {
-    path: '/timecard-list',
+    path: '/timecard/list',
     component: TimecardList,
   },
   {
-    path: '/timecard-edit',
+    path: '/timecard/edit',
     component: TimecardEdit,
   },
   {
@@ -44,11 +44,11 @@ export const config = [
     component: Member,
   },
   {
-    path: '/member-add',
+    path: '/member/add',
     component: MemberAdd,
   },
   {
-    path: '/member-edit',
+    path: '/member/edit',
     component: MemberEdit,
   },
   {
@@ -56,7 +56,7 @@ export const config = [
     component: Users,
   },
   {
-    path: '/users-edit',
+    path: '/users/edit',
     component: UserEdit,
   },
   {
@@ -64,15 +64,15 @@ export const config = [
     component: Dayoff,
   },
   {
-    path: '/day-off-list',
+    path: '/day-off/list',
     component: DayoffList,
   },
   {
-    path: '/day-off-register',
+    path: '/day-off/register',
     component: DayoffRegister,
   },
   {
-    path: '/day-off-apply',
+    path: '/day-off/apply',
     component: DayoffApply,
   },
   {

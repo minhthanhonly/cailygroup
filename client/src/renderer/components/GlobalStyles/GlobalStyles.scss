@@ -2421,10 +2421,15 @@ textarea {
     align-items: center;
   }
   &--second{
-    justify-content: right;
+    margin-top: 5rem;
+    justify-content: left;
+    margin-bottom: 3rem;
     .box-group__item{
       padding-right: 0;
       padding-left: 5rem;
+      &:first-child{
+        padding-left: 1rem;
+      }
     }
   }
 }

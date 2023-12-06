@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 interface ListBranchProps {
   branch: {
@@ -12,7 +12,7 @@ const ListBranch: React.FC<ListBranchProps> = ({branch}) => {
     <>
       <ul className="lst-branch">
         {branch.map((item) => (
-          <li key={item.text}><Link to={item.to}>{item.text}</Link></li>
+          <li key={item.text}><NavLink to={item.to}>{item.text}</NavLink></li>
         ))}
       </ul>
     </>
