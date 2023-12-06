@@ -20,7 +20,7 @@ export const DayoffApply = () => {
 
   return <>
     <NavDayoff role="admin"/>
-    <div className="left mt50">
+    <div className="left">
       <SelectCustom />
     </div>
     <CTable>

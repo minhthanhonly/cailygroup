@@ -7,6 +7,6 @@ import NavDayoff from "../../layouts/components/Nav/NavDayoff";
 export const DayoffRegister = () => {
   return <>
     <NavDayoff role="admin"/>
-    <div className="mt100"><FormLeave /></div>
+    <FormLeave />
   </>;
 };
