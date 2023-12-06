@@ -16,8 +16,8 @@ export const DayoffApply = () => {
     <Button href="/" size='medium' color="orange">Hủy</Button>
   );
   const Data = [
-    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm"],
-    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm"]
+    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm",actionagree,actioncancel],
+    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm",actionagree,actioncancel]
   ]
 
   const [currentPage, setCurrentPage] = useState(1);
