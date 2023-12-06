@@ -6,14 +6,10 @@
     border-radius: 1rem;
     overflow: hidden;
     border: 0.1rem solid #000;
-    font-family: 'Times New Roman', Times, serif;
     box-sizing: border-box;
-
     color: var(--text-color);
-
     border-collapse: collapse;
     width: 100%;
-
     & thead {
       background-color: var(--header-table);
       color: var(--white);
@@ -36,8 +32,8 @@
     font-weight: 100;
     padding: 1rem;
     border-right: 0.1rem solid var(--white);
-
     border: 0.1rem solid var(--text-color);
+    vertical-align: middle;
   }
   & .sunday {
     background-color: var(--pink);
@@ -50,15 +46,6 @@
       width: 80%;
     }
   }
-  // & .accrept{
-  //     background-color: var(--main);
-  // }
-  //  & .cancel{
-  //     background-color: var(--red);
-  // }
-  // & .holiday{
-  //     background-color: var(--orange);
-  // }
 }
 
 .table-container {
