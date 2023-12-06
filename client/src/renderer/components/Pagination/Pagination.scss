@@ -9,6 +9,11 @@
                 background: var(--orange);
             }
         }
+        &.disable{
+            a{
+                cursor: not-allowed !important;
+            }
+        }
         a{
            width: 4rem;
            height: 3.5rem;

@@ -34,11 +34,16 @@ export const Pagination = (Props: PaginationProps) => {
         onPageChange(PreviousPage < totalPages ? 1 : PreviousPage);
     };
 
+
+    console.log("totalPages", totalPages);
+    console.log("currentPage", currentPage);
+    console.log("currentPage + 1", currentPage + 1);
+
     return (
         <ul className='list-page'>
-            {totalPages != 1 ? <> <li>
+            {totalPages === 1 || currentPage === 1 ? "" : <> <li>
                 <a href="#" onClick={() => handlePreviousClick()}>Previous</a>
-            </li> </> : ""}
+            </li> </>}
 
             {pageNumbers.map((pageNumber) => (
                 <li key={pageNumber} className={pageNumber === currentPage ? 'active' : ''}>
@@ -47,9 +52,9 @@ export const Pagination = (Props: PaginationProps) => {
                     </a>
                 </li>
             ))}
-            {totalPages != 1 ? <> <li>
+            {totalPages === 1 || totalPages === currentPage ? "" : <> <li>
                 <a href="#" onClick={() => handleNextClick()}>Next</a>
-            </li> </> : ""}
+            </li> </>}
 
         </ul>
     );
