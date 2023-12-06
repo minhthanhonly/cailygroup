@@ -10,13 +10,13 @@ const AdminBranch = [
     to: "/day-off"
   },{
     text: "Danh sách xin nghỉ phép",
-    to: "/day-off-list"
+    to: "/day-off/list"
   },{
     text: "Đăng ký nghỉ phép",
-    to: "/day-off-register"
+    to: "/day-off/register"
   },{
     text: "Danh sách duyệt nghỉ phép",
-    to: "/day-off-apply"
+    to: "/day-off/apply"
   }
 ]
 
@@ -26,13 +26,13 @@ const ManagerBranch = [
         to: "/day-off"
       },{
         text: "Danh sách xin nghỉ phép",
-        to: "/day-off-list"
+        to: "/day-off/list"
       },{
         text: "Đăng ký nghỉ phép",
-        to: "/day-off-register"
+        to: "/day-off/register"
       },{
         text: "Danh sách duyệt nghỉ phép",
-        to: "/day-off-apply"
+        to: "/day-off/apply"
       }
 ]
 

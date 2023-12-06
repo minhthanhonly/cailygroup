@@ -10,13 +10,13 @@ const AdminBranch = [
     to: "/timecard"
   },{
     text: "Cấu hình thẻ giờ",
-    to: "/timecard-setting"
+    to: "/timecard/setting"
   },{
     text: "Danh sách thẻ giờ",
-    to: "/timecard-list"
+    to: "/timecard/list"
   },{
     text: "Chỉnh sửa thẻ giờ",
-    to: "/timecard-edit"
+    to: "/timecard/edit"
   }
 ]
 
@@ -26,10 +26,10 @@ const ManagerBranch = [
     to: "/timecard"
   },{
     text: "Danh sách thẻ giờ",
-    to: "/timecard-list"
+    to: "/timecard/list"
   },{
     text: "Chỉnh sửa thẻ giờ",
-    to: "/timecard-edit"
+    to: "/timecard/edit"
   }
 ]
 
