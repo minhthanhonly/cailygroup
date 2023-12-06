@@ -343,7 +343,7 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
                 }
               </td>
               <td> {admin == true && !isHoliday(day) && !getDayClassName(day) && !accreptLeave(day) ?
-                <Button href="/" size='medium'>cập nhật</Button> : ""} {isCancelLeave(day) && !admin === true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
+                <> <Button href="/" size='medium'>cập nhật</Button> <span className="icon icon--check"><img src={require('../../../assets/images/check.png')} alt="edit" className="fluid-image" /> </span> </> : ""} {isCancelLeave(day) && !admin === true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
             </>
           ) : null}
         </tr>
