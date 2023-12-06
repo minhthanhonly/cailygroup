@@ -47,11 +47,11 @@ export const Member = () => {
         </div>
       </div>
 
-        <Button size="medium" to="/member-add">Thêm Mới</Button>
+      <Button size="medium" to="/member-add">Thêm Mới</Button>
 
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Email", "Skype ID", "Phone", "Hành Động"]} />
-        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} editData={true} />
+        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} editData={true} deleteData={true} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
     </>

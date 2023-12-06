@@ -1,6 +1,7 @@
 import React from 'react';
 import { ButtonDelete } from '../Button/ButtonDelete';
 import { Button } from '../Button';
+import { Link } from 'react-router-dom';
 
 interface TableRowProps {
   rowData: string[]; // Dữ liệu cho mỗi hàng
@@ -54,7 +55,7 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
       </td>
         : "" } */}
 
-          {/* {rowDataIndexLast === '0' ? <td>
+      {/* {rowDataIndexLast === '0' ? <td>
           <p className="icon icon--check">
             <img
               src={require('../../assets/images/check.png')}
@@ -91,13 +92,15 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
 
       {editData == true ? <td>
         <div className="grid-row icon-flex">
-          <p className="icon icon--save">
-            <img
-              src={require('../../assets/images/diskette.png')}
-              alt="edit"
-              className="fluid-image"
-            />
-          </p>
+          <Link to={'/member-edit'}>
+            <p className="icon icon--save">
+              <img
+                src={require('../../assets/images/icnedit.png')}
+                alt="edit"
+                className="fluid-image"
+              />
+            </p>
+          </Link>
           <p className="icon icon--deleted">
             <img
               src={require('../../assets/images/icndelete.png')}
