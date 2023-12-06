@@ -24,7 +24,7 @@ interface RollAdmin {
 }
 
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces
-interface CombinedProps extends SelectMY, RollAdmin {}
+interface CombinedProps extends SelectMY, RollAdmin { }
 
 let DatabaseTable_Rows = (Props: CombinedProps) => {
   // const [selectedMonth, setSelectedMonth] = useState(Props.selectedMonth);
@@ -340,16 +340,14 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
       {allDays.map((day, rowIndex) => (
         <tr
           key={rowIndex}
-          className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''}${
-            isHoliday(day) ? 'holiday bg-purple' : ''
-          }${isWaiting(day) ? 'waiting bg-yellow' : ''}${
-            accreptLeave(day) ? 'accrept bg-green' : ''
-          }${isCancelLeave(day) ? 'cancel bg-red' : ''} `}
+          className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''}${isHoliday(day) ? 'holiday bg-purple' : ''
+            }${isWaiting(day) ? 'waiting bg-yellow' : ''}${accreptLeave(day) ? 'accrept bg-green' : ''
+            }${isCancelLeave(day) ? 'cancel bg-red' : ''} `}
         >
           {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
             new Date(day).getFullYear() === parseInt(selectedYear)) ||
-          (new Date(day).getMonth() + 1 === currentMonth &&
-            new Date(day).getFullYear() === currentYear) ? (
+            (new Date(day).getMonth() + 1 === currentMonth &&
+              new Date(day).getFullYear() === currentYear) ? (
             <>
               <td>{format(day, 'dd/MM/yyyy')}</td>
               {otherColumnData.map((column, colIndex) => (
@@ -358,11 +356,10 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
                 </td>
               ))}
               <td
-                className={`${
-                  startHours > 7 || (startHours === 7 && startMinutes > 30)
-                    ? 'late'
-                    : ''
-                }`}
+                className={`${startHours > 7 || (startHours === 7 && startMinutes > 30)
+                  ? 'late'
+                  : ''
+                  }`}
               >
                 {isToday(day) && showStartButton ? (
                   <button
@@ -395,8 +392,8 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
                   ''
                 )}
                 {isToday(day) &&
-                showEndButton === false &&
-                showStartButton === false ? (
+                  showEndButton === false &&
+                  showStartButton === false ? (
                   <>{`${endHours}:${String(endMinutes).padStart(2, '0')}`}</>
                 ) : (
                   ''
@@ -470,26 +467,8 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
                   </a>
                 )}
               </td>
-              <td>
-                {' '}
-                {admin == true &&
-                !isHoliday(day) &&
-                !getDayClassName(day) &&
-                !accreptLeave(day) ? (
-                  <Button href="/" size="medium">
-                    cập nhật
-                  </Button>
-                ) : (
-                  ''
-                )}{' '}
-                {isCancelLeave(day) && !admin === true ? (
-                  <span className="bg-red__btn">
-                    <button className="btn btn-white">Hủy bỏ nghỉ phép</button>
-                  </span>
-                ) : (
-                  ''
-                )}
-              </td>
+              <td> {admin == true && !isHoliday(day) && !getDayClassName(day) && !accreptLeave(day) ?
+                <> <Button href="/" size='medium'>cập nhật</Button> <span className="icon icon--check"><img src={require('../../../assets/images/check.png')} alt="edit" className="fluid-image" /> </span> </> : ""} {isCancelLeave(day) && !admin === true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
             </>
           ) : null}
         </tr>
