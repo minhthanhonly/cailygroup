@@ -54,10 +54,6 @@ export const Member = () => {
         <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} editData={true} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
-      <Link to="/member-add">Thêm thành viên</Link>
-      <br />
-      <br />
-      <Link to="/member-edit">Sửa thành viên</Link>
     </>
   )
 };
