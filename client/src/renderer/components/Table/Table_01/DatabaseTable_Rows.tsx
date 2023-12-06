@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format, isToday, isSameDay, differenceInMinutes, startOfDay } from 'date-fns';
+import { Button } from '../../Button';
 
 interface SelectMY {
   selectedMonth: string;
@@ -9,7 +10,16 @@ interface SelectMY {
 }
 
 
-let DatabaseTable_Rows = (Props: SelectMY) => {
+
+interface RollAdmin {
+  admin?: boolean;
+}
+
+// Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces
+interface CombinedProps extends SelectMY, RollAdmin { }
+
+
+let DatabaseTable_Rows = (Props: CombinedProps) => {
 
   // const [selectedMonth, setSelectedMonth] = useState(Props.selectedMonth);
   // const [selectedYear, setSelectedYear] = useState(Props.selectedYear);
@@ -17,6 +27,10 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
 
   const selectedMonth = Props.selectedMonth;
   const selectedYear = Props.selectedYear;
+  const admin = Props.admin;
+
+  console.log("admin", admin);
+
 
 
 
@@ -328,7 +342,8 @@ let DatabaseTable_Rows = (Props: SelectMY) => {
                 {accreptLeave(day) ? 'Xác nhận nghỉ phép' : isCancelLeave(day) ? <>Không xác nhận nghỉ phép <a className="btn btn--green btn--small icon icon--edit"><img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" /></a></> : isHoliday(day) ? 'Ngày Nghỉ lễ' : <a className="btn btn--green btn--small icon icon--edit"><img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" /></a>
                 }
               </td>
-              <td>{isCancelLeave(day) ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
+              <td> {admin == true && !isHoliday(day) && !getDayClassName(day) && !accreptLeave(day) ?
+                <Button href="/" size='medium'>cập nhật</Button> : ""} {isCancelLeave(day) && !admin === true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
             </>
           ) : null}
         </tr>

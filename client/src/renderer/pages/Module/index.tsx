@@ -100,7 +100,7 @@ export const Module = () => {
         </div>
         <h2 className="hdg-lv2">PHÂN TRANG</h2>
         <br />
-        <Pagination />
+        {/* <Pagination /> */}
 
         {/* BUTTON */}
         <h2 className="hdg-lv2">BUTTON</h2>
