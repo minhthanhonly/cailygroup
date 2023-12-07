@@ -27,6 +27,7 @@
   }
   th,
   td {
+    
     font-size: 2rem;
     text-align: center;
     font-weight: 100;
@@ -34,6 +35,21 @@
     border-right: 0.1rem solid var(--white);
     border: 0.1rem solid var(--text-color);
     vertical-align: middle;
+
+    input{
+      font-size: 2rem;
+        text-align: center;
+        font-weight: 100;
+        padding: 1rem;
+        max-width: 12.5rem;
+        width: 100%;
+        vertical-align: middle;
+        background: transparent;
+
+         &:disabled{
+            border: none;
+        }
+    }
   }
   & .sunday {
     background-color: var(--pink);
