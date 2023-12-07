@@ -92,7 +92,7 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
 
       {editData == true ? <td>
         <div className="grid-row icon-flex">
-          <Link to={'/member-edit'}>
+          <Link to={'/member/edit'}>
             <p className="icon icon--save">
               <img
                 src={require('../../assets/images/icnedit.png')}
@@ -116,7 +116,7 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, admin, dele
 };
 
 interface TableProps {
-  data: string[][]; // Dữ liệu cho bảng 
+  data: string[][]; // Dữ liệu cho bảng
   admin?: boolean;
   deleteData?: boolean;
   showData?: boolean;

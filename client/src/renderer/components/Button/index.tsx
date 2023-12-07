@@ -25,7 +25,7 @@ export const Button = (props: ButtonProps) => {
   } else if(props.to) {
     Comp = <Link to={props.to} className={className}>{props.children}</Link>
   } else {
-    Comp = <button className={className}>{props.children}</button>
+    Comp = <button className={className} onClick={props.onButtonClick}>{props.children}</button>
   }
   return Comp
 };

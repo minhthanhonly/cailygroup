@@ -1,20 +1,18 @@
 .timeCard-edit{
-    position: relative;
-
+    .box-group--second{
+        .box-group__item{
+            &:first-child{
+                padding-left: 0;
+            }
+        }
+    }
     & .box-group{
         @media screen and (min-width:1200px) {
-            position: absolute;
-            top: -9rem;
-            right: 1.5rem;
+   
         }
     }
     .table--01 + .mt-5{
     margin-top: 5rem;
-    }
-   .select__box{
-        &--flex{
-            justify-content:left;
-        }
     }
     &--flex{
             align-items: center;
