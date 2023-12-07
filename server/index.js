@@ -6,11 +6,17 @@ app.use(express.json());
 const db = require("./models");
 
 // Routers
-const groupRouter = require("./routes/Groups");
-app.use("/groups", groupRouter);
+// const groupRouter = require("./routes/Groups");
+// app.use("/groups", groupRouter);
 
-db.sequelize.sync().then(() => {
-    app.listen(8081, () => {
-        console.log('Server running on port 8001');
-    });
-})
+// Xóa bảng và toàn bộ dữ liệu
+
+
+
+app.listen(8081, () => {
+    console.log('Server running on port 8001');
+});
+
+// db.sequelize.sync().then(() => {
+    
+// })
