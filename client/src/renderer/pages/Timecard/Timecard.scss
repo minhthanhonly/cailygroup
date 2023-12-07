@@ -1,11 +1,11 @@
 .timeCard-edit{
-   
-    & .box-group--second{
-        justify-content: right;
-        padding: 0 2rem;
-        box-sizing: border-box;
+    .box-group--second{
+        .box-group__item{
+            &:first-child{
+                padding-left: 0;
+            }
+        }
     }
-
     & .box-group{
         @media screen and (min-width:1200px) {
    
