@@ -33,6 +33,9 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
   const selectedYear = Props.selectedYear;
   const admin = Props.admin;
 
+
+
+
   console.log('admin', admin);
 
   const [currentTime, setCurrentTime] = useState(0);
@@ -367,25 +370,16 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
   const currentYear = new Date().getFullYear();
 
 
-
-
-
   const handleStartEditClick = () => {
     setEditingStart(true);
-
   };
 
 
   const handleSaveTimeClick = () => {
     setEditingStart(false);
-
     setShouldUpdateWorkingHours(true);
-
     console.log('shouldUpdateWorkingHours', shouldUpdateWorkingHours);
-
-
   };
-
 
 
 
@@ -402,7 +396,17 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
   };
 
 
-  console.log("editingStart", editingStart);
+
+
+
+
+
+
+
+
+
+
+
 
 
   return (
@@ -488,7 +492,7 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
               </td>
               <td> {accreptLeave(day) ? ('Xác nhận nghỉ phép') : isCancelLeave(day) ? (<> Không xác nhận nghỉ phép{' '} <a onClick={openModal} className="btn btn--green btn--small icon icon--edit" > <img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" /> </a>    </>) : isHoliday(day) ? ('Ngày Nghỉ lễ') : (<a onClick={openModal} className="btn btn--green btn--small icon icon--edit"> <img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" />  </a>)} </td>
               <td> {admin == true && !isHoliday(day) && !getDayClassName(day) && !accreptLeave(day) ?
-                <>  {!editingStart ? <> <button onClick={handleStartEditClick} >cập nhật</button> </> : <> <button onClick={handleSaveTimeClick}><span className="icon icon--check"><img src={require('../../../assets/images/check.png')} alt="edit" className="fluid-image" /> </span></button> </>} </> : ""} {isCancelLeave(day) && !admin === true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
+                <>  {!editingStart ? <> <Button onButtonClick={handleStartEditClick} >cập nhật</Button> </> : <> <button onClick={handleSaveTimeClick}><span className="icon icon--check"><img src={require('../../../assets/images/check.png')} alt="edit" className="fluid-image" /> </span></button> </>} </> : ""} {isCancelLeave(day) && admin !== true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
             </>
           ) : null}
         </tr>
@@ -498,14 +502,9 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
         <td></td>
         <td></td>
         <td></td>
-        <td>
-          {!showStartButton && !showEndButton ? (
-            <>{formatMinutesToHours(totalWorkingHoursInMonth)}</>
-          ) : (
-            ''
-          )}
+        <td>  {!showStartButton && !showEndButton ? (<>{formatMinutesToHours(totalWorkingHoursInMonth)}</>) : ('')}
         </td>
-        <td>00:00</td>
+        <td></td>
         <td></td>
         <td></td>
       </tr>
