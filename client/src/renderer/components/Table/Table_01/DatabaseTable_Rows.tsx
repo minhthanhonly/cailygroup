@@ -516,6 +516,12 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
           <>
             <h3 className="hdglv3">Ghi Chú</h3>
             <textarea></textarea>
+            <div className="wrp-button">
+              <button className="btn">Xác nhận</button>
+              <button className="btn btn--orange" onClick={closeModal}>
+                Hủy
+              </button>
+            </div>
           </>
         }
       </Modal>
