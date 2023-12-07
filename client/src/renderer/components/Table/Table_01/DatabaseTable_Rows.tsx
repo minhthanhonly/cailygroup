@@ -27,13 +27,14 @@ interface RollAdmin {
 interface CombinedProps extends SelectMY, RollAdmin { }
 
 let DatabaseTable_Rows = (Props: CombinedProps) => {
-  // const [selectedMonth, setSelectedMonth] = useState(Props.selectedMonth);
-  // const [selectedYear, setSelectedYear] = useState(Props.selectedYear);
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
 
   const selectedMonth = Props.selectedMonth;
   const selectedYear = Props.selectedYear;
   const admin = Props.admin;
+
+
+
 
   console.log('admin', admin);
 
@@ -48,6 +49,16 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
   const [totalWorkingHoursInMonth, setTotalWorkingHoursInMonth] = useState(0);
   const yourDateObject = new Date();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [editingRowIndex, setEditingRowIndex] = useState(null);
+
+  const [shouldUpdateWorkingHours, setShouldUpdateWorkingHours] = useState(false);
+  //state chỉnh time 
+
+  const [editingStart, setEditingStart] = useState(false);
+
+
+  // hàm kiểm tra dòng chỉnh sửa
+  const [editingRow, setEditingRow] = useState(null);
 
   const openModal = () => {
     setModalOpen(true);
@@ -56,6 +67,7 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
   const closeModal = () => {
     setModalOpen(false);
   };
+
 
   useEffect(() => {
     // Nếu selectedMonth hoặc selectedYear chưa được chọn, gán giá trị mặc định là tháng và năm hiện tại
@@ -70,7 +82,17 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
       // Nếu đã có giá trị cho selectedMonth và selectedYear, thì gọi hàm update như bình thường
       updateDaysInMonth(selectedMonth, selectedYear);
     }
-  }, [selectedMonth, selectedYear]);
+
+    const updateWorkingHours = () => {
+      if (!showStartButton && !showEndButton) {
+        calculateAndSetWorkingHours(startHours, startMinutes, endHours, endMinutes);
+      }
+    };
+
+    if (shouldUpdateWorkingHours) {
+      updateWorkingHours();
+    }
+  }, [selectedMonth, selectedYear, startHours, startMinutes, endHours, endMinutes, showStartButton, showEndButton, shouldUpdateWorkingHours]);
 
   const updateDaysInMonth = (month: string, year: string) => {
     const firstDayOfMonth = startOfMonth(
@@ -173,6 +195,8 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
       console.error('Lỗi khi lấy thời gian từ API:', error);
     }
   };
+
+  // nhấn nút kết thúc mỗi ngày
   const handleEndButtonClick = async () => {
     try {
       const response = await axios.get(
@@ -196,6 +220,9 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
         currentHour,
         currentMinutes,
       );
+      // Đặt flag để cập nhật tổng số giờ trong tháng
+      setShouldUpdateWorkingHours(true);
+
 
       // Lưu thời gian từ API vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn.
       // Ví dụ: axios.post('/api/saveEndTime', { endTime: datetime });
@@ -256,20 +283,30 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
     const workStart = start > defaultWorkStart ? start : defaultWorkStart;
     const workEnd = end < defaultWorkEnd ? end : defaultWorkEnd;
 
-    if (workStart >= defaultWorkStart && workEnd <= defaultWorkEnd) {
-      // Nếu thời gian bắt đầu và kết thúc nằm trong khoảng giờ làm việc
-      const differenceInMilliseconds = workEnd.getTime() - workStart.getTime();
-      const workingMinutes = Math.max(
-        1,
-        Math.ceil(differenceInMilliseconds / (1000 * 60)),
-      );
-      const hours = Math.floor(workingMinutes / 60);
-      const minutes = workingMinutes % 60;
-      return `${hours}:${String(minutes).padStart(2, '0')}`;
+    // Tính thời gian làm việc từ thời điểm bắt đầu đến thời điểm kết thúc
+    let differenceInMilliseconds = workEnd.getTime() - workStart.getTime();
+    let workingMinutes = Math.max(1, Math.ceil(differenceInMilliseconds / (1000 * 60)));
+
+    // Trừ đi thời gian nghỉ trưa (1 giờ 30 phút)
+    const lunchBreakStart = new Date(0, 0, 0, 12, 0); // Thời gian bắt đầu nghỉ trưa
+    const lunchBreakEnd = new Date(0, 0, 0, 13, 30); // Thời gian kết thúc nghỉ trưa
+
+    if (workEnd > lunchBreakStart && workStart < lunchBreakEnd) {
+      // Nếu thời gian làm việc chạm vào thời gian nghỉ trưa
+      const overlapStart = workStart > lunchBreakStart ? workStart : lunchBreakStart;
+      const overlapEnd = workEnd < lunchBreakEnd ? workEnd : lunchBreakEnd;
+
+      const overlapInMilliseconds = overlapEnd.getTime() - overlapStart.getTime();
+      const overlapMinutes = Math.max(0, overlapInMilliseconds / (1000 * 60));
+
+      workingMinutes -= overlapMinutes;
     }
 
-    // Nếu không nằm trong khoảng giờ làm việc từ 7 giờ 30 đến 17 giờ 00
-    return '0:00';
+    // Chuyển đổi thời gian làm việc thành giờ và phút
+    const hours = Math.floor(workingMinutes / 60);
+    const minutes = workingMinutes % 60;
+
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
   };
 
   // làm thời gian quá giờ.
@@ -304,26 +341,22 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
     return '0:00';
   };
 
-  const calculateAndSetWorkingHours = (
-    startHours: number | undefined,
-    startMinutes: number | undefined,
-    endHours: number | undefined,
-    endMinutes: number | undefined,
-  ) => {
-    const workingHours = calculateWorkingHours(
-      startHours,
-      startMinutes,
-      endHours,
-      endMinutes,
-    );
+  const calculateAndSetWorkingHours = (startHours: number | undefined, startMinutes: number | undefined, endHours: number | undefined, endMinutes: number | undefined) => {
+    const workingHours = calculateWorkingHours(startHours, startMinutes, endHours, endMinutes);
     const totalWorkingMinutes = convertHoursToMinutes(workingHours);
 
     // Trừ đi thời gian nghỉ trưa (1 giờ 30 phút)
     const adjustedWorkingMinutes = Math.max(0, totalWorkingMinutes);
-    setTotalWorkingHours((prevTotal) => prevTotal + adjustedWorkingMinutes);
-    setTotalWorkingHoursInMonth(
-      (prevTotal) => prevTotal + adjustedWorkingMinutes,
-    ); // Cập nhật tổng thời gian làm việc trong tháng
+
+    // Cập nhật giờ làm việc của ngày đó
+    setTotalWorkingHours(adjustedWorkingMinutes);
+
+    // Chỉ cập nhật tổng thời gian làm việc trong tháng khi nhấn "Save"
+    if (shouldUpdateWorkingHours) {
+      setTotalWorkingHoursInMonth(adjustedWorkingMinutes);
+      setShouldUpdateWorkingHours(false);
+    }
+
     return formatMinutesToHours(adjustedWorkingMinutes);
   };
 
@@ -335,6 +368,47 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
 
   const currentMonth = new Date().getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
   const currentYear = new Date().getFullYear();
+
+
+  const handleStartEditClick = () => {
+    setEditingStart(true);
+  };
+
+
+  const handleSaveTimeClick = () => {
+    setEditingStart(false);
+    setShouldUpdateWorkingHours(true);
+    console.log('shouldUpdateWorkingHours', shouldUpdateWorkingHours);
+  };
+
+
+
+  const handleStartInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const [hours, minutes] = e.target.value.split(':');
+    setStartHours(parseInt(hours, 10) || 0);
+    setStartMinutes(parseInt(minutes, 10) || 0);
+  };
+
+  const handleEndInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const [hours, minutes] = e.target.value.split(':');
+    setEndHours(parseInt(hours, 10) || 0);
+    setEndMinutes(parseInt(minutes, 10) || 0);
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <>
       {allDays.map((day, rowIndex) => (
@@ -356,29 +430,10 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
                 </td>
               ))}
               <td
-                className={`${startHours > 7 || (startHours === 7 && startMinutes > 30)
-                  ? 'late'
-                  : ''
-                  }`}
-              >
-                {isToday(day) && showStartButton ? (
-                  <button
-                    className="btn btn--medium"
-                    onClick={handleButtonClick}
-                  >
-                    Bắt đầu
-                  </button>
-                ) : (
-                  ''
-                )}
-                {isToday(day) && showStartButton === false ? (
-                  <>{`${startHours}:${String(startMinutes).padStart(
-                    2,
-                    '0',
-                  )}`}</>
-                ) : (
-                  ''
-                )}
+                className={`${startHours > 7 || (startHours === 7 && startMinutes > 30) ? 'late' : ''}`} >
+
+                {isToday(day) && showStartButton ? (<button className="btn btn--medium" onClick={handleButtonClick} >  Bắt đầu </button>) : ('')}
+                {isToday(day) && showStartButton === false ? <> <input onChange={handleStartInputChange} disabled={!editingStart} value={`${startHours}:${String(startMinutes).padStart(2, '0')}`} /></> : ('')}
               </td>
               <td>
                 {isToday(day) && showEndButton ? (
@@ -394,7 +449,7 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
                 {isToday(day) &&
                   showEndButton === false &&
                   showStartButton === false ? (
-                  <>{`${endHours}:${String(endMinutes).padStart(2, '0')}`}</>
+                  <>  <input onChange={handleEndInputChange} disabled={!editingStart} value={`${endHours}:${String(endMinutes).padStart(2, '0')}`} /></>
                 ) : (
                   ''
                 )}
@@ -435,40 +490,9 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
                   ''
                 )}{' '}
               </td>
-              <td>
-                {accreptLeave(day) ? (
-                  'Xác nhận nghỉ phép'
-                ) : isCancelLeave(day) ? (
-                  <>
-                    Không xác nhận nghỉ phép{' '}
-                    <a
-                      onClick={openModal}
-                      className="btn btn--green btn--small icon icon--edit"
-                    >
-                      <img
-                        src={require('../../../assets/images/icnedit.png')}
-                        alt="edit"
-                        className="fluid-image"
-                      />
-                    </a>
-                  </>
-                ) : isHoliday(day) ? (
-                  'Ngày Nghỉ lễ'
-                ) : (
-                  <a
-                    onClick={openModal}
-                    className="btn btn--green btn--small icon icon--edit"
-                  >
-                    <img
-                      src={require('../../../assets/images/icnedit.png')}
-                      alt="edit"
-                      className="fluid-image"
-                    />
-                  </a>
-                )}
-              </td>
+              <td> {accreptLeave(day) ? ('Xác nhận nghỉ phép') : isCancelLeave(day) ? (<> Không xác nhận nghỉ phép{' '} <a onClick={openModal} className="btn btn--green btn--small icon icon--edit" > <img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" /> </a>    </>) : isHoliday(day) ? ('Ngày Nghỉ lễ') : (<a onClick={openModal} className="btn btn--green btn--small icon icon--edit"> <img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" />  </a>)} </td>
               <td> {admin == true && !isHoliday(day) && !getDayClassName(day) && !accreptLeave(day) ?
-                <> <Button href="/" size='medium'>cập nhật</Button> <span className="icon icon--check"><img src={require('../../../assets/images/check.png')} alt="edit" className="fluid-image" /> </span> </> : ""} {isCancelLeave(day) && !admin === true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
+                <>  {!editingStart ? <> <Button onButtonClick={handleStartEditClick} >cập nhật</Button> </> : <> <button onClick={handleSaveTimeClick}><span className="icon icon--check"><img src={require('../../../assets/images/check.png')} alt="edit" className="fluid-image" /> </span></button> </>} </> : ""} {isCancelLeave(day) && admin !== true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
             </>
           ) : null}
         </tr>
@@ -478,14 +502,9 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
         <td></td>
         <td></td>
         <td></td>
-        <td>
-          {!showStartButton && !showEndButton ? (
-            <>{formatMinutesToHours(totalWorkingHoursInMonth)}</>
-          ) : (
-            ''
-          )}
+        <td>  {!showStartButton && !showEndButton ? (<>{formatMinutesToHours(totalWorkingHoursInMonth)}</>) : ('')}
         </td>
-        <td>00:00</td>
+        <td></td>
         <td></td>
         <td></td>
       </tr>
@@ -495,6 +514,12 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
           <>
             <h3 className="hdglv3">Ghi Chú</h3>
             <textarea></textarea>
+            <div className="wrp-button">
+              <button className="btn">Xác nhận</button>
+              <button className="btn btn--orange" onClick={closeModal}>
+                Hủy
+              </button>
+            </div>
           </>
         }
       </Modal>

@@ -20,9 +20,9 @@ export const Button = (props: ButtonProps) => {
   let className: string = defineClassName.join(' ');
   let Comp: ReactElement;
 
-  if(props.href) {
+  if (props.href) {
     Comp = <a href={props.href} className={className}>{props.children}</a>
-  } else if(props.to) {
+  } else if (props.to) {
     Comp = <Link to={props.to} className={className}>{props.children}</Link>
   } else {
     Comp = <button className={className} onClick={props.onButtonClick}>{props.children}</button>

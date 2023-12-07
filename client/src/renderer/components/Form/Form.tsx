@@ -181,6 +181,7 @@ export const FormUser = () => {
 export const FormLeave = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(new Date());
 
   const handleStartDateChange = (date: Date | null) => {
     if (date !== null) {
@@ -193,6 +194,11 @@ export const FormLeave = () => {
       setEndDate(date);
     }
   };
+
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
+  };
+
   return (
     <div className="form-leave form">
       <div className="form-content">
