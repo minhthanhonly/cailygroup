@@ -7,6 +7,9 @@
         }
     }
     & .box-group{
+        .select-ml0{
+            margin-left: 0;
+        }
         @media screen and (min-width:1200px) {
    
         }
@@ -26,4 +29,10 @@
         }
     }
 }
+.select-ml0{
+    .select__box.group{
+        margin-left: 0;
+    }
+}
+
 
