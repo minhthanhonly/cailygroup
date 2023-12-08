@@ -41,7 +41,7 @@ export const Timecard = () => {
         <Button size="medium" color="green">
           Xuất Thẻ Giờ
         </Button>
-        <NavLink className="btn" to="/day-off/ApplyForLeave">
+        <NavLink className="btn" to="/day-off/register">
           Đăng ký nghỉ phép
         </NavLink>
       </ButtonCenter>

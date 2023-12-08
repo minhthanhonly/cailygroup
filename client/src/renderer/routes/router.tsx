@@ -64,20 +64,12 @@ export const config = [
     component: Dayoff,
   },
   {
-    path: '/day-off/list',
-    component: DayoffList,
-  },
-  {
     path: '/day-off/register',
     component: DayoffRegister,
   },
   {
     path: '/day-off/apply',
     component: DayoffApply,
-  },
-  {
-    path: '/day-off/ApplyForLeave',
-    component: ApplyForLeave,
   },
   {
     path: '/group',

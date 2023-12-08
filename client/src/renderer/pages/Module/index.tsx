@@ -19,9 +19,10 @@ import {
   SelectCustom,
   SelectCustomName,
 } from '../../components/Table/SelectCustom';
-import { ButtonDelete } from '../../components/Button/ButtonDelete';
+import ButtonDelete from '../../components/Button/ButtonDelete';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
+import ButtonEdit from '../../components/Button/ButtonEdit';
 
 export const Module = () => {
   return (
@@ -127,6 +128,9 @@ export const Module = () => {
         <br />
         <br />
         <ButtonDelete />
+        <br />
+        <br />
+        <ButtonEdit href='/'/>
         <br />
         <br />
         <ButtonCenter>

@@ -1,9 +1,11 @@
+import { Button } from ".";
 
-
-type ButtonDeleteProps = {
+interface ButtonDeleteProps {
   onButtonClick?: () => void;
-};
+}
 
-export const ButtonDelete = (props: ButtonDeleteProps) => {
-  return <button className="btn--delete" onClick={props.onButtonClick}><img src={require('../../assets/images/icndelete.png')} alt="edit" className="fluid-image" /></button>;
-};
+const ButtonDelete: React.FC<ButtonDeleteProps> = ({ onButtonClick }) => {
+  return <Button onButtonClick={onButtonClick} color="transparent"><img src={require('../../assets/images/icndelete.png')} alt="delete" className="fluid-image" /></Button>
+}
+
+export default ButtonDelete;

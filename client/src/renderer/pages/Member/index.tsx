@@ -1,19 +1,13 @@
-import { Link } from "react-router-dom";
 import { Heading2 } from "../../components/Heading";
 import { SelectCustom } from "../../components/Table/SelectCustom";
 import { InputQuantity } from "../../components/InputQuantity";
 import { Search } from "../../components/Search";
-import { Button } from "../../components/Button";
-import CTable_Col from "../../components/Table/TableCustom/CTable_Col";
-import CTable_Row from "../../components/Table/TableCustom/CTable_Row";
 import { CTable } from "../../components/Table/CTable";
 import { CTableHead } from "../../components/Table/CTableHead";
 import CTableBody from "../../components/Table/CTableBody";
 import { Pagination } from "../../components/Pagination";
 import { useState } from "react";
-
-
-
+import ButtonAdd from "../../components/Button/ButtonAdd";
 
 export const Member = () => {
 
@@ -47,11 +41,10 @@ export const Member = () => {
         </div>
       </div>
 
-      <Button size="medium" to="/member/add">Thêm Mới</Button>
-
+      <ButtonAdd path_add="/member/add" />
       <CTable>
-        <CTableHead heads={["Họ và tên", "Nhóm", "Email", "Skype ID", "Phone", "Hành Động"]} />
-        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} editData={true} deleteData={true} />
+        <CTableHead heads={["Họ và tên", "Nhóm", "Email", "Skype ID", "Phone", "Sửa", "Xóa"]} />
+        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true} path_edit="/member/edit" permission_delete={true} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
     </>

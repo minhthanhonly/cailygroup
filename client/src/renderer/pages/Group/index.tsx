@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { TableGroup } from '../../components/Table/TableGroup';
 import axios from 'axios';
 import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';

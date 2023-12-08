@@ -1,16 +1,38 @@
-import { useState } from "react";
-import { Button } from "../../components/Button";
+
 import { Pagination } from "../../components/Pagination";
 import { CTable } from "../../components/Table/CTable";
 import CTableBody from "../../components/Table/CTableBody";
 import { CTableHead } from "../../components/Table/CTableHead";
+import { Button } from "../../components/Button";
 import NavDayoff from "../../layouts/components/Nav/NavDayoff";
-export const Dayoff = () => {
+import { useState } from "react";
 
+export const Dayoff = () => {
+  const actionCheck = (
+    <p className="icon icon--check">
+      <img
+        src={require('../../assets/images/check.png')}
+        alt="edit"
+        className="fluid-image"
+      />
+    </p>
+  );
+  const actionButon = (
+    <Button href="/" size='medium' color="orange">Hủy</Button>
+  );
   const Data = [
-    ["Huỳnh Thị Thanh Tuyền", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023"],
-    ["Huỳnh Thị Thanh Tuyền", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023"],
+    ["Huỳnh Thị Thanh Tuyền", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionCheck],
+    ["Huỳnh Thị Thanh Tuyền", "2", "7:222 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionButon],
+    ["Huỳnh Thị Thanh Tuyền", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionCheck],
+    ["Huỳnh Thị Thanh Tuyền", "2", "7:222 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionButon],
+    ["Huỳnh Thị Thanh Tuyền", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionCheck],
+    ["Huỳnh Thị Thanh Tuyền", "2", "7:222 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionButon],
+    ["Huỳnh Thị Thanh Tuyền", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionCheck],
+    ["Huỳnh Thị Thanh Tuyền", "2", "7:222 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionButon],
+    ["Huỳnh Thị Thanh Tuyền", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionCheck],
+    ["Huỳnh Thị Thanh Tuyền", "2", "7:222 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionButon],
   ]
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
@@ -20,14 +42,16 @@ export const Dayoff = () => {
     setCurrentPage(page);
   };
 
-  return (
-    <>
-      <NavDayoff role="admin" />
-      <CTable>
-        <CTableHead heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc"]} />
-        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
-      </CTable>
-      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
-    </>
-  );
+  return <>
+    <NavDayoff role="admin" />
+    <CTable>
+      <CTableHead heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Ghi Chú", "Hủy đăng ký nghỉ "]} />
+      <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
+    </CTable>
+    <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+  </>;
 };
+function setCurrentPage(page: any) {
+  throw new Error("Function not implemented.");
+}
+
