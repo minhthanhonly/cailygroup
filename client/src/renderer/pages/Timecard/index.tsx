@@ -32,13 +32,8 @@ export const Timecard = () => {
   // <Excel />
   return (
     <>
-<<<<<<< HEAD
       <NavTimcard role="admin" />
       <div className="left">
-=======
-      <NavTimcard role="admin"/>
-      <div className="left select-ml0">
->>>>>>> 222f6024e9e3068087ab43b9945513e7ea4fcc5e
         <SelectCustom />
       </div>
       <MonthYearSelector onChange={handleDateChange} />
@@ -56,15 +51,8 @@ export const Timecard = () => {
       </div>
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
       <ButtonCenter>
-<<<<<<< HEAD
         <Excel tableData={tableData} />
         <NavLink className="btn" to="/day-off/ApplyForLeave">
-=======
-        <Button size="medium" color="green">
-          Xuất Thẻ Giờ
-        </Button>
-        <NavLink className="btn" to="/day-off/register">
->>>>>>> 222f6024e9e3068087ab43b9945513e7ea4fcc5e
           Đăng ký nghỉ phép
         </NavLink>
       </ButtonCenter>
