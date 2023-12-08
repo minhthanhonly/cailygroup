@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import { SelectCustom, SelectCustomName } from '../../components/Table/SelectCustom';
-import { Excel } from '../../components/ExportExcel/Excel';
+// import { Excel } from '../../components/ExportExcel/Excel';
 
 
 
@@ -51,7 +51,7 @@ export const Timecard = () => {
       </div>
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
       <ButtonCenter>
-        <Excel tableData={tableData} />
+        {/* <Excel tableData={tableData} /> */}
         <NavLink className="btn" to="/day-off/ApplyForLeave">
           Đăng ký nghỉ phép
         </NavLink>
