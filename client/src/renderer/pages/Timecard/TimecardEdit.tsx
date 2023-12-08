@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { SelectCustomName, SelectCustom } from "../../components/Table/SelectCustom"
-import DatabaseTable_Columns from "../../components/Table/Table_01/DatabaseTable_Columns"
-import DatabaseTable_Rows from "../../components/Table/Table_01/DatabaseTable_Rows"
+import CTableTimeCardHead from "../../components/Table/Table_01/CTableTimeCardHead"
+import CTableTimeCardBody from "../../components/Table/Table_01/CTableTimeCardBody"
 import NavTimcard from "../../layouts/components/Nav/NavTimcard"
 import MonthYearSelector from "../../components/Table/SelectMonthYears"
 
@@ -40,11 +40,11 @@ export const TimecardEdit = () => {
         <div className='table-container table--01'>
           <table className="table table__custom">
             <thead>
-              <DatabaseTable_Columns />
+              <CTableTimeCardHead />
             </thead>
             <tbody>
 
-              <DatabaseTable_Rows selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} admin={true} />
+              <CTableTimeCardBody selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} admin={true} />
             </tbody>
           </table>
         </div>

@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-  startOfMonth,
-  endOfMonth,
-  eachDayOfInterval,
-  format,
-  isToday,
-  isSameDay,
-  differenceInMinutes,
-  startOfDay,
-} from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, isToday, isSameDay, differenceInMinutes, startOfDay, } from 'date-fns';
 import { Button } from '../../Button';
 import Modal from '../../Modal/Modal';
+
 
 interface SelectMY {
   selectedMonth: string;
@@ -23,20 +15,18 @@ interface RollAdmin {
   admin?: boolean;
 }
 
-// Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces
+
+
+// Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces  
 interface CombinedProps extends SelectMY, RollAdmin { }
 
-let DatabaseTable_Rows = (Props: CombinedProps) => {
+let CTableTimeCardBody = (Props: CombinedProps) => {
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
 
   const selectedMonth = Props.selectedMonth;
   const selectedYear = Props.selectedYear;
   const admin = Props.admin;
 
-
-
-
-  console.log('admin', admin);
 
   const [currentTime, setCurrentTime] = useState(0);
   const [showStartButton, setShowStartButton] = useState(true);
@@ -50,6 +40,10 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
   const yourDateObject = new Date();
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingRowIndex, setEditingRowIndex] = useState(null);
+
+
+  const [newData, setNewData] = useState<string[][]>([]);
+
 
   const [shouldUpdateWorkingHours, setShouldUpdateWorkingHours] = useState(false);
   //state chỉnh time 
@@ -92,6 +86,8 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
     if (shouldUpdateWorkingHours) {
       updateWorkingHours();
     }
+
+
   }, [selectedMonth, selectedYear, startHours, startMinutes, endHours, endMinutes, showStartButton, showEndButton, shouldUpdateWorkingHours]);
 
   const updateDaysInMonth = (month: string, year: string) => {
@@ -165,6 +161,9 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
   );
 
   let allDays = [...paddingDays, ...daysInMonth];
+
+
+
 
   const getDayClassName = (date: Date) => {
     const dayOfWeek = date.getDay();
@@ -406,9 +405,6 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
 
 
 
-
-
-
   return (
     <>
       {allDays.map((day, rowIndex) => (
@@ -527,4 +523,4 @@ let DatabaseTable_Rows = (Props: CombinedProps) => {
   );
 };
 
-export default DatabaseTable_Rows;
+export default CTableTimeCardBody;
