@@ -7,7 +7,7 @@ interface ListBranchProps {
   }[];
 }
 
-const ListBranch: React.FC<ListBranchProps> = ({branch}) => {
+const ListBranch: React.FC<ListBranchProps> = ({ branch }) => {
   return (
     <>
       <ul className="lst-branch">
