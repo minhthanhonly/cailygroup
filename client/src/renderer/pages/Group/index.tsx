@@ -5,10 +5,9 @@ import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';
 import CTableBody from '../../components/Table/CTableBody';
 
-
 export const Group = () => {
-
   type FieldGroups = {
+    id: string,
     group_name:string;
   }
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
@@ -20,31 +19,19 @@ export const Group = () => {
     })
   }, [])
 
-  // let items: FieldGroups[] = [];
-
-  // for (let i = 0; i < listOfGroups.length; i++) {
-  //   // Tạo một đối tượng mới và thêm vào mảng
-  //   items.push({ group_name: `${listOfGroups.group_name}`});
-  // }
-
-
-  // {listOfGroups.map((value, key) => {
-  //   names.push(value.group_name)
-  // })}
-  // names.push()
-
-  // console.log(names);
-
+  let DataTable: FieldGroups[] = [];
+  for (let i = 0; i < listOfGroups.length; i++) {
+    DataTable.push({
+      id: `${listOfGroups[i].id}`,
+      group_name: `${listOfGroups[i].group_name}`
+    });
+  }
   return (
     <>
       <CTable>
-        <CTableHead heads={["STT", "Tên Nhóm", "Hành Động"]}/>
-        <CTableBody data={listOfGroups}/>
+        <CTableHead heads={["STT", "Tên Nhóm", "Hành động"]}/>
+        <CTableBody data={DataTable} admin={true} deleteData={true}/>
       </CTable>
-
-
     </>
   )
-
-  // <TableGroup />;
 };
