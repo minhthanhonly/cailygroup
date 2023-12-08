@@ -308,6 +308,40 @@ export const AddGroup = () => {
   );
 };
 
+export const EditGroup = () => {
+  return (
+    <>
+      <div className="form-user form">
+        <div className="form-content">
+          <div className="row">
+            <div className="col-6">
+              <div className="form-group">
+                <label>
+                  Tên nhóm *
+                  <img
+                    src={require('../../assets/images/icn-group.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="Nhập Tên nhóm"
+                />
+              </div>
+              <div className="wrp-button">
+                <button className="btn btn--green">Xác nhận</button>
+                <button className="btn btn--orange">Hủy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
 export const AddEditMember = () => {
   return (
     <>

@@ -9,7 +9,15 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-     await queryInterface.dropTable('roles');
+     await queryInterface.changeColumn('timecard_details', 'id_groupwaretimecard', {
+      type: Sequelize.INTEGER,
+      references: {
+        model: 'timecards',  // Tên bảng liên quan mới
+        key: 'id',                   // Tên cột khóa chính của bảng liên quan mới
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+     });
   },
 
   async down (queryInterface, Sequelize) {
@@ -19,6 +27,5 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-     await queryInterface.dropTable('roles');
   }
 };

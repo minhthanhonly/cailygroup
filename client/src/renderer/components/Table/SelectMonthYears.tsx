@@ -3,7 +3,7 @@ import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
 import './SelectMonthYears.scss'
 
 interface MonthYearSelectorProps {
-  onChange: (selectedMonth: string, selectedYear: string, daysInMonth: Date[]) => void;
+  onChange?: (selectedMonth: string, selectedYear: string, daysInMonth: Date[]) => void;
 }
 
 const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({ onChange }) => {

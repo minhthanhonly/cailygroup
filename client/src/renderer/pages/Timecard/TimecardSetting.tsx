@@ -1,7 +1,6 @@
 import CardTime from "../../components/Card/Card";
 import { AddGroup } from "../../components/Form/Form";
 import { Heading3 } from "../../components/Heading";
-import ListBranch from "../../components/List/ListBranch";
 import { CTable } from "../../components/Table/CTable";
 import CTableBody from "../../components/Table/CTableBody";
 import { CTableHead } from "../../components/Table/CTableHead";
@@ -44,7 +43,7 @@ export const TimecardSetting = () => {
       <AddGroup />
       <CTable>
         <CTableHead heads={["Ngày Tháng", "Thứ", "Ngày lễ - Ngày nghỉ", "Hành Động"]} />
-        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} admin={true} deleteData={true} />
+        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_delete={true} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
     </>

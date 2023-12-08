@@ -7,8 +7,8 @@ import { Pagination } from "../../components/Pagination"
 
 export const TimecardList = () => {
   const Data = [
-    ["Phan Ho Tu", "Web", "Trưởng nhóm", ""],
-    ["Phan Ho Tu", "Web", "Trưởng nhóm", ""],
+    ["Phan Ho Tu", "Web", "Trưởng nhóm",],
+    ["Phan Ho Tu", "Web", "Trưởng nhóm",],
   ]
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,9 +23,10 @@ export const TimecardList = () => {
   return (
     <>
       <NavTimcard role="admin" />
+      <p className="txt-title">Nhóm: Web</p>
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Tháng năm", "Thẻ giờ", "Xuất Excel"]} />
-        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} admin={true} showData={true} exportData={true} />
+        <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} selector={true} permission_view={true}  permission_export={true} />
       </CTable>
 
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
