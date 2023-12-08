@@ -3,6 +3,8 @@ import axios from 'axios';
 import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';
 import CTableBody from '../../components/Table/CTableBody';
+import { AddGroup } from '../../components/Form/Form';
+import { Heading2 } from '../../components/Heading';
 
 export const Group = () => {
   type FieldGroups = {
@@ -27,9 +29,11 @@ export const Group = () => {
   }
   return (
     <>
+      <Heading2 text="Quản lý nhóm" />
+      <AddGroup />
       <CTable>
-        <CTableHead heads={["STT", "Tên Nhóm", "Hành động"]}/>
-        <CTableBody data={DataTable} admin={true} deleteData={true}/>
+        <CTableHead heads={["STT", "Tên Nhóm", "Sửa", "Xóa"]}/>
+        <CTableBody data={DataTable} permission_edit={true} path_edit='/group/edit' permission_delete={true} />
       </CTable>
     </>
   )
