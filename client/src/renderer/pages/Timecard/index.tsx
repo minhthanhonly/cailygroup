@@ -21,7 +21,7 @@ export const Timecard = () => {
   return (
     <>
       <NavTimcard role="admin"/>
-      <div className="left">
+      <div className="left select-ml0">
         <SelectCustom />
       </div>
       <MonthYearSelector onChange={handleDateChange} />
