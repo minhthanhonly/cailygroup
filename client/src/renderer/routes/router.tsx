@@ -1,8 +1,6 @@
 import { FluidLayout } from '../layouts/FluidLayout/FluidLayout';
 import { Dayoff } from '../pages/Dayoff';
-import { ApplyForLeave } from '../pages/Dayoff/ApplyForLeave';
 import { DayoffApply } from '../pages/Dayoff/DayoffApply';
-import { DayoffList } from '../pages/Dayoff/DayoffList';
 import { DayoffRegister } from '../pages/Dayoff/DayoffRegister';
 import { Group } from '../pages/Group';
 import { GroupEdit } from '../pages/Group/GroupEdit';
