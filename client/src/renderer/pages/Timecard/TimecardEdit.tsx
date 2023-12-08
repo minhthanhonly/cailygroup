@@ -27,7 +27,7 @@ export const TimecardEdit = () => {
       <NavTimcard role="admin" />
       <div className="timeCard-edit">
         <div className="box-group box-group--second">
-          <div className="box-group__item left">
+          <div className="box-group__item select-ml0">
             <SelectCustom />
           </div>
           <div className="box-group__item">
