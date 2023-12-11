@@ -4,7 +4,7 @@ import { DefaultLayout } from '../layouts/DefaultLayout';
 type PublicRoutesProps = {
   routes: {
     path: string;
-    component: string;
+    component: any;
     layout?: any | null;
   }[];
 };

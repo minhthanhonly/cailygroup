@@ -29,7 +29,7 @@
             position: relative;
             &::before{
                 content: '';
-                background: url('../../assets/images//icn-id.png') no-repeat;
+                background: url('../../../../assets/icn-id.png') no-repeat;
                 background-size: 100%;
                 width: 1.5rem;
                 height: 1.5rem;
@@ -39,37 +39,37 @@
             }
             &--icnname{
                 &::before{
-                    background: url('../../assets/images/icon-user.jpg') no-repeat;
+                    background: url('../../../../assets/icon-user.jpg') no-repeat;
                     background-size: 100%;
                 }
             }
             &--icngroup{
                 &::before{
-                    background: url('../../assets/images/icn-group.png') no-repeat;
+                    background: url('../../../../assets/icn-group.png') no-repeat;
                     background-size: 100%;
                 }
             }
             &--icnaddress{
                 &::before{
-                    background: url('../../assets/images/icn-address.png') no-repeat;
+                    background: url('../../../../assets/icn-address.png') no-repeat;
                     background-size: 100%;
                 }
             }
             &--icnphone{
                 &::before{
-                    background: url('../../assets/images/icon-phone.jpg') no-repeat;
+                    background: url('../../../../assets/icon-phone.jpg') no-repeat;
                     background-size: 100%;
                 }
             }
             &--icnemail{
                 &::before{
-                    background: url('../../assets/images/icon-email.jpg') no-repeat;
+                    background: url('../../../../assets/icon-email.jpg') no-repeat;
                     background-size: 100%;
                 }
             }
             &--icnskype{
                 &::before{
-                    background: url('../../assets/images/icon-skype.jpg') no-repeat;
+                    background: url('../../../../assets/icon-skype.jpg') no-repeat;
                     background-size: 100%;
                 }
             }

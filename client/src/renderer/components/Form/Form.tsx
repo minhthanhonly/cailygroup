@@ -12,7 +12,7 @@ export const FormLogin = () => {
       <div className="form">
         <div className="form-login--logo">
           <img
-            src={require('../../assets/images/logo-site.png')}
+            src={require('../../../../assets/logo-site.png')}
             alt=""
             className="fluid-image"
           />
@@ -48,7 +48,7 @@ export const FormUser = () => {
               <label>
                 Họ và tên *
                 <img
-                  src={require('../../assets/images/icon-user.jpg')}
+                  src={require('../../../../assets/icon-user.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -63,7 +63,7 @@ export const FormUser = () => {
               <label>
                 Địa chỉ *
                 <img
-                  src={require('../../assets/images/icon-address.jpg')}
+                  src={require('../../../../assets/icon-address.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -74,7 +74,7 @@ export const FormUser = () => {
               <label>
                 Số Điện Thoại *
                 <img
-                  src={require('../../assets/images/icon-phone.jpg')}
+                  src={require('../../../../assets/icon-phone.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -89,7 +89,7 @@ export const FormUser = () => {
               <label>
                 Email *
                 <img
-                  src={require('../../assets/images/icon-email.jpg')}
+                  src={require('../../../../assets/icon-email.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -100,7 +100,7 @@ export const FormUser = () => {
               <label>
                 Spyke ID *
                 <img
-                  src={require('../../assets/images/icon-skype.jpg')}
+                  src={require('../../../../assets/icon-skype.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -116,7 +116,7 @@ export const FormUser = () => {
               <label>
                 Mật khẩu hiện tại
                 <img
-                  src={require('../../assets/images/icon-password.jpg')}
+                  src={require('../../../../assets/icon-password.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -131,7 +131,7 @@ export const FormUser = () => {
               <label>
                 Mật Khẩu Mới
                 <img
-                  src={require('../../assets/images/icon-newpassword.jpg')}
+                  src={require('../../../../assets/icon-newpassword.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -147,7 +147,7 @@ export const FormUser = () => {
                 Mật Khẩu Mới
                 <br /> (xác nhận)
                 <img
-                  src={require('../../assets/images/icon-conpassword.jpg')}
+                  src={require('../../../../assets/icon-conpassword.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -166,7 +166,7 @@ export const FormUser = () => {
           <div className="col-6">
             <div className="user-image">
               <img
-                src={require('../../assets/images/avatar.jpg')}
+                src={require('../../../../assets/avatar.jpg')}
                 alt=""
                 className="fluid-image"
               />
@@ -208,7 +208,7 @@ export const FormLeave = () => {
               <label>
                 Ngày bắt đầu
                 <img
-                  src={require('../../assets/images/icon-time.jpg')}
+                  src={require('../../../../assets/icon-time.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -227,7 +227,7 @@ export const FormLeave = () => {
               <label>
                 Giờ bắt đầu
                 <img
-                  src={require('../../assets/images/icon-time.jpg')}
+                  src={require('../../../../assets/icon-time.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -240,7 +240,7 @@ export const FormLeave = () => {
               <label>
                 Ngày kết thúc
                 <img
-                  src={require('../../assets/images/icon-time.jpg')}
+                  src={require('../../../../assets/icon-time.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -260,7 +260,7 @@ export const FormLeave = () => {
               <label>
                 Giờ kết thúc
                 <img
-                  src={require('../../assets/images/icon-time.jpg')}
+                  src={require('../../../../assets/icon-time.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -272,7 +272,7 @@ export const FormLeave = () => {
             <label>
               Lý do nghỉ
               <img
-                src={require('../../assets/images/icon-practice.jpg')}
+                src={require('../../../../assets/icon-practice.jpg')}
                 alt=""
                 className="fluid-image"
               />
@@ -294,7 +294,7 @@ export const AddGroup = () => {
     <div className="form-group form-addgroup">
       <label>Nhập Tên Nhóm:</label>
       <img
-        src={require('../../assets/images/icn-group.png')}
+        src={require('../../../../assets/icn-group.png')}
         alt=""
         className="fluid-image form-addgroup__image"
       />
@@ -319,7 +319,7 @@ export const EditGroup = () => {
                 <label>
                   Tên nhóm *
                   <img
-                    src={require('../../assets/images/icn-group.png')}
+                    src={require('../../../../assets/icn-group.png')}
                     alt=""
                     className="fluid-image"
                   />
@@ -353,7 +353,7 @@ export const AddEditMember = () => {
                 <label>
                   ID User *
                   <img
-                    src={require('../../assets/images/icn-id.png')}
+                    src={require('../../../../assets/icn-id.png')}
                     alt=""
                     className="fluid-image"
                   />
@@ -368,7 +368,7 @@ export const AddEditMember = () => {
                 <label>
                   Mật khẩu *
                   <img
-                    src={require('../../assets/images/icon-password.jpg')}
+                    src={require('../../../../assets/icon-password.jpg')}
                     alt=""
                     className="fluid-image"
                   />
@@ -383,7 +383,7 @@ export const AddEditMember = () => {
                 <label>
                   Họ và tên *
                   <img
-                    src={require('../../assets/images/icon-user.jpg')}
+                    src={require('../../../../assets/icon-user.jpg')}
                     alt=""
                     className="fluid-image"
                   />
@@ -398,7 +398,7 @@ export const AddEditMember = () => {
                 <label>
                   Nhóm *
                   <img
-                    src={require('../../assets/images/icn-group.png')}
+                    src={require('../../../../assets/icn-group.png')}
                     alt=""
                     className="fluid-image"
                   />
@@ -410,7 +410,7 @@ export const AddEditMember = () => {
                 <label>
                   Quyền Truy cập *
                   <img
-                    src={require('../../assets/images/authorization.png')}
+                    src={require('../../../../assets/authorization.png')}
                     alt=""
                     className="fluid-image"
                   />

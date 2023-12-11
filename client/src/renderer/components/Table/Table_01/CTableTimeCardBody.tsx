@@ -17,7 +17,7 @@ interface RollAdmin {
 
 
 
-// Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces  
+// Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces
 interface CombinedProps extends SelectMY, RollAdmin { }
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
@@ -46,7 +46,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
 
   const [shouldUpdateWorkingHours, setShouldUpdateWorkingHours] = useState(false);
-  //state chỉnh time 
+  //state chỉnh time
 
   const [editingStart, setEditingStart] = useState(false);
 
@@ -486,9 +486,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   ''
                 )}{' '}
               </td>
-              <td> {accreptLeave(day) ? ('Xác nhận nghỉ phép') : isCancelLeave(day) ? (<> Không xác nhận nghỉ phép{' '} <a onClick={openModal} className="btn btn--green btn--small icon icon--edit" > <img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" /> </a>    </>) : isHoliday(day) ? ('Ngày Nghỉ lễ') : (<a onClick={openModal} className="btn btn--green btn--small icon icon--edit"> <img src={require('../../../assets/images/icnedit.png')} alt="edit" className="fluid-image" />  </a>)} </td>
+              <td> {accreptLeave(day) ? ('Xác nhận nghỉ phép') : isCancelLeave(day) ? (<> Không xác nhận nghỉ phép{' '} <a onClick={openModal} className="btn btn--green btn--small icon icon--edit" > <img src={require('../../../../../assets/icnedit.png')} alt="edit" className="fluid-image" /> </a>    </>) : isHoliday(day) ? ('Ngày Nghỉ lễ') : (<a onClick={openModal} className="btn btn--green btn--small icon icon--edit"> <img src={require('../../../../../assets/icnedit.png')} alt="edit" className="fluid-image" />  </a>)} </td>
               <td> {admin == true && !isHoliday(day) && !getDayClassName(day) && !accreptLeave(day) ?
-                <>  {!editingStart ? <> <Button onButtonClick={handleStartEditClick} >cập nhật</Button> </> : <> <button onClick={handleSaveTimeClick}><span className="icon icon--check"><img src={require('../../../assets/images/check.png')} alt="edit" className="fluid-image" /> </span></button> </>} </> : ""} {isCancelLeave(day) && admin !== true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
+                <>  {!editingStart ? <> <Button onButtonClick={handleStartEditClick} >cập nhật</Button> </> : <> <button onClick={handleSaveTimeClick}><span className="icon icon--check"><img src={require('../../../../../assets/check.png')} alt="edit" className="fluid-image" /> </span></button> </>} </> : ""} {isCancelLeave(day) && admin !== true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
             </>
           ) : null}
         </tr>
