@@ -136,3 +136,11 @@ app
     });
   })
   .catch(console.log);
+
+if (mainWindow) {
+  (mainWindow as any).webContents.on('dom-ready', () => {
+    if (mainWindow) {
+      (mainWindow as any).webContents.closeDevTools();
+    }
+  });
+}

@@ -1,14 +1,66 @@
-import { useState } from 'react';
+import { SetStateAction, useEffect, useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 
 import './From.scss';
 import 'react-datepicker/dist/react-datepicker.css';
 import TimeSelect from '../Modal/TimeSelect';
 import { SelectCustom } from '../Table/SelectCustom';
+import axios from 'axios';
 
 export const FormLogin = () => {
+  const [formData, setFormData] = useState({
+    userid: '',
+    password: '',
+  });
+  const [data, setData] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleInputChange = (event: { target: { name: any; value: any } }) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const navigate = useNavigate();
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    setError(null);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/api/login',
+        formData,
+      );
+      setError(response.data.message);
+
+      if (response.data.errCode == 0) {
+        const { user } = response.data;
+        setData(user);
+        localStorage.setItem('user', JSON.stringify(user));
+        navigate('/');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const { errCode, message } = error.response.data;
+          setError(`Lỗi ${errCode}: ${message}`);
+        } else if (error.request) {
+          setError('Lỗi kết nối đến server');
+        } else {
+          setError('Lỗi không xác định');
+        }
+      } else {
+        setError('Lỗi không xác định');
+      }
+    }
+  };
+
   return (
-    <div className="form-login">
+    <form className="form-login" onSubmit={handleSubmit}>
       <div className="form">
         <div className="form-login--logo">
           <img
@@ -21,17 +73,32 @@ export const FormLogin = () => {
         <div className="form-content">
           <h2 className="form-login--title">Đăng Nhập</h2>
           <div className="form-group">
-            <input className="form-input" type="text" placeholder="Tài Khoản" />
+            <input
+              className="form-input"
+              type="text"
+              placeholder="Tài Khoản"
+              name="userid"
+              value={formData.userid}
+              onChange={handleInputChange}
+            />
           </div>
           <div className="form-group">
-            <input className="form-input" type="text" placeholder="Mật Khẩu" />
+            <input
+              className="form-input"
+              type="password"
+              placeholder="Mật Khẩu"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+            />
           </div>
+          <p className="text-error">{error}</p>
           <div className="center">
             <button className="btn">Đăng Nhập</button>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
