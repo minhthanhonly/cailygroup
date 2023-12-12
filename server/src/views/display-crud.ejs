@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Display CRUD</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div class="container mt-4">
+      <p><a class="icon-link" href="/">Trang chủ</a></p>
+      <a href="/crud" class="btn btn-primary mb80" style="margin: 4rem 0">
+        Thêm mới
+      </a>
+      <table class="table text-center">
+        <thead>
+          <tr>
+            <th scope="col">Tên đăng nhập</th>
+            <th scope="col">Họ và tên</th>
+            <th scope="col">Email</th>
+            <th scope="col">Nhóm</th>
+            <th scope="col">Quyền hạn</th>
+            <th scope="col">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i=0; i < dataTable.length; i++) { %>
+          <tr>
+            <td><%= dataTable[i].userid %></td>
+            <td><%= dataTable[i].realname %></td>
+            <td><%= dataTable[i].user_email %></td>
+            <td><%= dataTable[i].user_groupname %></td>
+            <td><%= dataTable[i].authority %></td>
+            <td>
+              <a
+                href="/edit-crud?id=<%= dataTable[i].id %>"
+                class="btn btn-warning"
+                >Update</a
+              >
+              <a
+                href="/delete-crud?id=<%= dataTable[i].id %>"
+                class="btn btn-danger"
+                >Delete</a
+              >
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
