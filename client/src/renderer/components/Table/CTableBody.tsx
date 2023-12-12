@@ -30,7 +30,7 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, selector, p
         <td key={index}>{data}</td>
       ))}
       { selector == true ? <td><MonthYearSelector/></td> : null }
-      { permission_add == true ? <td><ButtonAdd/></td> : null }
+      { permission_add == true ? <td><ButtonAdd path_add={''}/></td> : null }
       { permission_edit == true ? <td><ButtonEdit href={path_edit} /></td> : null }
       { permission_delete == true ? <td><ButtonDelete/></td> : null }
       { permission_view == true ? <td><ButtonView/></td>  : null }
