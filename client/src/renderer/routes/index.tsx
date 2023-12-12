@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { DefaultLayout } from '../layouts/DefaultLayout';
 
 type PublicRoutesProps = {
@@ -11,7 +11,7 @@ type PublicRoutesProps = {
 
 export const PublicRoutes = (props: PublicRoutesProps) => {
   return (
-    <Router basename="/">
+    <Router>
       <div className="App">
         <Routes>
           {props.routes.map((route) => {
