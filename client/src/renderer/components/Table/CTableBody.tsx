@@ -7,15 +7,9 @@ import ButtonExport from '../Button/ButtonExport';
 import ButtonDelete from '../Button/ButtonDelete';
 import MonthYearSelector from './SelectMonthYears';
 
-  const [selectedMonth, setSelectedMonth] = useState('1');
-  const [selectedYear, setSelectedYear] = useState('2023');
-  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
 
-  const handleDateChange = (month: string, year: string, daysInMonth: Date[]) => {
-    setSelectedMonth(month);
-    setSelectedYear(year);
-    setDaysInMonth(daysInMonth);
-  };
+
+
 
 interface TableRowProps {
   rowData: {
@@ -33,19 +27,31 @@ interface TableRowProps {
 }
 
 const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, selector, permission_add, permission_edit, permission_delete, permission_view, permission_save, permission_export, path_edit }) => {
+
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
+
+
+
+  const handleDateChange = (month: string, year: string, daysInMonth: Date[]) => {
+    setSelectedMonth(month);
+    setSelectedYear(year);
+    setDaysInMonth(daysInMonth);
+  };
   const valuesRowData: any[] = Object.values(rowData);
   return (
     <tr>
       {valuesRowData.map((data, index) => (
         <td key={index}>{data}</td>
       ))}
-      { selector == true ? <td><MonthYearSelector onChange={handleDateChange} /></td> : null }
-      { permission_add == true ? <td><ButtonAdd path_add={''}/></td> : null }
-      { permission_edit == true ? <td><ButtonEdit href={path_edit} /></td> : null }
-      { permission_delete == true ? <td><ButtonDelete/></td> : null }
-      { permission_view == true ? <td><ButtonView/></td>  : null }
-      { permission_save == true ? <td><ButtonSave/></td>  : null }
-      { permission_export == true ? <td><ButtonExport/></td> : null }
+      {selector == true ? <td><MonthYearSelector onChange={handleDateChange} /></td> : null}
+      {permission_add == true ? <td><ButtonAdd path_add={''} /></td> : null}
+      {permission_edit == true ? <td><ButtonEdit href={path_edit} /></td> : null}
+      {permission_delete == true ? <td><ButtonDelete /></td> : null}
+      {permission_view == true ? <td><ButtonView /></td> : null}
+      {permission_save == true ? <td><ButtonSave /></td> : null}
+      {permission_export == true ? <td><ButtonExport /></td> : null}
     </tr>
   );
 };

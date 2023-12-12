@@ -11,7 +11,7 @@ type PublicRoutesProps = {
 
 export const PublicRoutes = (props: PublicRoutesProps) => {
   return (
-    <Router basename="/index.html">
+    <Router basename="/">
       <div className="App">
         <Routes>
           {props.routes.map((route) => {

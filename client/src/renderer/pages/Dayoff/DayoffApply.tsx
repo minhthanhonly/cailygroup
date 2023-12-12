@@ -16,8 +16,8 @@ export const DayoffApply = () => {
     <Button href="/" size='medium' color="orange">Hủy</Button>
   );
   const Data = [
-    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm",actionagree,actioncancel],
-    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm",actionagree,actioncancel]
+    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionagree, actioncancel],
+    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionagree, actioncancel]
   ]
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,7 +36,7 @@ export const DayoffApply = () => {
     </div>
     <CTable>
       <CTableHead heads={["Họ Và Tên", "Nhóm", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Ghi Chú", "Đồng Ý", "Từ Chối"]} />
-      <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
+      <CTableBody path_edit={"edit"} data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
     </CTable>
     <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
   </>;

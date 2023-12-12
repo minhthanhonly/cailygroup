@@ -195,7 +195,7 @@ export const FormLeave = () => {
     }
   };
 
-  const handleTimeChange = (time) => {
+  const handleTimeChange = (time: any) => {
     setSelectedTime(time);
   };
 
