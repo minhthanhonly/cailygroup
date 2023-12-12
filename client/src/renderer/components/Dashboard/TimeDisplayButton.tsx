@@ -46,7 +46,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
     }
 
     // Example: Change the image when the button is clicked
-    // setButtonImage(require('../../../../assets/icon-play.png'));
+    // setButtonImage(require('../../assets/images/icon-play.png'));
   };
 
   return (

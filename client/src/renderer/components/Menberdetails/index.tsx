@@ -6,7 +6,7 @@ export const Menberdetails = () => {
     <div className="menberdetails-info">
       <p className="menberdetails-info__avatar">
         <img
-          src={require('../../../../assets/avatar.jpg')}
+          src={require('../../assets/images/avatar.jpg')}
           alt=""
           className="fluid-image"
         />

@@ -5,7 +5,7 @@ interface ButtonSaveProps {
 }
 
 const ButtonSave: React.FC<ButtonSaveProps> = ({ onButtonClick }) => {
-  return <Button onButtonClick={onButtonClick}><img src={require('../../../../assets/icnedit.png')} alt="save" className="fluid-image"/></Button>
+  return <Button onButtonClick={onButtonClick}><img src={require('../../assets/images/icnedit.png')} alt="save" className="fluid-image"/></Button>
 }
 
 export default ButtonSave;

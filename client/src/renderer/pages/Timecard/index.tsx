@@ -52,7 +52,7 @@ export const Timecard = () => {
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
       <ButtonCenter>
         {/* <Excel tableData={tableData} /> */}
-        <NavLink className="btn" to="/day-off/register">
+        <NavLink className="btn" to="/day-off/ApplyForLeave">
           Đăng ký nghỉ phép
         </NavLink>
       </ButtonCenter>

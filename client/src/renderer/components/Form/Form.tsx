@@ -1,18 +1,70 @@
-import { useState } from 'react';
+import { SetStateAction, useEffect, useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 
 import './From.scss';
 import 'react-datepicker/dist/react-datepicker.css';
 import TimeSelect from '../Modal/TimeSelect';
 import { SelectCustom } from '../Table/SelectCustom';
+import axios from 'axios';
 
 export const FormLogin = () => {
+  const [formData, setFormData] = useState({
+    userid: '',
+    password: '',
+  });
+  const [data, setData] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleInputChange = (event: { target: { name: any; value: any } }) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const navigate = useNavigate();
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    setError(null);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8080/api/login',
+        formData,
+      );
+      setError(response.data.message);
+
+      if (response.data.errCode == 0) {
+        const { user } = response.data;
+        setData(user);
+        localStorage.setItem('user', JSON.stringify(user));
+        navigate('/');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const { errCode, message } = error.response.data;
+          setError(`Lỗi ${errCode}: ${message}`);
+        } else if (error.request) {
+          setError('Lỗi kết nối đến server');
+        } else {
+          setError('Lỗi không xác định');
+        }
+      } else {
+        setError('Lỗi không xác định');
+      }
+    }
+  };
+
   return (
-    <div className="form-login">
+    <form className="form-login" onSubmit={handleSubmit}>
       <div className="form">
         <div className="form-login--logo">
           <img
-            src={require('../../../../assets/logo-site.png')}
+            src={require('../../assets/images/logo-site.png')}
             alt=""
             className="fluid-image"
           />
@@ -21,17 +73,32 @@ export const FormLogin = () => {
         <div className="form-content">
           <h2 className="form-login--title">Đăng Nhập</h2>
           <div className="form-group">
-            <input className="form-input" type="text" placeholder="Tài Khoản" />
+            <input
+              className="form-input"
+              type="text"
+              placeholder="Tài Khoản"
+              name="userid"
+              value={formData.userid}
+              onChange={handleInputChange}
+            />
           </div>
           <div className="form-group">
-            <input className="form-input" type="text" placeholder="Mật Khẩu" />
+            <input
+              className="form-input"
+              type="password"
+              placeholder="Mật Khẩu"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+            />
           </div>
+          <p className="text-error">{error}</p>
           <div className="center">
             <button className="btn">Đăng Nhập</button>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
@@ -48,7 +115,7 @@ export const FormUser = () => {
               <label>
                 Họ và tên *
                 <img
-                  src={require('../../../../assets/icon-user.jpg')}
+                  src={require('../../assets/images/icon-user.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -63,7 +130,7 @@ export const FormUser = () => {
               <label>
                 Địa chỉ *
                 <img
-                  src={require('../../../../assets/icon-address.jpg')}
+                  src={require('../../assets/images/icon-address.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -74,7 +141,7 @@ export const FormUser = () => {
               <label>
                 Số Điện Thoại *
                 <img
-                  src={require('../../../../assets/icon-phone.jpg')}
+                  src={require('../../assets/images/icon-phone.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -89,7 +156,7 @@ export const FormUser = () => {
               <label>
                 Email *
                 <img
-                  src={require('../../../../assets/icon-email.jpg')}
+                  src={require('../../assets/images/icon-email.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -100,7 +167,7 @@ export const FormUser = () => {
               <label>
                 Spyke ID *
                 <img
-                  src={require('../../../../assets/icon-skype.jpg')}
+                  src={require('../../assets/images/icon-skype.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -116,7 +183,7 @@ export const FormUser = () => {
               <label>
                 Mật khẩu hiện tại
                 <img
-                  src={require('../../../../assets/icon-password.jpg')}
+                  src={require('../../assets/images/icon-password.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -131,7 +198,7 @@ export const FormUser = () => {
               <label>
                 Mật Khẩu Mới
                 <img
-                  src={require('../../../../assets/icon-newpassword.jpg')}
+                  src={require('../../assets/images/icon-newpassword.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -147,7 +214,7 @@ export const FormUser = () => {
                 Mật Khẩu Mới
                 <br /> (xác nhận)
                 <img
-                  src={require('../../../../assets/icon-conpassword.jpg')}
+                  src={require('../../assets/images/icon-conpassword.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -166,7 +233,7 @@ export const FormUser = () => {
           <div className="col-6">
             <div className="user-image">
               <img
-                src={require('../../../../assets/avatar.jpg')}
+                src={require('../../assets/images/avatar.jpg')}
                 alt=""
                 className="fluid-image"
               />
@@ -208,7 +275,7 @@ export const FormLeave = () => {
               <label>
                 Ngày bắt đầu
                 <img
-                  src={require('../../../../assets/icon-time.jpg')}
+                  src={require('../../assets/images/icon-time.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -227,7 +294,7 @@ export const FormLeave = () => {
               <label>
                 Giờ bắt đầu
                 <img
-                  src={require('../../../../assets/icon-time.jpg')}
+                  src={require('../../assets/images/icon-time.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -240,7 +307,7 @@ export const FormLeave = () => {
               <label>
                 Ngày kết thúc
                 <img
-                  src={require('../../../../assets/icon-time.jpg')}
+                  src={require('../../assets/images/icon-time.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -260,7 +327,7 @@ export const FormLeave = () => {
               <label>
                 Giờ kết thúc
                 <img
-                  src={require('../../../../assets/icon-time.jpg')}
+                  src={require('../../assets/images/icon-time.jpg')}
                   alt=""
                   className="fluid-image"
                 />
@@ -272,7 +339,7 @@ export const FormLeave = () => {
             <label>
               Lý do nghỉ
               <img
-                src={require('../../../../assets/icon-practice.jpg')}
+                src={require('../../assets/images/icon-practice.jpg')}
                 alt=""
                 className="fluid-image"
               />
@@ -294,7 +361,7 @@ export const AddGroup = () => {
     <div className="form-group form-addgroup">
       <label>Nhập Tên Nhóm:</label>
       <img
-        src={require('../../../../assets/icn-group.png')}
+        src={require('../../assets/images/icn-group.png')}
         alt=""
         className="fluid-image form-addgroup__image"
       />
@@ -319,7 +386,7 @@ export const EditGroup = () => {
                 <label>
                   Tên nhóm *
                   <img
-                    src={require('../../../../assets/icn-group.png')}
+                    src={require('../../assets/images/icn-group.png')}
                     alt=""
                     className="fluid-image"
                   />
@@ -353,7 +420,7 @@ export const AddEditMember = () => {
                 <label>
                   ID User *
                   <img
-                    src={require('../../../../assets/icn-id.png')}
+                    src={require('../../assets/images/icn-id.png')}
                     alt=""
                     className="fluid-image"
                   />
@@ -368,7 +435,7 @@ export const AddEditMember = () => {
                 <label>
                   Mật khẩu *
                   <img
-                    src={require('../../../../assets/icon-password.jpg')}
+                    src={require('../../assets/images/icon-password.jpg')}
                     alt=""
                     className="fluid-image"
                   />
@@ -383,7 +450,7 @@ export const AddEditMember = () => {
                 <label>
                   Họ và tên *
                   <img
-                    src={require('../../../../assets/icon-user.jpg')}
+                    src={require('../../assets/images/icon-user.jpg')}
                     alt=""
                     className="fluid-image"
                   />
@@ -398,7 +465,7 @@ export const AddEditMember = () => {
                 <label>
                   Nhóm *
                   <img
-                    src={require('../../../../assets/icn-group.png')}
+                    src={require('../../assets/images/icn-group.png')}
                     alt=""
                     className="fluid-image"
                   />
@@ -410,7 +477,7 @@ export const AddEditMember = () => {
                 <label>
                   Quyền Truy cập *
                   <img
-                    src={require('../../../../assets/authorization.png')}
+                    src={require('../../assets/images/authorization.png')}
                     alt=""
                     className="fluid-image"
                   />
