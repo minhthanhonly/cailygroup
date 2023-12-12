@@ -1,4 +1,5 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import './Sidebar.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,6 +12,27 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 export const Sidebar = () => {
+  const navigate = useNavigate();
+  const hadleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+
+  const userString: string | null = localStorage.getItem('user');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userGroup, setUserGroup] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (userString !== null) {
+      const userObject = JSON.parse(userString);
+
+      const id = userObject.userid;
+      setUserId(id);
+      const group = userObject.user_groupname;
+      setUserGroup(group);
+    }
+  }, [userString]);
+
   return (
     <div className="sidebar">
       <h1 className="logo">
@@ -83,14 +105,14 @@ export const Sidebar = () => {
           </figure>
           <div className="acount__info">
             <NavLink to="/users" className="acount__name">
-              Phan Ho Tu
+              {userId}
             </NavLink>
-            <p className="acount__des">Nhóm: Web</p>
+            <p className="acount__des">Nhóm: {userGroup}</p>
           </div>
         </div>
-        <NavLink to="/login" className="btn btn--orange">
+        <button onClick={hadleLogout} className="btn btn--orange">
           Đăng xuất
-        </NavLink>
+        </button>
       </div>
     </div>
   );
