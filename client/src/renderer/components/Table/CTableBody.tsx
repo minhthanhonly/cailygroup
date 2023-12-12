@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ButtonAdd from '../Button/ButtonAdd';
 import ButtonEdit from '../Button/ButtonEdit';
 import ButtonView from '../Button/ButtonView';
@@ -6,6 +6,16 @@ import ButtonSave from '../Button/ButtonSave';
 import ButtonExport from '../Button/ButtonExport';
 import ButtonDelete from '../Button/ButtonDelete';
 import MonthYearSelector from './SelectMonthYears';
+
+  const [selectedMonth, setSelectedMonth] = useState('1');
+  const [selectedYear, setSelectedYear] = useState('2023');
+  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
+
+  const handleDateChange = (month: string, year: string, daysInMonth: Date[]) => {
+    setSelectedMonth(month);
+    setSelectedYear(year);
+    setDaysInMonth(daysInMonth);
+  };
 
 interface TableRowProps {
   rowData: {
@@ -29,7 +39,7 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, selector, p
       {valuesRowData.map((data, index) => (
         <td key={index}>{data}</td>
       ))}
-      { selector == true ? <td><MonthYearSelector/></td> : null }
+      { selector == true ? <td><MonthYearSelector onChange={handleDateChange} /></td> : null }
       { permission_add == true ? <td><ButtonAdd path_add={''}/></td> : null }
       { permission_edit == true ? <td><ButtonEdit href={path_edit} /></td> : null }
       { permission_delete == true ? <td><ButtonDelete/></td> : null }
