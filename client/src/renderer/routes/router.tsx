@@ -1,10 +1,9 @@
 import { FluidLayout } from '../layouts/FluidLayout/FluidLayout';
 import { Dayoff } from '../pages/Dayoff';
-import { ApplyForLeave } from '../pages/Dayoff/ApplyForLeave';
 import { DayoffApply } from '../pages/Dayoff/DayoffApply';
-import { DayoffList } from '../pages/Dayoff/DayoffList';
 import { DayoffRegister } from '../pages/Dayoff/DayoffRegister';
 import { Group } from '../pages/Group';
+import { GroupEdit } from '../pages/Group/GroupEdit';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { Member } from '../pages/Member';
@@ -64,10 +63,6 @@ export const config = [
     component: Dayoff,
   },
   {
-    path: '/day-off/list',
-    component: DayoffList,
-  },
-  {
     path: '/day-off/register',
     component: DayoffRegister,
   },
@@ -76,12 +71,12 @@ export const config = [
     component: DayoffApply,
   },
   {
-    path: '/day-off/ApplyForLeave',
-    component: ApplyForLeave,
-  },
-  {
     path: '/group',
     component: Group,
+  },
+  {
+    path: '/group/edit',
+    component: GroupEdit,
   },
   {
     path: '/module',

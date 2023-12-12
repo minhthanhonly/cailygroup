@@ -95,17 +95,17 @@ export const Dashboard = () => {
           <div className="Dashboard-action--start">
             <p>Bắt đầu</p>
             <TimeDisplayButton
-              initialImage={require('../../assets/images/icon-play.png')}
+              initialImage={require('../../../../assets/icon-play.png')}
             />
           </div>
           <div className="Dashboard-action--pause">
             <p>Tạm ngưng</p>
             <TimeDisplayButton
-              initialImage={require('../../assets/images/icon-pause.png')}
+              initialImage={require('../../../../assets/icon-pause.png')}
             />
             {/* <button className="Dashboard-action--circle">
               <img
-                src={require('../../assets/images/icon-pause.png')}
+                src={require('../../../../assets/icon-pause.png')}
                 alt=""
                 className="fluid-image"
               />
@@ -114,7 +114,7 @@ export const Dashboard = () => {
           <div className="Dashboard-action--end">
             <p>Kết thúc</p>
             <TimeDisplayButton
-              initialImage={require('../../assets/images/icon-check.png')}
+              initialImage={require('../../../../assets/icon-check.png')}
             />
           </div>
         </div>

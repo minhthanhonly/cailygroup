@@ -19,9 +19,10 @@ import {
   SelectCustom,
   SelectCustomName,
 } from '../../components/Table/SelectCustom';
-import { ButtonDelete } from '../../components/Button/ButtonDelete';
+import ButtonDelete from '../../components/Button/ButtonDelete';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
+import ButtonEdit from '../../components/Button/ButtonEdit';
 
 export const Module = () => {
   return (
@@ -129,6 +130,9 @@ export const Module = () => {
         <ButtonDelete />
         <br />
         <br />
+        <ButtonEdit href='/'/>
+        <br />
+        <br />
         <ButtonCenter>
           <Button color="green" size="medium">
             Xuất Thẻ Giờ
@@ -171,12 +175,12 @@ export const Module = () => {
         {/* IMAGE */}
         {/* <h2 className="hdg-lv2">IMAGE</h2>
         <img
-          src={require('../../assets/images/icon-home.png')}
+          src={require('../../../../assets/icon-home.png')}
           alt="phantu.dev"
           className="fluid-image"
         />
         <img
-          src={require('../../assets/images/icon-home-active.png')}
+          src={require('../../../../assets/icon-home-active.png')}
           alt="phantu.dev"
           className="fluid-image"
         /> */}

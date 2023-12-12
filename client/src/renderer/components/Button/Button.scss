@@ -24,6 +24,9 @@
   &--green {
     background: var(--green);
   }
+  &--transparent {
+    background: transparent;
+  }
   &--widthAuto {
     width: auto;
     padding-left: 2.5rem;

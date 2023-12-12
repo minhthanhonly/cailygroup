@@ -1,22 +1,18 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 app.use(express.json());
+app.use(cors());
 
 const db = require("./models");
 
 // Routers
-// const groupRouter = require("./routes/Groups");
-// app.use("/groups", groupRouter);
+const groupRouter = require("./routes/Groups");
+app.use("/groups", groupRouter);
 
-// Xóa bảng và toàn bộ dữ liệu
-
-
-
-app.listen(8081, () => {
-    console.log('Server running on port 8001');
-});
-
-// db.sequelize.sync().then(() => {
-    
-// })
+db.sequelize.sync().then(() => {
+  app.listen(3001, () => {
+    console.log('Server running on port 3001');
+  });
+})

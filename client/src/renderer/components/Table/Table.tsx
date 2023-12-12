@@ -2,18 +2,15 @@
 
 
 import { SetStateAction, useState } from 'react';
-import DatabaseTable_Columns from './Table_01/DatabaseTable_Columns';
-import DatabaseTable_Rows from './Table_01/DatabaseTable_Rows';
+import CTableTimeCardHead from './Table_01/CTableTimeCardHead';
+import CTableTimeCardBody from './Table_01/CTableTimeCardBody';
 
 
-
-import CTable_Col from './TableCustom/CTable_Col';
-import CTable_Row from './TableCustom/CTable_Row';
 import MonthYearSelector from './SelectMonthYears';
 // import  TestOne  from "./TestOne";
 import './Table.scss';
 import '../GlobalStyles/GlobalStyles.scss';
-import { SelectCustom ,SelectCustomName  } from './SelectCustom';
+import { SelectCustom, SelectCustomName } from './SelectCustom';
 
 
 
@@ -41,37 +38,21 @@ const TablePage = () => {
     <div>
       <h2>Table Page</h2>
 
-      <SelectCustom /> 
+      <SelectCustom />
       <SelectCustomName />
       <MonthYearSelector onChange={handleDateChange} />
       <h2 className='hdg-lv2'>Thẻ giờ</h2>
       <div className='table-container table--01'>
         <table className="table table__custom">
           <thead>
-            <DatabaseTable_Columns />
+            <CTableTimeCardHead />
           </thead>
           <tbody>
             {/* RowCounts = {RowCounts} */}
-            <DatabaseTable_Rows selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} />
+            <CTableTimeCardBody selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} />
           </tbody>
         </table>
       </div>
-
-
-      <h2 className='hdg-lv2'>custom</h2>
-      <div className='table-container'>
-        <table className="table table__custom">
-          <thead>
-            <CTable_Col Col_count={Col_count_rows} Col_title={Col_title} />
-          </thead>
-          <tbody>
-            <CTable_Row Rows_count={Col_count_rows} />
-          </tbody>
-        </table>
-      </div>
-
-
-
     </div>
   );
 };

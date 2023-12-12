@@ -46,7 +46,9 @@
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
     "start:preload": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.preload.dev.ts",
     "start:renderer": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack serve --config ./.erb/configs/webpack.config.renderer.dev.ts",
-    "test": "jest"
+    "test": "jest",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "browserslist": [],
   "prettier": {
@@ -115,7 +117,9 @@
     "react-redux": "^9.0.2",
     "react-router-dom": "^6.16.0",
     "redux": "^5.0.0",
-    "sweetalert2": "^11.10.1"
+    "sweetalert2": "^11.10.1",
+    "xlsx": "^0.18.5",
+    "xlsx-populate": "^1.21.0"
   },
   "devDependencies": {
     "@electron/notarize": "^2.1.0",
@@ -188,8 +192,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "CailyGroup",
+    "appId": "2024.CailyGroup",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
