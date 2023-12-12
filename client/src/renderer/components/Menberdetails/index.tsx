@@ -54,7 +54,7 @@ export const Menberdetails = () => {
             <p className="menberdetails-info__content__text">aaa@gmail.com</p>
           </li>
         </ul>
-        <NavLink to="/users-edit">
+        <NavLink to="/users/edit">
           <div className="center menberdetails-info__btn">
             <button className="btn">Thiết lập cá nhân</button>
           </div>
