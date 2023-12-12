@@ -37,7 +37,7 @@ export const Sidebar = () => {
     <div className="sidebar">
       <h1 className="logo">
         <img
-          src={require('../../../../../assets/logo-site.png')}
+          src={require('../../../assets/images/logo-site.png')}
           alt="CAILY"
           className="fluid-image"
         />
@@ -98,7 +98,7 @@ export const Sidebar = () => {
         <div className="acount__inner">
           <figure className="acount__avatar">
             <img
-              src={require('../../../../../assets/avatar.jpg')}
+              src={require('../../../assets/images/avatar.jpg')}
               alt=""
               className="fluid-image"
             />

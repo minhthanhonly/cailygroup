@@ -7,14 +7,14 @@ const action = (
   <div className="grid-row icon-flex">
     <p className="icon icon--save">
       <img
-        src={require('../../../../assets/icnedit.png')}
+        src={require('../../assets/images/icnedit.png')}
         alt="edit"
         className="fluid-image"
       />
     </p>
     <p className="icon icon--deleted">
       <img
-        src={require('../../../../assets/icndelete.png')}
+        src={require('../../assets/images/icndelete.png')}
         alt="edit"
         className="fluid-image"
       />

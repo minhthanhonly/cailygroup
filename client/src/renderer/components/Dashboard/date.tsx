@@ -197,7 +197,7 @@ const TableCalendar: React.FC = () => {
                 <td>
                   <button onClick={openModal}>
                     <img
-                      src={require('../../../../assets/icnedit.png')}
+                      src={require('../../assets/images/icnedit.png')}
                       alt=""
                       className="fluid-image"
                     />

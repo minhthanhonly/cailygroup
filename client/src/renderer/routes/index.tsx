@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 type PublicRoutesProps = {
   routes: {
     path: string;
-    component: any;
+    component: string;
     layout?: any | null;
     isPrivate?: boolean;
   }[];

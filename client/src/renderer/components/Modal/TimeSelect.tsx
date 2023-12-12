@@ -76,7 +76,7 @@ const TimePickerButton = () => {
               <div className="modal-setTime--number">
                 <button className="plus" onClick={increaseHour}>
                   <img
-                    src={require('../../../../assets/icon-plus.png')}
+                    src={require('../../assets/images/icon-plus.png')}
                     alt=""
                     className="fluid-image"
                   />
@@ -84,7 +84,7 @@ const TimePickerButton = () => {
                 <span>{tempHours}</span>
                 <button className="minus" onClick={decreaseHour}>
                   <img
-                    src={require('../../../../assets/icon-minus.png')}
+                    src={require('../../assets/images/icon-minus.png')}
                     alt=""
                     className="fluid-image"
                   />
@@ -93,7 +93,7 @@ const TimePickerButton = () => {
               <div className="modal-setTime--number">
                 <button className="plus" onClick={increaseMinute}>
                   <img
-                    src={require('../../../../assets/icon-plus.png')}
+                    src={require('../../assets/images/icon-plus.png')}
                     alt=""
                     className="fluid-image"
                   />
@@ -101,7 +101,7 @@ const TimePickerButton = () => {
                 <span>{tempMinutes}</span>
                 <button className="minus" onClick={decreaseMinute}>
                   <img
-                    src={require('../../../../assets/icon-minus.png')}
+                    src={require('../../assets/images/icon-minus.png')}
                     alt=""
                     className="fluid-image"
                   />

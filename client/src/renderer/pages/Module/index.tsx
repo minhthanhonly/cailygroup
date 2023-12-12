@@ -175,12 +175,12 @@ export const Module = () => {
         {/* IMAGE */}
         {/* <h2 className="hdg-lv2">IMAGE</h2>
         <img
-          src={require('../../../../assets/icon-home.png')}
+          src={require('../../assets/images/icon-home.png')}
           alt="phantu.dev"
           className="fluid-image"
         />
         <img
-          src={require('../../../../assets/icon-home-active.png')}
+          src={require('../../assets/images/icon-home-active.png')}
           alt="phantu.dev"
           className="fluid-image"
         /> */}

@@ -11,7 +11,7 @@ export const Dayoff = () => {
   const actionCheck = (
     <p className="icon icon--check">
       <img
-        src={require('../../../../assets/check.png')}
+        src={require('../../assets/images/check.png')}
         alt="edit"
         className="fluid-image"
       />
@@ -46,7 +46,7 @@ export const Dayoff = () => {
     <NavDayoff role="admin" />
     <CTable>
       <CTableHead heads={["Họ Và Tên", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Ghi Chú", "Hủy đăng ký nghỉ "]} />
-      <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} path_edit="/" />
+      <CTableBody data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
     </CTable>
     <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
   </>;
