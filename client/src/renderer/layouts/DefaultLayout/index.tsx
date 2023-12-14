@@ -1,16 +1,13 @@
 import { Sidebar } from '../components/Sidebar';
+import { Outlet } from 'react-router-dom';
 import './DefaultLayout.scss';
 
-type DefaultLayoutProps = {
-  children?: React.ReactNode;
-};
-
-export const DefaultLayout = (prop: DefaultLayoutProps) => {
+export default function DefaultLayout() {
   return (
     <div className="app-wrapper">
       <Sidebar />
       <div className="container">
-        <div className="content">{prop.children}</div>
+        <div className="content"><Outlet/></div>
       </div>
     </div>
   );

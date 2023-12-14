@@ -1,5 +1,6 @@
 import { Dashboard } from '../../components/Dashboard/Dashboard';
+function Home() {
+  return <Dashboard/>
+}
 
-export const Home = () => {
-  return <Dashboard />;
-};
+export default Home;
