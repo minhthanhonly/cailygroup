@@ -1,2 +1,2 @@
-export const urlControl = 'http://localhost/Controllers/'
+export const urlControl = 'http://cailygroup.com/Controllers/'
 
