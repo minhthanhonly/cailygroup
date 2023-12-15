@@ -15,7 +15,9 @@ import { DayoffApply } from './pages/Dayoff/DayoffApply';
 import { Group } from './pages/Group';
 import { GroupEdit } from './pages/Group/GroupEdit';
 import { Module } from './pages/Module';
+import { Login } from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
+import FluidLayout from './layouts/FluidLayout/FluidLayout';
 
 export default function App() {
   return (
@@ -40,6 +42,9 @@ export default function App() {
             <Route path="group/edit" element={<GroupEdit/>} />
             <Route path="module" element={<Module/>} />
             <Route path="day-off/apply" element={<DayoffApply/>} />
+          </Route>
+          <Route path="/login" element={<FluidLayout />}>
+            <Route index element={<Login />} />
           </Route>
         </Routes>
       </div>

@@ -1,11 +1,9 @@
-type FluidLayoutProps = {
-  children: string;
-};
+import { Outlet } from "react-router-dom";
 
-export const FluidLayout = (prop: FluidLayoutProps) => {
+export default function FluidLayout() {
   return (
     <div className="wrapper">
-      <div className="container-fluid">{prop.children}</div>
+      <div className="container-fluid"><Outlet/></div>
     </div>
   );
 };
