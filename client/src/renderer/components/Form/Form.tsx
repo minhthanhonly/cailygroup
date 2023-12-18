@@ -178,7 +178,7 @@ export const FormUser = () => {
     </div>
   );
 };
-export const FormLeave = () => {
+export const FormLeave: React.FC = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
@@ -232,7 +232,7 @@ export const FormLeave = () => {
                   className="fluid-image"
                 />
               </label>
-              <TimeSelect />
+              <TimeSelect defaultValue="08:00" />
             </div>
           </div>
           <div className="col-6">
@@ -265,7 +265,7 @@ export const FormLeave = () => {
                   className="fluid-image"
                 />
               </label>
-              <TimeSelect />
+              <TimeSelect defaultValue="17:00" />
             </div>
           </div>
           <div className="form-group">

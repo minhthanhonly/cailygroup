@@ -6,7 +6,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
     case "GET":
         // lấy dữ liệu
-        $allGroup = mysqli_query($db_conn, "SELECT id, group_name FROM groups");
+        $allGroup = mysqli_query($db_conn, "SELECT id, group_name FROM dayoffs");
         
         if ($allGroup) {
             $data = [];
@@ -35,7 +35,7 @@ switch ($method) {
         if (isset($data['group_name'])) {
             $groupName = mysqli_real_escape_string($db_conn, $data['group_name']);
 
-            $insertQuery = "INSERT INTO groups (group_name) VALUES ('$groupName')";
+            $insertQuery = "INSERT INTO dayoffs (group_name) VALUES ('$groupName')";
 
             if (mysqli_query($db_conn, $insertQuery)) {
                 http_response_code(201);
@@ -58,7 +58,7 @@ switch ($method) {
             $id = mysqli_real_escape_string($db_conn, $data['id']);
             $groupName = mysqli_real_escape_string($db_conn, $data['group_name']);
 
-            $updateQuery = "UPDATE groups SET group_name = '$groupName' WHERE id = $id";
+            $updateQuery = "UPDATE dayoffs SET group_name = '$groupName' WHERE id = $id";
 
             if (mysqli_query($db_conn, $updateQuery)) {
                 http_response_code(200);
@@ -80,7 +80,7 @@ switch ($method) {
         if (isset($data['id'])) {
             $id = mysqli_real_escape_string($db_conn, $data['id']);
 
-            $deleteQuery = "DELETE FROM groups WHERE id = $id";
+            $deleteQuery = "DELETE FROM dayoffs WHERE id = $id";
 
             if (mysqli_query($db_conn, $deleteQuery)) {
                 http_response_code(200);
