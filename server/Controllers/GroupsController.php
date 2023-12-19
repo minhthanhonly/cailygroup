@@ -19,6 +19,9 @@
 
         case "POST":
             // FUNCTION POST
+            $data = json_decode(file_get_contents("php://input"), true);
+            $groupName = mysqli_real_escape_string($db_conn, $data['group_name']);
+            $insertQuery = "INSERT INTO groups(group_name) VALUES ($groupName)";
         break;
     }
 ?>
