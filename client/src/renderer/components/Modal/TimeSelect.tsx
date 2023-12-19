@@ -4,9 +4,13 @@ import Modal from './Modal';
 
 interface TimeSelectProps {
   defaultValue?: string;
+  onChange?: (newValue: string) => void;
 }
 
-const TimePickerButton: React.FC<TimeSelectProps> = ({ defaultValue }) => {
+const TimePickerButton: React.FC<TimeSelectProps> = ({
+  defaultValue,
+  onChange,
+}) => {
   const initialTime = setHours(setMinutes(new Date(), 0), 8);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState(initialTime);
@@ -14,22 +18,19 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({ defaultValue }) => {
   const [tempHours, setTempHours] = useState(8);
   const [tempMinutes, setTempMinutes] = useState(0);
   const [tempInputValue, setTempInputValue] = useState('');
-
-  useEffect(() => {
-    const updatedTime = setHours(
-      setMinutes(selectedTime, tempMinutes),
-      tempHours,
-    );
-    const newInputValue = format(updatedTime, 'HH:mm');
-    setTempInputValue(newInputValue);
-  }, [tempHours, tempMinutes, selectedTime]);
+  const [confirmButtonClicked, setConfirmButtonClicked] = useState(false);
 
   useEffect(() => {
     if (defaultValue) {
-      setTempHours(parseInt(defaultValue.split(':')[0], 10));
-      setTempMinutes(parseInt(defaultValue.split(':')[1], 10));
+      const hours = parseInt(defaultValue.split(':')[0], 10);
+      const minutes = parseInt(defaultValue.split(':')[1], 10);
+
+      setTempHours(hours);
+      setTempMinutes(minutes);
+      const updatedTime = setHours(setMinutes(selectedTime, minutes), hours);
+      setTempInputValue(format(updatedTime, 'HH:mm'));
     }
-  }, [defaultValue]);
+  }, [defaultValue, selectedTime]);
 
   const increaseHour = () => {
     setTempHours((prevHours) => prevHours + 1);
@@ -47,6 +48,10 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({ defaultValue }) => {
     setTempMinutes((prevMinutes) => (prevMinutes - 5 + 60) % 60);
   };
 
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   const handleSetTime = useCallback(() => {
     if (
       !isNaN(tempHours) &&
@@ -61,14 +66,19 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({ defaultValue }) => {
         tempHours,
       );
       setSelectedTime(updatedTime);
-      setTempInputValue(format(updatedTime, 'HH:mm')); // Cập nhật tempInputValue
       closeModal();
+      setConfirmButtonClicked(true);
+      // Gọi hàm onChange để truyền giá trị mới
+      if (onChange) {
+        onChange(format(updatedTime, 'HH:mm'));
+      }
     } else {
       console.error('Giá trị thời gian không hợp lệ.');
     }
-  }, [tempHours, tempMinutes, selectedTime, setTempInputValue]);
+  }, [tempHours, tempMinutes, selectedTime, closeModal, onChange]);
 
   const openModal = () => {
+    console.log('Input focused!');
     setModalOpen(true);
 
     if (inputValue) {
@@ -80,8 +90,18 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({ defaultValue }) => {
     }
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
+  useEffect(() => {
+    // Chỉ cập nhật tempInputValue khi nút Xác nhận được nhấn
+    if (confirmButtonClicked) {
+      setTempInputValue(format(selectedTime, 'HH:mm'));
+      setConfirmButtonClicked(false); // Đặt lại trạng thái của nút
+    }
+  }, [confirmButtonClicked, selectedTime]);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    console.log('New inputValue:', value);
+    setInputValue(value);
   };
 
   return (
@@ -89,7 +109,9 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({ defaultValue }) => {
       <input
         className="form-input"
         onFocus={openModal}
-        defaultValue={tempInputValue || defaultValue || '08:00'}
+        onChange={handleInputChange}
+        onClick={openModal}
+        value={inputValue || tempInputValue || defaultValue || '08:00'}
         readOnly
       />
 
