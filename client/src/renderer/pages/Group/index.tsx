@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';
@@ -13,12 +13,14 @@ export const Group = () => {
     group_name: string;
   };
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
+  const [isTableUpdated, setIsTableUpdated] = useState(false); // State mới
 
   useEffect(() => {
     axios.get(urlControl + 'GroupsController.php').then((response) => {
       setListOfGroups(response.data);
+      setIsTableUpdated(false); // Đặt lại trạng thái khi dữ liệu thay đổi
     });
-  }, []);
+  }, [isTableUpdated]); // Khi state mới thay đổi, useEffect sẽ chạy lại
 
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
@@ -35,7 +37,6 @@ export const Group = () => {
       add_level: 1,
       owner: 'admin',
     };
-    console.log(group_data);
 
     fetch(urlControl + 'GroupsController.php', {
       method: 'POST',
@@ -53,6 +54,7 @@ export const Group = () => {
       })
       .then((responseData) => {
         console.log('Data inserted successfully:', responseData);
+        setIsTableUpdated(true); // Khi thêm mới nhóm, cập nhật state mới
       })
       .catch((error) => {
         console.error('Error inserting data:', error);
@@ -62,6 +64,7 @@ export const Group = () => {
         }
       });
   };
+
   return (
     <>
       <Heading2 text="Quản lý nhóm" />
