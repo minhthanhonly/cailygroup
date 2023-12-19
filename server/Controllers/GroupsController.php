@@ -1,5 +1,14 @@
 <?php
     require('../database/DBConnect.php');
+
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type");
+        http_response_code(200);
+        exit;
+    }
+    
     $method = $_SERVER['REQUEST_METHOD'];
 
     switch($method) {
@@ -20,8 +29,45 @@
         case "POST":
             // FUNCTION POST
             $data = json_decode(file_get_contents("php://input"), true);
-            $groupName = mysqli_real_escape_string($db_conn, $data['group_name']);
-            $insertQuery = "INSERT INTO groups(group_name) VALUES ($groupName)";
-        break;
+            if (isset($data['group_data']['group_name'])) {
+                $insertQuery = "INSERT INTO groups (group_name, add_level, owner, createdAt) 
+                        VALUES (?, ?, ?, NOW())";
+
+        $stmt = mysqli_prepare($db_conn, $insertQuery);
+
+        mysqli_stmt_bind_param($stmt, "isssssiss", 
+            $data['group_data']['group_name'],
+            $data['group_data']['add_level'],
+            $data['group_data']['owner'],
+        );
+
+        if (mysqli_stmt_execute($stmt)) {
+            http_response_code(201);
+            echo json_encode(["message" => "Thêm thành công"]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["error" => "Thêm không thành công"]);
+        }
+
+        mysqli_stmt_close($stmt);
+
+
+    } else {
+        http_response_code(400);
+        echo json_encode(["error" => "Dữ liệu không hợp lệ. 'user_id' bị thiếu"]);
     }
-?>
+    break;
+
+    case "PUT":
+
+        break;
+        
+    case "DELETE":
+
+        break;
+
+    default:
+        http_response_code(405);
+        echo json_encode(["error" => "Method not allowed"]);
+        break;
+}

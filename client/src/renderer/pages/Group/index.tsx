@@ -28,25 +28,41 @@ export const Group = () => {
     });
   }
   const [groupname, setGroupname] = useState('')
-  const [groupnames, setGroupnames] = useState([]);
  
   const handleSubmint = () => {
-      setGroupnames(prev => {
-        const newGroupnames = [...prev, groupname]
-       
-        // const jsonGroupnames = JSON.stringify(newGroupnames)
-        // localStorage.setItem('groupnames', jsonGroupnames);
-       
-        return newGroupnames
-      })
-      setGroupname('')
-  }
-  useEffect(() => {
-    axios.post(urlControl + "GroupsController.php").then((response) => {
-      setGroupnames(response.data)
-    })
-  }, [])
+    const group_data = {
+      group_name: groupname,
+      add_level: 1,
+      owner: 'admin',
+    };
+    console.log(group_data);
 
+    fetch(urlControl + 'GroupsController.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors',
+      body: JSON.stringify( {group_data} ),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((responseData) => {
+        console.log('Data inserted successfully:', responseData);
+      })
+      .catch((error) => {
+        console.error('Error inserting data:', error);
+        if (error.response) {
+          console.error('Response status:', error.response.status);
+          console.error('Server error message:', error.response.data);
+        }
+      });
+      
+  }
   return (
     <>
       <Heading2 text="Quản lý nhóm" />
@@ -59,7 +75,7 @@ export const Group = () => {
         />
         <input
           value={groupname}
-          onChange={e => setGroupname(e.target.value)}
+          onChange={(event) => setGroupname(event.target.value)}
           className="form-input"
           type="text"
           placeholder="Tên nhóm muốn thêm"
