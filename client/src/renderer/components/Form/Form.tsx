@@ -3,8 +3,10 @@ import DatePicker from 'react-datepicker';
 
 import './From.scss';
 import 'react-datepicker/dist/react-datepicker.css';
-import TimeSelect from '../Modal/TimeSelect';
+import TimePickerButton from '../Modal/TimeSelect';
 import { SelectCustom } from '../Table/SelectCustom';
+import { urlControl } from '../../routes/server';
+import { format } from 'date-fns';
 
 export const FormLogin = () => {
   return (
@@ -181,7 +183,9 @@ export const FormUser = () => {
 export const FormLeave: React.FC = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [note, setNote] = useState('');
+  const [timeStart, setTimeStart] = useState('07:30');
+  const [timeEnd, setTimeEnd] = useState('17:00');
 
   const handleStartDateChange = (date: Date | null) => {
     if (date !== null) {
@@ -195,8 +199,54 @@ export const FormLeave: React.FC = () => {
     }
   };
 
-  const handleTimeChange = (time: any) => {
-    setSelectedTime(time);
+  const handleConfirmClick = () => {
+    const group_data = {
+      user_id: 1,
+      date_start: format(startDate, 'dd-MM-yyyy').toString(),
+      date_end: format(endDate, 'dd-MM-yyyy').toString(),
+      time_start: timeStart,
+      time_end: timeEnd,
+      note: note,
+      day_number: calculateDayDifference(startDate, endDate),
+      status: 0,
+      owner: 'admin',
+    };
+    console.log(group_data);
+
+    fetch(urlControl + 'DayoffsController.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors',
+      body: JSON.stringify({ group_data }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((responseData) => {
+        console.log('Data inserted successfully:', responseData);
+        // Xử lý thành công nếu cần
+      })
+      .catch((error) => {
+        console.error('Error inserting data:', error);
+        // Xử lý lỗi nếu cần
+        if (error.response) {
+          console.error('Response status:', error.response.status);
+          console.error('Server error message:', error.response.data); // Thay đổi tùy theo cách server trả về thông báo lỗi
+        }
+      });
+  };
+
+  const calculateDayDifference = (start: Date, end: Date) => {
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const diffDays = Math.round(
+      Math.abs((start.getTime() - end.getTime()) / oneDay + 1),
+    );
+    return diffDays;
   };
 
   return (
@@ -232,7 +282,10 @@ export const FormLeave: React.FC = () => {
                   className="fluid-image"
                 />
               </label>
-              <TimeSelect defaultValue="08:00" />
+              <TimePickerButton
+                defaultValue={timeStart}
+                onChange={(newValue) => setTimeStart(newValue)}
+              />
             </div>
           </div>
           <div className="col-6">
@@ -265,7 +318,10 @@ export const FormLeave: React.FC = () => {
                   className="fluid-image"
                 />
               </label>
-              <TimeSelect defaultValue="17:00" />
+              <TimePickerButton
+                defaultValue={timeEnd}
+                onChange={(newValue) => setTimeEnd(newValue)}
+              />
             </div>
           </div>
           <div className="form-group">
@@ -277,11 +333,17 @@ export const FormLeave: React.FC = () => {
                 className="fluid-image"
               />
             </label>
-            <textarea className="form-input"></textarea>
+            <textarea
+              className="form-input"
+              value={note}
+              onChange={(event) => setNote(event.target.value)}
+            />
           </div>
         </div>
         <div className="wrp-button">
-          <button className="btn btn--green">Xác nhận</button>
+          <button className="btn btn--green" onClick={handleConfirmClick}>
+            Xác nhận
+          </button>
           <button className="btn btn--orange">Hủy</button>
         </div>
       </div>
