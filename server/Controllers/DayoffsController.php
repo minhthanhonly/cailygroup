@@ -48,9 +48,7 @@ switch ($method) {
 
     case "POST":
     $data = json_decode(file_get_contents("php://input"), true);
-    // date_default_timezone_set('Asia/Ho_Chi_Minh');
-    // $currentDateTime = date('Y-m-d H:i:s');
-    // echo json_encode($currentDateTime);
+    echo json_encode($data['group_data']['user_id']);
 
     if (isset($data['group_data']['user_id'])) {
         $insertQuery = "INSERT INTO dayoffs (user_id, date_start, date_end, time_start, time_end, note, day_number, status, owner, createdAt) 

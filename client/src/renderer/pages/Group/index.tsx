@@ -9,26 +9,26 @@ import { urlControl } from '../../routes/server';
 
 export const Group = () => {
   type FieldGroups = {
-    id: string,
-    group_name:string;
-  }
+    id: string;
+    group_name: string;
+  };
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
   useEffect(() => {
-    axios.get(urlControl + "GroupsController.php").then((response) => {
-      setListOfGroups(response.data)
-    })
-  }, [])
+    axios.get(urlControl + 'GroupsController.php').then((response) => {
+      setListOfGroups(response.data);
+    });
+  }, []);
 
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
     DataTable.push({
       id: `${listOfGroups[i].id}`,
-      group_name: `${listOfGroups[i].group_name}`
+      group_name: `${listOfGroups[i].group_name}`,
     });
   }
-  const [groupname, setGroupname] = useState('')
- 
+  const [groupname, setGroupname] = useState('');
+
   const handleSubmint = () => {
     const group_data = {
       group_name: groupname,
@@ -43,7 +43,7 @@ export const Group = () => {
         'Content-Type': 'application/json',
       },
       mode: 'cors',
-      body: JSON.stringify( {group_data} ),
+      body: JSON.stringify({ group_data }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -61,8 +61,7 @@ export const Group = () => {
           console.error('Server error message:', error.response.data);
         }
       });
-      
-  }
+  };
   return (
     <>
       <Heading2 text="Quản lý nhóm" />
@@ -80,12 +79,19 @@ export const Group = () => {
           type="text"
           placeholder="Tên nhóm muốn thêm"
         />
-        <button className="btn" onClick={handleSubmint}>Thêm</button>
+        <button className="btn" onClick={handleSubmint}>
+          Thêm
+        </button>
       </div>
       <CTable>
-        <CTableHead heads={["STT", "Tên Nhóm", "Sửa", "Xóa"]}/>
-        <CTableBody data={DataTable} permission_edit={true} path_edit='/group/edit' permission_delete={true} />
+        <CTableHead heads={['STT', 'Tên Nhóm', 'Sửa', 'Xóa']} />
+        <CTableBody
+          data={DataTable}
+          permission_edit={true}
+          path_edit="/group/edit"
+          permission_delete={true}
+        />
       </CTable>
     </>
-  )
+  );
 };
