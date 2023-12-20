@@ -21,25 +21,16 @@ export const Dayoff = () => {
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
   useEffect(() => {
-    axios.get(urlControl + 'DayoffsController.php').then((response) => {
-      setListOfGroups(response.data);
-    });
+    axios
+      .get(urlControl + 'DayoffsController.php', {
+        params: {
+          method: 'GET',
+        },
+      })
+      .then((response) => {
+        setListOfGroups(response.data);
+      });
   }, []);
-
-  const actionCheck = (
-    <p className="icon icon--check">
-      <img
-        src={require('../../../../assets/check.png')}
-        alt="edit"
-        className="fluid-image"
-      />
-    </p>
-  );
-  const actionButon = (
-    <Button href="/" size="medium" color="orange">
-      Hủy
-    </Button>
-  );
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
     let dynamicAction;
