@@ -30,9 +30,9 @@ export default function App() {
             <Route path="timecard/setting" element={<TimecardSetting/>} />
             <Route path="timecard/list" element={<TimecardList/>} />
             <Route path="timecard/edit" element={<TimecardEdit/>} />
-            <Route path="member" element={<Member/>} />
+            {/* <Route path="member" element={<Member/>} />
             <Route path="member/add" element={<MemberAdd/>} />
-            <Route path="member/edit" element={<MemberEdit/>} />
+            <Route path="member/edit" element={<MemberEdit/>} /> */}
             <Route path="users" element={<Users/>} />
             <Route path="users/edit" element={<UserEdit/>} />
             <Route path="day-off" element={<Dayoff/>} />
