@@ -1,46 +1,64 @@
-import './Pagination.scss'
+import React from 'react';
+import './Pagination.scss';
 
 interface PaginationProps {
-    totalPages: number;
-    currentPage: number;
-    onPageChange: (page: number) => void;
+  totalPages: number;
+  currentPage: number;
+  onPageChange: (page: number) => void;
 }
 
+export const Pagination: React.FC<PaginationProps> = (props) => {
+  const { totalPages, currentPage, onPageChange } = props;
 
+  const pageNumbers = Array.from(
+    { length: totalPages },
+    (_, index) => index + 1,
+  );
 
-export const Pagination = (Props: PaginationProps) => {
-    const totalPages = Props.totalPages;
-    const currentPage = Props.currentPage;
-    const { onPageChange: onPageChange } = Props;
-    const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
-    //
-    const handleNextClick = () => {
-        const nextPage = currentPage + 1;
-        // Nếu đang ở trang cuối cùng, chuyển về trang đầu tiên
-        onPageChange(nextPage > totalPages ? 1 : nextPage);
-    };
-    const handlePreviousClick = () => {
+  const handleNextClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const nextPage = currentPage + 1;
+    onPageChange(nextPage > totalPages ? 1 : nextPage);
+  };
 
-        const PreviousPage = currentPage - 1;
-        // Nếu đang ở trang cuối cùng, chuyển về trang đầu tiên
-        onPageChange(PreviousPage < totalPages ? 1 : PreviousPage);
-    };
-    return (
-        <ul className='list-page'>
-            {totalPages === 1 || currentPage === 1 ? "" : <> <li>
-                <a href="#" onClick={() => handlePreviousClick()}>Previous</a>
-            </li> </>}
-            {pageNumbers.map((pageNumber) => (
-                <li key={pageNumber} className={pageNumber === currentPage ? 'active' : ''}>
-                    <a href="#" onClick={() => onPageChange(pageNumber)}>
-                        {pageNumber}
-                    </a>
-                </li>
-            ))}
-            {totalPages === 1 || totalPages === currentPage ? "" : <> <li>
-                <a href="#" onClick={() => handleNextClick()}>Next</a>
-            </li> </>}
+  const handlePreviousClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const previousPage = currentPage - 1;
+    onPageChange(previousPage < 1 ? totalPages : previousPage);
+  };
 
-        </ul>
-    );
+  return (
+    <ul className="list-page">
+      {totalPages === 1 || currentPage === 1 ? null : (
+        <li>
+          <a href="#" onClick={(e) => handlePreviousClick(e)}>
+            Previous
+          </a>
+        </li>
+      )}
+      {pageNumbers.map((pageNumber) => (
+        <li
+          key={pageNumber}
+          className={pageNumber === currentPage ? 'active' : ''}
+        >
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              onPageChange(pageNumber);
+            }}
+          >
+            {pageNumber}
+          </a>
+        </li>
+      ))}
+      {totalPages === 1 || currentPage === totalPages ? null : (
+        <li>
+          <a href="#" onClick={(e) => handleNextClick(e)}>
+            Next
+          </a>
+        </li>
+      )}
+    </ul>
+  );
 };
