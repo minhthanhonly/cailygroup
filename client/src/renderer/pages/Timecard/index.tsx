@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '../../components/Button';
 import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
@@ -8,15 +8,57 @@ import { NavLink } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import { SelectCustom, SelectCustomName } from '../../components/Table/SelectCustom';
-// import { Excel } from '../../components/ExportExcel/Excel';
+import { Excel } from '../../components/ExportExcel/Excel';
 
 
+
+//sever link
+
+import { urlControl } from '../../routes/server';
+import axios from 'axios';
 
 export const Timecard = () => {
+
+  type DatabaseTimeCardDetails = {
+    id: string,
+    id_groupwaretimecard: string;
+    timecard_open: string;
+    timecard_close: string;
+    timecard_originalopen: string;
+    timecard_originalclose: string;
+    timecard_interval: string;
+    timecard_originalinterval: string;
+    timecard_time: string;
+    timecard_timeover: string;
+    timecard_timeinterval: string;
+    timecard_comment: string;
+  }
+  const [dataTimeCardDetails, setDataTimeCardDetails] = useState<DatabaseTimeCardDetails[] | []>([]);
+
+  useEffect(() => {
+    axios.get(urlControl + "TimecardDetailsController.php").then((response) => {
+      setDataTimeCardDetails(response.data)
+    })
+  }, [])
+
+  let DataTable: DatabaseTimeCardDetails[] = dataTimeCardDetails.map(item => ({
+    id: item.id,
+    id_groupwaretimecard: item.id_groupwaretimecard,
+    timecard_open: item.timecard_open,
+    timecard_close: item.timecard_close,
+    timecard_originalopen: item.timecard_originalopen,
+    timecard_originalclose: item.timecard_originalclose,
+    timecard_interval: item.timecard_interval,
+    timecard_originalinterval: item.timecard_originalinterval,
+    timecard_time: item.timecard_time,
+    timecard_timeover: item.timecard_timeover,
+    timecard_timeinterval: item.timecard_timeinterval,
+    timecard_comment: item.timecard_comment,
+  }));
+
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
-
   const [tableData, setTableData] = useState<string[][]>([]); // Thêm state để lưu trữ dữ liệu bảng
 
 
@@ -44,14 +86,14 @@ export const Timecard = () => {
           </thead>
           <tbody>
             {/* RowCounts = {RowCounts} */}
-            <CTableTimeCardBody selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} />
+            <CTableTimeCardBody data={DataTable} selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} />
 
           </tbody>
         </table>
       </div>
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
       <ButtonCenter>
-        {/* <Excel tableData={tableData} /> */}
+        <Excel tableData={tableData} />
         <NavLink className="btn" to="/day-off/register">
           Đăng ký nghỉ phép
         </NavLink>

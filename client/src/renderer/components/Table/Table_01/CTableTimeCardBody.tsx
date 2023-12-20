@@ -15,10 +15,15 @@ interface RollAdmin {
   admin?: boolean;
 }
 
+interface DatabaseFile {
+  data: {
+    [key: string]: any;
+  }[]; // Dữ liệu cho bảng
+}
 
 
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces
-interface CombinedProps extends SelectMY, RollAdmin { }
+interface CombinedProps extends SelectMY, RollAdmin, DatabaseFile { }
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
@@ -26,6 +31,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const selectedMonth = Props.selectedMonth;
   const selectedYear = Props.selectedYear;
   const admin = Props.admin;
+  const dataUpload = Props.data;
+
+  console.log("dataUpload", dataUpload[0]);
+
 
 
   const [currentTime, setCurrentTime] = useState(0);
@@ -124,8 +133,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   const fetchCurrentTime = async () => {
     try {
-      const response = await axios.get(
-        'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
       const { datetime } = response.data;
       setCurrentTime(datetime);
@@ -161,9 +169,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   );
 
   let allDays = [...paddingDays, ...daysInMonth];
-
-
-
 
   const getDayClassName = (date: Date) => {
     const dayOfWeek = date.getDay();
@@ -381,7 +386,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
 
 
-
   const handleStartInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const [hours, minutes] = e.target.value.split(':');
     setStartHours(parseInt(hours, 10) || 0);
@@ -400,37 +404,22 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
 
 
-
-
-
-
-
   return (
     <>
       {allDays.map((day, rowIndex) => (
-        <tr
-          key={rowIndex}
-          className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''}${isHoliday(day) ? 'holiday bg-purple' : ''
-            }${isWaiting(day) ? 'waiting bg-yellow' : ''}${accreptLeave(day) ? 'accrept bg-green' : ''
-            }${isCancelLeave(day) ? 'cancel bg-red' : ''} `}
-        >
-          {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
-            new Date(day).getFullYear() === parseInt(selectedYear)) ||
-            (new Date(day).getMonth() + 1 === currentMonth &&
-              new Date(day).getFullYear() === currentYear) ? (
-            <>
-              <td>{format(day, 'dd/MM/yyyy')}</td>
-              {otherColumnData.map((column, colIndex) => (
-                <td key={colIndex}>
-                  {column.format ? column.format(day) : '...'}
-                </td>
-              ))}
-              <td
-                className={`${startHours > 7 || (startHours === 7 && startMinutes > 30) ? 'late' : ''}`} >
+        <tr key={rowIndex} className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''}${isHoliday(day) ? 'holiday bg-purple' : ''}${isWaiting(day) ? 'waiting bg-yellow' : ''}${accreptLeave(day) ? 'accrept bg-green' : ''}${isCancelLeave(day) ? 'cancel bg-red' : ''} `}  >
+          {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) && new Date(day).getFullYear() === parseInt(selectedYear)) || (new Date(day).getMonth() + 1 === currentMonth && new Date(day).getFullYear() === currentYear) ? (
 
-                {isToday(day) && showStartButton ? (<button className="btn btn--medium" onClick={handleButtonClick} >  Bắt đầu </button>) : ('')}
-                {isToday(day) && showStartButton === false ? <> <input onChange={handleStartInputChange} disabled={!editingStart} value={`${startHours}:${String(startMinutes).padStart(2, '0')}`} /></> : ('')}
+            <>
+              <td>{format(day, 'dd/MM/yyyy')}</td>{otherColumnData.map((column, colIndex) => (
+                <td key={colIndex}> {column.format ? column.format(day) : '...'} </td>
+              ))}
+              <td className={`${startHours > 7 || (startHours === 7 && startMinutes > 30) ? 'late' : ''}`} >
+                {isToday(day) && showStartButton ? (<button className="btn btn--medium" onClick={handleButtonClick}> Bắt đầu </button>) : ('')}
+                {isToday(day) && showStartButton === false ? (<><input onChange={handleStartInputChange} disabled={!editingStart} value={`${startHours}:${String(startMinutes).padStart(2, '0')}`} /> </>) : ('')}
+
               </td>
+
               <td>
                 {isToday(day) && showEndButton ? (
                   <button
@@ -491,8 +480,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 <>  {!editingStart ? <> <Button onButtonClick={handleStartEditClick} >cập nhật</Button> </> : <> <button onClick={handleSaveTimeClick}><span className="icon icon--check"><img src={require('../../../../../assets/check.png')} alt="edit" className="fluid-image" /> </span></button> </>} </> : ""} {isCancelLeave(day) && admin !== true ? <span className='bg-red__btn'><button className='btn btn-white'>Hủy bỏ nghỉ phép</button></span> : ''}</td>
             </>
           ) : null}
-        </tr>
+
+        </tr >
+
       ))}
+
       <tr>
         <td> Tổng số giờ</td>
         <td></td>
@@ -520,6 +512,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         }
       </Modal>
     </>
+
+
+
   );
 };
 
