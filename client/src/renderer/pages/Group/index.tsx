@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';
@@ -10,7 +10,7 @@ import { urlControl } from '../../routes/server';
 export const Group = () => {
   type FieldGroups = {
     id: string,
-    group_name:string;
+    group_name: string;
   }
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
@@ -33,7 +33,7 @@ export const Group = () => {
       <Heading2 text="Quản lý nhóm" />
       <AddGroup />
       <CTable>
-        <CTableHead heads={["STT", "Tên Nhóm", "Sửa", "Xóa"]}/>
+        <CTableHead heads={["STT", "Tên Nhóm", "Sửa", "Xóa"]} />
         <CTableBody data={DataTable} permission_edit={true} path_edit='/group/edit' permission_delete={true} />
       </CTable>
     </>
