@@ -1,44 +1,82 @@
-import './SelectMonthYears.scss'
+import './SelectMonthYears.scss';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { urlControl } from '../../routes/server';
 
-export const SelectCustom = () => {
-    return (
-        <>
-
-            <div className='select__box group '>
-                <div className='select__box--title'><p>Nhóm:</p></div>
-                <div className='select__box--flex grid-row select-dropdown'>
-                    <select>
-                        <option value='thietbia'>Năng Lượng</option>
-                        <option value='thietbic'>Thiết bị C</option>
-                        <option value='kientruc'>Kiến Trúc</option>
-                        <option value='web'>Website</option>
-                        <option value='layout'>Layout</option>
-                    </select>
-                </div>
-            </div>
-        </>
-
-    )
+interface SelectCustomProps {
+  onGroupChange: (groupId: string) => void;
 }
+
+export const SelectCustom: React.FC<SelectCustomProps> = ({
+  onGroupChange,
+}) => {
+  const [groupList, setGroupList] = useState<
+    { id: string; group_name: string }[]
+  >([]);
+  const [selectedGroup, setSelectedGroup] = useState<string>('all');
+
+  useEffect(() => {
+    axios
+      .get(urlControl + 'DayoffsController.php', {
+        // Đổi 'DayoffsController.php' thành 'GroupsController.php'
+        params: {
+          method: 'GET_GROUPS', // Thay đổi method nếu có
+        },
+      })
+      .then((response) => {
+        const responseData = response.data;
+
+        // Kiểm tra xem responseData có phải là mảng không
+        if (Array.isArray(responseData)) {
+          setGroupList(responseData);
+        } else {
+          console.error('API không trả về một mảng dữ liệu.');
+        }
+      })
+      .catch((error) => {
+        console.error('Lỗi khi gọi API:', error);
+      });
+  }, []);
+
+  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedGroupId = event.target.value;
+    setSelectedGroup(selectedGroupId);
+    onGroupChange(selectedGroupId);
+  };
+
+  return (
+    <div className="select__box group">
+      <div className="select__box--title">
+        <p>Nhóm:</p>
+      </div>
+      <div className="select__box--flex grid-row select-dropdown">
+        <select value={selectedGroup} onChange={handleGroupChange}>
+          <option value="all">Tất cả</option>
+          {groupList.map((group) => (
+            <option key={group.id} value={group.id}>
+              {group.group_name}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+};
 
 export const SelectCustomName = () => {
-    return (
-        <>
-
-            <div className='select__box group'>
-                <div className='select__box--flex grid-row'>
-                    <select>
-                        <option value='1'>Phan Hồ Tú</option>
-                        <option value='2'>Phan Hồ Tú</option>
-                        <option value='3'>Phan Hồ Tú</option>
-                        <option value='4'>Phan Hồ Tú</option>
-                        <option value=''>Phan Hồ Tú</option>
-                    </select>
-                </div>
-            </div>
-        </>
-
-    )
-}
-
-
+  return (
+    <>
+      <div className="select__box group">
+        <div className="select__box--flex grid-row">
+          <select>
+            <option value="1">Phan Hồ Tú</option>
+            <option value="2">Phan Hồ Tú</option>
+            <option value="3">Phan Hồ Tú</option>
+            <option value="4">Phan Hồ Tú</option>
+            <option value="">Phan Hồ Tú</option>
+          </select>
+        </div>
+      </div>
+    </>
+  );
+};

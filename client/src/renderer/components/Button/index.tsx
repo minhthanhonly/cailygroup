@@ -21,11 +21,23 @@ export const Button = (props: ButtonProps) => {
   let Comp: ReactElement;
 
   if (props.href) {
-    Comp = <a href={props.href} className={className}>{props.children}</a>
+    Comp = (
+      <a href={props.href} className={className}>
+        {props.children}
+      </a>
+    );
   } else if (props.to) {
-    Comp = <Link to={props.to} className={className}>{props.children}</Link>
+    Comp = (
+      <Link to={props.to} className={className}>
+        {props.children}
+      </Link>
+    );
   } else {
-    Comp = <button className={className} onClick={props.onButtonClick}>{props.children}</button>
+    Comp = (
+      <button className={className} onClick={props.onButtonClick}>
+        {props.children}
+      </button>
+    );
   }
-  return Comp
+  return Comp;
 };

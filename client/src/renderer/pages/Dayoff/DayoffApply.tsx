@@ -1,43 +1,167 @@
-import { Pagination } from "../../components/Pagination";
-import { CTable } from "../../components/Table/CTable";
-import CTableBody from "../../components/Table/CTableBody";
-import { CTableHead } from "../../components/Table/CTableHead";
-import { Button } from "../../components/Button";
-import {
-  SelectCustom,
-} from '../../components/Table/SelectCustom';
-import NavDayoff from "../../layouts/components/Nav/NavDayoff";
-import { useState } from "react";
+import { Pagination } from '../../components/Pagination';
+import { CTable } from '../../components/Table/CTable';
+import CTableBody from '../../components/Table/CTableBody';
+import { CTableHead } from '../../components/Table/CTableHead';
+import { Button } from '../../components/Button';
+import NavDayoff from '../../layouts/components/Nav/NavDayoff';
+import { useCallback, useEffect, useState } from 'react';
+import axios from 'axios';
+import { urlControl } from '../../routes/server';
+import { SelectCustom } from '../../components/Table/SelectCustom';
+
 export const DayoffApply = () => {
-  const actionagree = (
-    <Button href="/" size='medium' color="green">Xác Nhận</Button>
-  );
-  const actioncancel = (
-    <Button href="/" size='medium' color="orange">Hủy</Button>
-  );
-  const Data = [
-    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionagree, actioncancel],
-    ["Huỳnh Thị Thanh Tuyền", "Web", "1", "7:30 - 16/11/2023", "17:00 - 16/11/2023", "Nghỉ Phép Năm", actionagree, actioncancel]
-  ]
+  type FieldGroups = {
+    id: any;
+    realname: string;
+    day_number: string;
+    start_datetime: string;
+    end_datetime: string;
+    note: string;
+    yes: React.ReactNode;
+    no: React.ReactNode;
+  };
+  const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
+  const [selectedGroup, setSelectedGroup] = useState<string>('all');
+  const fetchData = useCallback(async () => {
+    try {
+      const [groupsResponse, dayoffsResponse] = await Promise.all([
+        axios.get(urlControl + 'DayoffsController.php', {
+          params: {
+            method: 'GET_GROUPS',
+          },
+        }),
+        axios.get(urlControl + 'DayoffsController.php', {
+          params: {
+            method: 'GET_STATUS_ZERO',
+            group: selectedGroup, // Truyền tham số nhóm vào đây
+          },
+        }),
+      ]);
+
+      const groupsData = groupsResponse.data;
+      // Kiểm tra và xử lý dữ liệu dayoffs
+      const dayoffsData = Array.isArray(dayoffsResponse.data)
+        ? dayoffsResponse.data
+        : [];
+
+      // Xử lý dữ liệu: Kết hợp thông tin từ cả hai truy vấn
+      const combinedData = dayoffsData.map((dayoff) => {
+        const groupInfo = groupsData.find(
+          (group: { id: any; user_id: any }) =>
+            group.id === dayoff.user_group || group.user_id === dayoff.user_id,
+        );
+
+        return {
+          ...dayoff,
+          group_name: groupInfo ? groupInfo.group_name : 'Unknown Group',
+        };
+      });
+
+      setListOfGroups(combinedData);
+    } catch (error) {
+      // console.error('Lỗi khi gọi API:', error);
+      setListOfGroups([]);
+    }
+  }, [selectedGroup]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleGroupChange = (groupId: string) => {
+    setSelectedGroup(groupId);
+    fetchData(); // Gọi lại fetchData để cập nhật dữ liệu với nhóm mới
+  };
+
+  let DataTable: FieldGroups[] = [];
+  for (let i = 0; i < listOfGroups.length; i++) {
+    let dynamicYes = (
+      <a
+        className="btn btn--medium btn--green"
+        onClick={(event: { preventDefault: () => void } | undefined) => {
+          updateStatus(listOfGroups[i].id, event);
+        }}
+        href={listOfGroups[i].id}
+      >
+        Đồng ý
+      </a>
+    );
+    let dynamicNo = (
+      <Button href="/" size="medium" color="orange">
+        Hủy
+      </Button>
+    );
+    DataTable.push({
+      realname: `${listOfGroups[i].realname}`,
+      day_number: `${listOfGroups[i].day_number}`,
+      start_datetime: `${listOfGroups[i].start_datetime}`,
+      end_datetime: `${listOfGroups[i].end_datetime}`,
+      note: `${listOfGroups[i].note}`,
+      yes: dynamicYes,
+      no: dynamicNo,
+    } as FieldGroups);
+  }
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
-  const totalPages = Math.ceil(Data.length / itemsPerPage);
+  const totalPages = Math.ceil(DataTable.length / itemsPerPage);
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
 
-  return <>
-    <NavDayoff role="admin" />
-    <div className="left select-ml0">
-      <SelectCustom />
-    </div>
-    <CTable>
-      <CTableHead heads={["Họ Và Tên", "Nhóm", "Số Ngày", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Ghi Chú", "Đồng Ý", "Từ Chối"]} />
-      <CTableBody path_edit={"edit"} data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
-    </CTable>
-    <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
-  </>;
+  const updateStatus = async (
+    dayoffId: any,
+    event: { preventDefault: () => void } | undefined,
+  ) => {
+    if (event) {
+      event.preventDefault();
+      try {
+        await axios.post(urlControl + 'DayoffsController.php', {
+          method: 'UPDATE_STATUS',
+          id: dayoffId,
+          status: 1, // Đặt status thành 1 khi được chấp nhận
+        });
+
+        fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
+  };
+
+  return (
+    <>
+      <NavDayoff role="admin" />
+      <div className="left select-ml0">
+        <SelectCustom onGroupChange={handleGroupChange} />
+      </div>
+      <CTable>
+        <CTableHead
+          heads={[
+            'Họ Và Tên',
+            'Số Ngày',
+            'Ngày Bắt Đầu',
+            'Ngày Kết Thúc',
+            'Ghi Chú',
+            'Đồng Ý',
+            'Từ Chối',
+          ]}
+        />
+        <CTableBody
+          data={DataTable.slice(
+            (currentPage - 1) * itemsPerPage,
+            currentPage * itemsPerPage,
+          )}
+          path_edit="/"
+        />
+      </CTable>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
+    </>
+  );
 };
