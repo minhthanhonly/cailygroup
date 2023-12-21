@@ -24,45 +24,28 @@ export const Users = () => {
 
   useEffect(() => {
     axios.get('http://cailygroup.com/users/').then((response) => {
-      setListOfUsers(response.data)
-    })
+      setListOfUsers(response.data);
+    }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
   }, [])
 
 
-
-  // let myArray = <?php echo json_encode($listOfUsers) ?>;
-  // console.log(myArray);
-
   let DataTable: FieldUsers[] = [];
 
-  // let obj: FieldUsers = JSON.parse(listOfUsers.toString());
+  for (let i = 0; i < listOfUsers.length; i++) {
+    DataTable.push({
+      realname: `${listOfUsers[i].realname}`,
+      user_group: `${listOfUsers[i].user_group}`,
+      user_email: `${listOfUsers[i].user_email}`,
+      user_skype: `${listOfUsers[i].user_skype}`,
+      user_phone: `${listOfUsers[i].user_phone}`
+    });
+  }
 
-  // console.log(obj);
-  // for (let i = 0; i < listOfUsers.length; i++) {
-  //   DataTable.push({
-  //     realname: `${listOfUsers[i].realname}`,
-  //     user_group: `${listOfUsers[i].user_group}`,
-  //     user_email: `${listOfUsers[i].user_email}`,
-  //     user_skype: `${listOfUsers[i].user_skype}`,
-  //     user_phone: `${listOfUsers[i].user_phone}`
-  //   });
-  // }
-
-  // listOfUsers.replace('users','');
-
-
-
-
-  const Data = [
-    ["Huỳnh Thị Thanh Tuyền", "Năng Lương", "huynhthithanhtuyen@gmail.com", "huynhthithanhtuyen@gmail.com", '0973124567'],
-    ["Huỳnh Thị Thanh Tuyền", "Năng Lương", "huynhthithanhtuyen@gmail.com", "huynhthithanhtuyen@gmail.com", '0973124567'],
-    ["Huỳnh Thị Thanh Tuyền", "Năng Lương", "huynhthithanhtuyen@gmail.com", "huynhthithanhtuyen@gmail.com", '0973124567'],
-  ]
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
-  const totalPages = Math.ceil(Data.length / itemsPerPage);
+  const totalPages = Math.ceil(DataTable.length / itemsPerPage);
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -73,7 +56,9 @@ export const Users = () => {
 
       <div className="box-group box-group--second">
         <div className="box-group__item">
-          <SelectCustom />
+          <SelectCustom onGroupChange={function (groupId: string): void {
+            throw new Error("Function not implemented.");
+          } } />
         </div>
         <div className="box-group__item">
           <InputQuantity />
@@ -83,7 +68,7 @@ export const Users = () => {
         </div>
       </div>
 
-      {/* <ButtonAdd path_add="/member/add" /> */}
+      <ButtonAdd path_add="/users/add" />
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Email", "Skype ID", "Phone", "Sửa", "Xóa"]} />
         <CTableBody data={DataTable} permission_edit={true} path_edit="/member/edit" permission_delete={true} />
