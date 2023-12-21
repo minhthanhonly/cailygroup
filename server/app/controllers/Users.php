@@ -8,11 +8,9 @@
             $this->render('users/index', $this->data);
         }
 
-        // function detail($id=0){
-        //     $home = $this->model('UsersModel');
-        //     $this->data['info'] = $home->getDetail($id);
-        //     $this->render('home/detail', $this->data);
-            
-        // }
+        function add($userid, $password, $realname, $authority, $user_group){
+            return $this->model('UsersModel')->postAdd($userid, $password, $realname, $authority, $user_group);
+        }
+
     }
 ?>
