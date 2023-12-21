@@ -1,13 +1,15 @@
 <?php
 require('../database/DBConnect.php');
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-    header("Access-Control-Allow-Headers: Content-Type");
     http_response_code(200);
     exit;
 }
+
 
 $method = isset($_GET['method']) ? $_GET['method'] : '';
 
@@ -154,7 +156,7 @@ switch ($method) {
         if ($dayoffId !== null && $status !== null) {
             // Cập nhật trạng thái trong cơ sở dữ liệu
             $sql = "UPDATE dayoffs SET status = ? WHERE id = ?";
-            $stmt = $conn->prepare($sql);
+            $stmt = $db_conn->prepare($sql);
             $stmt->bind_param("ii", $status, $dayoffId);
 
             if ($stmt->execute()) {
