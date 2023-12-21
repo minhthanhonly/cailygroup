@@ -13,8 +13,6 @@
                     }
                 }
             }
-
-            echo $handleUrl;
             return $handleUrl;
         }
     }

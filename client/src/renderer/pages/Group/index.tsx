@@ -17,6 +17,7 @@ export const Group = () => {
   useEffect(() => {
     axios.get(urlControl + "GroupsController.php").then((response) => {
       setListOfGroups(response.data)
+      console.log(response.data);
     })
   }, [])
 

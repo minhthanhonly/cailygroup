@@ -1,18 +1,28 @@
 <?php
     class UsersModel{
         function getList(){
-            global $db_conn;
-            $allGroup = mysqli_query($db_conn, "SELECT * FROM groups");
-            if(mysqli_num_rows($allGroup) > 0) {
-                while($row = mysqli_fetch_array($allGroup)) {
-                    $json_array["groupdata"][] = array("id" => $row['id'], "group_name" => $row['group_name']);
+            global $conn;
+            
+            // Thực hiện truy vấn SELECT
+            $sql = "SELECT * FROM users";
+            $result = $conn->query($sql);
+
+            // Kiểm tra và hiển thị kết quả
+            if ($result->num_rows > 0) {
+                // Duyệt qua từng dòng dữ liệu
+                while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
                 }
-                echo json_encode($json_array["groupdata"]);
-                return;
             } else {
-                echo json_encode(["result" => "Please check the Data"]);
-                return;
+                echo "Không có dữ liệu";
             }
+
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            return;
+
+            // Đóng kết nối
+            $conn->close();
         }
 
         function getDetail($id){
