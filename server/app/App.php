@@ -65,6 +65,11 @@
             // Xử lý params
             $this->__params = array_values($urlArr);
 
+            // echo '<pre>';
+            // print_r($this->__controller);
+            // echo '</pre>';
+            // echo $this->__action."<br/>";
+
             // Kiểm tra method tồn tại
             if(method_exists($this->__controller, $this->__action)) {
                 call_user_func_array([$this->__controller, $this->__action], $this->__params);

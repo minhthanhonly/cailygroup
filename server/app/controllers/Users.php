@@ -8,7 +8,7 @@
             $this->render('users/index', $this->data);
         }
 
-        function add($userid, $password, $realname, $authority, $user_group){
+        function add($userid='', $password='', $realname='', $authority='', $user_group=''){
             return $this->model('UsersModel')->postAdd($userid, $password, $realname, $authority, $user_group);
         }
 
