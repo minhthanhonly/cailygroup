@@ -11,6 +11,8 @@ export const Group = () => {
   type FieldGroups = {
     id: string,
     group_name:string;
+    update: React.ReactNode;
+    delete: React.ReactNode;
   }
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [isTableUpdated, setIsTableUpdated] = useState(false);
@@ -22,22 +24,68 @@ export const Group = () => {
     })
   }, [isTableUpdated]);// khi state thay đổi useEffect sẽ chạy lại
 
+  const handleUpdate = () => {
+    
+  }
+  const handleDelete = (id) => {
+    var options = {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+
+    fetch(urlControl + 'GroupsController.php' + '/' + id, options)
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            // Kiểm tra data để xác định hành động tiếp theo (nếu cần)
+            console.log(data);
+        })
+        .catch(function(error) {
+            console.error("Fetch error:", error);
+        });
+  };
+  let dynamicUpdate = (
+    <button onClick={handleUpdate}>
+    <p className="icon icon--check">
+      <img
+        src={require('../../../../assets/icnedit.png')}
+        alt="edit"
+        className="fluid-image"
+      />
+    </p></button>
+  );
+  let dynamicDelete = (
+    <button onClick={handleDelete}>
+    <p className="icon icon--check">
+      <img
+        src={require('../../../../assets/icndelete.png')}
+        alt="edit"
+        className="fluid-image"
+      />
+    </p></button>
+  );
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
     DataTable.push({
       id: `${listOfGroups[i].id}`,
-      group_name: `${listOfGroups[i].group_name}`
+      group_name: `${listOfGroups[i].group_name}`,
+      update: dynamicUpdate,
+      delete: dynamicDelete,
     });
   }
   const [groupname, setGroupname] = useState('')
- 
   const handleSubmint = () => {
     const group_data = {
       group_name: groupname,
       add_level: 1,
       owner: 'admin',
     };
-    console.log(group_data);
 
     fetch(urlControl + 'GroupsController.php', {
       method: 'POST',
@@ -66,6 +114,7 @@ export const Group = () => {
       });
       
   }
+  
   return (
     <>
       <Heading2 text="Quản lý nhóm" />
@@ -87,7 +136,7 @@ export const Group = () => {
       </div>
       <CTable>
         <CTableHead heads={["STT", "Tên Nhóm", "Sửa", "Xóa"]}/>
-        <CTableBody data={DataTable} permission_edit={true} path_edit='/group/edit' permission_delete={true} />
+        <CTableBody data={DataTable} path_edit='/group/edit'/>
       </CTable>
     </>
   )
