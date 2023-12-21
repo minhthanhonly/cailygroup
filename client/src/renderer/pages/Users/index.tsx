@@ -15,7 +15,7 @@ export const Users = () => {
 
   type FieldUsers = {
     realname: string,
-    user_group: string,
+    group_name: string,
     user_email: string,
     user_skype: string,
     user_phone: string,
@@ -34,7 +34,7 @@ export const Users = () => {
   for (let i = 0; i < listOfUsers.length; i++) {
     DataTable.push({
       realname: `${listOfUsers[i].realname}`,
-      user_group: `${listOfUsers[i].user_group}`,
+      group_name: `${listOfUsers[i].group_name}`,
       user_email: `${listOfUsers[i].user_email}`,
       user_skype: `${listOfUsers[i].user_skype}`,
       user_phone: `${listOfUsers[i].user_phone}`
