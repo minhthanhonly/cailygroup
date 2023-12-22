@@ -18,17 +18,18 @@ export const DayoffApply = () => {
     note: string;
     yes: React.ReactNode;
     no: React.ReactNode;
+    status: number;
   };
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const fetchData = useCallback(async () => {
+    let a = await axios.get(urlControl + 'DayoffsController.php', {
+      params: {
+        method: 'GET_GROUPS',
+      },
+    });
+    console.log(a.data);
     try {
-      let s = await axios.get(urlControl + 'DayoffsController.php', {
-        params: {
-          method: 'GET_GROUPS',
-        },
-      });
-      console.log(s);
       const [groupsResponse, dayoffsResponse] = await Promise.all([
         axios.get(urlControl + 'DayoffsController.php', {
           params: {
@@ -38,13 +39,12 @@ export const DayoffApply = () => {
         axios.get(urlControl + 'DayoffsController.php', {
           params: {
             method: 'GET_STATUS_ZERO',
-            group: selectedGroup, // Truyền tham số nhóm vào đây
+            group: selectedGroup,
           },
         }),
       ]);
 
       const groupsData = groupsResponse.data;
-
       // Kiểm tra và xử lý dữ liệu dayoffs
       const dayoffsData = Array.isArray(dayoffsResponse.data)
         ? dayoffsResponse.data
@@ -85,7 +85,7 @@ export const DayoffApply = () => {
       <a
         className="btn btn--medium btn--green"
         onClick={(event) => {
-          deleteStatus(listOfGroups[i].id, event);
+          updateStatus(listOfGroups[i].id, event);
         }}
         href={listOfGroups[i].id}
       >
@@ -95,7 +95,7 @@ export const DayoffApply = () => {
     let dynamicNo = (
       <a
         className="btn btn--medium btn--orange"
-        onClick={(event: { preventDefault: () => void } | undefined) => {
+        onClick={(event) => {
           deleteStatus(listOfGroups[i].id, event);
         }}
         href={listOfGroups[i].id}
@@ -103,15 +103,17 @@ export const DayoffApply = () => {
         Hủy
       </a>
     );
-    DataTable.push({
-      realname: `${listOfGroups[i].realname}`,
-      day_number: `${listOfGroups[i].day_number}`,
-      start_datetime: `${listOfGroups[i].start_datetime}`,
-      end_datetime: `${listOfGroups[i].end_datetime}`,
-      note: `${listOfGroups[i].note}`,
-      yes: dynamicYes,
-      no: dynamicNo,
-    } as FieldGroups);
+    if (listOfGroups[i].status == 0) {
+      DataTable.push({
+        realname: `${listOfGroups[i].realname}`,
+        day_number: `${listOfGroups[i].day_number}`,
+        start_datetime: `${listOfGroups[i].start_datetime}`,
+        end_datetime: `${listOfGroups[i].end_datetime}`,
+        note: `${listOfGroups[i].note}`,
+        yes: dynamicYes,
+        no: dynamicNo,
+      } as unknown as FieldGroups);
+    }
   }
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -130,12 +132,15 @@ export const DayoffApply = () => {
     if (event) {
       event.preventDefault();
       try {
-        await axios.post(urlControl + 'DayoffsController.php', {
-          method: 'UPDATE_STATUS',
-          id: dayoffId,
-          status: 1, // Đặt status thành 1 khi được chấp nhận
-        });
-
+        const response = await axios.post(
+          urlControl + 'DayoffsController.php',
+          {
+            method: 'UPDATE_STATUS',
+            id: dayoffId,
+            status: 1, // Đặt status thành 1 khi được chấp nhận
+          },
+        );
+        console.log('UPDATE Response:', response.data);
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);

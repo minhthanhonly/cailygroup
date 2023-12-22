@@ -1,16 +1,14 @@
 <?php
 require('../database/DBConnect.php');
-
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE");
+header("Access-Control-Allow-Headers: Content-Type");
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
-
-$methods = $_SERVER['REQUEST_METHOD'];
-$method = isset($_GET['method']) ? $_GET['method'] : '';
-// $data = json_decode(file_get_contents("php://input"), true);
-echo $method;
-exit;
+$method = $_SERVER['REQUEST_METHOD'];
+$data = json_decode(file_get_contents("php://input"), true);
 switch ($method) {
     case "GET":
         if (isset($data['method'])) {
@@ -79,6 +77,7 @@ switch ($method) {
                 break;
             }
         }else {
+
             $query = "SELECT dayoffs.*, 
                         CONCAT(dayoffs.time_start, ' - ' , dayoffs.date_start) AS start_datetime, 
                         CONCAT(dayoffs.time_end, ' - ', dayoffs.date_end) AS end_datetime, 
@@ -114,13 +113,14 @@ switch ($method) {
         if (isset($data['method'])) {
             switch ($data['method']) {
                 case "UPDATE_STATUS":
-                    $dayoffId = isset($_POST["id"]) ? $_POST["id"] : null;
-                    $status = isset($_POST["status"]) ? $_POST["status"] : null;
+                    var_dump($data);
+                    $dayoffId = isset($data["id"]) ? $data["id"] : null;
+                    $status = isset($data["status"]) ? $data["status"] : null;
 
                     if ($dayoffId !== null && $status !== null) {
                         // Cập nhật trạng thái trong cơ sở dữ liệu
                         $sql = "UPDATE dayoffs SET status = ? WHERE id = ?";
-                        $stmt = $conn->prepare($sql);
+                        $stmt = $db_conn->prepare($sql);
                         $stmt->bind_param("ii", $status, $dayoffId);
 
                         if ($stmt->execute()) {
@@ -139,7 +139,6 @@ switch ($method) {
                 break;
             }
         }else {
-            $data = json_decode(file_get_contents("php://input"), true);
             if (isset($data['group_data']['user_id'])) {
                 $insertQuery = "INSERT INTO dayoffs (user_id, date_start, date_end, time_start, time_end, note, day_number, status, owner, createdAt) 
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
@@ -178,8 +177,7 @@ switch ($method) {
     break;
 
     case "DELETE":
-        $data = json_decode(file_get_contents("php://input"), true);
-
+        var_dump($data);
         if (isset($data['id'])) {
             $id = mysqli_real_escape_string($db_conn, $data['id']);
 
@@ -196,7 +194,7 @@ switch ($method) {
             http_response_code(400);
             echo json_encode(["error" => "Invalid data"]);
         }
-        break;
+    break;
 
     default:
         http_response_code(405);
