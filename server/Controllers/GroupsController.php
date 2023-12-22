@@ -69,29 +69,33 @@ switch($method) {
         
     case "DELETE":
         $data = json_decode(file_get_contents("php://input"), true);
+        // echo $data['group_data']['id'];
+        // exit;
+        if (isset($data['group_data']['id'])) {
+            $groupId = $data['group_data']['id'];
+            $deleteQuery = "DELETE FROM groups WHERE id = ?";
 
-    if (isset($data['group_data']['group_name'])) {
-        $groupId = 'id';
-        $deleteQuery = "DELETE FROM groups WHERE id = ?";
+            $stmt = mysqli_prepare($db_conn, $deleteQuery);
 
-        $stmt = mysqli_prepare($db_conn, $insertQuery);
+            if (!$db_conn) {
+                http_response_code(500);
+                echo json_encode(["error" => "Lỗi kết nối CSDL"]);
+                exit();
+            }
 
-        if (!$stmt) {
-            http_response_code(500);
-            echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($db_conn)]);
-            exit();
+            // Gắn tham số cho địa chỉ
+            mysqli_stmt_bind_param($stmt, "i", $groupId);
+
+            if (mysqli_stmt_execute($stmt)) {
+                http_response_code(200); // Sử dụng 200 cho thành công, không nhất thiết phải là 201
+                echo json_encode(["message" => "Xóa thành công"]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Xóa không thành công: " . mysqli_error($db_conn)]);
+            }
+
+            mysqli_stmt_close($stmt);
         }
-        // Gắn tham số cho địa chỉ
-        mysqli_stmt_bind_param($stmt, "i", $groupId);
-        if (mysqli_stmt_execute($stmt)) {
-            http_response_code(201);
-            echo json_encode(["message" => "Xóa thành công"]);
-        } else {
-            http_response_code(500);
-            echo json_encode(["error" => "Xóa không thành công: " . mysqli_error($db_conn)]);
-        }
-        mysqli_stmt_close($stmt);
-    }
         break;
 
     default:

@@ -28,28 +28,50 @@ export const Group = () => {
     
   }
   const handleDelete = (id) => {
+    const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa không?");
+    
+    if (!isConfirmed) {
+        return; // Người dùng không xác nhận xóa
+    }
+
     var options = {
         method: 'DELETE',
+        id: id,
         headers: {
             "Content-Type": "application/json",
         },
     };
-
-    fetch(urlControl + 'GroupsController.php' + '/' + id, options)
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
+    // let s = axios.delete(urlControl + 'GroupsController.php', {
+    //   params: {
+    //     method: 'DELETE',
+    //     id: id,
+    //   },
+    // });
+    // console.log(s);
+    fetch(urlControl + 'GroupsController.php', options)
+        .then((response) => {
+          if (response.status !== 200) {
+              throw new Error('Network response was not ok');
+          }
+          return response.text();
         })
-        .then(function(data) {
-            // Kiểm tra data để xác định hành động tiếp theo (nếu cần)
-            console.log(data);
+        .then((responseData) => {
+          try {
+            const jsonData = JSON.parse(responseData);
+            console.log('Data parsed successfully:', jsonData);
+            // Thực hiện các xử lý sau khi xóa thành công
+            alert('Xóa thành công!'); // Thông báo cho người dùng (có thể sử dụng một cách khác nếu bạn muốn)
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+            // Xử lý lỗi phân tích cú pháp JSON
+          }
         })
-        .catch(function(error) {
-            console.error("Fetch error:", error);
+        .catch((error) => {
+          console.error('Error deleting data:', error);
+          // Xử lý lỗi khi gọi API xóa
         });
   };
+ 
   let dynamicUpdate = (
     <button onClick={handleUpdate}>
     <p className="icon icon--check">
@@ -60,8 +82,8 @@ export const Group = () => {
       />
     </p></button>
   );
-  let dynamicDelete = (
-    <button onClick={handleDelete}>
+  let dynamicDelete = (id) => (
+    <button onClick={() => handleDelete(id)}>
     <p className="icon icon--check">
       <img
         src={require('../../../../assets/icndelete.png')}
@@ -76,9 +98,10 @@ export const Group = () => {
       id: `${listOfGroups[i].id}`,
       group_name: `${listOfGroups[i].group_name}`,
       update: dynamicUpdate,
-      delete: dynamicDelete,
+      delete: dynamicDelete(listOfGroups[i].id) // Truyền id vào dynamicDelete
     });
   }
+  
   const [groupname, setGroupname] = useState('')
   const handleSubmint = () => {
     const group_data = {
