@@ -27,29 +27,37 @@ export const Group = () => {
   const handleUpdate = () => {
     
   }
-  const handleDelete = (id) => {
-    var options = {
-        method: 'DELETE',
-        headers: {
-            "Content-Type": "application/json",
-        },
-    };
-
-    fetch(urlControl + 'GroupsController.php' + '/' + id, options)
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then(function(data) {
-            // Kiểm tra data để xác định hành động tiếp theo (nếu cần)
-            console.log(data);
-        })
-        .catch(function(error) {
-            console.error("Fetch error:", error);
-        });
+  const handleDelete = async (
+    groupId: any,
+    event: { preventDefault: () => void } | undefined,
+  ) => {
+    const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa không?");
+    
+    if (!isConfirmed) {
+        return; // Người dùng không xác nhận xóa
+    }
+    if (event) {
+      event.preventDefault();
+      try {
+        const payload = { id: groupId };
+        let response = await axios.delete(
+          urlControl + 'GroupsController.php',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            data: payload,
+          },
+        );
+        console.log('DELETE Response:', response.data)
+        setIsTableUpdated(true);//Khi thêm nhóm mới ,cập nhật state mới
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
   };
+
+ 
   let dynamicUpdate = (
     <button onClick={handleUpdate}>
     <p className="icon icon--check">
@@ -60,8 +68,8 @@ export const Group = () => {
       />
     </p></button>
   );
-  let dynamicDelete = (
-    <button onClick={handleDelete}>
+  let dynamicDelete = (id) => (
+    <button onClick={(event) => { handleDelete(id, event)}}>
     <p className="icon icon--check">
       <img
         src={require('../../../../assets/icndelete.png')}
@@ -76,9 +84,10 @@ export const Group = () => {
       id: `${listOfGroups[i].id}`,
       group_name: `${listOfGroups[i].group_name}`,
       update: dynamicUpdate,
-      delete: dynamicDelete,
+      delete: dynamicDelete(listOfGroups[i].id) // Truyền id vào dynamicDelete
     });
   }
+  
   const [groupname, setGroupname] = useState('')
   const handleSubmint = () => {
     const group_data = {

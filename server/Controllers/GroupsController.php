@@ -27,39 +27,39 @@ switch($method) {
         break;
 
     case "POST":
-    $data = json_decode(file_get_contents("php://input"), true);
+        $data = json_decode(file_get_contents("php://input"), true);
 
-    if (isset($data['group_data']['group_name'])) {
-        $insertQuery = "INSERT INTO groups (group_name, add_level, owner, createdAt) 
-                        VALUES (?, ?, ?, NOW())";
+        if (isset($data['group_data']['group_name'])) {
+            $insertQuery = "INSERT INTO groups (group_name, add_level, owner, createdAt) 
+                            VALUES (?, ?, ?, NOW())";
 
-        $stmt = mysqli_prepare($db_conn, $insertQuery);
+            $stmt = mysqli_prepare($db_conn, $insertQuery);
 
-        if (!$stmt) {
-            http_response_code(500);
-            echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($db_conn)]);
-            exit();
-        }
+            if (!$stmt) {
+                http_response_code(500);
+                echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($db_conn)]);
+                exit();
+            }
 
-        mysqli_stmt_bind_param($stmt, "sis", 
-            $data['group_data']['group_name'],
-            $data['group_data']['add_level'],
-            $data['group_data']['owner']
-        );
+            mysqli_stmt_bind_param($stmt, "sis", 
+                $data['group_data']['group_name'],
+                $data['group_data']['add_level'],
+                $data['group_data']['owner']
+            );
 
-        if (mysqli_stmt_execute($stmt)) {
-            http_response_code(201);
-            echo json_encode(["message" => "Thêm thành công"]);
+            if (mysqli_stmt_execute($stmt)) {
+                http_response_code(201);
+                echo json_encode(["message" => "Thêm thành công"]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Thêm không thành công: " . mysqli_error($db_conn)]);
+            }
+
+            mysqli_stmt_close($stmt);
         } else {
-            http_response_code(500);
-            echo json_encode(["error" => "Thêm không thành công: " . mysqli_error($db_conn)]);
+            http_response_code(400);
+            echo json_encode(["error" => "Dữ liệu không hợp lệ. 'group_name' bị thiếu"]);
         }
-
-        mysqli_stmt_close($stmt);
-    } else {
-        http_response_code(400);
-        echo json_encode(["error" => "Dữ liệu không hợp lệ. 'group_name' bị thiếu"]);
-    }
     break;
 
 
@@ -69,29 +69,22 @@ switch($method) {
         
     case "DELETE":
         $data = json_decode(file_get_contents("php://input"), true);
+        if (isset($data['id'])) {
+            $id = mysqli_real_escape_string($db_conn, $data['id']);
 
-    if (isset($data['group_data']['group_name'])) {
-        $groupId = 'id';
-        $deleteQuery = "DELETE FROM groups WHERE id = ?";
+            $deleteQuery = "DELETE FROM groups WHERE id = $id";
 
-        $stmt = mysqli_prepare($db_conn, $insertQuery);
-
-        if (!$stmt) {
-            http_response_code(500);
-            echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($db_conn)]);
-            exit();
-        }
-        // Gắn tham số cho địa chỉ
-        mysqli_stmt_bind_param($stmt, "i", $groupId);
-        if (mysqli_stmt_execute($stmt)) {
-            http_response_code(201);
-            echo json_encode(["message" => "Xóa thành công"]);
+            if (mysqli_query($db_conn, $deleteQuery)) {
+                http_response_code(200);
+                echo json_encode(["message" => "Data deleted successfully"]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Failed to delete data"]);
+            }
         } else {
-            http_response_code(500);
-            echo json_encode(["error" => "Xóa không thành công: " . mysqli_error($db_conn)]);
+            http_response_code(400);
+            echo json_encode(["error" => "Invalid data"]);
         }
-        mysqli_stmt_close($stmt);
-    }
         break;
 
     default:
