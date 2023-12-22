@@ -24,9 +24,22 @@ export const Group = () => {
     })
   }, [isTableUpdated]);// khi state thay đổi useEffect sẽ chạy lại
 
-  const handleUpdate = () => {
-    
-  }
+  // const handleUpdate = async (groupId,event) => {
+  //   if (event) {
+  //     event.preventDefault();
+  //     try {
+  //       const payload = { id: groupId };
+  //       const response = await axios.put(
+  //         urlControl + 'GroupsController.php',
+  //         payload,
+  //         { headers: { 'Content-Type': 'application/json' } }
+  //       );
+  //       console.log('Update Response:', response.data);
+  //     } catch (error) {
+  //       console.error('Lỗi khi cập nhật trạng thái:', error);
+  //     }
+  //   }
+  // };
   const handleDelete = async (
     groupId: any,
     event: { preventDefault: () => void } | undefined,
@@ -58,8 +71,8 @@ export const Group = () => {
   };
 
  
-  let dynamicUpdate = (
-    <button onClick={handleUpdate}>
+  let dynamicUpdate = (id) => (
+    <button path_edit="/group/edit">
     <p className="icon icon--check">
       <img
         src={require('../../../../assets/icnedit.png')}
@@ -83,7 +96,7 @@ export const Group = () => {
     DataTable.push({
       id: `${listOfGroups[i].id}`,
       group_name: `${listOfGroups[i].group_name}`,
-      update: dynamicUpdate,
+      update: dynamicUpdate(listOfGroups[i].id),
       delete: dynamicDelete(listOfGroups[i].id) // Truyền id vào dynamicDelete
     });
   }
