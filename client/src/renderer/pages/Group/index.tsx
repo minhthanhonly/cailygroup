@@ -27,50 +27,36 @@ export const Group = () => {
   const handleUpdate = () => {
     
   }
-  const handleDelete = (id) => {
+  const handleDelete = async (
+    groupId: any,
+    event: { preventDefault: () => void } | undefined,
+  ) => {
     const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa không?");
     
     if (!isConfirmed) {
         return; // Người dùng không xác nhận xóa
     }
-
-    var options = {
-        method: 'DELETE',
-        id: id,
-        headers: {
-            "Content-Type": "application/json",
-        },
-    };
-    // let s = axios.delete(urlControl + 'GroupsController.php', {
-    //   params: {
-    //     method: 'DELETE',
-    //     id: id,
-    //   },
-    // });
-    // console.log(s);
-    fetch(urlControl + 'GroupsController.php', options)
-        .then((response) => {
-          if (response.status !== 200) {
-              throw new Error('Network response was not ok');
-          }
-          return response.text();
-        })
-        .then((responseData) => {
-          try {
-            const jsonData = JSON.parse(responseData);
-            console.log('Data parsed successfully:', jsonData);
-            // Thực hiện các xử lý sau khi xóa thành công
-            alert('Xóa thành công!'); // Thông báo cho người dùng (có thể sử dụng một cách khác nếu bạn muốn)
-          } catch (error) {
-            console.error('Error parsing JSON:', error);
-            // Xử lý lỗi phân tích cú pháp JSON
-          }
-        })
-        .catch((error) => {
-          console.error('Error deleting data:', error);
-          // Xử lý lỗi khi gọi API xóa
-        });
+    if (event) {
+      event.preventDefault();
+      try {
+        const payload = { id: groupId };
+        let response = await axios.delete(
+          urlControl + 'GroupsController.php',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            data: payload,
+          },
+        );
+        console.log('DELETE Response:', response.data)
+        setIsTableUpdated(true);//Khi thêm nhóm mới ,cập nhật state mới
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
   };
+
  
   let dynamicUpdate = (
     <button onClick={handleUpdate}>
@@ -83,7 +69,7 @@ export const Group = () => {
     </p></button>
   );
   let dynamicDelete = (id) => (
-    <button onClick={() => handleDelete(id)}>
+    <button onClick={(event) => { handleDelete(id, event)}}>
     <p className="icon icon--check">
       <img
         src={require('../../../../assets/icndelete.png')}
