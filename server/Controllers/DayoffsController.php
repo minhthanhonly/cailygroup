@@ -18,7 +18,7 @@ switch ($method) {
                     groups.group_name
             FROM dayoffs
             JOIN users ON dayoffs.user_id = users.id
-            LEFT JOIN groups ON users.user_group = groups.id";
+            JOIN groups ON users.user_group = groups.id";
         $allGroup = mysqli_query($db_conn, $query);
 
         if ($allGroup) {
