@@ -3,7 +3,7 @@ require('../database/DBConnect.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+    header("Access-Control-Allow-Methods: POST, GET, OPTIONS,DELETE");
     header("Access-Control-Allow-Headers: Content-Type");
     http_response_code(200);
     exit;
@@ -68,7 +68,30 @@ switch($method) {
         break;
         
     case "DELETE":
+        $data = json_decode(file_get_contents("php://input"), true);
 
+    if (isset($data['group_data']['group_name'])) {
+        $groupId = 'id';
+        $deleteQuery = "DELETE FROM groups WHERE id = ?";
+
+        $stmt = mysqli_prepare($db_conn, $insertQuery);
+
+        if (!$stmt) {
+            http_response_code(500);
+            echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($db_conn)]);
+            exit();
+        }
+        // Gắn tham số cho địa chỉ
+        mysqli_stmt_bind_param($stmt, "i", $groupId);
+        if (mysqli_stmt_execute($stmt)) {
+            http_response_code(201);
+            echo json_encode(["message" => "Xóa thành công"]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["error" => "Xóa không thành công: " . mysqli_error($db_conn)]);
+        }
+        mysqli_stmt_close($stmt);
+    }
         break;
 
     default:
