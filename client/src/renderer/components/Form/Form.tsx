@@ -7,6 +7,7 @@ import TimePickerButton from '../Modal/TimeSelect';
 import { SelectCustom } from '../Table/SelectCustom';
 import { urlControl } from '../../routes/server';
 import { format } from 'date-fns';
+import axios from 'axios';
 
 export const FormLogin = () => {
   return (
@@ -213,22 +214,10 @@ export const FormLeave: React.FC = () => {
     };
     console.log(group_data);
 
-    fetch(urlControl + 'DayoffsController.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      mode: 'cors',
-      body: JSON.stringify({ group_data }),
-    })
+    axios
+      .post(urlControl + 'DayoffsController.php', { group_data })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((responseData) => {
-        console.log('Data inserted successfully:', responseData);
+        console.log('Data inserted successfully:', response.data);
         // Xử lý thành công nếu cần
       })
       .catch((error) => {
@@ -236,7 +225,7 @@ export const FormLeave: React.FC = () => {
         // Xử lý lỗi nếu cần
         if (error.response) {
           console.error('Response status:', error.response.status);
-          console.error('Server error message:', error.response.data); // Thay đổi tùy theo cách server trả về thông báo lỗi
+          console.error('Server error message:', error.response.data);
         }
       });
   };

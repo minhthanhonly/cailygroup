@@ -10,4 +10,10 @@
     $routes['users'] = 'users';
     $routes['users/edit/.+-(\d+)'] = 'users/edit/$1';
     $routes['users/delete/.+-(\d+)'] = 'users/delete/$1';
+
+    
+    // dayoffs
+    $routes['dayoffs'] = 'dayoffs';
+    // $routes['dayoffs/edit/.+-(\d+)'] = 'dayoffs/edit/$1';
+    // $routes['dayoffs/delete/.+-(\d+)'] = 'dayoffs/delete/$1';
 ?>

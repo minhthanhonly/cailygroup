@@ -87,9 +87,15 @@ export const DayoffApply = () => {
       </a>
     );
     let dynamicNo = (
-      <Button href="/" size="medium" color="orange">
+      <a
+        className="btn btn--medium btn--orange"
+        onClick={(event: { preventDefault: () => void } | undefined) => {
+          deleteStatus(listOfGroups[i].id, event);
+        }}
+        href={listOfGroups[i].id}
+      >
         Hủy
-      </Button>
+      </a>
     );
     DataTable.push({
       realname: `${listOfGroups[i].realname}`,
@@ -122,6 +128,23 @@ export const DayoffApply = () => {
           method: 'UPDATE_STATUS',
           id: dayoffId,
           status: 1, // Đặt status thành 1 khi được chấp nhận
+        });
+
+        fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
+  };
+  const deleteStatus = async (
+    dayoffId: any,
+    event: { preventDefault: () => void } | undefined,
+  ) => {
+    if (event) {
+      event.preventDefault();
+      try {
+        await axios.delete(urlControl + 'DayoffsController.php', {
+          // id: dayoffId,
         });
 
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
