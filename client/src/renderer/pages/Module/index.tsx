@@ -1,10 +1,10 @@
 import {
   FormLogin,
   FormUser,
-  FormLeave,
   AddGroup,
   AddEditMember,
 } from '../../components/Form/Form';
+import { FormLeave } from '../../components/Form/FormLeave';
 import { Dashboard } from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
@@ -130,7 +130,7 @@ export const Module = () => {
         <ButtonDelete />
         <br />
         <br />
-        <ButtonEdit href='/'/>
+        <ButtonEdit href="/" />
         <br />
         <br />
         <ButtonCenter>
