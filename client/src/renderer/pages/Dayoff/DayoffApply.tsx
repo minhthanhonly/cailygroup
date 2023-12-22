@@ -2,7 +2,6 @@ import { Pagination } from '../../components/Pagination';
 import { CTable } from '../../components/Table/CTable';
 import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
-import { Button } from '../../components/Button';
 import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
@@ -24,6 +23,12 @@ export const DayoffApply = () => {
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const fetchData = useCallback(async () => {
     try {
+      let s = await axios.get(urlControl + 'DayoffsController.php', {
+        params: {
+          method: 'GET_GROUPS',
+        },
+      });
+      console.log(s);
       const [groupsResponse, dayoffsResponse] = await Promise.all([
         axios.get(urlControl + 'DayoffsController.php', {
           params: {
@@ -39,6 +44,7 @@ export const DayoffApply = () => {
       ]);
 
       const groupsData = groupsResponse.data;
+
       // Kiểm tra và xử lý dữ liệu dayoffs
       const dayoffsData = Array.isArray(dayoffsResponse.data)
         ? dayoffsResponse.data
@@ -78,8 +84,8 @@ export const DayoffApply = () => {
     let dynamicYes = (
       <a
         className="btn btn--medium btn--green"
-        onClick={(event: { preventDefault: () => void } | undefined) => {
-          updateStatus(listOfGroups[i].id, event);
+        onClick={(event) => {
+          deleteStatus(listOfGroups[i].id, event);
         }}
         href={listOfGroups[i].id}
       >
@@ -87,9 +93,15 @@ export const DayoffApply = () => {
       </a>
     );
     let dynamicNo = (
-      <Button href="/" size="medium" color="orange">
+      <a
+        className="btn btn--medium btn--orange"
+        onClick={(event: { preventDefault: () => void } | undefined) => {
+          deleteStatus(listOfGroups[i].id, event);
+        }}
+        href={listOfGroups[i].id}
+      >
         Hủy
-      </Button>
+      </a>
     );
     DataTable.push({
       realname: `${listOfGroups[i].realname}`,
@@ -124,6 +136,31 @@ export const DayoffApply = () => {
           status: 1, // Đặt status thành 1 khi được chấp nhận
         });
 
+        fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
+  };
+  const deleteStatus = async (
+    dayoffId: any,
+    event: { preventDefault: () => void } | undefined,
+  ) => {
+    if (event) {
+      event.preventDefault();
+      try {
+        const payload = { id: dayoffId };
+        let response = await axios.delete(
+          urlControl + 'DayoffsController.php',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            data: payload,
+          },
+        );
+
+        console.log('DELETE Response:', response.data);
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
