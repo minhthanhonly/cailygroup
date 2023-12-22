@@ -14,16 +14,12 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
     { id: string; group_name: string }[]
   >([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
+
   useEffect(() => {
     axios
-      .get(urlControl + 'DayoffsController.php', {
-        params: {
-          method: 'GET_GROUPS',
-        },
-      })
+      .get(urlControl + 'GroupsController.php')
       .then((response) => {
         const responseData = response.data;
-        // Kiểm tra xem responseData có phải là mảng không
         if (Array.isArray(responseData)) {
           setGroupList(responseData);
         } else {
@@ -33,60 +29,7 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
       .catch((error) => {
         console.error('Lỗi khi gọi API:', error);
       });
-  }, []);
-
-  const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedGroupId = event.target.value;
-    setSelectedGroup(selectedGroupId);
-    onGroupChange(selectedGroupId);
-  };
-
-  return (
-    <div className="select__box group">
-      <div className="select__box--title">
-        <p>Nhóm:</p>
-      </div>
-      <div className="select__box--flex grid-row select-dropdown">
-        <select value={selectedGroup} onChange={handleGroupChange}>
-          <option value="all">Tất cả</option>
-          {groupList.map((group) => (
-            <option key={group.id} value={group.id}>
-              {group.group_name}
-            </option>
-          ))}
-        </select>
-      </div>
-    </div>
-  );
-};
-export const SelectCustom_test: React.FC<SelectCustomProps> = ({
-  onGroupChange,
-}) => {
-  const [groupList, setGroupList] = useState<
-    { id: string; group_name: string }[]
-  >([]);
-  const [selectedGroup, setSelectedGroup] = useState<string>('all');
-  useEffect(() => {
-    axios
-      .get(urlControl + 'DayoffsController.php', {
-        params: {
-          method: 'GET_GROUPS',
-        },
-      })
-      .then((response) => {
-        const responseData = response.data;
-        // Kiểm tra xem responseData có phải là mảng không
-        console.log(responseData);
-        if (Array.isArray(responseData)) {
-          setGroupList(responseData);
-        } else {
-          console.error('API không trả về một mảng dữ liệu.');
-        }
-      })
-      .catch((error) => {
-        console.error('Lỗi khi gọi API:', error);
-      });
-  }, []);
+  }, []); // Empty dependency array means this effect runs once on mount
 
   const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedGroupId = event.target.value;

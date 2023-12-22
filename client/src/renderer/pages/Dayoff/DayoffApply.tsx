@@ -23,19 +23,9 @@ export const DayoffApply = () => {
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const fetchData = useCallback(async () => {
-    let a = await axios.get(urlControl + 'DayoffsController.php', {
-      params: {
-        method: 'GET_GROUPS',
-      },
-    });
-    console.log(a.data);
     try {
       const [groupsResponse, dayoffsResponse] = await Promise.all([
-        axios.get(urlControl + 'DayoffsController.php', {
-          params: {
-            method: 'GET_GROUPS',
-          },
-        }),
+        axios.get(urlControl + 'GroupsController.php'),
         axios.get(urlControl + 'DayoffsController.php', {
           params: {
             method: 'GET_STATUS_ZERO',
@@ -43,14 +33,12 @@ export const DayoffApply = () => {
           },
         }),
       ]);
-
       const groupsData = groupsResponse.data;
-      // Kiểm tra và xử lý dữ liệu dayoffs
       const dayoffsData = Array.isArray(dayoffsResponse.data)
         ? dayoffsResponse.data
         : [];
-
-      // Xử lý dữ liệu: Kết hợp thông tin từ cả hai truy vấn
+      // console.log('Groups Data:', groupsData);
+      // console.log('Dayoffs Data:', dayoffsData);
       const combinedData = dayoffsData.map((dayoff) => {
         const groupInfo = groupsData.find(
           (group: { id: any; user_id: any }) =>
@@ -76,6 +64,7 @@ export const DayoffApply = () => {
 
   const handleGroupChange = (groupId: string) => {
     setSelectedGroup(groupId);
+    console.log(groupId);
     fetchData(); // Gọi lại fetchData để cập nhật dữ liệu với nhóm mới
   };
 
@@ -140,7 +129,6 @@ export const DayoffApply = () => {
             status: 1, // Đặt status thành 1 khi được chấp nhận
           },
         );
-        console.log('UPDATE Response:', response.data);
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -164,8 +152,6 @@ export const DayoffApply = () => {
             data: payload,
           },
         );
-
-        console.log('DELETE Response:', response.data);
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);

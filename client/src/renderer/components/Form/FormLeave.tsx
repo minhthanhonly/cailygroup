@@ -39,12 +39,10 @@ export const FormLeave: React.FC = () => {
       status: 0,
       owner: 'admin',
     };
-    console.log(group_data);
-
     axios
       .post(urlControl + 'DayoffsController.php', { group_data })
       .then((response) => {
-        console.log('Data inserted successfully:', response.data);
+        console.log(response.data);
         // Xử lý thành công nếu cần
       })
       .catch((error) => {

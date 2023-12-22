@@ -73,37 +73,28 @@ export const Dayoff = () => {
   ) => {
     if (event) {
       event.preventDefault();
-      let a = await axios.get(urlControl + 'DayoffsController.php', {
-        params: {
-          method: 'GET_GROUPS',
-        },
-      });
-      console.log(a.data);
-      // try {
-      //   const payload = { id: dayoffId };
-      //   await axios.delete(urlControl + 'DayoffsController.php', {
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     data: payload,
-      //   });
+      try {
+        const payload = { id: dayoffId };
+        await axios.delete(urlControl + 'DayoffsController.php', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: payload,
+        });
+        const updatedList = await axios.get(
+          urlControl + 'DayoffsController.php',
+          {
+            params: {
+              method: 'GET',
+            },
+          },
+        );
+        setListOfGroups(updatedList.data);
 
-      //   // Sau khi xóa, cập nhật danh sách ngày nghỉ
-      //   const updatedList = await axios.get(
-      //     urlControl + 'DayoffsController.php',
-      //     {
-      //       params: {
-      //         method: 'GET',
-      //       },
-      //     },
-      //   );
-      //   setListOfGroups(updatedList.data);
-
-      //   // Cập nhật trang về trang đầu tiên
-      //   setCurrentPage(1);
-      // } catch (error) {
-      //   console.error('Lỗi khi cập nhật trạng thái:', error);
-      // }
+        setCurrentPage(1);
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
     }
   };
   useEffect(() => {
