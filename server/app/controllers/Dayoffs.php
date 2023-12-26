@@ -3,7 +3,7 @@
         function index(){
             $dataDayoffs = $this->model('DayoffsModel')->getDayoffs();
             
-            $this->data['dayoffs'] = $dataDayoffs;
+            // $this->data['dayoffs'] = $dataDayoffs;
             // Render view
             // $this->render('dayoffs/index', $this->data);
         }
