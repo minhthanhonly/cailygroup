@@ -72,6 +72,11 @@ export const Dayoff = () => {
     event: { preventDefault: () => void } | undefined,
   ) => {
     if (event) {
+      const isConfirmed = window.confirm('Xác nhận hủy đăng ký?');
+
+      if (!isConfirmed) {
+        return;
+      }
       event.preventDefault();
       try {
         const payload = { id: dayoffId };
@@ -98,15 +103,9 @@ export const Dayoff = () => {
     }
   };
   useEffect(() => {
-    axios
-      .get(urlControl + 'DayoffsController.php', {
-        params: {
-          method: 'GET',
-        },
-      })
-      .then((response) => {
-        setListOfGroups(response.data);
-      });
+    axios.get('http://cailygroup.com/dayoffs/').then((response) => {
+      setListOfGroups(response.data);
+    });
   }, [currentPage]);
   return (
     <>

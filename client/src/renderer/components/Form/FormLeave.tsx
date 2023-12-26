@@ -28,8 +28,13 @@ export const FormLeave: React.FC = () => {
   };
 
   const handleConfirmClick = () => {
+    const isConfirmed = window.confirm('Xác nhận nghỉ phép?');
+
+    if (!isConfirmed) {
+      return;
+    }
     const group_data = {
-      user_id: 1,
+      user_id: 39,
       date_start: format(startDate, 'dd-MM-yyyy').toString(),
       date_end: format(endDate, 'dd-MM-yyyy').toString(),
       time_start: timeStart,

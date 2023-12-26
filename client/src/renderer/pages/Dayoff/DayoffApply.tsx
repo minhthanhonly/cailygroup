@@ -63,8 +63,7 @@ export const DayoffApply = () => {
 
   const handleGroupChange = (groupId: string) => {
     setSelectedGroup(groupId);
-    console.log(groupId);
-    fetchData(); // Gọi lại fetchData để cập nhật dữ liệu với nhóm mới
+    fetchData();
   };
 
   let DataTable: FieldGroups[] = [];
@@ -118,6 +117,11 @@ export const DayoffApply = () => {
     event: { preventDefault: () => void } | undefined,
   ) => {
     if (event) {
+      const isConfirmed = window.confirm('Duyệt nghỉ phép?');
+
+      if (!isConfirmed) {
+        return;
+      }
       event.preventDefault();
       try {
         const response = await axios.post(
@@ -139,6 +143,11 @@ export const DayoffApply = () => {
     event: { preventDefault: () => void } | undefined,
   ) => {
     if (event) {
+      const isConfirmed = window.confirm('Hủy đăng ký nghỉ phép?');
+
+      if (!isConfirmed) {
+        return;
+      }
       event.preventDefault();
       try {
         const payload = { id: dayoffId };
