@@ -17,16 +17,9 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
 
   useEffect(() => {
     axios
-      .get(urlControl + 'DayoffsController.php', {
-        // Đổi 'DayoffsController.php' thành 'GroupsController.php'
-        params: {
-          method: 'GET_GROUPS', // Thay đổi method nếu có
-        },
-      })
+      .get(urlControl + 'GroupsController.php')
       .then((response) => {
         const responseData = response.data;
-
-        // Kiểm tra xem responseData có phải là mảng không
         if (Array.isArray(responseData)) {
           setGroupList(responseData);
         } else {
@@ -36,7 +29,7 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
       .catch((error) => {
         console.error('Lỗi khi gọi API:', error);
       });
-  }, []);
+  }, []); // Empty dependency array means this effect runs once on mount
 
   const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedGroupId = event.target.value;

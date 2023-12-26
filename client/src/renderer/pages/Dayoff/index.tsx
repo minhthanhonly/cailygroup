@@ -10,6 +10,7 @@ import { urlControl } from '../../routes/server';
 
 export const Dayoff = () => {
   type FieldGroups = {
+    id: string;
     realname: string;
     day_number: string;
     start_datetime: string;
@@ -20,26 +21,21 @@ export const Dayoff = () => {
 
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
-  useEffect(() => {
-    axios
-      .get(urlControl + 'DayoffsController.php', {
-        params: {
-          method: 'GET',
-        },
-      })
-      .then((response) => {
-        setListOfGroups(response.data);
-      });
-  }, []);
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
     let dynamicAction;
 
     if (listOfGroups[i].status === '0') {
       dynamicAction = (
-        <Button href="/" size="medium" color="orange">
+        <a
+          className="btn btn--medium btn--orange"
+          href={listOfGroups[i].id}
+          onClick={(event) => {
+            deleteStatus(listOfGroups[i].id, event);
+          }}
+        >
           Hủy
-        </Button>
+        </a>
       );
     } else {
       dynamicAction = (
@@ -59,7 +55,7 @@ export const Dayoff = () => {
       end_datetime: `${listOfGroups[i].end_datetime}`,
       note: `${listOfGroups[i].note}`,
       status: dynamicAction,
-    } as FieldGroups);
+    } as unknown as FieldGroups);
   }
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -71,6 +67,47 @@ export const Dayoff = () => {
     setCurrentPage(page);
   };
 
+  const deleteStatus = async (
+    dayoffId: any,
+    event: { preventDefault: () => void } | undefined,
+  ) => {
+    if (event) {
+      event.preventDefault();
+      try {
+        const payload = { id: dayoffId };
+        await axios.delete(urlControl + 'DayoffsController.php', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: payload,
+        });
+        const updatedList = await axios.get(
+          urlControl + 'DayoffsController.php',
+          {
+            params: {
+              method: 'GET',
+            },
+          },
+        );
+        setListOfGroups(updatedList.data);
+
+        setCurrentPage(1);
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
+  };
+  useEffect(() => {
+    axios
+      .get(urlControl + 'DayoffsController.php', {
+        params: {
+          method: 'GET',
+        },
+      })
+      .then((response) => {
+        setListOfGroups(response.data);
+      });
+  }, [currentPage]);
   return (
     <>
       <NavDayoff role="admin" />
