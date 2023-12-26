@@ -28,7 +28,6 @@ export const Users = () => {
     }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
   }, [])
 
-
   let DataTable: FieldUsers[] = [];
 
   for (let i = 0; i < listOfUsers.length; i++) {

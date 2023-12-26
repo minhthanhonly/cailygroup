@@ -19,7 +19,7 @@
     // PORT
     define('DB_PORT', '');
 
-    $conn = new mysqli(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+    $conn = mysqli_connect(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
     if($conn===false) {
         die("ERROR: Could Not Connect".mysqli_connect_error());
     }
