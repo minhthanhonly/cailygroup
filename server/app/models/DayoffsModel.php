@@ -1,7 +1,7 @@
 <?php
     class DayoffsModel{
         function getList(){
-            global $db_conn;
+            global $conn;
             
             $query = "SELECT dayoffs.*, 
                 CONCAT(dayoffs.time_start, ' - ' , dayoffs.date_start) AS start_datetime, 
@@ -9,7 +9,7 @@
                 users.realname 
             FROM dayoffs
             JOIN users ON dayoffs.user_id = users.id";
-            $allGroup = mysqli_query($db_conn, $query);
+            $allGroup = mysqli_query($conn, $query);
 
             if ($allGroup) {
                 $data = [];
