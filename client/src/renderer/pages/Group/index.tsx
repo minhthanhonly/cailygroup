@@ -27,6 +27,7 @@ export const Group = () => {
 
   const [groupname, setGroupname] = useState('');
   const [modalGroupName, setModalGroupName] = useState('');
+  const [modalGroupNameid, setModalGroupNameId] = useState('');
 
   useEffect(() => {
     axios.get(urlControl + 'GroupsController.php').then((response) => {
@@ -62,15 +63,9 @@ export const Group = () => {
     }
   };
 
-  let dynamicUpdate = ({
-    id,
-    groupName,
-  }: {
-    id: string;
-    groupName: string;
-  }) => (
+  let dynamicUpdate = ({id,groupName,}: {id: string;groupName: string;}) => (
     <>
-      <button onClick={() => openModal(groupName)}>
+      <button onClick={() => openModal(groupName,id)}>
         <p className="icon icon--check">
           <img
             src={require('../../../../assets/icnedit.png')}
@@ -84,12 +79,16 @@ export const Group = () => {
           <>
             <h2>Sửa tên nhóm</h2>
             <input
+              value={modalGroupNameid}
+              onChange={(e) => setModalGroupNameId(e.target.value)} hidden
+            /><br/><br/>
+            <input
               value={modalGroupName}
               onChange={(e) => setModalGroupName(e.target.value)}
             />
 
             <div className="wrp-button">
-              <button className="btn" onClick={() => handleUpdate(id)}>
+              <button className="btn" onClick={(event) => handleUpdate(modalGroupNameid,modalGroupName,event)}>
                 Xác nhận
               </button>
               <button className="btn btn--orange" onClick={closeModal}>
@@ -102,8 +101,9 @@ export const Group = () => {
     </>
   );
 
-  const openModal = (initialGroupName: string) => {
+  const openModal = (initialGroupName: string, initialGroupNameId: string) => {
     setModalGroupName(initialGroupName);
+    setModalGroupNameId(initialGroupNameId);
     setModalOpen(true);
   };
 
@@ -111,9 +111,26 @@ export const Group = () => {
     setModalOpen(false);
   };
 
-  const handleUpdate = (id: string) => {
-    closeModal();
+  const handleUpdate = async (id: string, group_name:string, event) => {
+    if (event) {
+      event.preventDefault();
+      try {
+        const dataUpdate = { id, group_name };
+        const response = await axios.put(
+          urlControl + 'GroupsController.php',
+          dataUpdate,
+          { headers: { 'Content-Type': 'application/json' } }
+        );
+        console.log('Update Response:', response.data);
+        closeModal();
+        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
   };
+
+
 
   let dynamicDelete = (id: string) => (
     <button
