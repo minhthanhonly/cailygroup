@@ -1,7 +1,7 @@
 <?php
     class Dayoffs extends Controller{
         function index(){
-            $dataDayoffs = $this->model('DayoffsModel')->getList();
+            $dataDayoffs = $this->model('DayoffsModel')->getDayoffs();
             
             $this->data['dayoffs'] = $dataDayoffs;
             // Render view
