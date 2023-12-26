@@ -26,6 +26,7 @@ export const Group = () => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const [groupname, setGroupname] = useState('');
+  const [modalGroupName, setModalGroupName] = useState('');
 
   useEffect(() => {
     axios.get(urlControl + 'GroupsController.php').then((response) => {
@@ -83,8 +84,8 @@ export const Group = () => {
           <>
             <h2>Sửa tên nhóm</h2>
             <input
-              value={groupName}
-              onChange={(e) => setGroupname(e.target.value)}
+              value={modalGroupName}
+              onChange={(e) => setModalGroupName(e.target.value)}
             />
 
             <div className="wrp-button">
@@ -102,9 +103,10 @@ export const Group = () => {
   );
 
   const openModal = (initialGroupName: string) => {
-    setGroupname(initialGroupName);
+    setModalGroupName(initialGroupName);
     setModalOpen(true);
   };
+
   const closeModal = () => {
     setModalOpen(false);
   };
