@@ -12,5 +12,9 @@
             return $this->model('UsersModel')->postAdd($userid, $password, $realname, $authority, $user_group);
         }
 
+        function edit($id=''){
+            return $this->model('UsersModel')->getEdit($id);
+        }
+
     }
 ?>
