@@ -28,17 +28,16 @@ export const DayoffApply = () => {
         axios.get(urlControl + 'GroupsController.php'),
         axios.get(urlControl + 'DayoffsController.php', {
           params: {
-            method: 'GET_STATUS_ZERO',
             group: selectedGroup,
           },
         }),
       ]);
+
       const groupsData = groupsResponse.data;
       const dayoffsData = Array.isArray(dayoffsResponse.data)
         ? dayoffsResponse.data
         : [];
-      // console.log('Groups Data:', groupsData);
-      // console.log('Dayoffs Data:', dayoffsData);
+
       const combinedData = dayoffsData.map((dayoff) => {
         const groupInfo = groupsData.find(
           (group: { id: any; user_id: any }) =>
@@ -53,7 +52,7 @@ export const DayoffApply = () => {
 
       setListOfGroups(combinedData);
     } catch (error) {
-      // console.error('Lỗi khi gọi API:', error);
+      console.error('Lỗi khi gọi API:', error);
       setListOfGroups([]);
     }
   }, [selectedGroup]);
