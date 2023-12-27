@@ -8,6 +8,7 @@ import { Heading2 } from '../../components/Heading';
 import { urlControl } from '../../routes/server';
 import Modal from '../../components/Modal/Modal';
 import { EditGroup } from "../../components/Form/Form";
+import Modaldelete from '../../components/Modaldelete/Modaldelete';
 
 interface GroupProps {
   id: string;
@@ -28,6 +29,8 @@ export const Group = () => {
   const [gname, setGname] = useState('');
   const [modalGroupName, setModalGroupName] = useState('');
   const [modalGroupNameid, setModalGroupNameId] = useState('');
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isDeleteModalid, setDeleteModalId] = useState('');
 
   useEffect(() => {
     axios.get(urlControl + 'GroupsController.php').then((response) => {
@@ -36,15 +39,7 @@ export const Group = () => {
     });
   }, [isTableUpdated]); // khi state thay đổi useEffect sẽ chạy lại
 
-  const handleDelete = async (
-    groupId: any,
-    event: { preventDefault: () => void } | undefined,
-  ) => {
-    const isConfirmed = window.confirm('Bạn có chắc chắn muốn xóa không?');
-
-    if (!isConfirmed) {
-      return; // Người dùng không xác nhận xóa
-    }
+  const handleDelete = async (groupId,event) => {
     if (event) {
       event.preventDefault();
       try {
@@ -56,6 +51,7 @@ export const Group = () => {
           data: payload,
         });
         console.log('DELETE Response:', response.data);
+        closeModaldelete();
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -140,22 +136,35 @@ export const Group = () => {
       }
     }
   };
-
-  let dynamicDelete = (id: string) => (
-    <button
-      onClick={(event) => {
-        handleDelete(id, event);
-      }}
-    >
-      <p className="icon icon--check">
-        <img
-          src={require('../../../../assets/icndelete.png')}
-          alt="edit"
-          className="fluid-image"
-        />
-      </p>
-    </button>
+  
+  let dynamicDelete = (id) => (
+    <>
+      <button  onClick={(event) => { openModaldelete(id, event);}}>
+        <p className="icon icon--check">
+          <img
+            src={require('../../../../assets/icndelete.png')}
+            alt="edit"
+            className="fluid-image"
+          />
+        </p>
+      </button>
+      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        <h2>Bạn có chắc chắn muốn xóa không?</h2>
+        <div className='wrp-button'>
+          <button className='btn btn--green' onClick={(event) => handleDelete(isDeleteModalid,event)}>Đồng ý</button>
+          <button className='btn btn--orange' onClick={closeModaldelete}>Hủy</button>
+        </div>
+      </Modaldelete>
+    </>
   );
+
+  const openModaldelete = (initialId: string) => {
+    setDeleteModalId(initialId);
+    setDeleteModalOpen(true);
+  };
+  const closeModaldelete = () => {
+    setDeleteModalOpen(false);
+  };
 
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
@@ -170,6 +179,10 @@ export const Group = () => {
     });
   }
   const handleSubmint = () => {
+    if (!gname) {
+      console.error('Tên nhóm không hợp lệ');
+      return;
+    }
     const group_data = {
       group_name: gname,
       add_level: 1,
@@ -203,7 +216,7 @@ export const Group = () => {
         }
       });
   };
-
+  
   return (
     <>
       <Heading2 text="Quản lý nhóm" />
