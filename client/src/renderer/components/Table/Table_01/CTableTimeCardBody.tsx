@@ -18,15 +18,15 @@ interface RollAdmin {
   admin?: boolean;
 }
 
-interface DatabaseFile {
-  data: {
-    [key: string]: any;
-  }[]; // Dữ liệu cho bảng
-}
+// interface DatabaseFile {
+//   data: {
+//     [key: string]: any;
+//   }[]; // Dữ liệu cho bảng
+// }
 
 
-// Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces
-interface CombinedProps extends SelectMY, RollAdmin, DatabaseFile { }
+// Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
+interface CombinedProps extends SelectMY, RollAdmin { }
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
@@ -34,9 +34,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const selectedMonth = Props.selectedMonth;
   const selectedYear = Props.selectedYear;
   const admin = Props.admin;
-  const dataUpload = Props.data;
+  // const dataUpload = Props.data;
 
-  console.log("dataUpload", dataUpload[1]);
+  // console.log("dataUpload", dataUpload[1]);
 
 
 
@@ -188,63 +188,83 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   // Hàm xử lý khi click vào nút bắt đầu
   const handleButtonClick = async () => {
     try {
-      const response = await axios.get(
-        'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
-      );
-      const { datetime } = response.data;
-      const currentHour = new Date(datetime).getHours();
-      const currentMinutes = new Date(datetime).getMinutes();
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
+      let { datetime } = response.data;
+      let currentHour = new Date(datetime).getHours();
+      let currentMinutes = new Date(datetime).getMinutes();
+      let currentYear = new Date(datetime).getFullYear();
+      let currentMonth = new Date(datetime).getMonth() + 1;
+      let currentDate = new Date(datetime).getDay();
+
+      let timecard_open_time = `${currentHour}:${String(currentMinutes).padStart(2, '0')}`;
+
+
 
       console.log("datetime", datetime);
+      console.log("currentYear", currentYear);
 
 
-
-      const group_data = {
-        id_groupwaretimecard: 1,
-        timecard_open: `${currentHour}:${String(currentMinutes).padStart(2, '0')}`,
-        timecard_close: '',
-        timecard_originalopen: `${currentHour}:${String(currentMinutes).padStart(2, '0')}`,
-        timecard_originalclose: '',
-        timecard_interval: '',
-        timecard_originalinterval: '',
-        timecard_time: '',
-        timecard_timeover: '',
-        timecard_timeinterval: '',
-        timecard_comment: 'hi',
-        status: 0,
+      const dataTimeCard = {
+        timecard_year: currentYear,
+        user_id: 38,
+        timecard_month: currentMonth,
+        timecard_day: currentDate,
+        timecard_date: `${currentDate}-${currentMonth}-${currentYear}`,
+        // createdAt: datetime,
+        timecard_temp: 0,
         owner: 'admin',
-      };
-      console.log("group_data", group_data);
 
-      fetch(urlControl + 'TimecardDetailsController.php', {
+      }
+
+
+      const dataTimeCardDetails = {
+        id_groupwaretimecard: 38,
+        timecard_open: timecard_open_time,
+        timecard_close: '17:00',
+        timecard_originalopen: timecard_open_time,
+        timecard_originalclose: '17:00',
+        timecard_interval: '17:00',
+        timecard_originalinterval: '17:00',
+        timecard_time: '0:00',
+        timecard_timeover: '9:31',
+        timecard_timeinterval: '1:30',
+        timecard_comment: 'hi',
+      };
+
+
+
+      console.log("dataTimeCard", dataTimeCard);
+      console.log("dataTimeCardDetails", dataTimeCardDetails);
+
+
+      const dataTimeCardDetailsFetchResponse = await fetch(urlControl + 'TimecardDetailsController.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         mode: 'cors',
-        body: JSON.stringify({ group_data }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then((responseData) => {
-          console.log('Data inserted successfully:', responseData);
-          // Xử lý thành công nếu cần
-        })
-        .catch((error) => {
-          console.error('Error inserting data:', error.message);
-          // Xử lý lỗi nếu cần
-          if (error.response) {
-            console.error('Response status:', error.response.status);
-            console.error('Server error message:', error.response.data); // Thay đổi tùy theo cách server trả về thông báo lỗi
-          }
-        });
+        body: JSON.stringify({ dataTimeCardDetails }),
+      });
 
+      const dataTimeCardFetchResponse = await fetch(urlControl + 'TimecardsController.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors',
+        body: JSON.stringify({ dataTimeCard }),
+      });
 
+      if (!dataTimeCardFetchResponse.ok || !dataTimeCardDetailsFetchResponse.ok) {
+        throw new Error('Network response was not ok');
+      }
 
+      const responseData = await dataTimeCardFetchResponse.json();
+      const responseData2 = await dataTimeCardDetailsFetchResponse.json();
+
+      // Thêm log để kiểm tra phản hồi JSON từ máy chủ
+      console.log('Response dataTimeCardDetails:', responseData2);
+      console.log('Response dataTimeCard:', responseData);
       // Nếu lưu thành công, cập nhật state và hiển thị nút "Kết thúc"
       setStartHours(currentHour);
       setStartMinutes(currentMinutes);
@@ -252,14 +272,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       setShowStartButton(false);
 
     } catch (error) {
-      console.error('Lỗi khi lấy thời gian từ API:', error);
+      console.error('Lỗi khi lấy thời gian từ API hoặc gửi dữ liệu lên server:', error);
     }
   };
 
   // nhấn nút kết thúc mỗi ngày
   const handleEndButtonClick = async () => {
     try {
-      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',);
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
       const { datetime } = response.data;
       const currentHour = new Date(datetime).getHours();
       const currentMinutes = new Date(datetime).getMinutes();

@@ -7,7 +7,7 @@ import { AddGroup } from '../../components/Form/Form';
 import { Heading2 } from '../../components/Heading';
 import { urlControl } from '../../routes/server';
 import Modal from '../../components/Modal/Modal';
-import { EditGroup } from "../../components/Form/Form";
+import { EditGroup } from '../../components/Form/Form';
 
 interface GroupProps {
   id: string;
@@ -63,9 +63,15 @@ export const Group = () => {
     }
   };
 
-  let dynamicUpdate = ({id,groupName,}: {id: string;groupName: string;}) => (
+  let dynamicUpdate = ({
+    id,
+    groupName,
+  }: {
+    id: string;
+    groupName: string;
+  }) => (
     <>
-      <button onClick={() => openModal(groupName,id)}>
+      <button onClick={() => openModal(groupName, id)}>
         <p className="icon icon--check">
           <img
             src={require('../../../../assets/icnedit.png')}
@@ -79,31 +85,41 @@ export const Group = () => {
           <>
             <Heading2 text="Sửa Nhóm" />
             <div className="form-user form">
-                <div className="form-content">
-                  <div className="row">
-                    <div className="col-12">
-                      <div className="form-group">
-                        <label>Sửa Tên nhóm
-                          <img
-                            src={require('../../../../assets/icn-group.png')}
-                            alt=""
-                            className="fluid-image"
-                          />
-                         </label>
-                        <input
-                          value={modalGroupName}
-                          onChange={(e) => setModalGroupName(e.target.value)}
-                          className="form-input"
-                          type="text"
-                          placeholder="Nhập Tên nhóm"
+              <div className="form-content">
+                <div className="row">
+                  <div className="col-12">
+                    <div className="form-group">
+                      <label>
+                        Sửa Tên nhóm
+                        <img
+                          src={require('../../../../assets/icn-group.png')}
+                          alt=""
+                          className="fluid-image"
                         />
-                      </div>
-                      <div className="wrp-button">
-                        <button className="btn btn--green"onClick={(event) => handleUpdate(modalGroupNameid,modalGroupName,event)}>Xác nhận</button>
-                        <button className="btn btn--orange" onClick={closeModal}>Hủy</button>
-                      </div>
+                      </label>
+                      <input
+                        value={modalGroupName}
+                        onChange={(e) => setModalGroupName(e.target.value)}
+                        className="form-input"
+                        type="text"
+                        placeholder="Nhập Tên nhóm"
+                      />
+                    </div>
+                    <div className="wrp-button">
+                      <button
+                        className="btn btn--green"
+                        onClick={(event) =>
+                          handleUpdate(modalGroupNameid, modalGroupName, event)
+                        }
+                      >
+                        Xác nhận
+                      </button>
+                      <button className="btn btn--orange" onClick={closeModal}>
+                        Hủy
+                      </button>
                     </div>
                   </div>
+                </div>
               </div>
             </div>
           </>
@@ -122,7 +138,7 @@ export const Group = () => {
     setModalOpen(false);
   };
 
-  const handleUpdate = async (id: string, group_name:string, event) => {
+  const handleUpdate = async (id: string, group_name: string, event) => {
     if (event) {
       event.preventDefault();
       try {
@@ -130,7 +146,7 @@ export const Group = () => {
         const response = await axios.put(
           urlControl + 'GroupsController.php',
           dataUpdate,
-          { headers: { 'Content-Type': 'application/json' } }
+          { headers: { 'Content-Type': 'application/json' } },
         );
         console.log('Update Response:', response.data);
         closeModal();
@@ -193,7 +209,6 @@ export const Group = () => {
       .then((responseData) => {
         console.log('Data inserted successfully:', responseData);
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-
       })
       .catch((error) => {
         console.error('Error inserting data:', error);

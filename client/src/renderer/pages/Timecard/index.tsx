@@ -33,28 +33,28 @@ export const Timecard = () => {
     timecard_timeinterval: string;
     timecard_comment: string;
   }
-  const [dataTimeCardDetails, setDataTimeCardDetails] = useState<DatabaseTimeCardDetails[] | []>([]);
+  // const [dataTimeCardDetails, setDataTimeCardDetails] = useState<DatabaseTimeCardDetails[] | []>([]);
 
-  useEffect(() => {
-    axios.get(urlControl + "TimecardDetailsController.php").then((response) => {
-      setDataTimeCardDetails(response.data)
-    })
-  }, [])
+  // useEffect(() => {
+  //   axios.get(urlControl + "TimecardDetailsController.php").then((response) => {
+  //     setDataTimeCardDetails(response.data)
+  //   })
+  // }, [])
 
-  let DataTable: DatabaseTimeCardDetails[] = dataTimeCardDetails.map(item => ({
-    id: item.id,
-    id_groupwaretimecard: item.id_groupwaretimecard,
-    timecard_open: item.timecard_open,
-    timecard_close: item.timecard_close,
-    timecard_originalopen: item.timecard_originalopen,
-    timecard_originalclose: item.timecard_originalclose,
-    timecard_interval: item.timecard_interval,
-    timecard_originalinterval: item.timecard_originalinterval,
-    timecard_time: item.timecard_time,
-    timecard_timeover: item.timecard_timeover,
-    timecard_timeinterval: item.timecard_timeinterval,
-    timecard_comment: item.timecard_comment,
-  }));
+  // let DataTable: DatabaseTimeCardDetails[] = dataTimeCardDetails.map(item => ({
+  //   id: item.id,
+  //   id_groupwaretimecard: item.id_groupwaretimecard,
+  //   timecard_open: item.timecard_open,
+  //   timecard_close: item.timecard_close,
+  //   timecard_originalopen: item.timecard_originalopen,
+  //   timecard_originalclose: item.timecard_originalclose,
+  //   timecard_interval: item.timecard_interval,
+  //   timecard_originalinterval: item.timecard_originalinterval,
+  //   timecard_time: item.timecard_time,
+  //   timecard_timeover: item.timecard_timeover,
+  //   timecard_timeinterval: item.timecard_timeinterval,
+  //   timecard_comment: item.timecard_comment,
+  // }));
 
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
@@ -85,8 +85,8 @@ export const Timecard = () => {
             <CTableTimeCardHead />
           </thead>
           <tbody>
-            {/* RowCounts = {RowCounts} */}
-            <CTableTimeCardBody data={DataTable} selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} />
+            {/* RowCounts = {RowCounts}  data={DataTable}  data={DataTable} */}
+            <CTableTimeCardBody selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} />
 
           </tbody>
         </table>

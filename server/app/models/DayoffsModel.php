@@ -44,9 +44,9 @@
         }
         function postAdd($user_id, $date_start, $date_end, $time_start, $time_end, $note, $day_number, $status, $owner){
             global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
             $insertQuery = "INSERT INTO dayoffs (user_id, date_start, date_end, time_start, time_end, note, day_number, status, owner, createdAt) 
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-
             $stmt = mysqli_prepare($conn, $insertQuery);
 
             mysqli_stmt_bind_param($stmt, "isssssiss", 
@@ -73,9 +73,8 @@
         function deleteDayoffs($id){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
-            var_dump($data);
-            if (isset($data['id'])) {
-                $id = mysqli_real_escape_string($conn, $data['id']);
+            if (isset($id)) {
+                // $id = mysqli_real_escape_string($conn, $data['id']);
 
                 $deleteQuery = "DELETE FROM dayoffs WHERE id = $id";
 
@@ -91,6 +90,29 @@
                 echo json_encode(["error" => "Invalid data"]);
             }
             $conn->close();
+        }
+        function updateDayoffs($id){
+            global $conn;
+            if (isset($id)) {
+                // Cập nhật trạng thái trong cơ sở dữ liệu
+                $status = 1;
+                $sql = "UPDATE dayoffs SET status = ? WHERE id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ii", $status, $id);
+
+                if ($stmt->execute()) {
+                    http_response_code(200);
+                    echo json_encode(["success" => true]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                }
+
+                $stmt->close();
+            } else {
+                http_response_code(400);
+                echo json_encode(["success" => false, "error" => "Invalid parameters"]);
+            }
         }
     }
 
