@@ -9,6 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 $method = $_SERVER['REQUEST_METHOD'];
 $data = json_decode(file_get_contents("php://input"), true);
+// echo $data['group_data']['user_id'];
+// exit;
 switch ($method) {
     case "GET":
         $groupFilter = isset($_GET['group']) ? mysqli_real_escape_string($db_conn, $_GET['group']) : 'all';
