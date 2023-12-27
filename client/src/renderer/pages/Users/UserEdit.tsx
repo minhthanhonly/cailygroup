@@ -5,20 +5,23 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function UserEdit() {
   const navigate = useNavigate();
-
   const {id} = useParams();
-  const [values, setValues] = useState({
-    id: id,
-    userid: '',
-    password: '',
-    realname: '',
-    authority: '',
-    user_group: ''
-  });
+
+  interface Object {
+    id: string,
+    userid: string,
+    password: string,
+    realname: string,
+    authority: string,
+    user_group: string
+  }
+
+
+  const [values, setValues] = useState<Object[]>([{ id: '', userid: '', password: '', realname: '', authority: '', user_group: '' }]);
 
   useEffect(() => {
     axios.get('http://cailygroup.com/users/edit/'+id).then(response => {
-      setValues({...values, userid: response.data.userid, password: response.data.password, realname: response.data.realname, authority: response.data.authority, user_group: response.data.user_group});
+      setValues(response.data);
       console.log(response.data);
     })
   }, [])
@@ -45,7 +48,7 @@ export default function UserEdit() {
 										className="form-input"
 										type="text"
 										name="userid"
-										value={values.userid} onChange={e => setValues({...values, userid: e.target.value})}
+										value={values[0].userid}
 									/>
 								</div>
 								<div className="form-group">
@@ -61,7 +64,7 @@ export default function UserEdit() {
 										className="form-input"
 										type="text"
 										name="password"
-										value={values.password} onChange={e => setValues({...values, userid: e.target.value})}
+										value={values[0].password}
 									/>
 								</div>
 								<div className="form-group">
@@ -77,7 +80,7 @@ export default function UserEdit() {
 										className="form-input"
 										type="text"
 										name="realname"
-										value={values.realname} onChange={e => setValues({...values, userid: e.target.value})}
+										value={values[0].realname}
 									/>
 								</div>
 								<div className="form-group">
@@ -90,7 +93,7 @@ export default function UserEdit() {
 										/>
 									</label>
 									<div className="select__box group">
-										<select name="user_group" value={values.user_group} onChange={e => setValues({...values, userid: e.target.value})}>
+										<select name="user_group" value={values[0].user_group}>
 											<option value="-1">--------------------------- Chọn nhóm ---------------------------</option>
 											{/* {DataGroups.map((value, index) => (
 												<option value={value.id} key={index}>{value.group_name}</option>
@@ -108,7 +111,7 @@ export default function UserEdit() {
 										/>
 									</label>
 									<div className="select__box group">
-										<select name="authority" value={values.authority} onChange={e => setValues({...values, userid: e.target.value})}>
+										<select name="authority" value={values[0].authority}>
 											<option value="-1">-------------------- Chọn quyền truy cập --------------------</option>
 											{/* {DataAuthority.map((value, index) => (
 												<option value={value.id} key={index}>{value.authority_name}</option>
