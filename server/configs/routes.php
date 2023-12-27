@@ -18,9 +18,7 @@
     // dayoffs
     $routes['dayoffs'] = 'dayoffs';
     $routes['dayoffs/add'] = 'dayoffs/add';
-    $routes['dayoffs/edit/.+-(\d+)'] = 'dayoffs/edit/$1';
+    $routes['dayoffs/update/.+-(\d+)'] = 'dayoffs/update/$1';
     $routes['dayoffs/delete/.+-(\d+)'] = 'dayoffs/delete/$1';
 
-    // groups
-    $routes['groups'] = 'groups';
 ?>

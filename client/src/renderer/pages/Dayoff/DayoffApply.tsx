@@ -25,6 +25,12 @@ export const DayoffApply = () => {
   const fetchData = useCallback(async () => {
     try {
       const [groupsResponse, dayoffsResponse] = await Promise.all([
+        // axios.get('http://cailygroup.com/dayoffs/'),
+        // axios.get('http://cailygroup.com/groups/', {
+        //   params: {
+        //     group: selectedGroup,
+        //   },
+        // }),
         axios.get(urlControl + 'GroupsController.php'),
         axios.get(urlControl + 'DayoffsController.php', {
           params: {
@@ -104,7 +110,7 @@ export const DayoffApply = () => {
   }
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
+  const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
 
@@ -117,21 +123,19 @@ export const DayoffApply = () => {
     event: { preventDefault: () => void } | undefined,
   ) => {
     if (event) {
-      const isConfirmed = window.confirm('Duyệt nghỉ phép?');
-
-      if (!isConfirmed) {
-        return;
-      }
       event.preventDefault();
       try {
         const response = await axios.post(
-          urlControl + 'DayoffsController.php',
-          {
-            method: 'UPDATE_STATUS',
-            id: dayoffId,
-            status: 1, // Đặt status thành 1 khi được chấp nhận
-          },
+          'http://cailygroup.com/dayoffs/update/' + dayoffId,
         );
+        // const response = await axios.post(
+        //   urlControl + 'DayoffsController.php',
+        //   {
+        //     method: 'UPDATE_STATUS',
+        //     id: dayoffId,
+        //     status: 1, // Đặt status thành 1 khi được chấp nhận
+        //   },
+        // );
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -151,15 +155,18 @@ export const DayoffApply = () => {
       event.preventDefault();
       try {
         const payload = { id: dayoffId };
-        let response = await axios.delete(
-          urlControl + 'DayoffsController.php',
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            data: payload,
-          },
+        let response = axios.delete(
+          'http://cailygroup.com/dayoffs/delete/' + dayoffId,
         );
+        // let response = await axios.delete(
+        //   urlControl + 'DayoffsController.php',
+        //   {
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     data: payload,
+        //   },
+        // );
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);

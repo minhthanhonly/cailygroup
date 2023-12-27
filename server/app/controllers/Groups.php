@@ -1,7 +1,7 @@
 <?php
     class Groups extends Controller{
         function index(){
-            $dataGroups = $this->model('GroupsModel')->getList();
+            $dataGroups = $this->model('GroupsModel')->getGroups();
         }
     }
 ?>

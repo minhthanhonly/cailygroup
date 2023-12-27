@@ -2,7 +2,6 @@ import { Pagination } from '../../components/Pagination';
 import { CTable } from '../../components/Table/CTable';
 import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
-import { Button } from '../../components/Button';
 import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -59,7 +58,7 @@ export const Dayoff = () => {
   }
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
+  const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
 
@@ -72,28 +71,25 @@ export const Dayoff = () => {
     event: { preventDefault: () => void } | undefined,
   ) => {
     if (event) {
-      const isConfirmed = window.confirm('Xác nhận hủy đăng ký?');
-
-      if (!isConfirmed) {
-        return;
-      }
       event.preventDefault();
       try {
         const payload = { id: dayoffId };
-        await axios.delete(urlControl + 'DayoffsController.php', {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: payload,
-        });
-        const updatedList = await axios.get(
-          urlControl + 'DayoffsController.php',
-          {
-            params: {
-              method: 'GET',
-            },
-          },
-        );
+        await axios.delete('http://cailygroup.com/dayoffs/delete/' + dayoffId);
+        // await axios.delete(urlControl + 'DayoffsController.php', {
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   data: payload,
+        // });
+        const updatedList = await axios.get('http://cailygroup.com/dayoffs/');
+        // const updatedList = await axios.get(
+        //   urlControl + 'DayoffsController.php',
+        //   {
+        //     params: {
+        //       method: 'GET',
+        //     },
+        //   },
+        // );
         setListOfGroups(updatedList.data);
 
         setCurrentPage(1);
@@ -106,6 +102,15 @@ export const Dayoff = () => {
     axios.get('http://cailygroup.com/dayoffs/').then((response) => {
       setListOfGroups(response.data);
     });
+    // axios
+    //   .get(urlControl + 'DayoffsController.php', {
+    //     params: {
+    //       method: 'GET',
+    //     },
+    //   })
+    //   .then((response) => {
+    //     setListOfGroups(response.data);
+    //   });
   }, [currentPage]);
   return (
     <>
