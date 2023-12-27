@@ -1,0 +1,8 @@
+diff a/server/index.php b/server/index.php	(rejected hunks)
+@@ -0,4 +0,5 @@
+ <?php
++    require_once(dirname(__FILE__).'/core/App.php');
+     $app = new App;
+     $app->run();
+ ?>
+\ No newline at end of file

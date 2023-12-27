@@ -7,6 +7,9 @@
     display: inline-block;
     padding-left: 2rem;
   }
+  & + .box-bg {
+    margin: 3rem 0;
+  }
 }
 
 .hdglv3 {

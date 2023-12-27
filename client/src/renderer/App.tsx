@@ -8,7 +8,9 @@ import { Member } from './pages/Member';
 import { MemberAdd } from './pages/Member/MemberAdd';
 import { MemberEdit } from './pages/Member/MemberEdit';
 import { Users } from './pages/Users';
-import { UserEdit } from './pages/Users/UserEdit';
+import { UserAdd } from './pages/Users/UserAdd';
+import UserEdit from './pages/Users/UserEdit';
+import { UserDetail } from './pages/Users/UserDetail';
 import { Dayoff } from './pages/Dayoff';
 import { DayoffRegister } from './pages/Dayoff/DayoffRegister';
 import { DayoffApply } from './pages/Dayoff/DayoffApply';
@@ -34,7 +36,9 @@ export default function App() {
             <Route path="member/add" element={<MemberAdd/>} />
             <Route path="member/edit" element={<MemberEdit/>} />
             <Route path="users" element={<Users/>} />
-            <Route path="users/edit" element={<UserEdit/>} />
+            <Route path="users/add" element={<UserAdd/>} />
+            <Route path="users/edit/:id" element={<UserEdit/>} />
+            <Route path="users/detail" element={<UserDetail/>} />
             <Route path="day-off" element={<Dayoff/>} />
             <Route path="day-off/register" element={<DayoffRegister/>} />
             <Route path="day-off/apply" element={<DayoffApply/>} />

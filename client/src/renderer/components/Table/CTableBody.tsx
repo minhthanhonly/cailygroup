@@ -48,7 +48,7 @@ const TableRow: React.FC<TableRowProps> = ({ rowData, onButtonClick, selector, p
       {selector == true ? <td><MonthYearSelector onChange={handleDateChange} /></td> : null}
       {permission_add == true ? <td><ButtonAdd path_add={''} /></td> : null}
       {permission_edit == true ? <td><ButtonEdit href={path_edit} /></td> : null}
-      {permission_delete == true ? <td><ButtonDelete /></td> : null}
+      {permission_delete == true ? <td><ButtonDelete/></td> : null}
       {permission_view == true ? <td><ButtonView /></td> : null}
       {permission_save == true ? <td><ButtonSave /></td> : null}
       {permission_export == true ? <td><ButtonExport /></td> : null}
