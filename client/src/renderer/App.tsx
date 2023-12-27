@@ -1,4 +1,4 @@
-import { HashRouter as Router, Route, Routes} from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import { Timecard } from './pages/Timecard';
 import { TimecardSetting } from './pages/Timecard/TimecardSetting';
@@ -28,24 +28,25 @@ export default function App() {
         <Routes>
           <Route path="/" element={<DefaultLayout />}>
             <Route index element={<Home />} />
-            <Route path="timecard" element={<Timecard/>} />
-            <Route path="timecard/setting" element={<TimecardSetting/>} />
-            <Route path="timecard/list" element={<TimecardList/>} />
-            <Route path="timecard/edit" element={<TimecardEdit/>} />
-            <Route path="member" element={<Member/>} />
-            <Route path="member/add" element={<MemberAdd/>} />
-            <Route path="member/edit" element={<MemberEdit/>} />
-            <Route path="users" element={<Users/>} />
-            <Route path="users/add" element={<UserAdd/>} />
-            <Route path="users/edit/:id" element={<UserEdit/>} />
-            <Route path="users/detail" element={<UserDetail/>} />
-            <Route path="day-off" element={<Dayoff/>} />
-            <Route path="day-off/register" element={<DayoffRegister/>} />
-            <Route path="day-off/apply" element={<DayoffApply/>} />
-            <Route path="group" element={<Group/>} />
-            <Route path="group/edit" element={<GroupEdit/>} />
-            <Route path="module" element={<Module/>} />
-            <Route path="day-off/apply" element={<DayoffApply/>} />
+            <Route path="timecard" element={<Timecard />} />
+            <Route path="timecard/setting" element={<TimecardSetting />} />
+            <Route path="timecard/list" element={<TimecardList />} />
+            <Route path="timecard/edit" element={<TimecardEdit />} />
+            <Route path="member" element={<Member />} />
+            <Route path="member/add" element={<MemberAdd />} />
+            <Route path="member/edit" element={<MemberEdit />} />
+            <Route path="users" element={<Users />} />
+            <Route path="users/add" element={<UserAdd />} />
+            <Route path="users/edit/:id" element={<UserEdit />} />
+            <Route path="users/detail" element={<UserDetail />} />
+            <Route path="day-off" element={<Dayoff />} />
+            <Route path="day-off/register" element={<DayoffRegister />} />
+            <Route path="day-off/apply" element={<DayoffApply />} />
+            <Route path="day-off/delete/:id" />
+            <Route path="day-off/update/:id" />
+            <Route path="group" element={<Group />} />
+            <Route path="group/edit" element={<GroupEdit />} />
+            <Route path="module" element={<Module />} />
           </Route>
           <Route path="/login" element={<FluidLayout />}>
             <Route index element={<Login />} />

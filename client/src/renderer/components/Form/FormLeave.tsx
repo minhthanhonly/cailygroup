@@ -28,11 +28,6 @@ export const FormLeave: React.FC = () => {
   };
 
   const handleConfirmClick = () => {
-    const isConfirmed = window.confirm('Xác nhận nghỉ phép?');
-
-    if (!isConfirmed) {
-      return;
-    }
     const group_data = {
       user_id: 41,
       date_start: format(startDate, 'dd-MM-yyyy').toString(),
@@ -45,8 +40,7 @@ export const FormLeave: React.FC = () => {
       owner: 'admin',
     };
     axios
-      // .post('http://cailygroup.com/dayoffs/add', { group_data })
-      .post(urlControl + 'DayoffsController.php', { group_data })
+      .post('http://cailygroup.com/dayoffs/add', { group_data })
       .then((response) => {
         console.log(response.data);
         // Xử lý thành công nếu cần
