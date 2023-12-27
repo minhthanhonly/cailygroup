@@ -85,7 +85,6 @@ switch ($method) {
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
                 $stmt = mysqli_prepare($db_conn, $insertQuery);
-
                 mysqli_stmt_bind_param($stmt, "isssssiss", 
                     $data['group_data']['user_id'],
                     $data['group_data']['date_start'],

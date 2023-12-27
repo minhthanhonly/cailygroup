@@ -11,5 +11,8 @@
         function delete($id){
             return $this->model('DayoffsModel')->deleteDayoffs($id);
         }
+        function update($id){
+            return $this->model('DayoffsModel')->updateDayoffs($id);
+        }
     }
 ?>
