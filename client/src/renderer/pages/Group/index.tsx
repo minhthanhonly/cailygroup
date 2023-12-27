@@ -25,7 +25,7 @@ export const Group = () => {
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [groupname, setGroupname] = useState('');
+  const [gname, setGname] = useState('');
   const [modalGroupName, setModalGroupName] = useState('');
   const [modalGroupNameid, setModalGroupNameId] = useState('');
 
@@ -171,11 +171,11 @@ export const Group = () => {
   }
   const handleSubmint = () => {
     const group_data = {
-      group_name: groupname,
+      group_name: gname,
       add_level: 1,
       owner: 'admin',
     };
-    setGroupname('');
+    setGname('');
     fetch(urlControl + 'GroupsController.php', {
       method: 'POST',
       headers: {
@@ -215,8 +215,8 @@ export const Group = () => {
           className="fluid-image form-addgroup__image"
         />
         <input
-          value={groupname}
-          onChange={(event) => setGroupname(event.target.value)}
+          value={gname}
+          onChange={(event) => setGname(event.target.value)}
           className="form-input"
           type="text"
           placeholder="Tên nhóm muốn thêm"
