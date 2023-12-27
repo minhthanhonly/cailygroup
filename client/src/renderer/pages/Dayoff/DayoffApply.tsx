@@ -104,7 +104,7 @@ export const DayoffApply = () => {
   }
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
+  const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
 

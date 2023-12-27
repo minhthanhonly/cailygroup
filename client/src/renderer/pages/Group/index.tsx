@@ -7,6 +7,7 @@ import { AddGroup } from '../../components/Form/Form';
 import { Heading2 } from '../../components/Heading';
 import { urlControl } from '../../routes/server';
 import Modal from '../../components/Modal/Modal';
+import { EditGroup } from "../../components/Form/Form";
 
 interface GroupProps {
   id: string;
@@ -24,8 +25,7 @@ export const Group = () => {
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-
-  const [groupname, setGroupname] = useState('');
+  const [gname, setGname] = useState('');
   const [modalGroupName, setModalGroupName] = useState('');
   const [modalGroupNameid, setModalGroupNameId] = useState('');
 
@@ -77,25 +77,36 @@ export const Group = () => {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {
           <>
-            <h2>Sửa tên nhóm</h2>
-            <input
-              value={modalGroupNameid}
-              onChange={(e) => setModalGroupNameId(e.target.value)} hidden
-            /><br/><br/>
-            <input
-              value={modalGroupName}
-              onChange={(e) => setModalGroupName(e.target.value)}
-            />
-
-            <div className="wrp-button">
-              <button className="btn" onClick={(event) => handleUpdate(modalGroupNameid,modalGroupName,event)}>
-                Xác nhận
-              </button>
-              <button className="btn btn--orange" onClick={closeModal}>
-                Hủy
-              </button>
+            <Heading2 text="Sửa Nhóm" />
+            <div className="form-user form">
+                <div className="form-content">
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="form-group">
+                        <label>Sửa Tên nhóm
+                          <img
+                            src={require('../../../../assets/icn-group.png')}
+                            alt=""
+                            className="fluid-image"
+                          />
+                         </label>
+                        <input
+                          value={modalGroupName}
+                          onChange={(e) => setModalGroupName(e.target.value)}
+                          className="form-input"
+                          type="text"
+                          placeholder="Nhập Tên nhóm"
+                        />
+                      </div>
+                      <div className="wrp-button">
+                        <button className="btn btn--green"onClick={(event) => handleUpdate(modalGroupNameid,modalGroupName,event)}>Xác nhận</button>
+                        <button className="btn btn--orange" onClick={closeModal}>Hủy</button>
+                      </div>
+                    </div>
+                  </div>
+              </div>
             </div>
-          </>
+          </> 
         }
       </Modal>
     </>
@@ -130,8 +141,6 @@ export const Group = () => {
     }
   };
 
-
-
   let dynamicDelete = (id: string) => (
     <button
       onClick={(event) => {
@@ -147,6 +156,7 @@ export const Group = () => {
       </p>
     </button>
   );
+
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
     DataTable.push({
@@ -161,11 +171,11 @@ export const Group = () => {
   }
   const handleSubmint = () => {
     const group_data = {
-      group_name: groupname,
+      group_name: gname,
       add_level: 1,
       owner: 'admin',
     };
-
+    setGname('');
     fetch(urlControl + 'GroupsController.php', {
       method: 'POST',
       headers: {
@@ -183,6 +193,7 @@ export const Group = () => {
       .then((responseData) => {
         console.log('Data inserted successfully:', responseData);
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+
       })
       .catch((error) => {
         console.error('Error inserting data:', error);
@@ -204,8 +215,8 @@ export const Group = () => {
           className="fluid-image form-addgroup__image"
         />
         <input
-          value={groupname}
-          onChange={(event) => setGroupname(event.target.value)}
+          value={gname}
+          onChange={(event) => setGname(event.target.value)}
           className="form-input"
           type="text"
           placeholder="Tên nhóm muốn thêm"

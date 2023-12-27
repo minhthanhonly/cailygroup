@@ -59,7 +59,7 @@ export const Dayoff = () => {
   }
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
+  const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
 
@@ -80,12 +80,14 @@ export const Dayoff = () => {
       event.preventDefault();
       try {
         const payload = { id: dayoffId };
+        // await axios.delete('http://cailygroup.com/dayoffs/delete', {
         await axios.delete(urlControl + 'DayoffsController.php', {
           headers: {
             'Content-Type': 'application/json',
           },
           data: payload,
         });
+        // const updatedList = await axios.get('http://cailygroup.com/dayoffs/');
         const updatedList = await axios.get(
           urlControl + 'DayoffsController.php',
           {

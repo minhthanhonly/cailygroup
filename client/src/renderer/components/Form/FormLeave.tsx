@@ -34,7 +34,7 @@ export const FormLeave: React.FC = () => {
       return;
     }
     const group_data = {
-      user_id: 39,
+      user_id: 41,
       date_start: format(startDate, 'dd-MM-yyyy').toString(),
       date_end: format(endDate, 'dd-MM-yyyy').toString(),
       time_start: timeStart,
@@ -45,6 +45,7 @@ export const FormLeave: React.FC = () => {
       owner: 'admin',
     };
     axios
+      // .post('http://cailygroup.com/dayoffs/add', { group_data })
       .post(urlControl + 'DayoffsController.php', { group_data })
       .then((response) => {
         console.log(response.data);

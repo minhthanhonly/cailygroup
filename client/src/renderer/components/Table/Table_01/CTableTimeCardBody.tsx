@@ -4,6 +4,9 @@ import { startOfMonth, endOfMonth, eachDayOfInterval, format, isToday, isSameDay
 import { Button } from '../../Button';
 import Modal from '../../Modal/Modal';
 
+//sever
+import { urlControl } from '../../../routes/server/';
+
 
 interface SelectMY {
   selectedMonth: string;
@@ -33,7 +36,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const admin = Props.admin;
   const dataUpload = Props.data;
 
-  console.log("dataUpload", dataUpload[0]);
+  console.log("dataUpload", dataUpload[1]);
 
 
 
@@ -191,10 +194,63 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const { datetime } = response.data;
       const currentHour = new Date(datetime).getHours();
       const currentMinutes = new Date(datetime).getMinutes();
+
+      console.log("datetime", datetime);
+
+
+
+      const group_data = {
+        id_groupwaretimecard: 1,
+        timecard_open: `${currentHour}:${String(currentMinutes).padStart(2, '0')}`,
+        timecard_close: '',
+        timecard_originalopen: `${currentHour}:${String(currentMinutes).padStart(2, '0')}`,
+        timecard_originalclose: '',
+        timecard_interval: '',
+        timecard_originalinterval: '',
+        timecard_time: '',
+        timecard_timeover: '',
+        timecard_timeinterval: '',
+        timecard_comment: 'hi',
+        status: 0,
+        owner: 'admin',
+      };
+      console.log("group_data", group_data);
+
+      fetch(urlControl + 'TimecardDetailsController.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors',
+        body: JSON.stringify({ group_data }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then((responseData) => {
+          console.log('Data inserted successfully:', responseData);
+          // Xử lý thành công nếu cần
+        })
+        .catch((error) => {
+          console.error('Error inserting data:', error.message);
+          // Xử lý lỗi nếu cần
+          if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Server error message:', error.response.data); // Thay đổi tùy theo cách server trả về thông báo lỗi
+          }
+        });
+
+
+
+      // Nếu lưu thành công, cập nhật state và hiển thị nút "Kết thúc"
       setStartHours(currentHour);
       setStartMinutes(currentMinutes);
       setShowEndButton(true);
       setShowStartButton(false);
+
     } catch (error) {
       console.error('Lỗi khi lấy thời gian từ API:', error);
     }
@@ -203,9 +259,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   // nhấn nút kết thúc mỗi ngày
   const handleEndButtonClick = async () => {
     try {
-      const response = await axios.get(
-        'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
-      );
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',);
       const { datetime } = response.data;
       const currentHour = new Date(datetime).getHours();
       const currentMinutes = new Date(datetime).getMinutes();
