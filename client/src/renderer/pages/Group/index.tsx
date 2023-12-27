@@ -106,7 +106,7 @@ export const Group = () => {
                   </div>
               </div>
             </div>
-          </> 
+          </>
         }
       </Modal>
     </>
