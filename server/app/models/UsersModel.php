@@ -53,6 +53,26 @@
 				
 			}
 		}
+
+		function getEdit($id){
+			global $conn;
+
+			// Thực hiện truy vấn SELECT
+			$sql = "SELECT * FROM users WHERE id='$id'";
+			$result = $conn->query($sql);
+
+			// Kiểm tra và hiển thị kết quả
+			while ($row = $result->fetch_assoc()) {
+				$data[] = $row;
+			}
+
+			header('Content-Type: application/json');
+			echo json_encode($data);
+			return;
+
+			// Đóng kết nối
+			$conn->close();
+		}
 	}
 
 ?>

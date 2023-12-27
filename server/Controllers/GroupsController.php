@@ -88,7 +88,6 @@ switch($method) {
         $data = json_decode(file_get_contents("php://input"), true);
         if (isset($data['id'])) {
             $id = mysqli_real_escape_string($db_conn, $data['id']);
-
             $deleteQuery = "DELETE FROM groups WHERE id = $id";
 
             if (mysqli_query($db_conn, $deleteQuery)) {

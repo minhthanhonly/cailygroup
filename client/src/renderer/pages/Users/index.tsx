@@ -4,16 +4,15 @@ import { InputQuantity } from "../../components/InputQuantity";
 import { Search } from "../../components/Search";
 import { CTable } from "../../components/Table/CTable";
 import { CTableHead } from "../../components/Table/CTableHead";
-import CTableBody from "../../components/Table/CTableBody";
-import { Pagination } from "../../components/Pagination";
 import { useEffect, useState } from "react";
 import ButtonAdd from "../../components/Button/ButtonAdd";
 import axios from "axios";
-import { urlControl } from "../../routes/server";
+import ButtonEdit from "../../components/Button/ButtonEdit";
 
 export const Users = () => {
 
   type FieldUsers = {
+    id: number,
     realname: string,
     group_name: string,
     user_email: string,
@@ -28,27 +27,8 @@ export const Users = () => {
     }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
   }, [])
 
-  let DataTable: FieldUsers[] = [];
-
-  for (let i = 0; i < listOfUsers.length; i++) {
-    DataTable.push({
-      realname: `${listOfUsers[i].realname}`,
-      group_name: `${listOfUsers[i].group_name}`,
-      user_email: `${listOfUsers[i].user_email}`,
-      user_skype: `${listOfUsers[i].user_skype}`,
-      user_phone: `${listOfUsers[i].user_phone}`
-    });
-  }
-
-
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
-  // Tính tổng số trang
-  const totalPages = Math.ceil(DataTable.length / itemsPerPage);
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
   return (
     <>
       <Heading2 text="Thông tin thành viên" />
@@ -70,7 +50,19 @@ export const Users = () => {
       <ButtonAdd path_add="/users/add" />
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Email", "Skype ID", "Phone", "Sửa", "Xóa"]} />
-        <CTableBody data={DataTable} permission_edit={true} path_edit="/member/edit" permission_delete={true} />
+        <tbody>
+          {listOfUsers.map((data, index) => (
+            <tr key={index}>
+              <td>{data.realname}</td>
+              <td>{data.group_name}</td>
+              <td>{data.user_email}</td>
+              <td>{data.user_skype}</td>
+              <td>{data.user_phone}</td>
+              <td><ButtonEdit href={"/users/edit/" + data.id} /></td>
+              <td></td>
+            </tr>
+          ))}
+        </tbody>
       </CTable>
     </>
   )

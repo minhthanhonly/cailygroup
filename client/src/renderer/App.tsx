@@ -9,7 +9,7 @@ import { MemberAdd } from './pages/Member/MemberAdd';
 import { MemberEdit } from './pages/Member/MemberEdit';
 import { Users } from './pages/Users';
 import { UserAdd } from './pages/Users/UserAdd';
-import { UserEdit } from './pages/Users/UserEdit';
+import UserEdit from './pages/Users/UserEdit';
 import { UserDetail } from './pages/Users/UserDetail';
 import { Dayoff } from './pages/Dayoff';
 import { DayoffRegister } from './pages/Dayoff/DayoffRegister';
@@ -37,7 +37,7 @@ export default function App() {
             <Route path="member/edit" element={<MemberEdit/>} />
             <Route path="users" element={<Users/>} />
             <Route path="users/add" element={<UserAdd/>} />
-            <Route path="users/edit" element={<UserEdit/>} />
+            <Route path="users/edit/:id" element={<UserEdit/>} />
             <Route path="users/detail" element={<UserDetail/>} />
             <Route path="day-off" element={<Dayoff/>} />
             <Route path="day-off/register" element={<DayoffRegister/>} />
