@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import './Modaldelete.scss';
+import './Modal.scss';
 
 interface ModaldeleteProps {
   isOpen: boolean;

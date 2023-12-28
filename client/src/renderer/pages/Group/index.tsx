@@ -8,7 +8,7 @@ import { Heading2 } from '../../components/Heading';
 import { urlControl } from '../../routes/server';
 import Modal from '../../components/Modal/Modal';
 import { EditGroup } from "../../components/Form/Form";
-import Modaldelete from '../../components/Modaldelete/Modaldelete';
+import Modaldelete from '../../components/Modal/Modaldelete';
 
 interface GroupProps {
   id: string;
@@ -26,7 +26,7 @@ export const Group = () => {
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [gname, setGname] = useState('');
+  const [groupName, setGroupName] = useState('');
   const [modalGroupName, setModalGroupName] = useState('');
   const [modalGroupNameid, setModalGroupNameId] = useState('');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -179,16 +179,16 @@ export const Group = () => {
     });
   }
   const handleSubmint = () => {
-    if (!gname) {
+    if (!groupName) {
       console.error('Tên nhóm không hợp lệ');
       return;
     }
     const group_data = {
-      group_name: gname,
+      group_name: groupName,
       add_level: 1,
       owner: 'admin',
     };
-    setGname('');
+    setGroupName('');
     fetch(urlControl + 'GroupsController.php', {
       method: 'POST',
       headers: {
@@ -228,8 +228,8 @@ export const Group = () => {
           className="fluid-image form-addgroup__image"
         />
         <input
-          value={gname}
-          onChange={(event) => setGname(event.target.value)}
+          value={groupName}
+          onChange={(event) => setGroupName(event.target.value)}
           className="form-input"
           type="text"
           placeholder="Tên nhóm muốn thêm"
