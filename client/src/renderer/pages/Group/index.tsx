@@ -39,26 +39,7 @@ export const Group = () => {
     });
   }, [isTableUpdated]); // khi state thay đổi useEffect sẽ chạy lại
 
-  const handleDelete = async (groupId,event) => {
-    if (event) {
-      event.preventDefault();
-      try {
-        const payload = { id: groupId };
-        let response = await axios.delete(urlControl + 'GroupsController.php', {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: payload,
-        });
-        console.log('DELETE Response:', response.data);
-        closeModaldelete();
-        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-      } catch (error) {
-        console.error('Lỗi khi cập nhật trạng thái:', error);
-      }
-    }
-  };
-
+  
   let dynamicUpdate = ({id,groupName,}: {id: string;groupName: string;}) => (
     <>
       <button onClick={() => openModal(groupName,id)}>
@@ -116,6 +97,26 @@ export const Group = () => {
 
   const closeModal = () => {
     setModalOpen(false);
+  };
+
+  const handleDelete = async (groupId,event) => {
+    if (event) {
+      event.preventDefault();
+      try {
+        const payload = { id: groupId };
+        let response = await axios.delete(urlControl + 'GroupsController.php', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: payload,
+        });
+        console.log('DELETE Response:', response.data);
+        closeModaldelete();
+        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
   };
 
   const handleUpdate = async (id: string, group_name:string, event) => {
