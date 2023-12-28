@@ -25,18 +25,18 @@ export const DayoffApply = () => {
   const fetchData = useCallback(async () => {
     try {
       const [groupsResponse, dayoffsResponse] = await Promise.all([
-        // axios.get('http://cailygroup.com/dayoffs/'),
-        // axios.get('http://cailygroup.com/groups/', {
-        //   params: {
-        //     group: selectedGroup,
-        //   },
-        // }),
-        axios.get(urlControl + 'GroupsController.php'),
-        axios.get(urlControl + 'DayoffsController.php', {
+        axios.get('http://cailygroup.com/groups/'),
+        axios.get('http://cailygroup.com/dayoffs/', {
           params: {
             group: selectedGroup,
           },
         }),
+        // axios.get(urlControl + 'GroupsController.php'),
+        // axios.get(urlControl + 'DayoffsController.php', {
+        //   params: {
+        //     group: selectedGroup,
+        //   },
+        // }),
       ]);
 
       const groupsData = groupsResponse.data;

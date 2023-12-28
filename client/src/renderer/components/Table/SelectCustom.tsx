@@ -17,7 +17,7 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
 
   useEffect(() => {
     axios
-      .get(urlControl + 'GroupsController.php')
+      .get('http://cailygroup.com/groups/')
       .then((response) => {
         const responseData = response.data;
         if (Array.isArray(responseData)) {
