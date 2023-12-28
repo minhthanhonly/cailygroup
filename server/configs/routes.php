@@ -10,7 +10,8 @@
     $routes['users'] = 'users';
     $routes['users/add'] = 'users/add';
     $routes['users/edit/.+-(\d+)'] = 'users/edit/$1';
-    $routes['users/delete/.+-(\d+)'] = 'users/delete/$1';
+    $routes['users/update'] = 'users/update';
+    $routes['users/delete'] = 'users/delete';
 
     // Authority
     $routes['authority'] = 'authority';

@@ -8,8 +8,13 @@ import { useEffect, useState } from "react";
 import ButtonAdd from "../../components/Button/ButtonAdd";
 import axios from "axios";
 import ButtonEdit from "../../components/Button/ButtonEdit";
+import Modal from "../../components/Modal/Modal";
+import ButtonDelete from "../../components/Button/ButtonDelete";
+import { useNavigate } from "react-router-dom";
 
 export const Users = () => {
+  const navigate = useNavigate();
+  const [isTableUpdated, setIsTableUpdated] = useState(false);
 
   type FieldUsers = {
     id: number,
@@ -24,10 +29,32 @@ export const Users = () => {
   useEffect(() => {
     axios.get('http://cailygroup.com/users/').then((response) => {
       setListOfUsers(response.data);
+      setIsTableUpdated(false);
     }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
-  }, [])
+  }, [isTableUpdated])
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [message, setMessage] = useState('');
+  const [isModalOpen, setModalOpen] = useState(false);
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+  const handleDelete = async($id: number) => {
+    const formData = {id:$id}
+    const res = await axios.post("http://cailygroup.com/users/delete", formData);
+    setIsTableUpdated(true);
+    setTimeout(() => {
+      closeModal();
+    }, 1000);
+  }
+
+  const openModal = ($id: number) => {
+    setModalOpen(true);
+    handleDelete($id)
+  };
+
+
 
   return (
     <>
@@ -59,11 +86,26 @@ export const Users = () => {
               <td>{data.user_skype}</td>
               <td>{data.user_phone}</td>
               <td><ButtonEdit href={"/users/edit/" + data.id} /></td>
-              <td></td>
+              <td><ButtonDelete onButtonClick={() => openModal(data.id)} /></td>
             </tr>
           ))}
         </tbody>
       </CTable>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        {
+          <>
+            <h3 className="hdglv3">Xác nhận xóa</h3>
+            {/* {message=='' ? '' : <div className="box-bg"><p className="bg bg-green">{message}</p></div>} */}
+            <div className="wrp-button">
+              <button className="btn" onClick={() => handleDelete}>Xác nhận</button>
+              <button className="btn btn--orange" onClick={closeModal}>
+                Hủy
+              </button>
+            </div>
+          </>
+        }
+      </Modal>
     </>
   )
 };
