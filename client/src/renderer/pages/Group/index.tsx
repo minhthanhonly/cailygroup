@@ -39,10 +39,10 @@ export const Group = () => {
     });
   }, [isTableUpdated]); // khi state thay đổi useEffect sẽ chạy lại
 
-  
-  let dynamicUpdate = ({id,groupName,}: {id: string;groupName: string;}) => (
+
+  let dynamicUpdate = ({ id, groupName, }: { id: string; groupName: string; }) => (
     <>
-      <button onClick={() => openModal(groupName,id)}>
+      <button onClick={() => openModal(groupName, id)}>
         <p className="icon icon--check">
           <img
             src={require('../../../../assets/icnedit.png')}
@@ -56,34 +56,34 @@ export const Group = () => {
           <>
             <Heading2 text="Sửa Nhóm" />
             <div className="form-user form">
-                <div className="form-content">
-                  <div className="row">
-                    <div className="col-12">
-                      <div className="form-group">
-                        <label>Sửa Tên nhóm
-                          <img
-                            src={require('../../../../assets/icn-group.png')}
-                            alt=""
-                            className="fluid-image"
-                          />
-                         </label>
-                        <input
-                          value={modalGroupName}
-                          onChange={(e) => setModalGroupName(e.target.value)}
-                          className="form-input"
-                          type="text"
-                          placeholder="Nhập Tên nhóm"
+              <div className="form-content">
+                <div className="row">
+                  <div className="col-12">
+                    <div className="form-group">
+                      <label>Sửa Tên nhóm
+                        <img
+                          src={require('../../../../assets/icn-group.png')}
+                          alt=""
+                          className="fluid-image"
                         />
-                      </div>
-                      <div className="wrp-button">
-                        <button className="btn btn--green"onClick={(event) => handleUpdate(modalGroupNameid,modalGroupName,event)}>Xác nhận</button>
-                        <button className="btn btn--orange" onClick={closeModal}>Hủy</button>
-                      </div>
+                      </label>
+                      <input
+                        value={modalGroupName}
+                        onChange={(e) => setModalGroupName(e.target.value)}
+                        className="form-input"
+                        type="text"
+                        placeholder="Nhập Tên nhóm"
+                      />
+                    </div>
+                    <div className="wrp-button">
+                      <button className="btn btn--green" onClick={(event) => handleUpdate(modalGroupNameid, modalGroupName, event)}>Xác nhận</button>
+                      <button className="btn btn--orange" onClick={closeModal}>Hủy</button>
                     </div>
                   </div>
+                </div>
               </div>
             </div>
-          </> 
+          </>
         }
       </Modal>
     </>
@@ -99,7 +99,7 @@ export const Group = () => {
     setModalOpen(false);
   };
 
-  const handleDelete = async (groupId,event) => {
+  const handleDelete = async (groupId, event) => {
     if (event) {
       event.preventDefault();
       try {
@@ -119,7 +119,7 @@ export const Group = () => {
     }
   };
 
-  const handleUpdate = async (id: string, group_name:string, event) => {
+  const handleUpdate = async (id: string, group_name: string, event) => {
     if (event) {
       event.preventDefault();
       try {
@@ -137,10 +137,10 @@ export const Group = () => {
       }
     }
   };
-  
+
   let dynamicDelete = (id) => (
     <>
-      <button  onClick={(event) => { openModaldelete(id, event);}}>
+      <button onClick={(event) => { openModaldelete(id, event); }}>
         <p className="icon icon--check">
           <img
             src={require('../../../../assets/icndelete.png')}
@@ -152,7 +152,7 @@ export const Group = () => {
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
         <h2>Bạn có chắc chắn muốn xóa không?</h2>
         <div className='wrp-button'>
-          <button className='btn btn--green' onClick={(event) => handleDelete(isDeleteModalid,event)}>Đồng ý</button>
+          <button className='btn btn--green' onClick={(event) => handleDelete(isDeleteModalid, event)}>Đồng ý</button>
           <button className='btn btn--orange' onClick={closeModaldelete}>Hủy</button>
         </div>
       </Modaldelete>
@@ -217,7 +217,7 @@ export const Group = () => {
         }
       });
   };
-  
+
   return (
     <>
       <Heading2 text="Quản lý nhóm" />
