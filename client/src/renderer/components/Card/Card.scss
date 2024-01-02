@@ -22,6 +22,13 @@
       top: -1.5rem;
       //   margin-top: 0.5rem;
     }
+    &--hour > input ,  &--minute > input {
+        color: #146b9c;
+          font-size: 2.4rem;
+          width: 100%;
+          border: none;
+          background: transparent;
+    }
   }
   &-box {
     width: 30rem;
@@ -43,4 +50,5 @@
       margin-top: 5rem;
     }
   }
+ 
 }

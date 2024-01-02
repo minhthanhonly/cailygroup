@@ -6,9 +6,18 @@ import CTableBody from "../../components/Table/CTableBody";
 import { CTableHead } from "../../components/Table/CTableHead";
 import NavTimcard from "../../layouts/components/Nav/NavTimcard";
 import { Pagination } from "../../components/Pagination"
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
+import axios from "axios";
+import { urlControl } from "../../routes/server";
 
 export const TimecardSetting = () => {
+  const [parentHours, setParentHours] = useState<number>(0);
+  const [parentMinutes, setParentMinutes] = useState<number>(0);
+
+  // State để lưu trữ giờ và phút từ CardTime
+  const [cardTimeHours, setCardTimeHours] = useState<number>(0);
+  const [cardTimeMinutes, setCardTimeMinutes] = useState<number>(0);
+
   const Data = [
     ["Ngày 01 Tháng 01", "2", "Tết Dương Lịch"],
     ["Ngày 30 Tháng 04", "4", "Ngày giải phóng miền Nam, Thống nhất Đất nước"],
@@ -23,6 +32,63 @@ export const TimecardSetting = () => {
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
+
+
+  // hàm onchange
+  const handleCardTimeChange = (hours: number, minutes: number) => {
+    // Cập nhật state từ CardTime
+    setCardTimeHours(hours);
+    setCardTimeMinutes(minutes);
+  };
+
+  const handleUpdateTimeInput = async () => {
+    try {
+      const dataUpdateArray = [
+        { id: 1, hours: cardTimeHours },
+        { id: 2, minutes: cardTimeMinutes }
+      ];
+      const promises = dataUpdateArray.map(async (dataUpdate) => {
+        const response = await axios.put(
+          urlControl + 'ConfigsController.php',
+          { ...dataUpdate, method: 'UPDATE_LOGIN' },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
+        console.log('Update Response:', response.data);
+      });
+
+      // Chờ tất cả các yêu cầu axios hoàn thành
+      await Promise.all(promises);
+      console.log('Update Response:', promises);
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
+    }
+  };
+
+  const handleUpdateOutTime = async () => {
+    try {
+      const dataUpdateArray = [
+        { id: 3, hours: cardTimeHours },
+        { id: 4, minutes: cardTimeMinutes }
+      ];
+      const promises = dataUpdateArray.map(async (dataUpdate) => {
+
+        const response = await axios.put(
+          urlControl + 'ConfigsController.php',
+          { ...dataUpdate, method: 'UPDATE_OUTTIME' },
+          { headers: { 'Content-Type': 'application/json' } }
+        );
+        console.log('Update Response:', response.data);
+      });
+
+      // Chờ tất cả các yêu cầu axios hoàn thành
+      await Promise.all(promises);
+      console.log('Update Response:', promises);
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
+    }
+  };
+
+
   return (
     <>
       <NavTimcard role="admin" />
@@ -30,13 +96,13 @@ export const TimecardSetting = () => {
       <div className="card-box">
         <div className="card-box--center">
           <h4>Giờ vào</h4>
-          <CardTime />
-          <button className="btn btn--widthAuto">Cập nhật</button>
+          <CardTime onChange={handleCardTimeChange} />
+          <button className="btn btn--widthAuto" onClick={handleUpdateTimeInput}>Cập nhật</button>
         </div>
         <div className="card-box--center">
           <h4>Giờ ra</h4>
-          <CardTime />
-          <button className="btn btn--widthAuto">Cập nhật</button>
+          <CardTime onChange={handleCardTimeChange} />
+          <button className="btn btn--widthAuto" onClick={handleUpdateOutTime} >Cập nhật</button>
         </div>
       </div>
       <Heading3 text="Cấu hình ngày lễ" />
