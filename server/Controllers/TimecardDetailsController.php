@@ -20,6 +20,7 @@
                         $timecardId = isset($data["dataTime"]["id"]) ? $data["dataTime"]["id"] : null;
                         $timecard_open = isset($data["dataTime"]["timecard_open"]) ? $data["dataTime"]["timecard_open"] : null;
                         $timecard_now = isset($data["dataTime"]["timecard_now"]) ? $data["dataTime"]["timecard_now"] : null;
+                        $timecard_time = $timecard_now - $timecard_open;
                         if ($timecardId !== null) {
                             // Cập nhật trạng thái trong cơ sở dữ liệu
                             $sql = "UPDATE timecard_details SET timecard_close = ?, timecard_originalclose = ? WHERE id_groupwaretimecard = ?";
