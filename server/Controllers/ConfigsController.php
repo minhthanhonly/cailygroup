@@ -35,25 +35,25 @@ switch($method) {
                                 if (!empty($hour_value)) {
                                     $updateQuery = "UPDATE configs SET config_value = '$hour_value' WHERE id = '$id' AND config_key = 'openhour'";
                                     mysqli_query($db_conn, $updateQuery);
-                                    // if (mysqli_query($db_conn, $updateQuery)) {
-                                    // http_response_code(200);
-                                    // echo json_encode(["message" => "Data update successfully giờ vào nè"]);
-                                    // } else {
-                                    //     http_response_code(500);
-                                    //     echo json_encode(["error" => "Failed to update data giờ vào nè"]);
-                                    // }
+                                    if (mysqli_query($db_conn, $updateQuery)) {
+                                    http_response_code(200);
+                                    echo json_encode(["message" => "Data update successfully giờ vào nè"]);
+                                    } else {
+                                        http_response_code(500);
+                                        echo json_encode(["error" => "Failed to update data giờ vào nè"]);
+                                    }
                                 }
 
                                 if (!empty($minute_value)) {
                                     $updateQuery = "UPDATE configs SET config_value = '$minute_value' WHERE id = '$id' AND config_key = 'openminute'";
                                     mysqli_query($db_conn, $updateQuery);
-                                    // if (mysqli_query($db_conn, $updateQuery)) {
-                                    //     http_response_code(200);
-                                    //     echo json_encode(["message" => "Data update successfully phút vào nè"]);
-                                    //     } else {
-                                    //         http_response_code(500);
-                                    //         echo json_encode(["error" => "Failed to update data phút vào nè"]);
-                                    //     }
+                                    if (mysqli_query($db_conn, $updateQuery)) {
+                                        http_response_code(200);
+                                        echo json_encode(["message" => "Data update successfully phút vào nè"]);
+                                        } else {
+                                            http_response_code(500);
+                                            echo json_encode(["error" => "Failed to update data phút vào nè"]);
+                                        }
                                 }
                                 
                             }
@@ -67,25 +67,25 @@ switch($method) {
                                     if (!empty($hour_value)) {
                                         $updateQuery = "UPDATE configs SET config_value = '$hour_value' WHERE id = '$id' AND config_key = 'closehour'";
                                         mysqli_query($db_conn, $updateQuery);
-                                        // if (mysqli_query($db_conn, $updateQuery)) {
-                                        // http_response_code(200);
-                                        // echo json_encode(["message" => "Data update successfully giờ out nè"]);
-                                        // } else {
-                                        //     http_response_code(500);
-                                        //     echo json_encode(["error" => "Failed to update data giờ out nè"]);
-                                        // }
+                                        if (mysqli_query($db_conn, $updateQuery)) {
+                                        http_response_code(200);
+                                        echo json_encode(["message" => "Data update successfully giờ out nè"]);
+                                        } else {
+                                            http_response_code(500);
+                                            echo json_encode(["error" => "Failed to update data giờ out nè"]);
+                                        }
                                     }
 
                                     if (!empty($minute_value)) {
                                         $updateQuery = "UPDATE configs SET config_value = '$minute_value' WHERE id = '$id' AND config_key = 'closeminute'";
                                         mysqli_query($db_conn, $updateQuery);
-                                        // if (mysqli_query($db_conn, $updateQuery)) {
-                                        //     http_response_code(200);
-                                        //     echo json_encode(["message" => "Data update successfully phút out nè"]);
-                                        //     } else {
-                                        //         http_response_code(500);
-                                        //         echo json_encode(["error" => "Failed to update data phút out nè"]);
-                                        //     }
+                                        if (mysqli_query($db_conn, $updateQuery)) {
+                                            http_response_code(200);
+                                            echo json_encode(["message" => "Data update successfully phút out nè"]);
+                                            } else {
+                                                http_response_code(500);
+                                                echo json_encode(["error" => "Failed to update data phút out nè"]);
+                                            }
                                     }
                                     
                                 }
