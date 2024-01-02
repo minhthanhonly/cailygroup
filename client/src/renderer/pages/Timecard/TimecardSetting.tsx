@@ -9,8 +9,16 @@ import NavTimcard from "../../layouts/components/Nav/NavTimcard";
 import { Pagination } from "../../components/Pagination";
 import axios from "axios";
 import { urlControl } from "../../routes/server";
+import DatePicker from "react-multi-date-picker"
+
 
 export const TimecardSetting = () => {
+  type FieldHolidays = {
+    id: any;
+    name: string;
+    days: string;
+  };
+  const [listOfHolidays, setListOfHolidays] = useState<FieldHolidays[] | []>([]);
   const [timeInputHours, setTimeInputHours] = useState<number>(0);
   const [timeInputMinutes, setTimeInputMinutes] = useState<number>(0);
 
@@ -21,6 +29,12 @@ export const TimecardSetting = () => {
     ["Ngày 01 Tháng 01", "2", "Tết Dương Lịch"],
     ["Ngày 30 Tháng 04", "4", "Ngày giải phóng miền Nam, Thống nhất Đất nước"],
   ];
+
+  useEffect(() => {
+    axios.get(urlControl + 'TimecardsSettingController.php').then((response) => {
+      setListOfHolidays(response.data);
+    });
+  }, []); // khi state thay đổi useEffect sẽ chạy lại
 
 
   useEffect(() => {
@@ -107,7 +121,20 @@ export const TimecardSetting = () => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
+  const today = new Date()
+  const tomorrow = new Date()
+  // tomorrow.setDate(tomorrow.getDate() + 1)
 
+  const [values, setValues] = useState([today, tomorrow])
+
+  let DataTable: FieldHolidays[] = [];
+  for (let i = 0; i < listOfHolidays.length; i++) {
+    DataTable.push({
+      days:`${listOfHolidays[i].days}`,
+      name: `${listOfHolidays[i].name}`,
+      
+    });
+  }
   return (
     <>
       <NavTimcard role="admin" />
@@ -125,10 +152,42 @@ export const TimecardSetting = () => {
         </div>
       </div>
       <Heading3 text="Cấu hình ngày lễ" />
-      <AddGroup />
+      <div className="box-holiday">
+          <div className="form-group form-addgroup">
+            <label>Tên Ngày Lễ :</label>
+            <img
+              src={require('../../../../assets/icn-group.png')}
+              alt=""
+              className="fluid-image form-addgroup__image"
+            />
+            <input
+              className="form-input"
+              type="text"
+              placeholder="Tên ngày lễ muốn thêm"
+            />
+          </div>
+          <div className="holiday">
+            <div className="form-group">
+              <label>Ngày Nghỉ Lễ</label>
+              <img
+                  src={require('../../../../assets/icon-time.jpg')}
+                  alt=""
+                  className="fluid-image"
+                />
+              <DatePicker 
+                multiple
+                value={values} 
+                onChange={setValues}
+              />
+            </div>
+          </div>
+          <div className="holiday-button">
+            <button className="btn">Thêm</button>
+          </div>
+      </div>
       <CTable>
-        <CTableHead heads={["Ngày Tháng", "Thứ", "Ngày lễ - Ngày nghỉ", "Hành Động"]} />
-        <CTableBody path_edit={"edit"} data={Data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_delete={true} />
+        <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
+        <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true} permission_delete={true} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
     </>
