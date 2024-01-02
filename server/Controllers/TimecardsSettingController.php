@@ -27,7 +27,38 @@ switch($method) {
         break;
     
         case "POST":
-            // FUNCTION POST
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            if (isset($data['holiday_data']['name']) && isset($data['holiday_data']['days'])) {
+                $insertQuery = "INSERT INTO holidays (name, days) VALUES (?, ?)";
+
+                $stmt = mysqli_prepare($db_conn, $insertQuery);
+
+                if (!$stmt) {
+                    http_response_code(500);
+                    echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($db_conn)]);
+                    exit();
+                }
+
+                 // Gán giá trị cho các tham số
+                mysqli_stmt_bind_param($stmt, "ss", 
+                    $data['holiday_data']['name'],
+                    $data['holiday_data']['days']
+                );
+
+                if (mysqli_stmt_execute($stmt)) {
+                    http_response_code(201);
+                    echo json_encode(["message" => "Thêm thành công"]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(["error" => "Thêm không thành công: " . mysqli_error($db_conn)]);
+                }
+
+                mysqli_stmt_close($stmt);
+            } else {
+                http_response_code(400);
+                echo json_encode(["error" => "Dữ liệu không hợp lệ. 'group_name' bị thiếu"]);
+            }
         break;
     }
 ?>

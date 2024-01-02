@@ -9,6 +9,7 @@ import NavTimcard from "../../layouts/components/Nav/NavTimcard";
 import { Pagination } from "../../components/Pagination";
 import axios from "axios";
 import { urlControl } from "../../routes/server";
+import { format } from 'date-fns';
 import DatePicker from "react-multi-date-picker"
 
 
@@ -19,6 +20,7 @@ export const TimecardSetting = () => {
     days: string;
   };
   const [listOfHolidays, setListOfHolidays] = useState<FieldHolidays[] | []>([]);
+  const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [timeInputHours, setTimeInputHours] = useState<number>(0);
   const [timeInputMinutes, setTimeInputMinutes] = useState<number>(0);
 
@@ -33,8 +35,9 @@ export const TimecardSetting = () => {
   useEffect(() => {
     axios.get(urlControl + 'TimecardsSettingController.php').then((response) => {
       setListOfHolidays(response.data);
+      setIsTableUpdated(false); //đặt lại trạng thái khi dữ liệu thay đổi
     });
-  }, []); // khi state thay đổi useEffect sẽ chạy lại
+  }, [isTableUpdated]); // khi state thay đổi useEffect sẽ chạy lại
 
 
   useEffect(() => {
@@ -125,8 +128,8 @@ export const TimecardSetting = () => {
   const tomorrow = new Date()
   // tomorrow.setDate(tomorrow.getDate() + 1)
 
-  const [values, setValues] = useState([today, tomorrow])
-
+  const [startDay, setStartDay] = useState([today, tomorrow])
+  startDay 
   let DataTable: FieldHolidays[] = [];
   for (let i = 0; i < listOfHolidays.length; i++) {
     DataTable.push({
@@ -134,6 +137,48 @@ export const TimecardSetting = () => {
       name: `${listOfHolidays[i].name}`,
       
     });
+  }
+  const [name, setName] = useState('');
+  const [days, SetDays] = useState(new Date());
+  const handleStartDateChange = (date: Date | null) => {
+    if (date !== null) {
+      setStartDay(date);
+    }
+  };
+
+  const handleSubmint = () => {
+    const holiday_data = {
+      name: name,
+      days: format(startDay, 'dd-MM-yyyy').toString()
+    };
+    setName('');
+    SetDays(new Date());
+    fetch(urlControl + 'TimecardsSettingController.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors',
+      body: JSON.stringify({ holiday_data }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((responseData) => {
+        console.log('Data inserted successfully:', responseData);
+        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+
+      })
+      .catch((error) => {
+        console.error('Error inserting data:', error);
+        if (error.response) {
+          console.error('Response status:', error.response.status);
+          console.error('Server error message:', error.response.data);
+        }
+      });
   }
   return (
     <>
@@ -161,6 +206,8 @@ export const TimecardSetting = () => {
               className="fluid-image form-addgroup__image"
             />
             <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
               className="form-input"
               type="text"
               placeholder="Tên ngày lễ muốn thêm"
@@ -176,13 +223,14 @@ export const TimecardSetting = () => {
                 />
               <DatePicker 
                 multiple
-                value={values} 
-                onChange={setValues}
+                value={days}
+                format="MM/DD/YYYY"
+                onChange={(date) => handleStartDateChange(date)}
               />
             </div>
           </div>
           <div className="holiday-button">
-            <button className="btn">Thêm</button>
+            <button className="btn" onClick={handleSubmint}>Thêm</button>
           </div>
       </div>
       <CTable>
