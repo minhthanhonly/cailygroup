@@ -2478,7 +2478,8 @@ textarea {
   }
 }
 .box-bg{
-  width: 60rem;
+  width: 100%;
+  max-width: 60rem;
   .bg{
     text-align: center;
     padding: 1.1rem 0;
