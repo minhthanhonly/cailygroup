@@ -7,10 +7,11 @@ import MonthYearSelector from '../../components/Table/SelectMonthYears';
 import { NavLink } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
-import { SelectCustom, SelectCustomName } from '../../components/Table/SelectCustom';
+import {
+  SelectCustom,
+  SelectCustomName,
+} from '../../components/Table/SelectCustom';
 import { Excel } from '../../components/ExportExcel/Excel';
-
-
 
 //sever link
 
@@ -18,9 +19,8 @@ import { urlControl } from '../../routes/server';
 import axios from 'axios';
 
 export const Timecard = () => {
-
   type DatabaseTimeCardDetails = {
-    id: string,
+    id: string;
     id_groupwaretimecard: string;
     timecard_open: string;
     timecard_close: string;
@@ -32,62 +32,46 @@ export const Timecard = () => {
     timecard_timeover: string;
     timecard_timeinterval: string;
     timecard_comment: string;
-  }
-  // const [dataTimeCardDetails, setDataTimeCardDetails] = useState<DatabaseTimeCardDetails[] | []>([]);
-
-  // useEffect(() => {
-  //   axios.get(urlControl + "TimecardDetailsController.php").then((response) => {
-  //     setDataTimeCardDetails(response.data)
-  //   })
-  // }, [])
-
-  // let DataTable: DatabaseTimeCardDetails[] = dataTimeCardDetails.map(item => ({
-  //   id: item.id,
-  //   id_groupwaretimecard: item.id_groupwaretimecard,
-  //   timecard_open: item.timecard_open,
-  //   timecard_close: item.timecard_close,
-  //   timecard_originalopen: item.timecard_originalopen,
-  //   timecard_originalclose: item.timecard_originalclose,
-  //   timecard_interval: item.timecard_interval,
-  //   timecard_originalinterval: item.timecard_originalinterval,
-  //   timecard_time: item.timecard_time,
-  //   timecard_timeover: item.timecard_timeover,
-  //   timecard_timeinterval: item.timecard_timeinterval,
-  //   timecard_comment: item.timecard_comment,
-  // }));
-
+  };
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
   const [tableData, setTableData] = useState<string[][]>([]); // Thêm state để lưu trữ dữ liệu bảng
 
-
-
-  const handleDateChange = (month: string, year: string, daysInMonth: Date[]) => {
+  const handleDateChange = (
+    month: string,
+    year: string,
+    daysInMonth: Date[],
+  ) => {
     setSelectedMonth(month);
     setSelectedYear(year);
     setDaysInMonth(daysInMonth);
   };
-
-
 
   // <Excel />
   return (
     <>
       <NavTimcard role="admin" />
       <div className="left">
-        <SelectCustom />
+        <SelectCustom
+          onGroupChange={function (groupId: string): void {
+            throw new Error('Function not implemented.');
+          }}
+        />
       </div>
       <MonthYearSelector onChange={handleDateChange} />
-      <div className='table-container table--01'>
+      <div className="table-container table--01">
         <table className="table table__custom">
           <thead>
             <CTableTimeCardHead />
           </thead>
           <tbody>
             {/* RowCounts = {RowCounts}  data={DataTable}  data={DataTable} */}
-            <CTableTimeCardBody selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} />
-
+            <CTableTimeCardBody
+              selectedMonth={selectedMonth}
+              selectedYear={selectedYear}
+              daysInMonth={daysInMonth}
+            />
           </tbody>
         </table>
       </div>
