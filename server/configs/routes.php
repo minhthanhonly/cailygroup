@@ -22,4 +22,9 @@
     $routes['dayoffs/update/.+-(\d+)'] = 'dayoffs/update/$1';
     $routes['dayoffs/delete/.+-(\d+)'] = 'dayoffs/delete/$1';
 
+    // timecards
+    $routes['timecards'] = 'timecards';
+    $routes['timecards/update/.+-(\d+)'] = 'timecards/update/$1';
+
+
 ?>
