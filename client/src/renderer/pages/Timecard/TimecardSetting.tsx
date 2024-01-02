@@ -9,7 +9,7 @@ import NavTimcard from "../../layouts/components/Nav/NavTimcard";
 import { Pagination } from "../../components/Pagination";
 import axios from "axios";
 import { urlControl } from "../../routes/server";
-import DatePicker from "react-multi-date-picker"
+import DatePicker from "react-multi-date-picker";
 
 
 export const TimecardSetting = () => {
@@ -25,6 +25,14 @@ export const TimecardSetting = () => {
   const [timeOutHours, setTimeOutHours] = useState<number>(0);
   const [timeOutMinutes, setTimeOutMinutes] = useState<number>(0);
 
+  const [configData, setConfigData] = useState({
+    openhour: 0,
+    openminute: 0,
+    closehour: 0,
+    closeminute: 0,
+  });
+
+
   const Data = [
     ["Ngày 01 Tháng 01", "2", "Tết Dương Lịch"],
     ["Ngày 30 Tháng 04", "4", "Ngày giải phóng miền Nam, Thống nhất Đất nước"],
@@ -36,6 +44,17 @@ export const TimecardSetting = () => {
     });
   }, []); // khi state thay đổi useEffect sẽ chạy lại
 
+
+  useEffect(() => {
+    // Gửi yêu cầu GET đến server để lấy dữ liệu cấu hình
+    fetch(urlControl + 'ConfigsController.php')
+      .then(response => response.json())
+      .then(data => {
+        // Cập nhật state với dữ liệu từ server
+        setConfigData(data);
+      })
+      .catch(error => console.error('Error fetching config data:', error));
+  }, []); // [] để đảm bảo useEffect chỉ chạy một lần khi component được mount
 
   useEffect(() => {
     const fetchTimeValues = async () => {
@@ -130,9 +149,9 @@ export const TimecardSetting = () => {
   let DataTable: FieldHolidays[] = [];
   for (let i = 0; i < listOfHolidays.length; i++) {
     DataTable.push({
-      days:`${listOfHolidays[i].days}`,
+      days: `${listOfHolidays[i].days}`,
       name: `${listOfHolidays[i].name}`,
-      
+      id: undefined,
     });
   }
   return (
@@ -142,48 +161,50 @@ export const TimecardSetting = () => {
       <div className="card-box">
         <div className="card-box--center">
           <h4>Giờ vào</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')} />
+          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')} defaultHours={configData.openhour}
+            defaultMinutes={configData.openminute} />
           <button className="btn btn--widthAuto" onClick={handleSaveTimeInput}>Cập nhật</button>
         </div>
         <div className="card-box--center">
           <h4>Giờ ra</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} />
+          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} defaultHours={configData.closehour}
+            defaultMinutes={configData.closeminute} />
           <button className="btn btn--widthAuto" onClick={handleSaveOutTime}>Cập nhật</button>
         </div>
       </div>
       <Heading3 text="Cấu hình ngày lễ" />
       <div className="box-holiday">
-          <div className="form-group form-addgroup">
-            <label>Tên Ngày Lễ :</label>
+        <div className="form-group form-addgroup">
+          <label>Tên Ngày Lễ :</label>
+          <img
+            src={require('../../../../assets/icn-group.png')}
+            alt=""
+            className="fluid-image form-addgroup__image"
+          />
+          <input
+            className="form-input"
+            type="text"
+            placeholder="Tên ngày lễ muốn thêm"
+          />
+        </div>
+        <div className="holiday">
+          <div className="form-group">
+            <label>Ngày Nghỉ Lễ</label>
             <img
-              src={require('../../../../assets/icn-group.png')}
+              src={require('../../../../assets/icon-time.jpg')}
               alt=""
-              className="fluid-image form-addgroup__image"
+              className="fluid-image"
             />
-            <input
-              className="form-input"
-              type="text"
-              placeholder="Tên ngày lễ muốn thêm"
+            <DatePicker
+              multiple
+              value={values}
+              onChange={setValues}
             />
           </div>
-          <div className="holiday">
-            <div className="form-group">
-              <label>Ngày Nghỉ Lễ</label>
-              <img
-                  src={require('../../../../assets/icon-time.jpg')}
-                  alt=""
-                  className="fluid-image"
-                />
-              <DatePicker 
-                multiple
-                value={values} 
-                onChange={setValues}
-              />
-            </div>
-          </div>
-          <div className="holiday-button">
-            <button className="btn">Thêm</button>
-          </div>
+        </div>
+        <div className="holiday-button">
+          <button className="btn">Thêm</button>
+        </div>
       </div>
       <CTable>
         <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
