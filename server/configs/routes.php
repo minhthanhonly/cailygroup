@@ -3,6 +3,9 @@
     /* 
     Đường dẫn ảo => Đường dẫn thật
     */
+    // Login
+    $routes['login'] = 'login';
+
     // Group
     $routes['groups'] = 'groups';
 
