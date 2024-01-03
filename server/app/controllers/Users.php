@@ -1,11 +1,11 @@
 <?php
     class Users extends Controller{
         function index(){
-            $dataUsers = $this->model('UsersModel')->getList();
-            
-            $this->data['users'] = $dataUsers;
-            // Render view
-            $this->render('users/index', $this->data);
+            return $this->model('UsersModel')->getList();
+        }
+
+        function detail($userid=''){
+            return $this->model('UsersModel')->getDetail($userid);
         }
 
         function add($userid='', $password='', $realname='', $authority='', $user_group=''){

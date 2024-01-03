@@ -34,12 +34,11 @@ export const Login = () => {
     if(userid !== "" && password !== ""){
       const formData = {userid:userid, password:password}
       const res = await axios.post("http://cailygroup.com/login", formData);
-      console.log(res.data.success);
       if(res.data.success === 'Mật khẩu không hợp lệ' || res.data.success === 'Tên đăng nhập không hợp lệ'){
         setError(res.data.success);
       } else {
         setTimeout(() => {
-          navigate('/');
+          navigate('/dashboard', { state: userid });
         }, 1000);
       }
     } else {
