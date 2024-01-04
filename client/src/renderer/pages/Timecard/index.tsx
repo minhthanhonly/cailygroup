@@ -52,13 +52,13 @@ export const Timecard = () => {
   return (
     <>
       <NavTimcard role="admin" />
-      <div className="left">
+      {/* <div className="left">
         <SelectCustom
           onGroupChange={function (groupId: string): void {
             throw new Error('Function not implemented.');
           }}
         />
-      </div>
+      </div> */}
       <MonthYearSelector onChange={handleDateChange} />
       <div className="table-container table--01">
         <table className="table table__custom">

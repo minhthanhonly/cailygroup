@@ -9,6 +9,7 @@
     }
     $method = $_SERVER['REQUEST_METHOD'];
     $data = json_decode(file_get_contents("php://input"), true);
+    
     switch($method) {
         case "GET":
         break;
@@ -16,6 +17,30 @@
         case "POST":
             if (isset($data['method'])) {
                 switch ($data['method']) {
+                    case "UPDATE_COMMENT":
+                        $id = isset($data["id"]) ? $data["id"] : null;
+                        $comment = isset($data["comment"]) ? $data["comment"] : null;
+                        if ($id !== null && $comment !== null) {
+                            $sql = "UPDATE timecard_details SET timecard_comment = ? WHERE id_groupwaretimecard = ?";
+                            $stmt = $db_conn->prepare($sql);
+                            if (!$stmt) {
+                                throw new Exception("Prepare failed: " . $db_conn->error);
+                            }
+                            $stmt->bind_param("si", $comment, $id);
+                            if ($stmt->execute()) {
+                                http_response_code(200);
+                                echo json_encode(["success" => true]);
+                            } else {
+                                throw new Exception("Execute failed: " . $stmt->error);
+                            }
+
+                            $stmt->close();
+                        } else {
+                            http_response_code(400);
+                            echo json_encode(["success" => false, "error" => "Invalid parameters"]);
+                        }
+                        exit;
+                    break;
                     case "UPDATE_TIMECARD":
                         $timecardId = isset($data["dataTime"]["id"]) ? $data["dataTime"]["id"] : null;
                         $timecard_open = isset($data["dataTime"]["timecard_open"]) ? $data["dataTime"]["timecard_open"] : null;
@@ -61,8 +86,6 @@
                             $targetTime3 = DateTime::createFromFormat($timeFormat, $openlunch);
                             $targetTime4 = DateTime::createFromFormat($timeFormat, $closelunch);
 
-                            // echo $targetTime4->format($timeFormat);
-                            // exit;
                             $timestamp1 = $dateTimeOpen->getTimestamp();
                             $timestamp2 = $dateTimeNow->getTimestamp();
                             $timestamp3 = $targetTime3->getTimestamp();
@@ -75,28 +98,22 @@
                             $totalDateTime->setTimestamp($totalTimestamp);
 
                             if ($dateTimeNow < $targetTime3) {
-                                $timecard_interval = ($dateTimeNow->diff($dateTimeOpen))->format('%H:%i');
+                                $timecard_interval = ($dateTimeNow->diff($dateTimeOpen))->format('%H:%I');
                             }
                             elseif ($dateTimeNow < $targetTime4) {
-                                $timecard_interval = ($dateTimeNow->diff($targetTime3))->format('%H:%i');
+                                $timecard_interval = ($dateTimeNow->diff($targetTime3))->format('%H:%I');
                             }
                              else {
                                 $timecard_interval = $totalDateTime->format('H:i');
                             }
-
                             if($timestamp2 > $timestamp5){
                                 $overtime1 = $timestamp2 -$timestamp5;
-                            // echo $overtime1;
-                            // exit;
                                 $overtime2 = new DateTime();
                                 $overtime = ($overtime2->setTimestamp($overtime1))->format('H:i');
                             }
                             else{
                                 $overtime = "00:00";
                             }
-                            // echo $overtime;
-                            // exit;
-                            // Cập nhật trạng thái trong cơ sở dữ liệu
                             $sql = "UPDATE timecard_details SET timecard_close = ?, timecard_originalclose = ?, timecard_time= ?, timecard_timeover = ? WHERE id_groupwaretimecard = ?";
                             $stmt = $db_conn->prepare($sql);
                             $stmt->bind_param("ssssi", $timecard_now, $timecard_now, $timecard_interval, $overtime, $timecardId);

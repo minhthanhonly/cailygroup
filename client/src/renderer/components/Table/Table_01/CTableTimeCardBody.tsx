@@ -47,18 +47,19 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   const [shouldUpdateWorkingHours, setShouldUpdateWorkingHours] =
     useState(false);
-  //state chỉnh time
 
   const [editingStart, setEditingStart] = useState(false);
 
-  // hàm kiểm tra dòng chỉnh sửa
-  const [editingRow, setEditingRow] = useState(null);
-
-  const openModal = () => {
+  const [currentItemId, setCurrentItemId] = useState<number | undefined>(
+    undefined,
+  );
+  const openModal = (itemId: number) => {
+    setCurrentItemId(itemId);
     setModalOpen(true);
   };
 
   const closeModal = () => {
+    setCurrentItemId(undefined);
     setModalOpen(false);
   };
 
@@ -293,7 +294,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   const [accreptLeaves, setAccreptLeave] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
-    new Date(2023, 11, 15), // 1/12/2023
+    new Date(2024, 1, 15), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
   const accreptLeave = (date: number | Date) =>
@@ -301,7 +302,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   const [cancelLeave, setCancelLeave] = useState([
     // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
-    new Date(2023, 11, 22), // 1/12/2023
+    new Date(2024, 1, 22), // 1/12/2023
     // new Date(2023, 11, 15), // 15/12/2023
   ]);
   const isCancelLeave = (date: number | Date) =>
@@ -347,6 +348,26 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setEndMinutes(parseInt(minutes, 10) || 0);
   };
 
+  const [commentText, setCommentText] = useState('');
+  const handleUpdateComment = async (Id: number) => {
+    try {
+      const response = await axios.post(
+        urlControl + 'TimecardDetailsController.php',
+        {
+          method: 'UPDATE_COMMENT',
+          id: Id,
+          comment: commentText,
+        },
+      );
+      console.log(response.data);
+      setCommentText('');
+      fetchTimecardOpen();
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
+    }
+    closeModal();
+  };
+
   interface TimecardData {
     timecard_date: string;
     timecard_id: string;
@@ -356,6 +377,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     timecard_time: string;
     timecard_timeover: string;
     timecard_timeinterval: String;
+    timecard_comment: string;
   }
 
   const [tableRefresh, setTableRefresh] = useState(0);
@@ -393,8 +415,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               <td>{format(day, 'dd-MM-yyyy')}</td>
               {otherColumnData.map((column, colIndex) => (
                 <td key={colIndex}>
-                  {' '}
-                  {column.format ? column.format(day) : '...'}{' '}
+                  {column.format ? column.format(day) : '...'}
                 </td>
               ))}
               <td
@@ -422,14 +443,12 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                     className="btn btn--medium"
                     onClick={handleButtonClick}
                   >
-                    {' '}
-                    Bắt đầu{' '}
+                    Bắt đầu
                   </button>
                 ) : (
                   ''
                 )}
               </td>
-
               <td>
                 {timecardOpen.some(
                   (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
@@ -529,74 +548,84 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 ) : null}
               </td>
               <td>
-                {' '}
                 {accreptLeave(day) ? (
                   'Xác nhận nghỉ phép'
                 ) : isCancelLeave(day) ? (
                   <>
-                    {' '}
-                    Không xác nhận nghỉ phép{' '}
-                    <a
-                      onClick={openModal}
-                      className="btn btn--green btn--small icon icon--edit"
-                    >
-                      {' '}
+                    Không xác nhận nghỉ phép
+                    <a className="btn btn--green btn--small icon icon--edit">
                       <img
                         src={require('../../../../../assets/icnedit.png')}
                         alt="edit"
                         className="fluid-image"
-                      />{' '}
-                    </a>{' '}
+                      />
+                    </a>
                   </>
                 ) : isHoliday(day) ? (
                   'Ngày Nghỉ lễ'
                 ) : (
-                  <a
-                    onClick={openModal}
-                    className="btn btn--green btn--small icon icon--edit"
-                  >
-                    {' '}
-                    <img
-                      src={require('../../../../../assets/icnedit.png')}
-                      alt="edit"
-                      className="fluid-image"
-                    />{' '}
-                  </a>
-                )}{' '}
+                  <>
+                    {timecardOpen.some(
+                      (item) =>
+                        item.timecard_date === format(day, 'dd-MM-yyyy'),
+                    ) ? (
+                      <>
+                        {timecardOpen
+                          .filter(
+                            (item) =>
+                              item.timecard_date === format(day, 'dd-MM-yyyy'),
+                          )
+                          .map((item, index) => (
+                            <div key={index}>
+                              {item.timecard_comment}
+                              <a
+                                onClick={(event) =>
+                                  openModal(item.id_groupwaretimecard)
+                                }
+                                className="btn btn--green btn--small icon icon--edit"
+                              >
+                                <img
+                                  src={require('../../../../../assets/icnedit.png')}
+                                  alt="edit"
+                                  className="fluid-image"
+                                />
+                              </a>
+                            </div>
+                          ))}
+                      </>
+                    ) : null}
+                  </>
+                )}
               </td>
               <td>
-                {' '}
                 {admin == true &&
                 !isHoliday(day) &&
                 !getDayClassName(day) &&
                 !accreptLeave(day) ? (
                   <>
-                    {' '}
                     {!editingStart ? (
                       <>
-                        {' '}
                         <Button onButtonClick={handleStartEditClick}>
                           cập nhật
-                        </Button>{' '}
+                        </Button>
                       </>
                     ) : (
                       <>
-                        {' '}
                         <button onClick={handleSaveTimeClick}>
                           <span className="icon icon--check">
                             <img
                               src={require('../../../../../assets/check.png')}
                               alt="edit"
                               className="fluid-image"
-                            />{' '}
+                            />
                           </span>
-                        </button>{' '}
+                        </button>
                       </>
-                    )}{' '}
+                    )}
                   </>
                 ) : (
                   ''
-                )}{' '}
+                )}
                 {isCancelLeave(day) && admin !== true ? (
                   <span className="bg-red__btn">
                     <button className="btn btn-white">Hủy bỏ nghỉ phép</button>
@@ -618,23 +647,31 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
+        <td>
+          <Modal isOpen={isModalOpen} onClose={closeModal}>
+            {
+              <>
+                <h3 className="hdglv3">Ghi Chú</h3>
+                <textarea
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                ></textarea>
+                <div className="wrp-button">
+                  <button
+                    className="btn"
+                    onClick={() => handleUpdateComment(currentItemId || 0)}
+                  >
+                    Xác nhận
+                  </button>
+                  <button className="btn btn--orange" onClick={closeModal}>
+                    Hủy
+                  </button>
+                </div>
+              </>
+            }
+          </Modal>
+        </td>
       </tr>
-
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        {
-          <>
-            <h3 className="hdglv3">Ghi Chú</h3>
-            <textarea></textarea>
-            <div className="wrp-button">
-              <button className="btn">Xác nhận</button>
-              <button className="btn btn--orange" onClick={closeModal}>
-                Hủy
-              </button>
-            </div>
-          </>
-        }
-      </Modal>
     </>
   );
 };
