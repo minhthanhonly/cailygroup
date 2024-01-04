@@ -11,13 +11,22 @@ import axios from "axios";
 import { urlControl } from "../../routes/server";
 import DatePicker from "react-multi-date-picker";
 import { format } from 'date-fns';
+import Modaldelete from '../../components/Modal/Modaldelete';
 
 
+interface HolidayProps {
+  id: string;
+  name: string;
+  update: React.ReactNode;
+  delete: React.ReactNode;
+}
 export const TimecardSetting = () => {
   type FieldHolidays = {
     id: any;
     name: string;
     days: string;
+    update: React.ReactNode;
+    delete: React.ReactNode;
   };
   const [listOfHolidays, setListOfHolidays] = useState<FieldHolidays[] | []>([]);
   const [isTableUpdated, setIsTableUpdated] = useState(false);
@@ -26,7 +35,7 @@ export const TimecardSetting = () => {
 
   const [timeOutHours, setTimeOutHours] = useState<number>(0);
   const [timeOutMinutes, setTimeOutMinutes] = useState<number>(0);
-
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [configData, setConfigData] = useState({
     openhour: 0,
     openminute: 0,
@@ -143,11 +152,60 @@ export const TimecardSetting = () => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
+  // delete
+  const handleDelete = async (holidayId, event) => {
+    if (event) {
+      event.preventDefault();
+      try {
+        const payload = { id: holidayId };
+        let response = await axios.delete(urlControl + 'TimecardsSettingController.php', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: payload,
+        });
+        console.log('DELETE Response:', response.data);
+        closeModaldelete();
+        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
+  };
+  let dynamicDelete = (id) => (
+    <>
+      <button onClick={(event) => { openModaldelete(id, event); }}>
+        <p className="icon icon--check">
+          <img
+            src={require('../../../../assets/icndelete.png')}
+            alt="edit"
+            className="fluid-image"
+          />
+        </p>
+      </button>
+      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        <h2>Bạn có chắc chắn muốn xóa không?</h2>
+        <div className='wrp-button'>
+          <button className='btn btn--green' onClick={(event) => handleDelete(isDeleteModalid, event)}>Đồng ý</button>
+          <button className='btn btn--orange' onClick={closeModaldelete}>Hủy</button>
+        </div>
+      </Modaldelete>
+    </>
+  );
+  const openModaldelete = (initialId: string) => {
+    setDeleteModalId(initialId);
+    setDeleteModalOpen(true);
+  };
+  const closeModaldelete = () => {
+    setDeleteModalOpen(false);
+  };
+
   let DataTable: FieldHolidays[] = [];
   for (let i = 0; i < listOfHolidays.length; i++) {
     DataTable.push({
       days: `${listOfHolidays[i].days}`,
       name: `${listOfHolidays[i].name}`,
+      delete: dynamicDelete(listOfHolidays[i].id),
     });
   }
   const today = new Date();
@@ -255,7 +313,7 @@ export const TimecardSetting = () => {
       </div>
       <CTable>
         <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
-        <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true} permission_delete={true} />
+        <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true}/>
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
     </>
