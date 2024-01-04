@@ -283,59 +283,46 @@ export const TimecardSetting = () => {
   }
   
   const [name, setName] = useState('');
-  const [days, setDays] = useState(new Date());
-  // const handleDatePickerChange = (date) => {
-  //   if (date !== null) {
-  //     const dateObjects = date.map(dateString => new Date(dateString));
-  //     let d = [];
-  //     for (let i = 0; i < dateObjects.length; i++) {
-  //       const day = dateObjects[i];
-  //       const year = day.getFullYear();
-  //       const month = day.getMonth() + 1;
-  //       const dayOfMonth = day.getDate();
-
-  //       //console.log(`Ngày ${i + 1}: ${dayOfMonth}/${month}/${year}`);
-  //       d.push(`Ngày ${i + 1}: ${dayOfMonth}/${month}/${year}`);
-  //      // console.log(d.push(`Ngày ${i + 1}: ${dayOfMonth}/${month}/${year}`));
-  //     }
-  //     setDays(d);
-  //   }
-  // };
-  const handleDatePickerChange = (date: Date | null) => {
+  const [days, setDays] = useState([new Date()]);
+  const handleDatePickerChange = (date) => {
     if (date !== null) {
-      setDays(date);
+      const dateObjects = date.map(dateString => new Date(dateString));
+      setDays(dateObjects);
+
     }
   };
 
   // insert
   const handleSubmint = () => {
+    if (!name) {
+      console.error('Tên ngày lễ không hợp lệ');
+      return;
+    }
+    const formattedDays = days.map((day) => {
+      if (day instanceof Date && !isNaN(day)) {
+        return format(day, 'dd-MM-yyyy').toString();
+      } else {
+        // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
+        console.error('Ngày không hợp lệ:', day);
+        return 'Ngày không hợp lệ';
+      }
+    }).join(', ');
     const holiday_data = {
       name: name,
-      days: format(days, 'dd-MM-yyyy').toString(),
+      days: formattedDays,
     };
-    console.log(holiday_data);
     setName('');
-
-    fetch(urlControl + 'TimecardsSettingController.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      mode: 'cors',
-      body: JSON.stringify({ holiday_data }),
-    })
+    setDays([new Date()]);
+    axios
+      .post(urlControl + 'TimecardsSettingController.php', { holiday_data })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((responseData) => {
-        console.log('Data inserted successfully:', responseData);
-        setIsTableUpdated(true);
+        console.log(response.data);
+        // Xử lý thành công nếu cần
+        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
       })
       .catch((error) => {
         console.error('Error inserting data:', error);
+        // Xử lý lỗi nếu cần
         if (error.response) {
           console.error('Response status:', error.response.status);
           console.error('Server error message:', error.response.data);

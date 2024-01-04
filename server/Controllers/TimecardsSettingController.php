@@ -41,7 +41,7 @@ switch($method) {
             }
 
             // Gán giá trị cho các tham số
-            mysqli_stmt_bind_param($stmt, "isssssiss", 
+            mysqli_stmt_bind_param($stmt, "ss", 
                 $data['holiday_data']['name'],
                 $data['holiday_data']['days']
             );
