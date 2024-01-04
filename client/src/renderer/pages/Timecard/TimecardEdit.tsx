@@ -1,20 +1,26 @@
-import { useState } from "react"
-import { SelectCustomName, SelectCustom } from "../../components/Table/SelectCustom"
-import CTableTimeCardHead from "../../components/Table/Table_01/CTableTimeCardHead"
-import CTableTimeCardBody from "../../components/Table/Table_01/CTableTimeCardBody"
-import NavTimcard from "../../layouts/components/Nav/NavTimcard"
-import MonthYearSelector from "../../components/Table/SelectMonthYears"
+import { useState } from 'react';
+import {
+  SelectCustomName,
+  SelectCustom,
+} from '../../components/Table/SelectCustom';
+import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
+import CTableTimeCardBody from '../../components/Table/Table_01/CTableTimeCardBody';
+import NavTimcard from '../../layouts/components/Nav/NavTimcard';
+import MonthYearSelector from '../../components/Table/SelectMonthYears';
 
-import './Timecard.scss'
-import { Button } from "../../components/Button"
+import './Timecard.scss';
+import { Button } from '../../components/Button';
 
 export const TimecardEdit = () => {
-
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
 
-  const handleDateChange = (month: string, year: string, daysInMonth: Date[]) => {
+  const handleDateChange = (
+    month: string,
+    year: string,
+    daysInMonth: Date[],
+  ) => {
     setSelectedMonth(month);
     setSelectedYear(year);
     setDaysInMonth(daysInMonth);
@@ -34,27 +40,31 @@ export const TimecardEdit = () => {
             <SelectCustomName />
           </div>
         </div>
-        <div className='table-container table--01'>
+        <div className="table-container table--01">
           <table className="table table__custom">
             <thead>
               <CTableTimeCardHead />
             </thead>
             <tbody>
-
-              <CTableTimeCardBody selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} admin={true} />
+              <CTableTimeCardBody
+                selectedMonth={selectedMonth}
+                selectedYear={selectedYear}
+                daysInMonth={daysInMonth}
+                admin={true}
+              />
             </tbody>
           </table>
         </div>
-
 
         <div className="grid-row mt-5 timeCard-edit--flex">
           <MonthYearSelector onChange={handleDateChange} />
           <Button color="orange">Tính Lại</Button>
           <Button>Hiện giờ trước khi chỉnh sửa</Button>
-          <Button color="green" size="medium">Xuất Thẻ Giờ</Button>
+          <Button color="green" size="medium">
+            Xuất Thẻ Giờ
+          </Button>
         </div>
-
       </div>
     </>
-  )
-}
+  );
+};
