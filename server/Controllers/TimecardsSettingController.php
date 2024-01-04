@@ -25,40 +25,64 @@ switch($method) {
                 return;
             }
         break;
-    
-        case "POST":
-            $data = json_decode(file_get_contents("php://input"), true);
 
-            if (isset($data['holiday_data']['name']) && isset($data['holiday_data']['days'])) {
-                $insertQuery = "INSERT INTO holidays (name, days) VALUES (?, ?)";
+    case "POST":
+        $data = json_decode(file_get_contents("php://input"), true);
 
-                $stmt = mysqli_prepare($db_conn, $insertQuery);
+        if (isset($data['holiday_data']['name']) && isset($data['holiday_data']['days'])) {
+            $insertQuery = "INSERT INTO holidays (name, days) VALUES (?, ?)";
 
-                if (!$stmt) {
-                    http_response_code(500);
-                    echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($db_conn)]);
-                    exit();
-                }
+            $stmt = mysqli_prepare($db_conn, $insertQuery);
 
-                 // Gán giá trị cho các tham số
-                mysqli_stmt_bind_param($stmt, "ss", 
-                    $data['holiday_data']['name'],
-                    $data['holiday_data']['days']
-                );
-
-                if (mysqli_stmt_execute($stmt)) {
-                    http_response_code(201);
-                    echo json_encode(["message" => "Thêm thành công"]);
-                } else {
-                    http_response_code(500);
-                    echo json_encode(["error" => "Thêm không thành công: " . mysqli_error($db_conn)]);
-                }
-
-                mysqli_stmt_close($stmt);
-            } else {
-                http_response_code(400);
-                echo json_encode(["error" => "Dữ liệu không hợp lệ. 'group_name' bị thiếu"]);
+            if (!$stmt) {
+                http_response_code(500);
+                echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($db_conn)]);
+                exit();
             }
+
+            // Gán giá trị cho các tham số
+            mysqli_stmt_bind_param($stmt, "ss", 
+                $data['holiday_data']['name'],
+                $data['holiday_data']['days']
+            );
+
+            if (mysqli_stmt_execute($stmt)) {
+                http_response_code(201);
+                echo json_encode(["message" => "Thêm thành công"]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Thêm không thành công: " . mysqli_error($db_conn)]);
+            }
+
+            mysqli_stmt_close($stmt);
+        } else {
+            http_response_code(400);
+            echo json_encode(["error" => "Dữ liệu không hợp lệ. 'group_name' bị thiếu"]);
+        }
+    break;
+
+    case "DELETE":
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (isset($data['id'])) {
+            $id = mysqli_real_escape_string($db_conn, $data['id']);
+            $deleteQuery = "DELETE FROM holidays WHERE id = $id";
+
+            if (mysqli_query($db_conn, $deleteQuery)) {
+                http_response_code(200);
+                echo json_encode(["message" => "Data deleted successfully"]);
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Failed to delete data"]);
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode(["error" => "Invalid data"]);
+        }
         break;
-    }
+
+    default:
+    http_response_code(405);
+    echo json_encode(["error" => "Method not allowed"]);
+    break;
+}
 ?>

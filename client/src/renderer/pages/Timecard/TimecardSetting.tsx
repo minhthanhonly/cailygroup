@@ -11,13 +11,22 @@ import axios from "axios";
 import { urlControl } from "../../routes/server";
 import DatePicker from "react-multi-date-picker";
 import { format } from 'date-fns';
+import Modaldelete from '../../components/Modal/Modaldelete';
 
 
+interface HolidayProps {
+  id: string;
+  name: string;
+  update: React.ReactNode;
+  delete: React.ReactNode;
+}
 export const TimecardSetting = () => {
   type FieldHolidays = {
     id: any;
     name: string;
     days: string;
+    update: React.ReactNode;
+    delete: React.ReactNode;
   };
   const [listOfHolidays, setListOfHolidays] = useState<FieldHolidays[] | []>([]);
   const [isTableUpdated, setIsTableUpdated] = useState(false);
@@ -26,7 +35,7 @@ export const TimecardSetting = () => {
 
   const [timeOutHours, setTimeOutHours] = useState<number>(0);
   const [timeOutMinutes, setTimeOutMinutes] = useState<number>(0);
-
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [configData, setConfigData] = useState({
     openhour: 0,
     openminute: 0,
@@ -104,7 +113,7 @@ export const TimecardSetting = () => {
 
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(Data.length / itemsPerPage);
 
   const handlePageChange = (page: any) => {
@@ -198,34 +207,90 @@ export const TimecardSetting = () => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
-  const today = new Date()
-  const tomorrow = new Date()
-  // tomorrow.setDate(tomorrow.getDate() + 1)
+  // delete
+  const handleDelete = async (holidayId, event) => {
+    if (event) {
+      event.preventDefault();
+      try {
+        const payload = { id: holidayId };
+        let response = await axios.delete(urlControl + 'TimecardsSettingController.php', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: payload,
+        });
+        console.log('DELETE Response:', response.data);
+        closeModaldelete();
+        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
+  };
+  let dynamicDelete = (id) => (
+    <>
+      <button onClick={(event) => { openModaldelete(id, event); }}>
+        <p className="icon icon--check">
+          <img
+            src={require('../../../../assets/icndelete.png')}
+            alt="edit"
+            className="fluid-image"
+          />
+        </p>
+      </button>
+      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        <h2>Bạn có chắc chắn muốn xóa không?</h2>
+        <div className='wrp-button'>
+          <button className='btn btn--green' onClick={(event) => handleDelete(isDeleteModalid, event)}>Đồng ý</button>
+          <button className='btn btn--orange' onClick={closeModaldelete}>Hủy</button>
+        </div>
+      </Modaldelete>
+    </>
+  );
+  const openModaldelete = (initialId: string) => {
+    setDeleteModalId(initialId);
+    setDeleteModalOpen(true);
+  };
+  const closeModaldelete = () => {
+    setDeleteModalOpen(false);
+  };
 
+<<<<<<< HEAD
   const [startDay, setStartDay] = useState([today, tomorrow])
   startDay
+=======
+>>>>>>> 8972cebcff0df0317953478a339c89b66fd5c5e3
   let DataTable: FieldHolidays[] = [];
   for (let i = 0; i < listOfHolidays.length; i++) {
     DataTable.push({
       days: `${listOfHolidays[i].days}`,
       name: `${listOfHolidays[i].name}`,
+      delete: dynamicDelete(listOfHolidays[i].id),
     });
   }
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const [days, setDays] = useState([today, tomorrow]);
   const [name, setName] = useState('');
-  const [days, SetDays] = useState(new Date());
-  const handleStartDateChange = (date: Date | null) => {
-    if (date !== null) {
-      setStartDay(date);
-    }
-  };
 
   const handleSubmint = () => {
+    const formattedDates = days.map(date => format(date, 'dd-MM-yyyy'));
+
     const holiday_data = {
       name: name,
-      days: format(startDay, 'dd-MM-yyyy').toString()
+      days: formattedDates,
     };
+
     setName('');
-    SetDays(new Date());
+    
+    console.log('Before setDays:', days);
+    setDays(newDates => {
+      console.log('New Dates:', newDates);
+      return newDates;
+    });
+
     fetch(urlControl + 'TimecardsSettingController.php', {
       method: 'POST',
       headers: {
@@ -242,8 +307,7 @@ export const TimecardSetting = () => {
       })
       .then((responseData) => {
         console.log('Data inserted successfully:', responseData);
-        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-
+        setIsTableUpdated(true);
       })
       .catch((error) => {
         console.error('Error inserting data:', error);
@@ -265,13 +329,19 @@ export const TimecardSetting = () => {
         </div>
         <div className="card-box--center">
           <h4>Giờ ra</h4>
+<<<<<<< HEAD
           <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} defaultHours={configData.closehour} defaultMinutes={configData.closeminute} />
+=======
+          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} defaultHours={configData.closehour}
+            defaultMinutes={configData.closeminute} />
+>>>>>>> 8972cebcff0df0317953478a339c89b66fd5c5e3
           <button className="btn btn--widthAuto" onClick={handleSaveOutTime}>Cập nhật</button>
         </div>
       </div>
       <Heading3 text="Cấu hình ngày lễ" />
       <div className="box-holiday">
         <div className="form-group form-addgroup">
+<<<<<<< HEAD
           <label>Tên Ngày Lễ :</label>
           <img
             src={require('../../../../assets/icn-group.png')}
@@ -291,6 +361,13 @@ export const TimecardSetting = () => {
               src={require('../../../../assets/icon-time.jpg')}
               alt=""
               className="fluid-image"
+=======
+            <label>Tên Ngày Lễ :</label>
+            <img
+              src={require('../../../../assets/icn-group.png')}
+              alt=""
+              className="fluid-image form-addgroup__image"
+>>>>>>> 8972cebcff0df0317953478a339c89b66fd5c5e3
             />
             <input
               value={name}
@@ -300,6 +377,7 @@ export const TimecardSetting = () => {
               placeholder="Tên ngày lễ muốn thêm"
             />
           </div>
+<<<<<<< HEAD
         </div>
         <div className="holiday-button">
           <button className="btn" onClick={handleSubmint}>Thêm</button>
@@ -311,6 +389,32 @@ export const TimecardSetting = () => {
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
 
+=======
+          <div className="holiday">
+              <div className="form-group">
+                <label>Ngày Nghỉ Lễ</label>
+                <img
+                  src={require('../../../../assets/icon-time.jpg')}
+                  alt=""
+                  className="fluid-image"
+                />
+                 <DatePicker
+                  multiple
+                  value={days}
+                  onChange={(newDates) => setDays(newDates)}
+                />
+              </div>
+          </div>
+          <div className="holiday-button">
+            <button className="btn" onClick={handleSubmint}>Thêm</button>
+          </div>
+      </div>
+      <CTable>
+        <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
+        <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true}/>
+      </CTable>
+      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+>>>>>>> 8972cebcff0df0317953478a339c89b66fd5c5e3
     </>
   )
 }
