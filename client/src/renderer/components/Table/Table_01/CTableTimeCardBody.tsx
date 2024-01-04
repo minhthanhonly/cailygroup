@@ -348,8 +348,23 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setEndMinutes(parseInt(minutes, 10) || 0);
   };
 
-  const handleUpdateComment = (id: number) => {
-    console.log(`Updating comment for item with id: ${id}`);
+  const [commentText, setCommentText] = useState('');
+  const handleUpdateComment = async (Id: number) => {
+    try {
+      const response = await axios.post(
+        urlControl + 'TimecardDetailsController.php',
+        {
+          method: 'UPDATE_COMMENT',
+          id: Id,
+          comment: commentText,
+        },
+      );
+      console.log(response.data);
+      setCommentText('');
+      fetchTimecardOpen();
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
+    }
     closeModal();
   };
 
@@ -362,6 +377,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     timecard_time: string;
     timecard_timeover: string;
     timecard_timeinterval: String;
+    timecard_comment: string;
   }
 
   const [tableRefresh, setTableRefresh] = useState(0);
@@ -560,19 +576,21 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                               item.timecard_date === format(day, 'dd-MM-yyyy'),
                           )
                           .map((item, index) => (
-                            <a
-                              key={index}
-                              onClick={(event) =>
-                                openModal(item.id_groupwaretimecard)
-                              }
-                              className="btn btn--green btn--small icon icon--edit"
-                            >
-                              <img
-                                src={require('../../../../../assets/icnedit.png')}
-                                alt="edit"
-                                className="fluid-image"
-                              />
-                            </a>
+                            <div key={index}>
+                              {item.timecard_comment}
+                              <a
+                                onClick={(event) =>
+                                  openModal(item.id_groupwaretimecard)
+                                }
+                                className="btn btn--green btn--small icon icon--edit"
+                              >
+                                <img
+                                  src={require('../../../../../assets/icnedit.png')}
+                                  alt="edit"
+                                  className="fluid-image"
+                                />
+                              </a>
+                            </div>
                           ))}
                       </>
                     ) : null}
@@ -629,28 +647,31 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
+        <td>
+          <Modal isOpen={isModalOpen} onClose={closeModal}>
+            {
+              <>
+                <h3 className="hdglv3">Ghi Chú</h3>
+                <textarea
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                ></textarea>
+                <div className="wrp-button">
+                  <button
+                    className="btn"
+                    onClick={() => handleUpdateComment(currentItemId || 0)}
+                  >
+                    Xác nhận
+                  </button>
+                  <button className="btn btn--orange" onClick={closeModal}>
+                    Hủy
+                  </button>
+                </div>
+              </>
+            }
+          </Modal>
+        </td>
       </tr>
-
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        {
-          <div>
-            <h3 className="hdglv3">Ghi Chú</h3>
-            <textarea></textarea>
-            <div className="wrp-button">
-              <button
-                className="btn"
-                onClick={() => handleUpdateComment(currentItemId)}
-              >
-                Xác nhận {currentItemId}
-              </button>
-              <button className="btn btn--orange" onClick={closeModal}>
-                Hủy
-              </button>
-            </div>
-          </div>
-        }
-      </Modal>
     </>
   );
 };
