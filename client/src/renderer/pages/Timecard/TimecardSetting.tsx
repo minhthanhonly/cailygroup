@@ -10,7 +10,7 @@ import { Pagination } from "../../components/Pagination";
 import axios from "axios";
 import { urlControl } from "../../routes/server";
 import DatePicker from "react-multi-date-picker";
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import Modaldelete from '../../components/Modal/Modaldelete';
 
 
@@ -36,6 +36,7 @@ export const TimecardSetting = () => {
   const [timeOutHours, setTimeOutHours] = useState<number>(0);
   const [timeOutMinutes, setTimeOutMinutes] = useState<number>(0);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isDeleteModalid, setDeleteModalId] = useState('');
   const [configData, setConfigData] = useState({
     openhour: 0,
     openminute: 0,
@@ -152,6 +153,18 @@ export const TimecardSetting = () => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
+  // update
+  let dynamicUpdate = (id, groupName) => (
+      <button onClick={() => openModal(groupName, id)}>
+        <p className="icon icon--check">
+          <img
+            src={require('../../../../assets/icnedit.png')}
+            alt="edit"
+            className="fluid-image"
+          />
+        </p>
+      </button>
+  );
   // delete
   const handleDelete = async (holidayId, event) => {
     if (event) {
@@ -205,57 +218,76 @@ export const TimecardSetting = () => {
     DataTable.push({
       days: `${listOfHolidays[i].days}`,
       name: `${listOfHolidays[i].name}`,
+      update: dynamicUpdate({
+        id: listOfHolidays[i].id,
+        groupName: listOfHolidays[i].group_name,
+      }),
       delete: dynamicDelete(listOfHolidays[i].id),
     });
   }
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-
-  const [days, setDays] = useState([today, tomorrow]);
   const [name, setName] = useState('');
 
+  const [days, setDays] = useState();
+  const handleDatePickerChange = (date) => {
+    if (date !== null) {
+      setDays(date);
+      console.log("Ngày đã chọn (dạng chuỗi JSON):", JSON.stringify(date));
+      const dateObjects = date.map(dateString => new Date(dateString));
+
+    setDays(dateObjects);
+
+    // Log toàn bộ mảng với thông tin ngày tháng năm
+    // console.log("Ngày đã chọn:");
+    // for (let i = 0; i < dateObjects.length; i++) {
+    //   const day = dateObjects[i];
+    //   const year = day.getFullYear();
+    //   const month = day.getMonth() + 1; // Tháng trong JavaScript là từ 0 đến 11
+    //   const dayOfMonth = day.getDate();
+
+    //   console.log(`Ngày ${i + 1}: ${dayOfMonth}/${month}/${year}`);
+    // }
+    }
+  };
   const handleSubmint = () => {
-    const formattedDates = days.map(date => format(date, 'dd-MM-yyyy'));
+
+   // const validDays = days.filter(date => isValid(date)); // Lọc bỏ các đối tượng ngày không hợp lệ
+    //const formattedDays = validDays.map(date => format(date, 'yyyy-MM-dd'));
 
     const holiday_data = {
       name: name,
-      days: formattedDates,
+      days: days,
     };
+    console.log(holiday_data);
+    // setName('');
 
-    setName('');
-    
-    console.log('Before setDays:', days);
-    setDays(newDates => {
-      console.log('New Dates:', newDates);
-      return newDates;
-    });
-
-    fetch(urlControl + 'TimecardsSettingController.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      mode: 'cors',
-      body: JSON.stringify({ holiday_data }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((responseData) => {
-        console.log('Data inserted successfully:', responseData);
-        setIsTableUpdated(true);
-      })
-      .catch((error) => {
-        console.error('Error inserting data:', error);
-        if (error.response) {
-          console.error('Response status:', error.response.status);
-          console.error('Server error message:', error.response.data);
-        }
-      });
+    // fetch(urlControl + 'TimecardsSettingController.php', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   mode: 'cors',
+    //   body: JSON.stringify({ holiday_data }),
+    // })
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error('Network response was not ok');
+    //     }
+    //     return response.json();
+    //   })
+    //   .then((responseData) => {
+    //     console.log('Data inserted successfully:', responseData);
+    //     setIsTableUpdated(true);
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error inserting data:', error);
+    //     if (error.response) {
+    //       console.error('Response status:', error.response.status);
+    //       console.error('Server error message:', error.response.data);
+    //     }
+    //   });
   };
   return (
     <>
@@ -303,7 +335,7 @@ export const TimecardSetting = () => {
                  <DatePicker
                   multiple
                   value={days}
-                  onChange={(newDates) => setDays(newDates)}
+                  onChange={(date) => handleDatePickerChange(date)}
                 />
               </div>
           </div>
@@ -313,7 +345,7 @@ export const TimecardSetting = () => {
       </div>
       <CTable>
         <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
-        <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true}/>
+        <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)}/>
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
     </>
