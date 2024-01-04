@@ -19,7 +19,6 @@ switch ($method) {
         while ($row = mysqli_fetch_assoc($result)) {
             $response[$row['config_key']] = $row['config_value'];
         }
-
         http_response_code(200);
         echo json_encode($response);
         break;
@@ -36,15 +35,8 @@ switch ($method) {
                         
                    $id = isset($data['data'][0]['id']) ? mysqli_real_escape_string($db_conn, $data['data'][0]['id']) : null;
                    $opentime = isset($data['data'][0]['hours']) && isset($data['data'][0]['minutes']) ? mysqli_real_escape_string($db_conn, $data['data'][0]['hours'] . ':' . $data['data'][0]['minutes']) : '00:00';
-
-
-
                    $updateQuery = "UPDATE configs SET config_value = '$opentime' WHERE id = '$id' AND config_key = 'opentime'";
-                    
-                    
-
-                  $result = mysqli_query($db_conn, $updateQuery);
-
+                   $result = mysqli_query($db_conn, $updateQuery);
                     if ($result) {
                         http_response_code(200);
                         echo json_encode(["message" => "Cập nhật dữ liệu thành công cho giờ vào"]);
@@ -54,16 +46,10 @@ switch ($method) {
                     }
                     break;
                 case "UPDATE_OUTTIME":
-                     $id = isset($data['data'][0]['id']) ? mysqli_real_escape_string($db_conn, $data['data'][0]['id']) : null;
+                   $id = isset($data['data'][0]['id']) ? mysqli_real_escape_string($db_conn, $data['data'][0]['id']) : null;
                    $opentime = isset($data['data'][0]['hours']) && isset($data['data'][0]['minutes']) ? mysqli_real_escape_string($db_conn, $data['data'][0]['hours'] . ':' . $data['data'][0]['minutes']) : '00:00';
-
-
-
                    $updateQuery = "UPDATE configs SET config_value = '$opentime' WHERE id = '$id' AND config_key = 'closetime'";
-                    
-                    
-
-                  $result = mysqli_query($db_conn, $updateQuery);
+                   $result = mysqli_query($db_conn, $updateQuery);
 
                     if ($result) {
                         http_response_code(200);
