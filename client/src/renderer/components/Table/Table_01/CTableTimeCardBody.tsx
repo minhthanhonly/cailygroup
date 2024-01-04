@@ -269,7 +269,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
             dataTime,
           },
         );
-        console.log('Status code:', response.status);
+        console.log(response.data);
         fetchTimecardOpen();
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -353,6 +353,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     timecard_open: string;
     timecard_close: string;
     id_groupwaretimecard: number;
+    timecard_time: string;
+    timecard_timeover: string;
+    timecard_timeinterval: String;
   }
 
   const [tableRefresh, setTableRefresh] = useState(0);
@@ -370,7 +373,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   useEffect(() => {
     fetchTimecardOpen();
   }, [tableRefresh]);
-  console.log(timecardOpen);
+  // console.log(timecardOpen);
   return (
     <>
       {allDays.map((day, rowIndex) => (
@@ -411,9 +414,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                           item.timecard_date === format(day, 'dd-MM-yyyy'),
                       )
                       .map((item, index) => (
-                        <div key={index}>
-                          {item.timecard_open} {/* Hiển thị timecard_open */}
-                        </div>
+                        <div key={index}>{item.timecard_open}</div>
                       ))}
                   </>
                 ) : isToday(day) && showStartButton ? (
@@ -444,7 +445,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                           {item.timecard_close !== null &&
                           item.timecard_close !== '' ? (
                             item.timecard_close
-                          ) : (
+                          ) : isToday(day) ? (
                             <button
                               className="btn btn--medium"
                               onClick={(event) =>
@@ -457,15 +458,76 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                             >
                               Kết thúc
                             </button>
-                          )}
+                          ) : null}
                         </div>
                       ))}
                   </>
                 ) : null}
               </td>
-              <td></td>
-              <td></td>
-              <td></td>
+
+              <td>
+                {timecardOpen.some(
+                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                ) ? (
+                  <>
+                    {timecardOpen
+                      .filter(
+                        (item) =>
+                          item.timecard_date === format(day, 'dd-MM-yyyy'),
+                      )
+                      .map((item, index) => (
+                        <div key={index}>
+                          {item.timecard_close !== null &&
+                          item.timecard_close !== ''
+                            ? item.timecard_time
+                            : null}
+                        </div>
+                      ))}
+                  </>
+                ) : null}
+              </td>
+              <td>
+                {timecardOpen.some(
+                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                ) ? (
+                  <>
+                    {timecardOpen
+                      .filter(
+                        (item) =>
+                          item.timecard_date === format(day, 'dd-MM-yyyy'),
+                      )
+                      .map((item, index) => (
+                        <div key={index}>
+                          {item.timecard_close !== null &&
+                          item.timecard_close !== ''
+                            ? item.timecard_timeover
+                            : null}
+                        </div>
+                      ))}
+                  </>
+                ) : null}
+              </td>
+              <td>
+                {timecardOpen.some(
+                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                ) ? (
+                  <>
+                    {timecardOpen
+                      .filter(
+                        (item) =>
+                          item.timecard_date === format(day, 'dd-MM-yyyy'),
+                      )
+                      .map((item, index) => (
+                        <div key={index}>
+                          {item.timecard_close !== null &&
+                          item.timecard_close !== ''
+                            ? item.timecard_timeinterval
+                            : null}
+                        </div>
+                      ))}
+                  </>
+                ) : null}
+              </td>
               <td>
                 {' '}
                 {accreptLeave(day) ? (
