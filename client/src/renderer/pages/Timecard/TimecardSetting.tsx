@@ -36,8 +36,8 @@ export const TimecardSetting = () => {
 
 
   const Data = [
-    ["Ngày 01 Tháng 01","Tết Dương Lịch"],
-    ["Ngày 30 Tháng 04","Ngày giải phóng miền Nam, Thống nhất Đất nước"],
+    ["Ngày 01 Tháng 01", "Tết Dương Lịch"],
+    ["Ngày 30 Tháng 04", "Ngày giải phóng miền Nam, Thống nhất Đất nước"],
   ];
 
   useEffect(() => {
@@ -49,15 +49,39 @@ export const TimecardSetting = () => {
 
 
   useEffect(() => {
-    // Gửi yêu cầu GET đến server để lấy dữ liệu cấu hình
     fetch(urlControl + 'ConfigsController.php')
       .then(response => response.json())
       .then(data => {
-        // Cập nhật state với dữ liệu từ server
-        setConfigData(data);
+        if ('opentime' in data && 'closetime' in data) {
+          // Tách giờ và phút từ chuỗi
+          const opentimeParts = data.opentime.split(":");
+          const closetimeParts = data.closetime.split(":");
+
+          const openHour = parseInt(opentimeParts[0], 10);
+          const openMinute = parseInt(opentimeParts[1], 10);
+
+          const closeHour = parseInt(closetimeParts[0], 10);
+          const closeMinute = parseInt(closetimeParts[1], 10);
+
+          // Kiểm tra xem giá trị đã được chuyển đổi đúng cách chưa
+          if (!isNaN(openHour) && !isNaN(openMinute) && !isNaN(closeHour) && !isNaN(closeMinute)) {
+            // Cập nhật state với giá trị số
+            setConfigData(prevState => ({
+              ...prevState,
+              openhour: openHour,
+              openminute: openMinute,
+              closehour: closeHour,
+              closeminute: closeMinute,
+            }));
+          } else {
+            console.error('Không thể chuyển đổi chuỗi thành số');
+          }
+        } else {
+          console.error('Dữ liệu không hợp lệ từ server');
+        }
       })
       .catch(error => console.error('Error fetching config data:', error));
-  }, []); // [] để đảm bảo useEffect chỉ chạy một lần khi component được mount
+  }, []);
 
   useEffect(() => {
     const fetchTimeValues = async () => {
@@ -91,31 +115,52 @@ export const TimecardSetting = () => {
     if (type === 'timeInput') {
       setTimeInputHours(hours);
       setTimeInputMinutes(minutes);
+      setConfigData(prevState => ({
+        ...prevState,
+        openhour: hours,
+        openminute: minutes,
+      }));
     } else if (type === 'timeOut') {
       setTimeOutHours(hours);
       setTimeOutMinutes(minutes);
+      setConfigData(prevState => ({
+        ...prevState,
+        closehour: hours,
+        closeminute: minutes,
+      }));
     }
   };
 
   const handleSaveTimeInput = async () => {
     try {
+
+
+
       const dataUpdateArray = [
-        { id: 1, hours: timeInputHours },
-        { id: 2, minutes: timeInputMinutes }
+        { id: 1, hours: timeInputHours, minutes: timeInputMinutes },
       ];
 
-      console.log("dataUpdateArray", dataUpdateArray);
+      axios.put(
+        urlControl + 'ConfigsController.php',
+        { data: dataUpdateArray, method: 'UPDATE_LOGIN' },
+        { headers: { 'Content-Type': 'application/json' } }
+      )
+        .then((response) => {
+          console.log(response.data);
+          // console.log("cập nhật thành công");
+
+          // Xử lý thành công nếu cần
+        })
+        .catch((error) => {
+          console.error('Error inserting data:', error);
+          // Xử lý lỗi nếu cần
+          if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Server error message:', error.response.data);
+          }
+        });
 
 
-      const promises = dataUpdateArray.map(async (dataUpdate) => {
-        const response = await axios.put(
-          urlControl + 'ConfigsController.php',
-          { ...dataUpdate, method: 'UPDATE_LOGIN' },
-          { headers: { 'Content-Type': 'application/json' } }
-        );
-      });
-
-      await Promise.all(promises);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -124,21 +169,31 @@ export const TimecardSetting = () => {
   const handleSaveOutTime = async () => {
     try {
       const dataUpdateArrayOut = [
-        { id: 3, hours: timeOutHours },
-        { id: 4, minutes: timeOutMinutes }
+        { id: 2, hours: timeOutHours, minutes: timeOutMinutes },
+
       ];
 
-      console.log("dataUpdateArrayOut", dataUpdateArrayOut);
+      axios.put(
+        urlControl + 'ConfigsController.php',
+        { data: dataUpdateArrayOut, method: 'UPDATE_OUTTIME' },
+        { headers: { 'Content-Type': 'application/json' } }
+      )
+        .then((response) => {
+          console.log(response.data);
+          // console.log("cập nhật thành công");
 
-      const promises = dataUpdateArrayOut.map(async (dataUpdateOut) => {
-        const response = await axios.put(
-          urlControl + 'ConfigsController.php',
-          { ...dataUpdateOut, method: 'UPDATE_OUTTIME' },
-          { headers: { 'Content-Type': 'application/json' } }
-        );
-      });
+          // Xử lý thành công nếu cần
+        })
+        .catch((error) => {
+          console.error('Error inserting data:', error);
+          // Xử lý lỗi nếu cần
+          if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Server error message:', error.response.data);
+          }
+        });
 
-      await Promise.all(promises);
+
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -148,7 +203,7 @@ export const TimecardSetting = () => {
   // tomorrow.setDate(tomorrow.getDate() + 1)
 
   const [startDay, setStartDay] = useState([today, tomorrow])
-  startDay 
+  startDay
   let DataTable: FieldHolidays[] = [];
   for (let i = 0; i < listOfHolidays.length; i++) {
     DataTable.push({
@@ -205,71 +260,12 @@ export const TimecardSetting = () => {
       <div className="card-box">
         <div className="card-box--center">
           <h4>Giờ vào</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')} defaultHours={configData.openhour}
-            defaultMinutes={configData.openminute} />
+          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')} defaultHours={configData.openhour} defaultMinutes={configData.openminute} />
           <button className="btn btn--widthAuto" onClick={handleSaveTimeInput}>Cập nhật</button>
         </div>
         <div className="card-box--center">
           <h4>Giờ ra</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} defaultHours={configData.closehour}
-            defaultMinutes={configData.closeminute} />
-          <button className="btn btn--widthAuto" onClick={handleSaveOutTime}>Cập nhật</button>
-        </div>
-      </div>
-      <Heading3 text="Cấu hình ngày lễ" />
-      <div className="box-holiday">
-        <div className="form-group form-addgroup">
-            <label>Tên Ngày Lễ :</label>
-            <img
-              src={require('../../../../assets/icn-group.png')}
-              alt=""
-              className="fluid-image form-addgroup__image"
-            />
-            <input
-              className="form-input"
-              type="text"
-              placeholder="Tên ngày lễ muốn thêm"
-            />
-          </div>
-          <div className="holiday">
-              <div className="form-group">
-                <label>Ngày Nghỉ Lễ</label>
-                <img
-                  src={require('../../../../assets/icon-time.jpg')}
-                  alt=""
-                  className="fluid-image"
-                />
-                <input
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  className="form-input"
-                  type="text"
-                  placeholder="Tên ngày lễ muốn thêm"
-                />
-              </div>
-          </div>
-          <div className="holiday-button">
-            <button className="btn" onClick={handleSubmint}>Thêm</button>
-          </div>
-      </div>
-      <CTable>
-        <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
-        <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true} permission_delete={true} />
-      </CTable>
-      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
-      {/* <NavTimcard role="admin" />
-      <Heading3 text="Cấu hình giờ vào - giờ ra" />
-      <div className="card-box">
-        <div className="card-box--center">
-          <h4>Giờ vào</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')} defaultHours={configData.openhour}
-            defaultMinutes={configData.openminute} />
-          <button className="btn btn--widthAuto" onClick={handleSaveTimeInput}>Cập nhật</button>
-        </div>
-        <div className="card-box--center">
-          <h4>Giờ ra</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} defaultHours={configData.closehour}
-            defaultMinutes={configData.closeminute} />
+          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} defaultHours={configData.closehour} defaultMinutes={configData.closeminute} />
           <button className="btn btn--widthAuto" onClick={handleSaveOutTime}>Cập nhật</button>
         </div>
       </div>
@@ -304,31 +300,17 @@ export const TimecardSetting = () => {
               placeholder="Tên ngày lễ muốn thêm"
             />
           </div>
-          <div className="holiday">
-            <div className="form-group">
-              <label>Ngày Nghỉ Lễ</label>
-              <img
-                  src={require('../../../../assets/icon-time.jpg')}
-                  alt=""
-                  className="fluid-image"
-                />
-              <DatePicker 
-                multiple
-                value={days}
-                format="MM/DD/YYYY"
-                onChange={(date) => handleStartDateChange(date)}
-              />
-            </div>
-          </div>
-          <div className="holiday-button">
-            <button className="btn" onClick={handleSubmint}>Thêm</button>
-          </div>
+        </div>
+        <div className="holiday-button">
+          <button className="btn" onClick={handleSubmint}>Thêm</button>
+        </div>
       </div>
       <CTable>
         <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
         <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true} permission_delete={true} />
       </CTable>
-      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} /> */}
+      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+
     </>
   )
 }
