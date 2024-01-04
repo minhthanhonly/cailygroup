@@ -48,7 +48,6 @@
             $insertQuery = "INSERT INTO dayoffs (user_id, date_start, date_end, time_start, time_end, note, day_number, status, owner, createdAt) 
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
             $stmt = mysqli_prepare($conn, $insertQuery);
-
             mysqli_stmt_bind_param($stmt, "isssssiss", 
                 $data['group_data']['user_id'],
                 $data['group_data']['date_start'],
