@@ -80,7 +80,7 @@ export const TimecardSetting = () => {
 
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(Data.length / itemsPerPage);
 
   const handlePageChange = (page: any) => {
@@ -143,12 +143,6 @@ export const TimecardSetting = () => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
-  const today = new Date()
-  const tomorrow = new Date()
-  // tomorrow.setDate(tomorrow.getDate() + 1)
-
-  const [startDay, setStartDay] = useState([today, tomorrow])
-  startDay 
   let DataTable: FieldHolidays[] = [];
   for (let i = 0; i < listOfHolidays.length; i++) {
     DataTable.push({
@@ -156,21 +150,29 @@ export const TimecardSetting = () => {
       name: `${listOfHolidays[i].name}`,
     });
   }
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const [days, setDays] = useState([today, tomorrow]);
   const [name, setName] = useState('');
-  const [days, SetDays] = useState(new Date());
-  const handleStartDateChange = (date: Date | null) => {
-    if (date !== null) {
-      setStartDay(date);
-    }
-  };
 
   const handleSubmint = () => {
+    const formattedDates = days.map(date => format(date, 'dd-MM-yyyy'));
+
     const holiday_data = {
       name: name,
-      days: format(startDay, 'dd-MM-yyyy').toString()
+      days: formattedDates,
     };
+
     setName('');
-    SetDays(new Date());
+    
+    console.log('Before setDays:', days);
+    setDays(newDates => {
+      console.log('New Dates:', newDates);
+      return newDates;
+    });
+
     fetch(urlControl + 'TimecardsSettingController.php', {
       method: 'POST',
       headers: {
@@ -187,8 +189,7 @@ export const TimecardSetting = () => {
       })
       .then((responseData) => {
         console.log('Data inserted successfully:', responseData);
-        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-
+        setIsTableUpdated(true);
       })
       .catch((error) => {
         console.error('Error inserting data:', error);
@@ -226,6 +227,8 @@ export const TimecardSetting = () => {
               className="fluid-image form-addgroup__image"
             />
             <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
               className="form-input"
               type="text"
               placeholder="Tên ngày lễ muốn thêm"
@@ -239,12 +242,10 @@ export const TimecardSetting = () => {
                   alt=""
                   className="fluid-image"
                 />
-                <input
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  className="form-input"
-                  type="text"
-                  placeholder="Tên ngày lễ muốn thêm"
+                 <DatePicker
+                  multiple
+                  value={days}
+                  onChange={(newDates) => setDays(newDates)}
                 />
               </div>
           </div>
@@ -257,78 +258,6 @@ export const TimecardSetting = () => {
         <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true} permission_delete={true} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
-      {/* <NavTimcard role="admin" />
-      <Heading3 text="Cấu hình giờ vào - giờ ra" />
-      <div className="card-box">
-        <div className="card-box--center">
-          <h4>Giờ vào</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')} defaultHours={configData.openhour}
-            defaultMinutes={configData.openminute} />
-          <button className="btn btn--widthAuto" onClick={handleSaveTimeInput}>Cập nhật</button>
-        </div>
-        <div className="card-box--center">
-          <h4>Giờ ra</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} defaultHours={configData.closehour}
-            defaultMinutes={configData.closeminute} />
-          <button className="btn btn--widthAuto" onClick={handleSaveOutTime}>Cập nhật</button>
-        </div>
-      </div>
-      <Heading3 text="Cấu hình ngày lễ" />
-      <div className="box-holiday">
-        <div className="form-group form-addgroup">
-          <label>Tên Ngày Lễ :</label>
-          <img
-            src={require('../../../../assets/icn-group.png')}
-            alt=""
-            className="fluid-image form-addgroup__image"
-          />
-          <input
-            className="form-input"
-            type="text"
-            placeholder="Tên ngày lễ muốn thêm"
-          />
-        </div>
-        <div className="holiday">
-          <div className="form-group">
-            <label>Ngày Nghỉ Lễ</label>
-            <img
-              src={require('../../../../assets/icon-time.jpg')}
-              alt=""
-              className="fluid-image"
-            />
-            <input
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              className="form-input"
-              type="text"
-              placeholder="Tên ngày lễ muốn thêm"
-            />
-          </div>
-          <div className="holiday">
-            <div className="form-group">
-              <label>Ngày Nghỉ Lễ</label>
-              <img
-                  src={require('../../../../assets/icon-time.jpg')}
-                  alt=""
-                  className="fluid-image"
-                />
-              <DatePicker 
-                multiple
-                value={days}
-                format="MM/DD/YYYY"
-                onChange={(date) => handleStartDateChange(date)}
-              />
-            </div>
-          </div>
-          <div className="holiday-button">
-            <button className="btn" onClick={handleSubmint}>Thêm</button>
-          </div>
-      </div>
-      <CTable>
-        <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
-        <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} permission_edit={true} permission_delete={true} />
-      </CTable>
-      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} /> */}
     </>
   )
 }
