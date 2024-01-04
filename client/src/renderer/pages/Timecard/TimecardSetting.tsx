@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import CardTime from "../../components/Card/Card";
 import { AddGroup } from "../../components/Form/Form";
 import { Heading3 } from "../../components/Heading";
+import { Heading2 } from '../../components/Heading';
 import { CTable } from "../../components/Table/CTable";
 import CTableBody from "../../components/Table/CTableBody";
 import { CTableHead } from "../../components/Table/CTableHead";
@@ -11,7 +12,9 @@ import axios from "axios";
 import { urlControl } from "../../routes/server";
 import DatePicker from "react-multi-date-picker";
 import { format, isValid } from 'date-fns';
+import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
+import { symlink } from 'fs';
 
 
 interface HolidayProps {
@@ -22,7 +25,7 @@ interface HolidayProps {
 }
 export const TimecardSetting = () => {
   type FieldHolidays = {
-    id: any;
+    id: string;
     name: string;
     days: string;
     update: React.ReactNode;
@@ -37,6 +40,10 @@ export const TimecardSetting = () => {
   const [timeOutMinutes, setTimeOutMinutes] = useState<number>(0);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleteModalid, setDeleteModalId] = useState('');
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalName, setModalName] = useState('');
+  const [modalid, setModalId] = useState('');
+  const [modalDays, setModalDays] = useState('');
   const [configData, setConfigData] = useState({
     openhour: 0,
     openminute: 0,
@@ -210,17 +217,78 @@ export const TimecardSetting = () => {
     }
   };
   // update
-  let dynamicUpdate = (id, groupName) => (
-    <button onClick={() => openModal(groupName, id)}>
-      <p className="icon icon--check">
-        <img
-          src={require('../../../../assets/icnedit.png')}
-          alt="edit"
-          className="fluid-image"
-        />
-      </p>
-    </button>
+  let dynamicUpdate = ({id,name,days}: {id:string;name:string;days:string;}) => (
+    <>
+      <button onClick={() => openModal(id,name,days)}>
+        <p className="icon icon--check">
+          <img
+            src={require('../../../../assets/icnedit.png')}
+            alt="edit"
+            className="fluid-image"
+          />
+        </p>
+        </button>
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+        {
+          <>
+            <Heading2 text="Cấu Hình Ngày Lễ" />
+            <div className="form-user form">
+              <div className="form-content">
+                <div className="row">
+                  <div className="col-12">
+                  <div className="form-group">
+                      <label>Id :</label>
+                      <img
+                        src={require('../../../../assets/icn-group.png')}
+                        alt=""
+                        className="fluid-image form-addgroup__image"
+                      />
+                      <input
+                        value={modalid}
+                        onChange={(e) => setModalId(e.target.value)}
+                        className="form-input"
+                        type="text"
+                        placeholder="Nhập Tên Ngày Lễ"
+                      />
+                    </div><br/><br/>
+                    {/* <div className="form-group">
+                      <label>Tên Ngày Lễ :</label>
+                      <img
+                        src={require('../../../../assets/icn-group.png')}
+                        alt=""
+                        className="fluid-image form-addgroup__image"
+                      />
+                      <input
+                        value={modalName}
+                        onChange={(e) => setModalName(e.target.value)}
+                        className="form-input"
+                        type="text"
+                        placeholder="Nhập Tên Ngày Lễ"
+                      />
+                    </div> */}
+                    <div className="wrp-button">
+                      <button className="btn btn--green" onClick={(event) => handleUpdate(modalid, modalName,modalDays, event)}>Xác nhận</button>
+                      <button className="btn btn--orange" onClick={closeModal}>Hủy</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        }
+      </Modal>
+    </>
   );
+  const openModal = (initialName: string, initialId: string, initialDays: string) => {
+    setModalId(initialId);
+    setModalName(initialName);
+    setModalDays(initialDays);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
   // delete
   const handleDelete = async (holidayId, event) => {
     if (event) {
@@ -276,7 +344,7 @@ export const TimecardSetting = () => {
       name: `${listOfHolidays[i].name}`,
       update: dynamicUpdate({
         id: listOfHolidays[i].id,
-        groupName: listOfHolidays[i].group_name,
+        name: listOfHolidays[i].name,
       }),
       delete: dynamicDelete(listOfHolidays[i].id),
     });
@@ -288,14 +356,13 @@ export const TimecardSetting = () => {
     if (date !== null) {
       const dateObjects = date.map(dateString => new Date(dateString));
       setDays(dateObjects);
-
     }
   };
 
   // insert
   const handleSubmint = () => {
     if (!name) {
-      console.error('Tên ngày lễ không hợp lệ');
+      console.error('Tên ngày lễ không được để trống');
       return;
     }
     const formattedDays = days.map((day) => {
