@@ -56,10 +56,13 @@ export const FormLeave: React.FC = () => {
   };
 
   const calculateDayDifference = (start: Date, end: Date) => {
-    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+    const oneDay = 24 * 60 * 60 * 1000;
     const diffDays = Math.round(
-      Math.abs((start.getTime() - end.getTime()) / oneDay + 1),
+      Math.abs((start.getTime() - end.getTime()) / oneDay) + 1,
     );
+
     return diffDays;
   };
 
