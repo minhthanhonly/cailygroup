@@ -28,7 +28,7 @@ switch($method) {
 
     case "POST":
         $data = json_decode(file_get_contents("php://input"), true);
-
+        
         if (isset($data['holiday_data']['name']) && isset($data['holiday_data']['days'])) {
             $insertQuery = "INSERT INTO holidays (name, days) VALUES (?, ?)";
 
@@ -41,7 +41,7 @@ switch($method) {
             }
 
             // Gán giá trị cho các tham số
-            mysqli_stmt_bind_param($stmt, "ss", 
+            mysqli_stmt_bind_param($stmt, "isssssiss", 
                 $data['holiday_data']['name'],
                 $data['holiday_data']['days']
             );
@@ -51,13 +51,13 @@ switch($method) {
                 echo json_encode(["message" => "Thêm thành công"]);
             } else {
                 http_response_code(500);
-                echo json_encode(["error" => "Thêm không thành công: " . mysqli_error($db_conn)]);
+                echo json_encode(["error" => "Thêm không thành công"]);
             }
 
             mysqli_stmt_close($stmt);
         } else {
             http_response_code(400);
-            echo json_encode(["error" => "Dữ liệu không hợp lệ. 'group_name' bị thiếu"]);
+            echo json_encode(["error" => "Dữ liệu không hợp lệ. 'name' bị thiếu"]);
         }
     break;
 
