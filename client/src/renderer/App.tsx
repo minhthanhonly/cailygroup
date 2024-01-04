@@ -26,8 +26,11 @@ export default function App() {
     <Router>
       <div className="App">
         <Routes>
+          <Route path="/" element={<FluidLayout />}>
+            <Route index element={<Login />} />
+          </Route>
           <Route path="/" element={<DefaultLayout />}>
-            <Route index element={<Home />} />
+            <Route path="dashboard" element={<Home />} />
             <Route path="timecard" element={<Timecard />} />
             <Route path="timecard/setting" element={<TimecardSetting />} />
             <Route path="timecard/list" element={<TimecardList />} />

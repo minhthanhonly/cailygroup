@@ -11,6 +11,7 @@
 
     // Users
     $routes['users'] = 'users';
+    $routes['users/detail/.+-(\d+)'] = 'users/detail/$1';
     $routes['users/add'] = 'users/add';
     $routes['users/edit/.+-(\d+)'] = 'users/edit/$1';
     $routes['users/update'] = 'users/update';
