@@ -17,11 +17,16 @@
                     while ($row = $result->fetch_assoc()) {
                         $data = $row;
                     }
-                    if($password != $data['password']) {
-                        $result = "Mật khẩu không hợp lệ";
-                    } else {
+                    if(password_verify($password, $data['password'])) {
                         $result = "Đăng nhập thành công! chuyển hướng...";
+                    } else {
+                        $result = "Mật khẩu không hợp lệ";
                     }
+                    // if($password != $data['password']) {
+                    //     $result = "Mật khẩu không hợp lệ";
+                    // } else {
+                    //     $result = "Đăng nhập thành công! chuyển hướng...";
+                    // }
                 } else {
                     $result = "Tên đăng nhập không hợp lệ";
                 }
