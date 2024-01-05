@@ -15,7 +15,10 @@ import Modal from '../../Modal/Modal';
 
 //sever
 import { urlControl } from '../../../routes/server/';
-
+type Holiday = {
+  name: string;
+  days: string;
+};
 interface SelectMY {
   selectedMonth: string;
   selectedYear: string;
@@ -224,12 +227,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       );
 
       console.log(responseTimeCardDetails.data);
-      // Nếu lưu thành công, cập nhật state và hiển thị nút "Kết thúc"
-      // setStartHours(currentHour);
-      // setStartMinutes(currentMinutes);
-      // setShowEndButton(true);
-      // setShowStartButton(false);
-
       fetchTimecardOpen();
     } catch (error) {
       console.error(
@@ -284,35 +281,41 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       }
     }
   };
-  const [holidays, setHolidays] = useState([
-    // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
-    new Date(2023, 11, 12), // 1/12/2023
-    // new Date(2023, 11, 15), // 15/12/2023
-  ]);
-  const isHoliday = (date: number | Date) =>
-    holidays.some((holiday) => isSameDay(date, holiday));
 
-  const [accreptLeaves, setAccreptLeave] = useState([
-    // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
-    new Date(2024, 1, 15), // 1/12/2023
-    // new Date(2023, 11, 15), // 15/12/2023
-  ]);
+  const [holidays, setHolidays] = useState<Holiday[] | undefined>();
+  const fetchHolidays = async () => {
+    try {
+      const response = await axios.get(urlControl + 'HolidaysController.php');
+      if (response.data && Array.isArray(response.data)) {
+        setHolidays(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+    }
+  };
+  const isHoliday = (day: Date) => {
+    const formattedDay = `${day.getDate()}-${
+      day.getMonth() + 1
+    }-${day.getFullYear()}`;
+
+    const foundHoliday =
+      holidays &&
+      holidays.find((holiday) => holiday.days.includes(formattedDay));
+
+    return foundHoliday
+      ? { isHoliday: true, name: foundHoliday.name, days: foundHoliday.days }
+      : { isHoliday: false, name: '', days: '' };
+  };
+
+  const [accreptLeaves, setAccreptLeave] = useState([new Date(2024, 1, 15)]);
   const accreptLeave = (date: number | Date) =>
     accreptLeaves.some((accrept) => isSameDay(date, accrept));
 
-  const [cancelLeave, setCancelLeave] = useState([
-    // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
-    new Date(2024, 1, 22), // 1/12/2023
-    // new Date(2023, 11, 15), // 15/12/2023
-  ]);
+  const [cancelLeave, setCancelLeave] = useState([new Date(2024, 1, 22)]);
   const isCancelLeave = (date: number | Date) =>
     cancelLeave.some((cancel) => isSameDay(date, cancel));
 
-  const [waiting, setWaiting] = useState([
-    // Đưa các ngày nghỉ mẫu vào đây, ví dụ:
-    new Date(2023, 11, 25), // 1/12/2023
-    // new Date(2023, 11, 15), // 15/12/2023
-  ]);
+  const [waiting, setWaiting] = useState([new Date(2023, 11, 25)]);
   const isWaiting = (date: number | Date) =>
     waiting.some((cancel) => isSameDay(date, cancel));
 
@@ -348,8 +351,23 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setEndMinutes(parseInt(minutes, 10) || 0);
   };
 
-  const handleUpdateComment = (id: number) => {
-    console.log(`Updating comment for item with id: ${id}`);
+  const [commentText, setCommentText] = useState('');
+  const handleUpdateComment = async (Id: number) => {
+    try {
+      const response = await axios.post(
+        urlControl + 'TimecardDetailsController.php',
+        {
+          method: 'UPDATE_COMMENT',
+          id: Id,
+          comment: commentText,
+        },
+      );
+      console.log(response.data);
+      setCommentText('');
+      fetchTimecardOpen();
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
+    }
     closeModal();
   };
 
@@ -362,6 +380,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     timecard_time: string;
     timecard_timeover: string;
     timecard_timeinterval: String;
+    timecard_comment: string;
   }
 
   const [tableRefresh, setTableRefresh] = useState(0);
@@ -378,15 +397,17 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   useEffect(() => {
     fetchTimecardOpen();
+    fetchHolidays();
   }, [tableRefresh]);
-  // console.log(timecardOpen);
   return (
     <>
       {allDays.map((day, rowIndex) => (
         <tr
           key={rowIndex}
           className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''}${
-            isHoliday(day) ? 'holiday bg-purple' : ''
+            isHoliday(day).isHoliday && isHoliday(day).name
+              ? 'holiday bg-purple'
+              : ''
           }${isWaiting(day) ? 'waiting bg-yellow' : ''}${
             accreptLeave(day) ? 'accrept bg-green' : ''
           }${isCancelLeave(day) ? 'cancel bg-red' : ''} `}
@@ -545,8 +566,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       />
                     </a>
                   </>
-                ) : isHoliday(day) ? (
-                  'Ngày Nghỉ lễ'
+                ) : isHoliday(day).isHoliday ? (
+                  isHoliday(day).name
                 ) : (
                   <>
                     {timecardOpen.some(
@@ -560,19 +581,21 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                               item.timecard_date === format(day, 'dd-MM-yyyy'),
                           )
                           .map((item, index) => (
-                            <a
-                              key={index}
-                              onClick={(event) =>
-                                openModal(item.id_groupwaretimecard)
-                              }
-                              className="btn btn--green btn--small icon icon--edit"
-                            >
-                              <img
-                                src={require('../../../../../assets/icnedit.png')}
-                                alt="edit"
-                                className="fluid-image"
-                              />
-                            </a>
+                            <div key={index}>
+                              {item.timecard_comment}
+                              <a
+                                onClick={(event) =>
+                                  openModal(item.id_groupwaretimecard)
+                                }
+                                className="btn btn--green btn--small icon icon--edit"
+                              >
+                                <img
+                                  src={require('../../../../../assets/icnedit.png')}
+                                  alt="edit"
+                                  className="fluid-image"
+                                />
+                              </a>
+                            </div>
                           ))}
                       </>
                     ) : null}
@@ -629,28 +652,31 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
+        <td>
+          <Modal isOpen={isModalOpen} onClose={closeModal}>
+            {
+              <>
+                <h3 className="hdglv3">Ghi Chú</h3>
+                <textarea
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                ></textarea>
+                <div className="wrp-button">
+                  <button
+                    className="btn"
+                    onClick={() => handleUpdateComment(currentItemId || 0)}
+                  >
+                    Xác nhận
+                  </button>
+                  <button className="btn btn--orange" onClick={closeModal}>
+                    Hủy
+                  </button>
+                </div>
+              </>
+            }
+          </Modal>
+        </td>
       </tr>
-
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        {
-          <div>
-            <h3 className="hdglv3">Ghi Chú</h3>
-            <textarea></textarea>
-            <div className="wrp-button">
-              <button
-                className="btn"
-                onClick={() => handleUpdateComment(currentItemId)}
-              >
-                Xác nhận {currentItemId}
-              </button>
-              <button className="btn btn--orange" onClick={closeModal}>
-                Hủy
-              </button>
-            </div>
-          </div>
-        }
-      </Modal>
     </>
   );
 };
