@@ -32,6 +32,12 @@
     $routes['timecards/update/.+-(\d+)'] = 'timecards/update/$1';
     
     $routes['timecarddetails/add'] = 'timecarddetails/add';
+    $routes['timecarddetails/update'] = 'timecarddetails/update';
+    $routes['timecarddetails/updatecomment'] = 'timecarddetails/updatecomment';
+
+    // holidays
+    $routes['holidays'] = 'holidays';
+
 
 
 ?>

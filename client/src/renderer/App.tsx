@@ -40,6 +40,13 @@ export default function App() {
             <Route path="timecards/edit" element={<TimecardEdit />} />
 
             <Route path="timecarddetails/add" element={<Timecard />} />
+            <Route path="timecarddetails/update" element={<Timecard />} />
+            <Route
+              path="timecarddetails/updatecomment"
+              element={<Timecard />}
+            />
+
+            <Route path="holidays" element={<Timecard />} />
 
             <Route path="member" element={<Member />} />
             <Route path="member/add" element={<MemberAdd />} />
