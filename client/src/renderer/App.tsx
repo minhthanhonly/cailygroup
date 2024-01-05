@@ -17,9 +17,10 @@ import { DayoffApply } from './pages/Dayoff/DayoffApply';
 import { Group } from './pages/Group';
 import { GroupEdit } from './pages/Group/GroupEdit';
 import { Module } from './pages/Module';
-import { Login } from './pages/Login';
+import Login from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
 import FluidLayout from './layouts/FluidLayout/FluidLayout';
+import Protected from './Protected';
 
 export default function App() {
   return (

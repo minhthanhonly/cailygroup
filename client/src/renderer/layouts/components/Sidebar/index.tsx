@@ -1,4 +1,4 @@
-import { Link, NavLink, useLocation, useParams } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import './Sidebar.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,22 +11,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Button } from '../../../components/Button';
 
 export const Sidebar = () => {
-  // const {id} = useParams();
-  // console.log(id);
-  // type FieldUsers = {
-  //   realname: string,
-  //   group_name: string,
-  // }
-  // const [user, setUser] = useState<FieldUsers>({realname: '', group_name: ''});
-  // const { state } = useLocation();
-  // const userid = state;
-  // useEffect(() => {
-  //   axios.get('http://cailygroup.com/users/detail/'+userid).then((response) => {
-  //     setUser(response.data);
-  //   }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
-  // })
+
+  const naviget = useNavigate();
+  function logoutSubmit(){
+    localStorage.setItem('login', 'false');
+    localStorage.setItem('userid', '');
+    naviget("/");
+  }
 
   return (
     <div className="sidebar">
@@ -99,15 +93,13 @@ export const Sidebar = () => {
             />
           </figure>
           <div className="acount__info">
-            <NavLink to="/users" className="acount__name">
-              {/* {user.realname} */}
+            {/* <NavLink to="/users" className="acount__name">
+              {user.realname}
             </NavLink>
-            {/* <p className="acount__des">Nhóm: {user.group_name}</p> */}
+            <p className="acount__des">Nhóm: {user.group_name}</p> */}
           </div>
         </div>
-        <NavLink to="/login" className="btn btn--orange">
-          Đăng xuất
-        </NavLink>
+        <Button color="orange" onButtonClick={logoutSubmit}>Đăng xuất</Button>
       </div>
     </div>
   );

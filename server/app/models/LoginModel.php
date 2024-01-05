@@ -20,7 +20,7 @@
                     if($password != $data['password']) {
                         $result = "Mật khẩu không hợp lệ";
                     } else {
-                        $result = "Đăng nhập thành công";
+                        $result = "Đăng nhập thành công! chuyển hướng...";
                     }
                 } else {
                     $result = "Tên đăng nhập không hợp lệ";

@@ -1,5 +1,4 @@
 import {
-  FormLogin,
   FormUser,
   AddGroup,
   AddEditMember,
@@ -23,6 +22,7 @@ import ButtonDelete from '../../components/Button/ButtonDelete';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import ButtonEdit from '../../components/Button/ButtonEdit';
+import FormLogin from '../../components/Form/AuthForm';
 
 export const Module = () => {
   return (
