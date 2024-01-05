@@ -50,7 +50,7 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
-            <NavLink to="/timecard">
+            <NavLink to="/timecards">
               <span className="icn">
                 <FontAwesomeIcon icon={faClock} />
               </span>

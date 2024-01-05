@@ -204,8 +204,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_temp: 0,
         owner: 'admin',
       };
+      // const responseTimeCard = await axios.post(
+      //   urlControl + 'TimecardsController.php',
+      //   { dataTimeCard },
+      // );
+      console.log(dataTimeCard);
       const responseTimeCard = await axios.post(
-        urlControl + 'TimecardsController.php',
+        'http://cailygroup.com/timecards/add',
         { dataTimeCard },
       );
 
@@ -220,9 +225,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_timeinterval: '1:30',
         timecard_comment: '',
       };
-      console.log(dataTimeCardDetails);
+      // console.log(dataTimeCardDetails);
+      // const responseTimeCardDetails = await axios.post(
+      //   urlControl + 'TimecardDetailsController.php',
+      //   { dataTimeCardDetails },
+      // );
       const responseTimeCardDetails = await axios.post(
-        urlControl + 'TimecardDetailsController.php',
+        'http://cailygroup.com/timecarddetails/add',
         { dataTimeCardDetails },
       );
 
@@ -281,7 +290,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       }
     }
   };
-
+  //load ngày lễ
   const [holidays, setHolidays] = useState<Holiday[] | undefined>();
   const fetchHolidays = async () => {
     try {
@@ -305,6 +314,40 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     return foundHoliday
       ? { isHoliday: true, name: foundHoliday.name, days: foundHoliday.days }
       : { isHoliday: false, name: '', days: '' };
+  };
+
+  //tổng số giờ
+  const [totalTime, setTotalTime] = useState({ hours: 0, minutes: 0 });
+  const calculateTotalTime = () => {
+    const rows = document.querySelectorAll('table tr');
+    let totalHours = 0;
+    let totalMinutes = 0;
+    rows.forEach((row) => {
+      const td = row.querySelector('.timecard_time');
+      if (td instanceof HTMLElement && td.innerText.trim() !== '') {
+        const timeString = td.innerText;
+        if (/^\d+:\d+$/.test(timeString)) {
+          const [hours, minutes] = timeString.split(':');
+          const time = {
+            hours: parseInt(hours, 10),
+            minutes: parseInt(minutes, 10),
+          };
+          if (totalMinutes >= 60) {
+            totalHours += Math.floor(totalMinutes / 60);
+            totalMinutes %= 60;
+          }
+          totalHours += time.hours;
+          totalMinutes += time.minutes;
+        } else {
+          console.error(`Chuỗi thời gian không hợp lệ: ${timeString}`);
+        }
+      }
+    });
+    if (totalMinutes >= 60) {
+      totalHours += Math.floor(totalMinutes / 60);
+      totalMinutes %= 60;
+    }
+    setTotalTime({ hours: totalHours, minutes: totalMinutes });
   };
 
   const [accreptLeaves, setAccreptLeave] = useState([new Date(2024, 1, 15)]);
@@ -398,6 +441,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   useEffect(() => {
     fetchTimecardOpen();
     fetchHolidays();
+    calculateTotalTime();
   }, [tableRefresh]);
   return (
     <>
@@ -489,7 +533,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 ) : null}
               </td>
 
-              <td>
+              <td className="timecard_time">
                 {timecardOpen.some(
                   (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
                 ) ? (
@@ -649,8 +693,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
-        <td></td>
+        <td>
+          {totalTime.hours}:{totalTime.minutes}
+        </td>
+        <td>00:00</td>
         <td></td>
         <td>
           <Modal isOpen={isModalOpen} onClose={closeModal}>
