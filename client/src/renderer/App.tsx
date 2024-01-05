@@ -31,22 +31,30 @@ export default function App() {
           </Route>
           <Route path="/" element={<DefaultLayout />}>
             <Route path="dashboard" element={<Home />} />
-            <Route path="timecard" element={<Timecard />} />
-            <Route path="timecard/setting" element={<TimecardSetting />} />
-            <Route path="timecard/list" element={<TimecardList />} />
-            <Route path="timecard/edit" element={<TimecardEdit />} />
+
+            <Route path="timecards" element={<Timecard />} />
+            <Route path="timecards/add" element={<Timecard />} />
+            <Route path="timecards/setting" element={<TimecardSetting />} />
+            <Route path="timecards/list" element={<TimecardList />} />
+            <Route path="timecards/edit" element={<TimecardEdit />} />
+
+            <Route path="timecarddetails/add" element={<Timecard />} />
+
             <Route path="member" element={<Member />} />
             <Route path="member/add" element={<MemberAdd />} />
             <Route path="member/edit" element={<MemberEdit />} />
+
             <Route path="users" element={<Users />} />
             <Route path="users/add" element={<UserAdd />} />
             <Route path="users/edit/:id" element={<UserEdit />} />
             <Route path="users/detail" element={<UserDetail />} />
+
             <Route path="day-off" element={<Dayoff />} />
             <Route path="day-off/register" element={<DayoffRegister />} />
             <Route path="day-off/apply" element={<DayoffApply />} />
             <Route path="day-off/delete/:id" />
             <Route path="day-off/update/:id" />
+
             <Route path="group" element={<Group />} />
             <Route path="group/edit" element={<GroupEdit />} />
             <Route path="module" element={<Module />} />
