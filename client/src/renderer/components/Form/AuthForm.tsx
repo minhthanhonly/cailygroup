@@ -59,7 +59,6 @@ function FormLogin(){
         setMsg(res.data.success);
         setTimeout(() => {
           localStorage.setItem('login', 'true');
-          localStorage.setItem('userid', userid);
           naviget('/dashboard');
         }, 1500);
       }
