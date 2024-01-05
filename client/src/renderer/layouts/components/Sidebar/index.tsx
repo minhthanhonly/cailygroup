@@ -14,20 +14,6 @@ import axios from 'axios';
 import { Button } from '../../../components/Button';
 
 export const Sidebar = () => {
-  // const {id} = useParams();
-  // console.log(id);
-  type FieldUsers = {
-    realname: string,
-    group_name: string,
-  }
-  const [user, setUser] = useState<FieldUsers>({realname: '', group_name: ''});
-  // const userid = localStorage.getItem('userid');
-  console.log('y');
-  // useEffect(() => {
-  //   axios.get('http://cailygroup.com/users/detail/'+userid).then((response) => {
-  //     setUser(response.data);
-  //   }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
-  // })
 
   const naviget = useNavigate();
   function logoutSubmit(){

@@ -5,8 +5,3 @@ function Login() {
 }
 
 export default Login;
-
-
-// export async function action({request}) {
-
-// }
