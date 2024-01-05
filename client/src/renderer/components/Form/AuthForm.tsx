@@ -59,14 +59,14 @@ function FormLogin(){
         setError(res.data.success);
       } else {
         setMsg(res.data.success);
-        const roles = res?.data?.authority;
-        console.log(roles);
-        // setTimeout(() => {
-        //   localStorage.setItem('login', 'true');
-        //   localStorage.setItem('userid', userid);
-        //   setAuth({ userid, password});
-        //   navigate(from, { replace: true });
-        // }, 1500);
+        // const roles = res?.data?.authority;
+        // console.log(roles);
+        setTimeout(() => {
+          localStorage.setItem('login', 'true');
+          localStorage.setItem('userid', userid);
+          setAuth({ userid, password});
+          navigate("/dashboard", { replace: true });
+        }, 1500);
       }
     } else if(userid !== "") {
       setError("Vui lòng điền mật khẩu đăng nhập");
