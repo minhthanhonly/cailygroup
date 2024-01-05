@@ -11,7 +11,7 @@ import { Pagination } from "../../components/Pagination";
 import axios from "axios";
 import { urlControl } from "../../routes/server";
 import DatePicker from "react-multi-date-picker";
-import { format, isValid } from 'date-fns';
+import { format} from 'date-fns';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { symlink } from 'fs';
@@ -42,8 +42,10 @@ export const TimecardSetting = () => {
   const [isDeleteModalid, setDeleteModalId] = useState('');
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalName, setModalName] = useState('');
-  const [modalid, setModalId] = useState('');
-  const [modalDays, setModalDays] = useState('');
+  const [modalId, setModalId] = useState('');
+  const [modalDays, setModalDays] = useState([]);
+  const [name, setName] = useState('');
+  const [days, setDays] = useState([new Date()]);
   const [configData, setConfigData] = useState({
     openhour: 0,
     openminute: 0,
@@ -217,7 +219,19 @@ export const TimecardSetting = () => {
     }
   };
   // update
-  let dynamicUpdate = ({id,name,days}: {id:string;name:string;days:string;}) => (
+  // const handleDatePickerModalChange = (date) => {
+  //   if (date !== null) {
+  //     const dateObjects = date.map(dateString => new Date(dateString));
+  //     setModalDays(dateObjects);
+  //   }
+  // };
+  // const handleDatePickerModalChange = (selectedDates) => {
+  //   // Cập nhật state với giá trị ngày mới
+  //   setModalDays(selectedDates);
+  // };
+  
+
+  let dynamicUpdate = ({id,name,days}: {id:string;name:string;days:string}) => (
     <>
       <button onClick={() => openModal(id,name,days)}>
         <p className="icon icon--check">
@@ -244,14 +258,14 @@ export const TimecardSetting = () => {
                         className="fluid-image form-addgroup__image"
                       />
                       <input
-                        value={modalid}
+                        value={modalId}
                         onChange={(e) => setModalId(e.target.value)}
                         className="form-input"
                         type="text"
-                        placeholder="Nhập Tên Ngày Lễ"
+                        placeholder="id"
                       />
-                    </div><br/><br/>
-                    {/* <div className="form-group">
+                    </div>
+                    <div className="form-group">
                       <label>Tên Ngày Lễ :</label>
                       <img
                         src={require('../../../../assets/icn-group.png')}
@@ -265,9 +279,24 @@ export const TimecardSetting = () => {
                         type="text"
                         placeholder="Nhập Tên Ngày Lễ"
                       />
-                    </div> */}
+                    </div>
+                    <div className="holiday">
+                        <div className="form-group">
+                          <label>Ngày Nghỉ Lễ:</label>
+                          <img
+                            src={require('../../../../assets/icon-time.jpg')}
+                            alt=""
+                            className="fluid-image"
+                          />
+                          <DatePicker
+                            multiple
+                            value={modalDays}
+                            onChange = {(e) => setModalDays(e.target.value)}
+                          />
+                        </div>
+                    </div>
                     <div className="wrp-button">
-                      <button className="btn btn--green" onClick={(event) => handleUpdate(modalid, modalName,modalDays, event)}>Xác nhận</button>
+                      <button className="btn btn--green" onClick={(event) => handleUpdate(modalId,modalName,modalDays, event)}>Xác nhận</button>
                       <button className="btn btn--orange" onClick={closeModal}>Hủy</button>
                     </div>
                   </div>
@@ -279,16 +308,16 @@ export const TimecardSetting = () => {
       </Modal>
     </>
   );
-  const openModal = (initialName: string, initialId: string, initialDays: string) => {
-    setModalId(initialId);
+  const openModal = ( initialNameId: string,initialName:string, initialDays:any) => {
+    setModalId(initialNameId);
     setModalName(initialName);
     setModalDays(initialDays);
     setModalOpen(true);
   };
-
   const closeModal = () => {
     setModalOpen(false);
   };
+ 
   // delete
   const handleDelete = async (holidayId, event) => {
     if (event) {
@@ -340,18 +369,17 @@ export const TimecardSetting = () => {
   let DataTable: FieldHolidays[] = [];
   for (let i = 0; i < listOfHolidays.length; i++) {
     DataTable.push({
+      id: listOfHolidays[i].id,
       days: `${listOfHolidays[i].days}`,
       name: `${listOfHolidays[i].name}`,
       update: dynamicUpdate({
         id: listOfHolidays[i].id,
         name: listOfHolidays[i].name,
+        days: listOfHolidays[i].days,
       }),
       delete: dynamicDelete(listOfHolidays[i].id),
     });
   }
-  
-  const [name, setName] = useState('');
-  const [days, setDays] = useState([new Date()]);
   const handleDatePickerChange = (date) => {
     if (date !== null) {
       const dateObjects = date.map(dateString => new Date(dateString));
@@ -451,7 +479,7 @@ export const TimecardSetting = () => {
         </div>
       </div>
       <CTable>
-        <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
+        <CTableHead heads={["STT","Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
         <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
