@@ -109,7 +109,7 @@
 				// Lấy dữ liệu từ phần thân của yêu cầu
 				$id = $userPostData->id;
 				$userid = $userPostData->userid;
-				$password = $userPostData->password;
+				$password = password_hash($userPostData->password, PASSWORD_BCRYPT);
 				$realname = $userPostData->realname;
 				$authority = $userPostData->authority;
 				$user_group = $userPostData->user_group;

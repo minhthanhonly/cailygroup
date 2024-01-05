@@ -1,13 +1,15 @@
-import { useNavigate, useNavigation } from 'react-router-dom';
+import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import './From.scss';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { AuthContext } from '../../context/AuthProvider';
+import useAuth from '../../hooks/useAuth';
 
 function FormLogin(){
-  const naviget = useNavigate();
+  const { setAuth } = useAuth();
 
-  const { setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const [userid, setUserId] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +23,7 @@ function FormLogin(){
      // Kiểm tra giá trị
     if (isLoggedIn === 'true') {
       // Người dùng đã đăng nhập
-      naviget('/dashboard');
+      navigate ('/dashboard');
     }
     setTimeout(() => {
       setMsg("");
@@ -57,9 +59,13 @@ function FormLogin(){
         setError(res.data.success);
       } else {
         setMsg(res.data.success);
+        // const roles = res?.data?.authority;
+        // console.log(roles);
         setTimeout(() => {
           localStorage.setItem('login', 'true');
-          naviget('/dashboard');
+          localStorage.setItem('userid', userid);
+          setAuth({ userid, password});
+          navigate("/dashboard", { replace: true });
         }, 1500);
       }
     } else if(userid !== "") {

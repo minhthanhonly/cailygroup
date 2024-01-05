@@ -14,13 +14,21 @@ import axios from 'axios';
 import { Button } from '../../../components/Button';
 
 export const Sidebar = () => {
-
   const naviget = useNavigate();
+  const userid = localStorage.getItem('userid');
+
   function logoutSubmit(){
     localStorage.setItem('login', 'false');
     localStorage.setItem('userid', '');
     naviget("/");
   }
+
+  const [formValue, setFormValue] = useState({realname: '', group_name: ''});
+  useEffect(() => {
+    axios.get('http://cailygroup.com/users/detail/'+userid).then(response => {
+      setFormValue(response.data);
+    })
+  }, [])
 
   return (
     <div className="sidebar">
@@ -42,7 +50,7 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
-            <NavLink to="/timecard">
+            <NavLink to="/timecards">
               <span className="icn">
                 <FontAwesomeIcon icon={faClock} />
               </span>
@@ -93,10 +101,10 @@ export const Sidebar = () => {
             />
           </figure>
           <div className="acount__info">
-            {/* <NavLink to="/users" className="acount__name">
-              {user.realname}
+            <NavLink to="/users" className="acount__name">
+              {formValue.realname}
             </NavLink>
-            <p className="acount__des">Nhóm: {user.group_name}</p> */}
+            <p className="acount__des">Nhóm: {formValue.group_name}</p>
           </div>
         </div>
         <Button color="orange" onButtonClick={logoutSubmit}>Đăng xuất</Button>
