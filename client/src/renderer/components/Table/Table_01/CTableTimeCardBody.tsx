@@ -204,10 +204,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_temp: 0,
         owner: 'admin',
       };
-      // const responseTimeCard = await axios.post(
-      //   urlControl + 'TimecardsController.php',
-      //   { dataTimeCard },
-      // );
       console.log(dataTimeCard);
       const responseTimeCard = await axios.post(
         'http://cailygroup.com/timecards/add',
@@ -225,11 +221,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_timeinterval: '1:30',
         timecard_comment: '',
       };
-      // console.log(dataTimeCardDetails);
-      // const responseTimeCardDetails = await axios.post(
-      //   urlControl + 'TimecardDetailsController.php',
-      //   { dataTimeCardDetails },
-      // );
       const responseTimeCardDetails = await axios.post(
         'http://cailygroup.com/timecarddetails/add',
         { dataTimeCardDetails },
@@ -270,11 +261,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
       try {
         const response = await axios.post(
-          urlControl + 'TimecardDetailsController.php',
-          {
-            method: 'UPDATE_TIMECARD',
-            dataTime,
-          },
+          'http://cailygroup.com/timecarddetails/update',
+          { dataTime },
         );
         console.log(response.data);
         fetchTimecardOpen();
@@ -294,7 +282,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [holidays, setHolidays] = useState<Holiday[] | undefined>();
   const fetchHolidays = async () => {
     try {
-      const response = await axios.get(urlControl + 'HolidaysController.php');
+      const response = await axios.get('http://cailygroup.com/holidays');
       if (response.data && Array.isArray(response.data)) {
         setHolidays(response.data);
       }
@@ -398,9 +386,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const handleUpdateComment = async (Id: number) => {
     try {
       const response = await axios.post(
-        urlControl + 'TimecardDetailsController.php',
+        'http://cailygroup.com/timecarddetails/updatecomment',
         {
-          method: 'UPDATE_COMMENT',
           id: Id,
           comment: commentText,
         },
