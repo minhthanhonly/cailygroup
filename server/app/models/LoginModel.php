@@ -33,6 +33,7 @@
                 
 				header('Content-Type: application/json');
 				echo json_encode(['success' => $result]);
+                echo json_encode(['data' => $data]);
 				return;
 			}
 		}

@@ -21,8 +21,14 @@ import Login from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
 import FluidLayout from './layouts/FluidLayout/FluidLayout';
 import Protected from './Protected';
+import RequireAuth from './components/RequireAuth';
 
 export default function App() {
+  const ROLES = {
+    'User': 2001,
+    'Editor': 1984,
+    'Admin': 5150
+  }
   return (
     <Router>
       <div className="App">
@@ -45,10 +51,14 @@ export default function App() {
             <Route path="member/add" element={<MemberAdd />} />
             <Route path="member/edit" element={<MemberEdit />} />
 
-            <Route path="users" element={<Users />} />
-            <Route path="users/add" element={<UserAdd />} />
-            <Route path="users/edit/:id" element={<UserEdit />} />
-            <Route path="users/detail" element={<UserDetail />} />
+            <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+              <Route path="users" element={<Users />} />
+              <Route path="users/add" element={<UserAdd />} />
+              <Route path="users/edit/:id" element={<UserEdit />} />
+              <Route path="users/detail" element={<UserDetail />} />
+            </Route>
+
+
 
             <Route path="day-off" element={<Dayoff />} />
             <Route path="day-off/register" element={<DayoffRegister />} />
