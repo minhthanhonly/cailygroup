@@ -2,12 +2,12 @@ import { useNavigate, useNavigation } from 'react-router-dom';
 import './From.scss';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { AuthContext } from '../../context/AuthProvider';
+import useAuth from '../../hooks/useAuth';
 
 function FormLogin(){
   const naviget = useNavigate();
 
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth();
 
   const [userid, setUserId] = useState('');
   const [password, setPassword] = useState('');
@@ -59,6 +59,7 @@ function FormLogin(){
         setMsg(res.data.success);
         setTimeout(() => {
           localStorage.setItem('login', 'true');
+          localStorage.setItem('userid', userid);
           naviget('/dashboard');
         }, 1500);
       }
