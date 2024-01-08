@@ -23,11 +23,6 @@ import MemberEdit from './pages/Members/MemberEdit';
 import MemberDetail from './pages/Members/MemberDetail';
 
 export default function App() {
-  const ROLES = {
-    'User': 2001,
-    'Editor': 1984,
-    'Admin': 5150
-  }
   return (
     <Router>
       <div className="App">
@@ -37,22 +32,18 @@ export default function App() {
           </Route>
           <Route path="/" element={<DefaultLayout />}>
             <Route path="dashboard" element={<Home />} />
-
             <Route path="timecards" element={<Timecard />} />
             <Route path="timecards/add" element={<Timecard />} />
             <Route path="timecards/setting" element={<TimecardSetting />} />
             <Route path="timecards/list" element={<TimecardList />} />
             <Route path="timecards/edit" element={<TimecardEdit />} />
-
             <Route path="timecarddetails/add" element={<Timecard />} />
             <Route path="timecarddetails/update" element={<Timecard />} />
             <Route
               path="timecarddetails/updatecomment"
               element={<Timecard />}
             />
-
             <Route path="holidays" element={<Timecard />} />
-
             {/* <Route element={<RequireAuth allowedRoles={['administrator']} />}> */}
             <Route path="users" element={<Users />} />
             <Route path="users/add" element={<UserAdd />} />
@@ -66,10 +57,11 @@ export default function App() {
             <Route path="members/detail/:userid" element={<MemberDetail />} />
 
             <Route path="day-off" element={<Dayoff />} />
-            <Route path="day-off/register" element={<DayoffRegister />} />
             <Route path="day-off/apply" element={<DayoffApply />} />
             <Route path="day-off/delete/:id" />
             <Route path="day-off/update/:id" />
+            <Route path="dayoffs/register" element={<DayoffRegister />} />
+            <Route path="dayoffs/getforuser/:id" />
 
             <Route path="group" element={<Group />} />
             <Route path="group/edit" element={<GroupEdit />} />

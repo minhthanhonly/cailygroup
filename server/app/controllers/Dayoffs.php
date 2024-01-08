@@ -14,5 +14,8 @@
         function update($id){
             return $this->model('DayoffsModel')->updateDayoffs($id);
         }
+        function getforuser($id){
+            return $this->model('DayoffsModel')->getDayoffsUser($id);
+        }
     }
 ?>
