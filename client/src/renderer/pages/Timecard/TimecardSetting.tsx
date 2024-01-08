@@ -11,7 +11,7 @@ import { Pagination } from "../../components/Pagination";
 import axios from "axios";
 import { urlControl } from "../../routes/server";
 import DatePicker from "react-multi-date-picker";
-import { format} from 'date-fns';
+import { format,isValid } from 'date-fns';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { symlink } from 'fs';
@@ -46,6 +46,7 @@ export const TimecardSetting = () => {
   const [modalDays, setModalDays] = useState([]);
   const [name, setName] = useState('');
   const [days, setDays] = useState([new Date()]);
+  
   const [configData, setConfigData] = useState({
     openhour: 0,
     openminute: 0,
@@ -218,17 +219,14 @@ export const TimecardSetting = () => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
-  // update
-  // const handleDatePickerModalChange = (date) => {
-  //   if (date !== null) {
-  //     const dateObjects = date.map(dateString => new Date(dateString));
-  //     setModalDays(dateObjects);
-  //   }
-  // };
-  const handleDatePickerModalChange = (selectedDates:Date) => {
-    const stringDays = selectedDates.map((day) => day.toString());
-    setModalDays(stringDays);
+  
+  const handleDatePickerModalChange = (date) => {
+    if (date !== null) {
+      const dateObjects = date.map(dateString => new Date(dateString));
+      setModalDays(dateObjects);
+    }
   };
+  
   
 
   let dynamicUpdate = ({id,name,days}: {id:string;name:string;days:string}) => (
@@ -245,9 +243,23 @@ export const TimecardSetting = () => {
       </button>
     </>
   );
-  const openModal = ( initialNameId: string,initialName:string) => {
+  useEffect(() => {
+    console.log("Giá trị mới của modalDays:", modalDays);
+  }, [modalDays]);
+  const convertDaysToDatePickerFormat = (days) => {
+    if (!Array.isArray(days)) {
+      console.error("Lỗi: Tham số days phải là một mảng.");
+      return [];
+    }
+    return days.map((day) => new Date(day));
+    
+  };
+  const openModal = (initialNameId: string, initialName: string, initialDays: string) => {
     setModalId(initialNameId);
     setModalName(initialName);
+    const daysArray = Array.isArray(initialDays) ? initialDays : [initialDays];
+    setModalDays(convertDaysToDatePickerFormat(daysArray));
+    //console.log("Giá trị của setModalDays:", modalDays);
     setModalOpen(true);
   };
   const closeModal = () => {
@@ -419,6 +431,7 @@ export const TimecardSetting = () => {
         <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+      
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {
           <>
@@ -429,6 +442,7 @@ export const TimecardSetting = () => {
                   <div className="col-12">
                   <div className="form-group">
                       <label>Id :</label>
+                      
                       <img
                         src={require('../../../../assets/icn-group.png')}
                         alt=""
@@ -459,7 +473,7 @@ export const TimecardSetting = () => {
                     </div>
                     <div className="holiday">
                         <div className="form-group">
-                          <label>Ngày Nghỉ Lễ:{modalDays}</label>
+                          <label>Ngày Nghỉ Lễ:</label>
                           <img
                             src={require('../../../../assets/icon-time.jpg')}
                             alt=""
@@ -468,7 +482,7 @@ export const TimecardSetting = () => {
                           <DatePicker
                             multiple
                             value={modalDays}
-                            onChange = {handleDatePickerModalChange}
+                            onChange={(date) => handleDatePickerModalChange(date)}
                           />
                         </div>
                     </div>
