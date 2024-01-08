@@ -39,17 +39,12 @@ export default function App() {
             <Route path="timecards/edit" element={<TimecardEdit />} />
             <Route path="timecarddetails/add" element={<Timecard />} />
             <Route path="timecarddetails/update" element={<Timecard />} />
-            <Route
-              path="timecarddetails/updatecomment"
-              element={<Timecard />}
-            />
+            <Route path="timecarddetails/updatecomment" element={<Timecard />}/>
             <Route path="holidays" element={<Timecard />} />
-            {/* <Route element={<RequireAuth allowedRoles={['administrator']} />}> */}
             <Route path="users" element={<Users />} />
             <Route path="users/add" element={<UserAdd />} />
             <Route path="users/edit/:id" element={<UserEdit />} />
             <Route path="users/detail/:userid" element={<UserDetail />} />
-            {/* </Route> */}
 
             <Route path="members" element={<Members />} />
             <Route path="members/add" element={<MemberAdd />} />
