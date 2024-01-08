@@ -45,7 +45,7 @@ export const TimecardEdit = () => {
     if (selectedGroupName !== null) {
       const trimmedSelectedGroupName = selectedGroupName.trim().toLowerCase();
 
-      console.log("trimmedSelectedGroupName", trimmedSelectedGroupName);
+      // console.log("trimmedSelectedGroupName", trimmedSelectedGroupName);
 
       const filteredUsers = listOfUsers.filter(users => {
         const userGroup = users.user_group.trim().toLowerCase();
