@@ -9,26 +9,11 @@ function FormLogin(){
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
 
   const [userid, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
-
-  // useEffect(() => {
-  //   // Lấy giá trị 'login' từ localStorage
-  //   const isLoggedIn = localStorage.getItem('login');
-
-  //    // Kiểm tra giá trị
-  //   if (isLoggedIn === 'true') {
-  //     // Người dùng đã đăng nhập
-  //     navigate ('/dashboard');
-  //   }
-  //   setTimeout(() => {
-  //     setMsg("");
-  //   }, 1500);
-  // }, [msg]);
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
     switch(type){
@@ -60,12 +45,14 @@ function FormLogin(){
         setError(res.data.success);
       } else {
         setMsg(res.data.success);
-        const roles = res2?.data?.authority_name;
-        console.log(roles);
         setTimeout(() => {
           localStorage.setItem('login', 'true');
-          localStorage.setItem('userid', userid);
-          setAuth({ userid, password, roles});
+          const users = {
+            "id": res2.data.id,
+            "userid": res2.data.userid,
+            "roles": res2.data.authority_name,
+          }
+          localStorage.setItem('users', JSON.stringify(users));
           navigate('/dashboard', { replace: true });
         }, 1500);
       }

@@ -33,6 +33,7 @@
 			JOIN groups ON users.user_group = groups.id
 			JOIN authority ON users.authority = authority.id
 			WHERE userid='$userid'";
+
 			$result = $conn->query($sql);
 
 			// Kiểm tra và hiển thị kết quả

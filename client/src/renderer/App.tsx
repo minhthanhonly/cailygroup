@@ -17,13 +17,12 @@ import { Module } from './pages/Module';
 import Login from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
 import FluidLayout from './layouts/FluidLayout/FluidLayout';
+import Members from './pages/Members';
+import MemberAdd from './pages/Members/MemberAdd';
+import MemberEdit from './pages/Members/MemberEdit';
+import MemberDetail from './pages/Members/MemberDetail';
 
 export default function App() {
-  const ROLES = {
-    User: 2001,
-    Editor: 1984,
-    Admin: 5150,
-  };
   return (
     <Router>
       <div className="App">
@@ -49,13 +48,19 @@ export default function App() {
             <Route path="users" element={<Users />} />
             <Route path="users/add" element={<UserAdd />} />
             <Route path="users/edit/:id" element={<UserEdit />} />
-            <Route path="users/detail" element={<UserDetail />} />
+            <Route path="users/detail/:userid" element={<UserDetail />} />
             {/* </Route> */}
-            <Route path="dayoffs" element={<Dayoff />} />
+
+            <Route path="members" element={<Members />} />
+            <Route path="members/add" element={<MemberAdd />} />
+            <Route path="members/edit/:id" element={<MemberEdit />} />
+            <Route path="members/detail/:userid" element={<MemberDetail />} />
+
+            <Route path="day-off" element={<Dayoff />} />
+            <Route path="day-off/apply" element={<DayoffApply />} />
+            <Route path="day-off/delete/:id" />
+            <Route path="day-off/update/:id" />
             <Route path="dayoffs/register" element={<DayoffRegister />} />
-            <Route path="dayoffs/apply" element={<DayoffApply />} />
-            <Route path="dayoffs/delete/:id" />
-            <Route path="dayoffs/update/:id" />
             <Route path="dayoffs/getforuser/:id" />
 
             <Route path="group" element={<Group />} />
