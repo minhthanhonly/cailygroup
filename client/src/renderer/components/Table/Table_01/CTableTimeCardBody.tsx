@@ -279,10 +279,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     }
   };
   //load ngày lễ
-  const [holidays, setHolidays] = useState<Holiday[] | undefined>();
+  const [holidays, setHolidays] = useState<Holiday[] | undefined>([]);
   const fetchHolidays = async () => {
     try {
       const response = await axios.get('http://cailygroup.com/holidays');
+      // console.log('Holidays from API:', response.data);
       if (response.data && Array.isArray(response.data)) {
         setHolidays(response.data);
       }
@@ -291,17 +292,23 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     }
   };
   const isHoliday = (day: Date) => {
+    console.log('Current holidays:', holidays);
+
     const formattedDay = `${day.getDate()}-${
       day.getMonth() + 1
     }-${day.getFullYear()}`;
 
-    const foundHoliday =
-      holidays &&
-      holidays.find((holiday) => holiday.days.includes(formattedDay));
+    if (holidays && Array.isArray(holidays)) {
+      const foundHoliday = holidays.find((holiday) =>
+        holiday.days.includes(formattedDay),
+      );
 
-    return foundHoliday
-      ? { isHoliday: true, name: foundHoliday.name, days: foundHoliday.days }
-      : { isHoliday: false, name: '', days: '' };
+      return foundHoliday
+        ? { isHoliday: true, name: foundHoliday.name, days: foundHoliday.days }
+        : { isHoliday: false, name: '', days: '' };
+    }
+
+    return { isHoliday: false, name: '', days: '' };
   };
 
   //tổng số giờ
