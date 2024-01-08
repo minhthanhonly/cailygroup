@@ -108,7 +108,7 @@ export const Sidebar = () => {
           </figure>
           <div className="acount__info">
             <NavLink to={"/users/detail/"+users.userid} className="acount__name">
-              {formValue.realname}
+              {users.realname}
             </NavLink>
             <p className="acount__des">Nhóm: {formValue.group_name}</p>
           </div>

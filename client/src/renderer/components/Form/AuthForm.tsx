@@ -51,6 +51,8 @@ function FormLogin(){
             "id": res2.data.id,
             "userid": res2.data.userid,
             "roles": res2.data.authority_name,
+            "realname": res2.data.realname,
+            "authority": res2.data.group_name,
           }
           localStorage.setItem('users', JSON.stringify(users));
           navigate('/dashboard', { replace: true });

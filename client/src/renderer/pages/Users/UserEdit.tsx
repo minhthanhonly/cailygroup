@@ -29,7 +29,9 @@ export default function UserEdit() {
       setTimeout(() => {
         const users = {
           "id": id,
-          "userid": formValue.userid
+          "userid": formValue.userid,
+          "roles": formValue.authority,
+          "realname": formValue.realname,
         }
         localStorage.setItem('users', JSON.stringify(users));
         navigate('/users/detail/'+formValue.userid);
