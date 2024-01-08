@@ -7,6 +7,7 @@ export default function UserEdit() {
   const navigate = useNavigate();
   const {id} = useParams();
   const [formValue, setFormValue] = useState({userid: '', password: '', realname: '', authority: '', user_group: '' });
+  const [passwordNew, setPasswordNew] = useState('');
   const [message, setMessage] = useState('');
   const handleInput = (e) => {
 		setFormValue({...formValue, [e.target.name]:e.target.value})
@@ -20,7 +21,7 @@ export default function UserEdit() {
 
   const handleSubmit = async(e) => {
 		e.preventDefault();
-		const formData = {id: id, userid:formValue.userid, password:formValue.password, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
+		const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
 		const res = await axios.post("http://cailygroup.com/users/update", formData);
 
     if(res.data.success){
@@ -108,7 +109,7 @@ export default function UserEdit() {
 								</div>
 								<div className="form-group">
 									<label>
-										Mật khẩu *
+										Mật khẩu mới
 										<img
 											src={require('../../../../assets/icon-password.jpg')}
 											alt=""
@@ -118,6 +119,12 @@ export default function UserEdit() {
 									<input
 										className="form-input"
 										type="text"
+										name="passwordNew"
+										value={passwordNew} onChange={(event) => setPasswordNew(event.target.value)}
+									/>
+                  <input
+										className="form-input"
+										type="hidden"
 										name="password"
 										value={formValue.password} onChange={handleInput}
 									/>

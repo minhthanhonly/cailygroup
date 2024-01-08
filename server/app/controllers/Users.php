@@ -16,8 +16,8 @@
             return $this->model('UsersModel')->getEdit($id);
         }
 
-        function update($id='', $userid='', $password='', $realname='', $authority='', $user_group=''){
-            return $this->model('UsersModel')->postUpdate($id, $userid, $password, $realname, $authority, $user_group);
+        function update($id='', $userid='', $password='', $passwordNew='', $realname='', $authority='', $user_group=''){
+            return $this->model('UsersModel')->postUpdate($id, $userid, $password, $passwordNew, $realname, $authority, $user_group);
         }
 
         function delete($id=''){
