@@ -4,9 +4,6 @@ import { Timecard } from './pages/Timecard';
 import { TimecardSetting } from './pages/Timecard/TimecardSetting';
 import { TimecardList } from './pages/Timecard/TimecardList';
 import { TimecardEdit } from './pages/Timecard/TimecardEdit';
-import { Member } from './pages/Member';
-import { MemberAdd } from './pages/Member/MemberAdd';
-import { MemberEdit } from './pages/Member/MemberEdit';
 import { Users } from './pages/Users';
 import { UserAdd } from './pages/Users/UserAdd';
 import UserEdit from './pages/Users/UserEdit';
@@ -20,8 +17,6 @@ import { Module } from './pages/Module';
 import Login from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
 import FluidLayout from './layouts/FluidLayout/FluidLayout';
-import Protected from './Protected';
-import RequireAuth from './components/RequireAuth';
 
 export default function App() {
   const ROLES = {
@@ -54,16 +49,12 @@ export default function App() {
 
             <Route path="holidays" element={<Timecard />} />
 
-            <Route path="member" element={<Member />} />
-            <Route path="member/add" element={<MemberAdd />} />
-            <Route path="member/edit" element={<MemberEdit />} />
-
-            <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-              <Route path="users" element={<Users />} />
-              <Route path="users/add" element={<UserAdd />} />
-              <Route path="users/edit/:id" element={<UserEdit />} />
-              <Route path="users/detail" element={<UserDetail />} />
-            </Route>
+            {/* <Route element={<RequireAuth allowedRoles={['administrator']} />}> */}
+            <Route path="users" element={<Users />} />
+            <Route path="users/add" element={<UserAdd />} />
+            <Route path="users/edit/:id" element={<UserEdit />} />
+            <Route path="users/detail" element={<UserDetail />} />
+            {/* </Route> */}
 
 
 

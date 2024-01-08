@@ -16,19 +16,19 @@ function FormLogin(){
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    // Lấy giá trị 'login' từ localStorage
-    const isLoggedIn = localStorage.getItem('login');
+  // useEffect(() => {
+  //   // Lấy giá trị 'login' từ localStorage
+  //   const isLoggedIn = localStorage.getItem('login');
 
-     // Kiểm tra giá trị
-    if (isLoggedIn === 'true') {
-      // Người dùng đã đăng nhập
-      navigate ('/dashboard');
-    }
-    setTimeout(() => {
-      setMsg("");
-    }, 1500);
-  }, [msg]);
+  //    // Kiểm tra giá trị
+  //   if (isLoggedIn === 'true') {
+  //     // Người dùng đã đăng nhập
+  //     navigate ('/dashboard');
+  //   }
+  //   setTimeout(() => {
+  //     setMsg("");
+  //   }, 1500);
+  // }, [msg]);
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
     switch(type){
@@ -55,17 +55,18 @@ function FormLogin(){
     if(userid !== "" && password !== ""){
       const formData = {userid:userid, password:password}
       const res = await axios.post("http://cailygroup.com/login", formData);
+      const res2 = await axios.get("http://cailygroup.com/users/detail/"+userid);
       if(res.data.success === 'Mật khẩu không hợp lệ' || res.data.success === 'Tên đăng nhập không hợp lệ'){
         setError(res.data.success);
       } else {
         setMsg(res.data.success);
-        // const roles = res?.data?.authority;
-        // console.log(roles);
+        const roles = res2?.data?.authority_name;
+        console.log(roles);
         setTimeout(() => {
           localStorage.setItem('login', 'true');
           localStorage.setItem('userid', userid);
-          setAuth({ userid, password});
-          navigate("/dashboard", { replace: true });
+          setAuth({ userid, password, roles});
+          navigate('/dashboard', { replace: true });
         }, 1500);
       }
     } else if(userid !== "") {
