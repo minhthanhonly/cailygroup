@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useEffect, useState } from 'react';
 import CardTime from "../../components/Card/Card";
 import { AddGroup } from "../../components/Form/Form";
@@ -246,20 +242,13 @@ export const TimecardSetting = () => {
             className="fluid-image"
           />
         </p>
-        </button>
+      </button>
     </>
   );
-  const openModal = ( initialNameId: string,initialName:string, initialDays: string[]) => {
-    if (Array.isArray(initialDays)) {
-      setModalId(initialNameId);
-      setModalName(initialName);
-      const days = initialDays.map((day) => day.toString());
-      setModalDays(days);
-      setModalOpen(true);
-    } else {
-      // Xử lý khi initialDays không phải là mảng
-      console.error("initialDays phải là một mảng.");
-    }
+  const openModal = ( initialNameId: string,initialName:string) => {
+    setModalId(initialNameId);
+    setModalName(initialName);
+    setModalOpen(true);
   };
   const closeModal = () => {
     setModalOpen(false);
@@ -430,7 +419,6 @@ export const TimecardSetting = () => {
         <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
-      
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {
           <>
