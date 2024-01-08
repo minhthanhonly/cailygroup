@@ -9,12 +9,15 @@ import { NavLink } from "react-router-dom";
 import { Excel } from "../../components/ExportExcel/Excel";
 import MonthYearSelector from "../../components/Table/SelectMonthYears";
 
+import { urlControl } from '../../routes/server';
+import { SelectCustom } from "../../components/Table/SelectCustom";
+
 interface FieldUsers {
   id: number;
   realname: string;
   userid: string;
-  authority: string;
-  user_groupname: string;
+  authority_name: string;
+  group_name: string; // đây là data của thằng bảng khác 
 }
 
 export const TimecardList: React.FC = () => {
@@ -25,8 +28,7 @@ export const TimecardList: React.FC = () => {
   const [daysInMonths, setDaysInMonths] = useState<Date[][]>(Array(listOfUsers.length).fill([]));
 
 
-  console.log("selectedMonths", selectedMonths);
-  console.log("selectedYears", selectedYears);
+
 
 
   const handleDateChange = (month: string, year: string, daysInMonth: Date[], index: number) => {
@@ -52,13 +54,20 @@ export const TimecardList: React.FC = () => {
   };
 
 
+
   useEffect(() => {
-    axios.get('http://cailygroup.com/users/')
-      .then((response) => {
-        setListOfUsers(response.data);
-      })
-      .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
-  }, []);
+    axios.get('http://cailygroup.com/users/').then((response) => {
+      setListOfUsers(response.data); setListOfUsers(response.data);
+      console.log("listOfUsers", response.data);
+    }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
+  }, [])
+
+  const [groupNames, setGroupNames] = useState<string[]>([]);
+
+  useEffect(() => {
+    const uniqueGroupNames = Array.from(new Set(listOfUsers.map(user => user.group_name)));
+    setGroupNames(uniqueGroupNames);
+  }, [listOfUsers]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
@@ -68,21 +77,26 @@ export const TimecardList: React.FC = () => {
     setCurrentPage(page);
   };
 
+
   return (
     <>
       <NavTimcard role="admin" />
-      <p className="txt-title">Nhóm: Web</p>
+      <SelectCustom onGroupChange={(groupId: string) => {
+        // Xử lý khi nhóm thay đổi groups={groupNames}
+      }} />
+
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Tháng năm", "Thẻ giờ", "Xuất Excel"]} />
         <tbody >
           {listOfUsers.map((data, index) => (
             <tr key={index}>
               <td>{data.realname}</td>
-              <td>{data.user_groupname}</td>
-              <td>{data.authority}</td>
+              <td>{data.group_name}</td>
+              <td>{data.authority_name}</td>
               <td><MonthYearSelector onChange={(month, year, daysInMonth) => handleDateChange(month, year, daysInMonth, index)} /></td>
-              <td> <NavLink className="btn" to={`/timecard` + data.id}> Xem Thẻ Giờ </NavLink></td>
-              <td> <Excel /> </td>
+              <td> <NavLink className="btn" to={`/timecard/` + data.id}> Xem Thẻ Giờ </NavLink></td>
+              <td> </td>
+              {/* <Excel /> */}
             </tr>
           ))}
         </tbody>
