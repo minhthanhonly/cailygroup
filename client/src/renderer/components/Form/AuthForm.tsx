@@ -1,32 +1,34 @@
-import { useNavigate, useNavigation } from 'react-router-dom';
+import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import './From.scss';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { AuthContext } from '../../context/AuthProvider';
+import useAuth from '../../hooks/useAuth';
 
 function FormLogin(){
-  const naviget = useNavigate();
+  const { setAuth } = useAuth();
 
-  const { setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const [userid, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    // Lấy giá trị 'login' từ localStorage
-    const isLoggedIn = localStorage.getItem('login');
+  // useEffect(() => {
+  //   // Lấy giá trị 'login' từ localStorage
+  //   const isLoggedIn = localStorage.getItem('login');
 
-     // Kiểm tra giá trị
-    if (isLoggedIn === 'true') {
-      // Người dùng đã đăng nhập
-      naviget('/dashboard');
-    }
-    setTimeout(() => {
-      setMsg("");
-    }, 1500);
-  }, [msg]);
+  //    // Kiểm tra giá trị
+  //   if (isLoggedIn === 'true') {
+  //     // Người dùng đã đăng nhập
+  //     navigate ('/dashboard');
+  //   }
+  //   setTimeout(() => {
+  //     setMsg("");
+  //   }, 1500);
+  // }, [msg]);
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
     switch(type){
@@ -53,13 +55,18 @@ function FormLogin(){
     if(userid !== "" && password !== ""){
       const formData = {userid:userid, password:password}
       const res = await axios.post("http://cailygroup.com/login", formData);
+      const res2 = await axios.get("http://cailygroup.com/users/detail/"+userid);
       if(res.data.success === 'Mật khẩu không hợp lệ' || res.data.success === 'Tên đăng nhập không hợp lệ'){
         setError(res.data.success);
       } else {
         setMsg(res.data.success);
+        const roles = res2?.data?.authority_name;
+        console.log(roles);
         setTimeout(() => {
           localStorage.setItem('login', 'true');
-          naviget('/dashboard');
+          localStorage.setItem('userid', userid);
+          setAuth({ userid, password, roles});
+          navigate('/dashboard', { replace: true });
         }, 1500);
       }
     } else if(userid !== "") {

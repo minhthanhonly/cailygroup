@@ -29,7 +29,10 @@
 			global $conn;
 
 			// Thực hiện truy vấn SELECT
-			$sql = "SELECT users.*, groups.group_name FROM users INNER JOIN groups ON users.user_group = groups.id WHERE userid='$userid'";
+			$sql = "SELECT users.*, groups.group_name, authority.authority_name FROM users 
+			JOIN groups ON users.user_group = groups.id
+			JOIN authority ON users.authority = authority.id
+			WHERE userid='$userid'";
 			$result = $conn->query($sql);
 
 			// Kiểm tra và hiển thị kết quả
@@ -109,7 +112,7 @@
 				// Lấy dữ liệu từ phần thân của yêu cầu
 				$id = $userPostData->id;
 				$userid = $userPostData->userid;
-				$password = $userPostData->password;
+				$password = password_hash($userPostData->password, PASSWORD_BCRYPT);
 				$realname = $userPostData->realname;
 				$authority = $userPostData->authority;
 				$user_group = $userPostData->user_group;
