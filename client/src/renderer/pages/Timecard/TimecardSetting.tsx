@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import CardTime from "../../components/Card/Card";
 import { AddGroup } from "../../components/Form/Form";
@@ -11,7 +15,7 @@ import { Pagination } from "../../components/Pagination";
 import axios from "axios";
 import { urlControl } from "../../routes/server";
 import DatePicker from "react-multi-date-picker";
-import { format } from 'date-fns';
+import { format} from 'date-fns';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { symlink } from 'fs';
@@ -225,18 +229,15 @@ export const TimecardSetting = () => {
   //     setModalDays(dateObjects);
   //   }
   // };
-
   const handleDatePickerModalChange = (selectedDates:Date) => {
     const stringDays = selectedDates.map((day) => day.toString());
     setModalDays(stringDays);
   };
   
 
-
-
-  let dynamicUpdate = ({ id, name, days }: { id: string; name: string; days: string }) => (
+  let dynamicUpdate = ({id,name,days}: {id:string;name:string;days:string}) => (
     <>
-      <button onClick={() => openModal(id, name, days)}>
+      <button onClick={() => openModal(id,name,days)}>
         <p className="icon icon--check">
           {/* {days} */}
           <img
@@ -245,7 +246,6 @@ export const TimecardSetting = () => {
             className="fluid-image"
           />
         </p>
-
         </button>
     </>
   );
@@ -260,84 +260,11 @@ export const TimecardSetting = () => {
       // Xử lý khi initialDays không phải là mảng
       console.error("initialDays phải là một mảng.");
     }
-
-      </button>
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        {
-          <>
-            <Heading2 text="Cấu Hình Ngày Lễ" />
-            <div className="form-user form">
-              <div className="form-content">
-                <div className="row">
-                  <div className="col-12">
-                    <div className="form-group">
-                      <label>Id :</label>
-                      <img
-                        src={require('../../../../assets/icn-group.png')}
-                        alt=""
-                        className="fluid-image form-addgroup__image"
-                      />
-                      <input
-                        value={modalId}
-                        onChange={(e) => setModalId(e.target.value)}
-                        className="form-input"
-                        type="text"
-                        placeholder="id"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Tên Ngày Lễ :</label>
-                      <img
-                        src={require('../../../../assets/icn-group.png')}
-                        alt=""
-                        className="fluid-image form-addgroup__image"
-                      />
-                      <input
-                        value={modalName}
-                        onChange={(e) => setModalName(e.target.value)}
-                        className="form-input"
-                        type="text"
-                        placeholder="Nhập Tên Ngày Lễ"
-                      />
-                    </div>
-                    <div className="holiday">
-                      <div className="form-group">
-                        <label>Ngày Nghỉ Lễ:</label>
-                        <img
-                          src={require('../../../../assets/icon-time.jpg')}
-                          alt=""
-                          className="fluid-image"
-                        />
-                        <DatePicker
-                          multiple
-                          value={modalDays}
-                          onChange={(e) => setModalDays(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="wrp-button">
-                      <button className="btn btn--green" onClick={(event) => handleUpdate(modalId, modalName, modalDays, event)}>Xác nhận</button>
-                      <button className="btn btn--orange" onClick={closeModal}>Hủy</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        }
-      </Modal>
-    </>
-  );
-  const openModal = (initialNameId: string, initialName: string, initialDays: any) => {
-    setModalId(initialNameId);
-    setModalName(initialName);
-    setModalDays(initialDays);
-    setModalOpen(true);
   };
   const closeModal = () => {
     setModalOpen(false);
   };
-
+ 
   // delete
   const handleDelete = async (holidayId, event) => {
     if (event) {
@@ -499,7 +426,7 @@ export const TimecardSetting = () => {
         </div>
       </div>
       <CTable>
-        <CTableHead heads={["STT", "Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
+        <CTableHead heads={["STT","Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
         <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
