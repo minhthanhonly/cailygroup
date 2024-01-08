@@ -30,7 +30,7 @@ interface RollAdmin {
 }
 
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
-interface CombinedProps extends SelectMY, RollAdmin {}
+interface CombinedProps extends SelectMY, RollAdmin { }
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
@@ -294,9 +294,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const isHoliday = (day: Date) => {
     console.log('Current holidays:', holidays);
 
-    const formattedDay = `${day.getDate()}-${
-      day.getMonth() + 1
-    }-${day.getFullYear()}`;
+    const formattedDay = `${day.getDate()}-${day.getMonth() + 1
+      }-${day.getFullYear()}`;
 
     if (holidays && Array.isArray(holidays)) {
       const foundHoliday = holidays.find((holiday) =>
@@ -442,18 +441,16 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       {allDays.map((day, rowIndex) => (
         <tr
           key={rowIndex}
-          className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''}${
-            isHoliday(day).isHoliday && isHoliday(day).name
+          className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''}${isHoliday(day).isHoliday && isHoliday(day).name
               ? 'holiday bg-purple'
               : ''
-          }${isWaiting(day) ? 'waiting bg-yellow' : ''}${
-            accreptLeave(day) ? 'accrept bg-green' : ''
-          }${isCancelLeave(day) ? 'cancel bg-red' : ''} `}
+            }${isWaiting(day) ? 'waiting bg-yellow' : ''}${accreptLeave(day) ? 'accrept bg-green' : ''
+            }${isCancelLeave(day) ? 'cancel bg-red' : ''} `}
         >
           {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
             new Date(day).getFullYear() === parseInt(selectedYear)) ||
-          (new Date(day).getMonth() + 1 === currentMonth &&
-            new Date(day).getFullYear() === currentYear) ? (
+            (new Date(day).getMonth() + 1 === currentMonth &&
+              new Date(day).getFullYear() === currentYear) ? (
             <>
               <td>{format(day, 'dd-MM-yyyy')}</td>
               {otherColumnData.map((column, colIndex) => (
@@ -462,11 +459,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 </td>
               ))}
               <td
-                className={`${
-                  startHours > 7 || (startHours === 7 && startMinutes > 30)
+                className={`${startHours > 7 || (startHours === 7 && startMinutes > 30)
                     ? 'late'
                     : ''
-                }`}
+                  }`}
               >
                 {timecardOpen.some(
                   (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
@@ -505,7 +501,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                          item.timecard_close !== '' ? (
+                            item.timecard_close !== '' ? (
                             item.timecard_close
                           ) : isToday(day) ? (
                             <button
@@ -540,7 +536,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                          item.timecard_close !== ''
+                            item.timecard_close !== ''
                             ? item.timecard_time
                             : null}
                         </div>
@@ -561,7 +557,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                          item.timecard_close !== ''
+                            item.timecard_close !== ''
                             ? item.timecard_timeover
                             : null}
                         </div>
@@ -582,7 +578,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                          item.timecard_close !== ''
+                            item.timecard_close !== ''
                             ? item.timecard_timeinterval
                             : null}
                         </div>
@@ -642,9 +638,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               </td>
               <td>
                 {admin == true &&
-                !isHoliday(day) &&
-                !getDayClassName(day) &&
-                !accreptLeave(day) ? (
+                  !isHoliday(day) &&
+                  !getDayClassName(day) &&
+                  !accreptLeave(day) ? (
                   <>
                     {!editingStart ? (
                       <>
