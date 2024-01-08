@@ -12,7 +12,7 @@ import Modal from "../../components/Modal/Modal";
 import ButtonDelete from "../../components/Button/ButtonDelete";
 import { useNavigate } from "react-router-dom";
 
-export const Users = () => {
+function Members() {
   const navigate = useNavigate();
   const [isTableUpdated, setIsTableUpdated] = useState(false);
 
@@ -72,7 +72,7 @@ export const Users = () => {
         </div>
       </div>
 
-      <ButtonAdd path_add="/users/add" />
+      <ButtonAdd path_add="/members/add" />
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Email", "Skype ID", "Phone", "Sửa", "Xóa"]} />
         <tbody>
@@ -83,7 +83,7 @@ export const Users = () => {
               <td>{data.user_email}</td>
               <td>{data.user_skype}</td>
               <td>{data.user_phone}</td>
-              <td><ButtonEdit href={"/users/edit/" + data.id} /></td>
+              <td><ButtonEdit href={"/members/edit/" + data.id} /></td>
               <td><ButtonDelete onButtonClick={() => openModal(data.id)} /></td>
             </tr>
           ))}
@@ -107,3 +107,6 @@ export const Users = () => {
     </>
   )
 };
+
+
+export default Members;

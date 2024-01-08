@@ -17,6 +17,10 @@ import { Module } from './pages/Module';
 import Login from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
 import FluidLayout from './layouts/FluidLayout/FluidLayout';
+import Members from './pages/Members';
+import MemberAdd from './pages/Members/MemberAdd';
+import MemberEdit from './pages/Members/MemberEdit';
+import MemberDetail from './pages/Members/MemberDetail';
 
 export default function App() {
   const ROLES = {
@@ -53,10 +57,13 @@ export default function App() {
             <Route path="users" element={<Users />} />
             <Route path="users/add" element={<UserAdd />} />
             <Route path="users/edit/:id" element={<UserEdit />} />
-            <Route path="users/detail" element={<UserDetail />} />
+            <Route path="users/detail/:userid" element={<UserDetail />} />
             {/* </Route> */}
 
-
+            <Route path="members" element={<Members />} />
+            <Route path="members/add" element={<MemberAdd />} />
+            <Route path="members/edit/:id" element={<MemberEdit />} />
+            <Route path="members/detail/:userid" element={<MemberDetail />} />
 
             <Route path="day-off" element={<Dayoff />} />
             <Route path="day-off/register" element={<DayoffRegister />} />
