@@ -21,6 +21,8 @@ import Members from './pages/Members';
 import MemberAdd from './pages/Members/MemberAdd';
 import MemberEdit from './pages/Members/MemberEdit';
 import MemberDetail from './pages/Members/MemberDetail';
+import Protected from './Protected';
+import RequireAuth from './components/RequireAuth';
 
 export default function App() {
   return (
@@ -31,36 +33,39 @@ export default function App() {
             <Route index element={<Login />} />
           </Route>
           <Route path="/" element={<DefaultLayout />}>
-            <Route path="dashboard" element={<Home />} />
-            <Route path="timecards" element={<Timecard />} />
-            <Route path="timecards/add" element={<Timecard />} />
-            <Route path="timecards/setting" element={<TimecardSetting />} />
-            <Route path="timecards/list" element={<TimecardList />} />
-            <Route path="timecards/edit" element={<TimecardEdit />} />
-            <Route path="timecarddetails/add" element={<Timecard />} />
-            <Route path="timecarddetails/update" element={<Timecard />} />
-            <Route path="timecarddetails/updatecomment" element={<Timecard />}/>
-            <Route path="holidays" element={<Timecard />} />
-            <Route path="users" element={<Users />} />
-            <Route path="users/add" element={<UserAdd />} />
-            <Route path="users/edit/:id" element={<UserEdit />} />
-            <Route path="users/detail/:userid" element={<UserDetail />} />
+              <Route element={<RequireAuth/>}>
+                <Route path="dashboard" element={<Home/>} />
+                <Route path="timecards" element={<Timecard />} />
+                <Route path="timecards/add" element={<Timecard />} />
+                <Route path="timecards/setting" element={<TimecardSetting />} />
+                <Route path="timecards/list" element={<TimecardList />} />
+                <Route path="timecards/edit" element={<TimecardEdit />} />
+                <Route path="timecarddetails/add" element={<Timecard />} />
+                <Route path="timecarddetails/update" element={<Timecard />} />
+                <Route path="timecarddetails/updatecomment" element={<Timecard />}/>
+                <Route path="holidays" element={<Timecard />} />
 
-            <Route path="members" element={<Members />} />
-            <Route path="members/add" element={<MemberAdd />} />
-            <Route path="members/edit/:id" element={<MemberEdit />} />
-            <Route path="members/detail/:userid" element={<MemberDetail />} />
+                <Route path="users" element={<Users />} />
+                <Route path="users/add" element={<UserAdd />} />
+                <Route path="users/edit/:id" element={<UserEdit />} />
+                <Route path="users/detail/:userid" element={<UserDetail />} />
 
-            <Route path="day-off" element={<Dayoff />} />
-            <Route path="day-off/apply" element={<DayoffApply />} />
-            <Route path="day-off/delete/:id" />
-            <Route path="day-off/update/:id" />
-            <Route path="dayoffs/register" element={<DayoffRegister />} />
-            <Route path="dayoffs/getforuser/:id" />
+                <Route path="members" element={<Members />} />
+                <Route path="members/add" element={<MemberAdd />} />
+                <Route path="members/edit/:id" element={<MemberEdit />} />
+                <Route path="members/detail/:userid" element={<MemberDetail />} />
 
-            <Route path="group" element={<Group />} />
-            <Route path="group/edit" element={<GroupEdit />} />
-            <Route path="module" element={<Module />} />
+                <Route path="day-off" element={<Dayoff />} />
+                <Route path="day-off/apply" element={<DayoffApply />} />
+                <Route path="day-off/delete/:id" />
+                <Route path="day-off/update/:id" />
+                <Route path="dayoffs/register" element={<DayoffRegister />} />
+                <Route path="dayoffs/getforuser/:id" />
+
+                <Route path="group" element={<Group />} />
+                <Route path="group/edit" element={<GroupEdit />} />
+                <Route path="module" element={<Module />} />
+            </Route>
           </Route>
           <Route path="/login" element={<FluidLayout />}>
             <Route index element={<Login />} />
