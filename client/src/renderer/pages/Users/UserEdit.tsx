@@ -177,24 +177,6 @@ export default function UserEdit() {
 										</select>
 									</div>
 								</div>
-								<div className="form-group">
-									<label>
-										Quyền truy cập *
-										<img
-											src={require('../../../../assets/authorization.png')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<div className="select__box group" onChange={handleInput}>
-										<select name="authority">
-											<option value="-1">-------------------- Chọn quyền truy cập --------------------</option>
-											{DataAuthority.map((value, index) => (
-												<option value={value.id} key={index} selected={value.id == formValue.authority}>{value.authority_name}</option>
-											))}
-										</select>
-									</div>
-								</div>
 								<div className="wrp-button">
 									<button className="btn btn--green" type="submit">Xác nhận</button>
 									<button className="btn btn--orange">Hủy</button>

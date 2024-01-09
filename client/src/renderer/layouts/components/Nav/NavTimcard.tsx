@@ -1,4 +1,6 @@
 import ListBranch from '../../../components/List/ListBranch';
+import { UserRole } from '../../../components/UserRole';
+import useAuth from '../../../hooks/useAuth';
 
 interface Role {
   role: string;
@@ -39,10 +41,15 @@ const ManagerBranch = [
 ];
 
 const NavTimcard: React.FC<Role> = ({ role }) => {
+  const { auth } = useAuth();
+
+  const isAdmin = auth.roles === UserRole.ADMIN;
+  const isManager = auth.roles === UserRole.MANAGER;
+  const isLeader = auth.roles === UserRole.LEADER;
   return (
     <>
-      {role == 'admin' ? <ListBranch branch={AdminBranch} /> : ''}
-      {role == 'manager' ? <ListBranch branch={ManagerBranch} /> : ''}
+      {isAdmin && <ListBranch branch={AdminBranch} />}
+      {isManager && <ListBranch branch={ManagerBranch} />}
     </>
   );
 };
