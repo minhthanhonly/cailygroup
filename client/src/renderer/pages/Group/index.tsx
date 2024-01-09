@@ -125,7 +125,7 @@ export const Group = () => {
       try {
         const dataUpdate = { id, group_name };
         const response = await axios.put(
-          urlControl + 'GroupsController.php',
+          'http://cailygroup.com/groups/update/',
           dataUpdate,
           { headers: { 'Content-Type': 'application/json' } }
         );
@@ -179,43 +179,26 @@ export const Group = () => {
       delete: dynamicDelete(listOfGroups[i].id),
     });
   }
-  const handleSubmint = () => {
+  const handleSubmint = async() => {
     if (!groupName) {
       console.error('Tên nhóm không hợp lệ');
       return;
     }
-    const group_data = {
-      group_name: groupName,
-      add_level: 1,
-      owner: 'admin',
-    };
-    setGroupName('');
-    fetch(urlControl + 'GroupsController.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      mode: 'cors',
-      body: JSON.stringify({ group_data }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((responseData) => {
-        console.log('Data inserted successfully:', responseData);
-        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-
-      })
-      .catch((error) => {
-        console.error('Error inserting data:', error);
-        if (error.response) {
-          console.error('Response status:', error.response.status);
-          console.error('Server error message:', error.response.data);
-        }
-      });
+    try{
+      const group_data = {
+        group_name: groupName,
+        add_level: 1,
+        owner: 'admin',
+      };
+      setGroupName('');
+      const res = await axios.post("http://cailygroup.com/groups/add/", group_data);
+      console.log('Data inserted successfully:', res.data);
+      setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+    }
+    catch(error){
+      console.error('Lỗi khi thêm dữ liệu:', error);
+    }
+    
   };
 
   return (
