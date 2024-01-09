@@ -4,8 +4,8 @@
             return $this->model('UsersModel')->getList();
         }
 
-        function detail($userid=''){
-            return $this->model('UsersModel')->getDetail($userid);
+        function detail($id=''){
+            return $this->model('UsersModel')->getDetail($id);
         }
 
         function add($userid='', $password='', $realname='', $authority='', $user_group=''){

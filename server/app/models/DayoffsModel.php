@@ -42,6 +42,31 @@
             }
             $conn->close();
         }
+        function getDayoffsUser($id){
+            // echo $id;
+            // exit;
+            global $conn;
+            $query = "SELECT * FROM dayoffs WHERE user_id = '$id'";
+            $result = $conn->query($query);
+
+            if ($result) {
+                // Chuyển kết quả thành mảng để trả về
+                $dayoffs = array();
+                while ($row = $result->fetch_assoc()) {
+                    $dayoffs[] = $row;
+                }
+
+                // Đóng kết nối
+                $conn->close();
+
+                // Trả về kết quả dưới dạng JSON
+                echo json_encode($dayoffs);
+            } else {
+                // Xử lý lỗi nếu có
+                echo json_encode(array('error' => 'Error in query'));
+            }
+            $conn->close();
+        }
         function postAdd($user_id, $date_start, $date_end, $time_start, $time_end, $note, $day_number, $status, $owner){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);

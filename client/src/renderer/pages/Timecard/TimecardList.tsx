@@ -91,7 +91,7 @@ export const TimecardList: React.FC = () => {
               <td>{data.group_name}</td>
               <td>{data.authority_name}</td>
               <td><MonthYearSelector onChange={(month, year, daysInMonth) => handleDateChange(month, year, daysInMonth, index)} /></td>
-              <td> <NavLink className="btn" to={'/timecard'}> Xem Thẻ Giờ </NavLink></td>
+              <td> <NavLink className="btn" to={`/timecards/` + data.id}> Xem Thẻ Giờ </NavLink></td>
               <td></td>
             </tr>
           ))}

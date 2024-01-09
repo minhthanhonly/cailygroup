@@ -5,7 +5,13 @@ import { urlControl } from '../../routes/server';
 
 interface SelectCustomProps {
   onGroupChange: (groupId: string) => void;
+
 }
+
+interface SelectCustomNameProps {
+  selectedGroupData: { id: number; realname: string }[];
+}
+
 
 export const SelectCustom: React.FC<SelectCustomProps> = ({
   onGroupChange,
@@ -56,20 +62,29 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
   );
 };
 
-export const SelectCustomName = () => {
+export const SelectCustomName: React.FC<SelectCustomNameProps> = ({
+  selectedGroupData,
+}) => {
+  const [selectedUser, setSelectedUser] = useState<string>(''); // State để lưu trữ người dùng được chọn
+
+  const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedUserId = event.target.value;
+    setSelectedUser(selectedUserId);
+    // Thực hiện các hành động khác khi người dùng thay đổi
+  };
+
   return (
-    <>
-      <div className="select__box group">
-        <div className="select__box--flex grid-row">
-          <select>
-            <option value="1">Phan Hồ Tú</option>
-            <option value="2">Phan Hồ Tú</option>
-            <option value="3">Phan Hồ Tú</option>
-            <option value="4">Phan Hồ Tú</option>
-            <option value="">Phan Hồ Tú</option>
-          </select>
-        </div>
+    <div className="select__box group">
+      <div className="select__box--flex grid-row">
+        <select value={selectedUser} onChange={handleUserChange}>
+          <option value="">Chọn người dùng</option>
+          {selectedGroupData && selectedGroupData.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.realname}
+            </option>
+          ))}
+        </select>
       </div>
-    </>
+    </div>
   );
 };

@@ -1,5 +1,48 @@
 <?php
     class TimecardsModel{
+        function getTimecards(){
+            global $conn;
+            $allTimecards = mysqli_query($conn, "SELECT * FROM timecards");
+            if (mysqli_num_rows($allTimecards) > 0) {
+                $json_array["timecarddata"] = array();
+
+                while ($row = mysqli_fetch_array($allTimecards)) {
+                    // Lấy id và timecard_date từ bảng timecards
+                    $timecardId = $row['id'];
+                    $timecardDate = $row['timecard_date'];
+
+                    // Truy vấn tất cả các trường từ bảng timecard_details
+                    $timecardDetailsQuery = "SELECT td.* 
+                                            FROM timecard_details td
+                                            WHERE td.id_groupwaretimecard = ?";
+                    $stmtDetails = mysqli_prepare($conn, $timecardDetailsQuery);
+
+                    if ($stmtDetails) {
+                        mysqli_stmt_bind_param($stmtDetails, "i", $timecardId);
+                        mysqli_stmt_execute($stmtDetails);
+                        $result = mysqli_stmt_get_result($stmtDetails);
+
+                        // Lưu kết quả vào mảng
+                        while ($rowDetails = mysqli_fetch_assoc($result)) {
+                            $rowDetails["timecard_date"] = $timecardDate; // Thêm trường timecard_date từ bảng timecards
+                            $json_array["timecarddata"][] = $rowDetails;
+                        }
+                    }
+                }
+
+                // Kiểm tra nếu có dữ liệu trong mảng
+                if (!empty($json_array["timecarddata"])) {
+                    echo json_encode($json_array["timecarddata"]);
+                    return;
+                } else {
+                    echo json_encode(["result" => "No timecard data found for the given criteria"]);
+                    return;
+                }
+            } else {
+                echo json_encode(["result" => "Please check the Data"]);
+                return;
+            }
+        }
         function postAdd($user_id, $timecard_year, $timecard_month, $timecard_day, $timecard_date, $owner, $timecard_temp){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
@@ -29,9 +72,6 @@
                 echo json_encode(["error" => "Thêm không thành công: " . mysqli_error($conn)]);
             }
             $conn->close();
-        }
-        function updateTimecards($id){
-
         }
     }
 ?>

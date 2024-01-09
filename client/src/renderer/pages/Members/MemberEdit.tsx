@@ -3,7 +3,7 @@ import { Heading2 } from "../../components/Heading";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function UserEdit() {
+function MemberEdit() {
   const navigate = useNavigate();
   const {id} = useParams();
   const [formValue, setFormValue] = useState({userid: '', password: '', realname: '', authority: '', user_group: '' });
@@ -27,14 +27,7 @@ export default function UserEdit() {
     if(res.data.success){
       setMessage(res.data.success);
       setTimeout(() => {
-        const users = {
-          "id": id,
-          "userid": formValue.userid,
-          "roles": formValue.authority,
-          "realname": formValue.realname,
-        }
-        localStorage.setItem('users', JSON.stringify(users));
-        navigate('/users/detail/'+formValue.userid);
+        navigate('/users');
       }, 2000);
     }
 	}
@@ -200,3 +193,5 @@ export default function UserEdit() {
 		</>
 	)
 };
+
+export default MemberEdit;
