@@ -355,7 +355,6 @@ export const TimecardSetting = () => {
   let DataTable: FieldHolidays[] = [];
   for (let i = 0; i < listOfHolidays.length; i++) {
     DataTable.push({
-      id: listOfHolidays[i].id,
       days: `${listOfHolidays[i].days}`,
       name: `${listOfHolidays[i].name}`,
       update: dynamicUpdate({
@@ -465,7 +464,7 @@ export const TimecardSetting = () => {
         </div>
       </div>
       <CTable>
-        <CTableHead heads={["STT","Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
+        <CTableHead heads={["Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
         <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
       </CTable>
       <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
