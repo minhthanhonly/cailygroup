@@ -33,6 +33,7 @@ export const Sidebar = () => {
 
   function logoutSubmit() {
     localStorage.setItem('login', 'false');
+    localStorage.removeItem('users');
     naviget('/');
   }
 

@@ -8,6 +8,7 @@ import { SelectCustom } from "../../components/Table/SelectCustom";
 import MonthYearSelector from "../../components/Table/SelectMonthYears";
 import NavTimcard from "../../layouts/components/Nav/NavTimcard";
 import { Route, BrowserRouter as Router } from 'react-router-dom';
+import { Excel } from "../../components/ExportExcel/Excel";
 
 
 interface FieldUsers {
@@ -40,7 +41,7 @@ export const TimecardList: React.FC = () => {
   };
 
   useEffect(() => {
-    axios.get('http://cailygroup.com/users/')
+    axios.get('http://cailygroup.com/timecards/list')
       .then((response) => {
         setListOfUsers(response.data);
 
