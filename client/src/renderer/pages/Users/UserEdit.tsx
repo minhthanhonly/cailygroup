@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 export default function UserEdit() {
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
   const {id} = useParams();
   const [formValue, setFormValue] = useState({userid: '', password: '', realname: '', authority: '', user_group: '' });
@@ -23,17 +25,22 @@ export default function UserEdit() {
 		e.preventDefault();
 		const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
 		const res = await axios.post("http://cailygroup.com/users/update", formData);
+    const res2 = await axios.get("http://cailygroup.com/users/detail/"+formValue.userid);
 
     if(res.data.success){
       setMessage(res.data.success);
       setTimeout(() => {
+        const isLoggedIn = localStorage.getItem('login');
+        const roles = res2.data.authority_name;
         const users = {
-          "id": id,
-          "userid": formValue.userid,
-          "roles": formValue.authority,
-          "realname": formValue.realname,
+          "id": res2.data.id,
+          "userid": res2.data.userid,
+          "realname": res2.data.realname,
+          "authority": res2.data.authority_name,
+          "user_group": res2.data.group_name,
         }
         localStorage.setItem('users', JSON.stringify(users));
+        setAuth({ isLoggedIn, roles, users });
         navigate('/users/detail/'+formValue.userid);
       }, 2000);
     }
