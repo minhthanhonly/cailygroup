@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import CardTime from "../../components/Card/Card";
-import { AddGroup } from "../../components/Form/Form";
-import { Heading3 } from "../../components/Heading";
+import CardTime from '../../components/Card/Card';
+import { AddGroup } from '../../components/Form/Form';
+import { Heading3 } from '../../components/Heading';
 import { Heading2 } from '../../components/Heading';
-import { CTable } from "../../components/Table/CTable";
-import CTableBody from "../../components/Table/CTableBody";
-import { CTableHead } from "../../components/Table/CTableHead";
-import NavTimcard from "../../layouts/components/Nav/NavTimcard";
-import { Pagination } from "../../components/Pagination";
-import axios from "axios";
-import { urlControl } from "../../routes/server";
-import DatePicker from "react-multi-date-picker";
-import { format,isValid } from 'date-fns';
+import { CTable } from '../../components/Table/CTable';
+import CTableBody from '../../components/Table/CTableBody';
+import { CTableHead } from '../../components/Table/CTableHead';
+import NavTimcard from '../../layouts/components/Nav/NavTimcard';
+import { Pagination } from '../../components/Pagination';
+import axios from 'axios';
+import { urlControl } from '../../routes/server';
+import DatePicker from 'react-multi-date-picker';
+import { format, isValid } from 'date-fns';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { symlink } from 'fs';
-
+import { format, parse } from 'date-fns';
 
 interface HolidayProps {
   id: string;
@@ -31,7 +31,9 @@ export const TimecardSetting = () => {
     update: React.ReactNode;
     delete: React.ReactNode;
   };
-  const [listOfHolidays, setListOfHolidays] = useState<FieldHolidays[] | []>([]);
+  const [listOfHolidays, setListOfHolidays] = useState<FieldHolidays[] | []>(
+    [],
+  );
   const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [timeInputHours, setTimeInputHours] = useState<number>(0);
   const [timeInputMinutes, setTimeInputMinutes] = useState<number>(0);
@@ -43,10 +45,9 @@ export const TimecardSetting = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalName, setModalName] = useState('');
   const [modalId, setModalId] = useState('');
-  const [modalDays, setModalDays] = useState([]);
   const [name, setName] = useState('');
   const [days, setDays] = useState([new Date()]);
-  
+
   const [configData, setConfigData] = useState({
     openhour: 0,
     openminute: 0,
@@ -54,28 +55,28 @@ export const TimecardSetting = () => {
     closeminute: 0,
   });
 
-
   const Data = [
-    ["Ngày 01 Tháng 01", "Tết Dương Lịch"],
-    ["Ngày 30 Tháng 04", "Ngày giải phóng miền Nam, Thống nhất Đất nước"],
+    ['Ngày 01 Tháng 01', 'Tết Dương Lịch'],
+    ['Ngày 30 Tháng 04', 'Ngày giải phóng miền Nam, Thống nhất Đất nước'],
   ];
 
   useEffect(() => {
-    axios.get(urlControl + 'TimecardsSettingController.php').then((response) => {
-      setListOfHolidays(response.data);
-      setIsTableUpdated(false); //đặt lại trạng thái khi dữ liệu thay đổi
-    });
+    axios
+      .get(urlControl + 'TimecardsSettingController.php')
+      .then((response) => {
+        setListOfHolidays(response.data);
+        setIsTableUpdated(false); //đặt lại trạng thái khi dữ liệu thay đổi
+      });
   }, [isTableUpdated]); // khi state thay đổi useEffect sẽ chạy lại
-
 
   useEffect(() => {
     fetch(urlControl + 'ConfigsController.php')
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if ('opentime' in data && 'closetime' in data) {
           // Tách giờ và phút từ chuỗi
-          const opentimeParts = data.opentime.split(":");
-          const closetimeParts = data.closetime.split(":");
+          const opentimeParts = data.opentime.split(':');
+          const closetimeParts = data.closetime.split(':');
 
           const openHour = parseInt(opentimeParts[0], 10);
           const openMinute = parseInt(opentimeParts[1], 10);
@@ -84,9 +85,14 @@ export const TimecardSetting = () => {
           const closeMinute = parseInt(closetimeParts[1], 10);
 
           // Kiểm tra xem giá trị đã được chuyển đổi đúng cách chưa
-          if (!isNaN(openHour) && !isNaN(openMinute) && !isNaN(closeHour) && !isNaN(closeMinute)) {
+          if (
+            !isNaN(openHour) &&
+            !isNaN(openMinute) &&
+            !isNaN(closeHour) &&
+            !isNaN(closeMinute)
+          ) {
             // Cập nhật state với giá trị số
-            setConfigData(prevState => ({
+            setConfigData((prevState) => ({
               ...prevState,
               openhour: openHour,
               openminute: openMinute,
@@ -100,9 +106,8 @@ export const TimecardSetting = () => {
           console.error('Dữ liệu không hợp lệ từ server');
         }
       })
-      .catch(error => console.error('Error fetching config data:', error));
+      .catch((error) => console.error('Error fetching config data:', error));
   }, []);
-
 
   useEffect(() => {
     const fetchTimeValues = async () => {
@@ -123,7 +128,6 @@ export const TimecardSetting = () => {
     fetchTimeValues();
   }, []); // Mảng phụ thuộc trống đảm bảo hiệu ứng chỉ chạy một lần khi component được mount
 
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(Data.length / itemsPerPage);
@@ -132,11 +136,15 @@ export const TimecardSetting = () => {
     setCurrentPage(page);
   };
 
-  const handleCardTimeChange = (hours: number, minutes: number, type: string) => {
+  const handleCardTimeChange = (
+    hours: number,
+    minutes: number,
+    type: string,
+  ) => {
     if (type === 'timeInput') {
       setTimeInputHours(hours);
       setTimeInputMinutes(minutes);
-      setConfigData(prevState => ({
+      setConfigData((prevState) => ({
         ...prevState,
         openhour: hours,
         openminute: minutes,
@@ -144,7 +152,7 @@ export const TimecardSetting = () => {
     } else if (type === 'timeOut') {
       setTimeOutHours(hours);
       setTimeOutMinutes(minutes);
-      setConfigData(prevState => ({
+      setConfigData((prevState) => ({
         ...prevState,
         closehour: hours,
         closeminute: minutes,
@@ -154,18 +162,16 @@ export const TimecardSetting = () => {
 
   const handleSaveTimeInput = async () => {
     try {
-
-
-
       const dataUpdateArray = [
         { id: 1, hours: timeInputHours, minutes: timeInputMinutes },
       ];
 
-      axios.put(
-        urlControl + 'ConfigsController.php',
-        { data: dataUpdateArray, method: 'UPDATE_LOGIN' },
-        { headers: { 'Content-Type': 'application/json' } }
-      )
+      axios
+        .put(
+          urlControl + 'ConfigsController.php',
+          { data: dataUpdateArray, method: 'UPDATE_LOGIN' },
+          { headers: { 'Content-Type': 'application/json' } },
+        )
         .then((response) => {
           console.log(response.data);
           // console.log("cập nhật thành công");
@@ -180,8 +186,6 @@ export const TimecardSetting = () => {
             console.error('Server error message:', error.response.data);
           }
         });
-
-
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -191,14 +195,14 @@ export const TimecardSetting = () => {
     try {
       const dataUpdateArrayOut = [
         { id: 2, hours: timeOutHours, minutes: timeOutMinutes },
-
       ];
 
-      axios.put(
-        urlControl + 'ConfigsController.php',
-        { data: dataUpdateArrayOut, method: 'UPDATE_OUTTIME' },
-        { headers: { 'Content-Type': 'application/json' } }
-      )
+      axios
+        .put(
+          urlControl + 'ConfigsController.php',
+          { data: dataUpdateArrayOut, method: 'UPDATE_OUTTIME' },
+          { headers: { 'Content-Type': 'application/json' } },
+        )
         .then((response) => {
           console.log(response.data);
           // console.log("cập nhật thành công");
@@ -213,27 +217,23 @@ export const TimecardSetting = () => {
             console.error('Server error message:', error.response.data);
           }
         });
-
-
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
-  
-  const handleDatePickerModalChange = (date) => {
-    if (date !== null) {
-      const dateObjects = date.map(dateString => new Date(dateString));
-      setModalDays(dateObjects);
-    }
-  };
-  
-  
 
-  let dynamicUpdate = ({id,name,days}: {id:string;name:string;days:string}) => (
+  let dynamicUpdate = ({
+    id,
+    name,
+    days,
+  }: {
+    id: string;
+    name: string;
+    days: string;
+  }) => (
     <>
-      <button onClick={() => openModal(id,name,days)}>
+      <button onClick={() => openModal(id, name, days)}>
         <p className="icon icon--check">
-          {/* {days} */}
           <img
             src={require('../../../../assets/icnedit.png')}
             alt="edit"
@@ -243,41 +243,69 @@ export const TimecardSetting = () => {
       </button>
     </>
   );
-  useEffect(() => {
-    console.log("Giá trị mới của modalDays:", modalDays);
-  }, [modalDays]);
-  const convertDaysToDatePickerFormat = (days) => {
+  const convertDaysToDatePickerFormat = (days: any[]) => {
     if (!Array.isArray(days)) {
-      console.error("Lỗi: Tham số days phải là một mảng.");
+      console.error('Lỗi: Tham số days phải là một mảng.');
       return [];
     }
     return days.map((day) => new Date(day));
-    
   };
-  const openModal = (initialNameId: string, initialName: string, initialDays: string) => {
+  const [modalDays, setModalDays] = useState<string[]>([]);
+  const parseAndFormatDate = (dateString: string) => {
+    const parsedDate = parse(dateString, 'dd-MM-yyyy', new Date());
+    if (!isNaN(parsedDate.getTime())) {
+      // Nếu ngày hợp lệ, định dạng lại và trả về chuỗi
+      return format(parsedDate, 'dd/MM/yyyy');
+    }
+    return null; // Trả về null nếu không thể phân tích cú pháp ngày
+  };
+
+  const parseDate = (dateString: string) => {
+    if (dateString.includes(',')) {
+      return dateString
+        .split(', ')
+        .map((date) => parseAndFormatDate(date))
+        .filter((date) => date !== null) as string[]; // Lọc bỏ các ngày không hợp lệ
+    } else {
+      const formattedDate = parseAndFormatDate(dateString);
+      return formattedDate !== null ? [formattedDate] : [];
+    }
+  };
+  const openModal = (
+    initialNameId: string,
+    initialName: string,
+    initialDays: any,
+  ) => {
     setModalId(initialNameId);
     setModalName(initialName);
-    const daysArray = Array.isArray(initialDays) ? initialDays : [initialDays];
-    setModalDays(convertDaysToDatePickerFormat(daysArray));
-    //console.log("Giá trị của setModalDays:", modalDays);
+    const initialDateArray = parseDate(initialDays);
+    setModalDays(initialDateArray);
+    console.log(initialDateArray);
+    console.log(modalDays);
     setModalOpen(true);
   };
   const closeModal = () => {
     setModalOpen(false);
   };
- 
+
   // delete
-  const handleDelete = async (holidayId, event) => {
+  const handleDelete = async (
+    holidayId: string,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     if (event) {
       event.preventDefault();
       try {
         const payload = { id: holidayId };
-        let response = await axios.delete(urlControl + 'TimecardsSettingController.php', {
-          headers: {
-            'Content-Type': 'application/json',
+        let response = await axios.delete(
+          urlControl + 'TimecardsSettingController.php',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            data: payload,
           },
-          data: payload,
-        });
+        );
         console.log('DELETE Response:', response.data);
         closeModaldelete();
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
@@ -286,9 +314,13 @@ export const TimecardSetting = () => {
       }
     }
   };
-  let dynamicDelete = (id) => (
+  let dynamicDelete = (id: string) => (
     <>
-      <button onClick={(event) => { openModaldelete(id, event); }}>
+      <button
+        onClick={(event) => {
+          openModaldelete(id, event);
+        }}
+      >
         <p className="icon icon--check">
           <img
             src={require('../../../../assets/icndelete.png')}
@@ -299,9 +331,16 @@ export const TimecardSetting = () => {
       </button>
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
         <h2>Bạn có chắc chắn muốn xóa không?</h2>
-        <div className='wrp-button'>
-          <button className='btn btn--green' onClick={(event) => handleDelete(isDeleteModalid, event)}>Đồng ý</button>
-          <button className='btn btn--orange' onClick={closeModaldelete}>Hủy</button>
+        <div className="wrp-button">
+          <button
+            className="btn btn--green"
+            onClick={(event) => handleDelete(isDeleteModalid, event)}
+          >
+            Đồng ý
+          </button>
+          <button className="btn btn--orange" onClick={closeModaldelete}>
+            Hủy
+          </button>
         </div>
       </Modaldelete>
     </>
@@ -329,8 +368,12 @@ export const TimecardSetting = () => {
     });
   }
   const handleDatePickerChange = (date) => {
+    console.log('Selected Dates:', date);
     if (date !== null) {
-      const dateObjects = date.map(dateString => new Date(dateString));
+      // Tiếp tục xử lý như bình thường
+      const dateObjects = date.map(
+        (dateString: string | number | Date) => new Date(dateString),
+      );
       setDays(dateObjects);
     }
   };
@@ -341,15 +384,17 @@ export const TimecardSetting = () => {
       console.error('Tên ngày lễ không được để trống');
       return;
     }
-    const formattedDays = days.map((day) => {
-      if (day instanceof Date && !isNaN(day)) {
-        return format(day, 'dd-MM-yyyy').toString();
-      } else {
-        // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
-        console.error('Ngày không hợp lệ:', day);
-        return 'Ngày không hợp lệ';
-      }
-    }).join(', ');
+    const formattedDays = days
+      .map((day) => {
+        if (day instanceof Date && !isNaN(day)) {
+          return format(day, 'dd-MM-yyyy').toString();
+        } else {
+          // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
+          console.error('Ngày không hợp lệ:', day);
+          return 'Ngày không hợp lệ';
+        }
+      })
+      .join(', ');
     const holiday_data = {
       name: name,
       days: formattedDays,
@@ -372,6 +417,14 @@ export const TimecardSetting = () => {
         }
       });
   };
+  function handleUpdate(
+    modalId: string,
+    modalName: string,
+    modalDays: never[],
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ): void {
+    throw new Error('Function not implemented.');
+  }
   return (
     <>
       <NavTimcard role="admin" />
@@ -379,15 +432,25 @@ export const TimecardSetting = () => {
       <div className="card-box">
         <div className="card-box--center">
           <h4>Giờ vào</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')} defaultHours={configData.openhour}
-            defaultMinutes={configData.openminute} />
-          <button className="btn btn--widthAuto" onClick={handleSaveTimeInput}>Cập nhật</button>
+          <CardTime
+            onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')}
+            defaultHours={configData.openhour}
+            defaultMinutes={configData.openminute}
+          />
+          <button className="btn btn--widthAuto" onClick={handleSaveTimeInput}>
+            Cập nhật
+          </button>
         </div>
         <div className="card-box--center">
           <h4>Giờ ra</h4>
-          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} defaultHours={configData.closehour}
-            defaultMinutes={configData.closeminute} />
-          <button className="btn btn--widthAuto" onClick={handleSaveOutTime}>Cập nhật</button>
+          <CardTime
+            onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')}
+            defaultHours={configData.closehour}
+            defaultMinutes={configData.closeminute}
+          />
+          <button className="btn btn--widthAuto" onClick={handleSaveOutTime}>
+            Cập nhật
+          </button>
         </div>
       </div>
       <Heading3 text="Cấu hình ngày lễ" />
@@ -423,15 +486,30 @@ export const TimecardSetting = () => {
           </div>
         </div>
         <div className="holiday-button">
-          <button className="btn" onClick={handleSubmint}>Thêm</button>
+          <button className="btn" onClick={handleSubmint}>
+            Thêm
+          </button>
         </div>
       </div>
       <CTable>
-        <CTableHead heads={["STT","Ngày Tháng Năm", "Ngày lễ - Ngày nghỉ", "sửa", "Xóa"]} />
-        <CTableBody path_edit={"edit"} data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} />
+        <CTableHead
+          heads={['STT', 'Ngày Tháng Năm', 'Ngày lễ - Ngày nghỉ', 'sửa', 'Xóa']}
+        />
+        <CTableBody
+          path_edit={'edit'}
+          data={DataTable.slice(
+            (currentPage - 1) * itemsPerPage,
+            currentPage * itemsPerPage,
+          )}
+          path_timecard={''}
+        />
       </CTable>
-      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
-      
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
+
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {
           <>
@@ -440,9 +518,9 @@ export const TimecardSetting = () => {
               <div className="form-content">
                 <div className="row">
                   <div className="col-12">
-                  <div className="form-group">
+                    <div className="form-group">
                       <label>Id :</label>
-                      
+
                       <img
                         src={require('../../../../assets/icn-group.png')}
                         alt=""
@@ -472,23 +550,32 @@ export const TimecardSetting = () => {
                       />
                     </div>
                     <div className="holiday">
-                        <div className="form-group">
-                          <label>Ngày Nghỉ Lễ:</label>
-                          <img
-                            src={require('../../../../assets/icon-time.jpg')}
-                            alt=""
-                            className="fluid-image"
-                          />
-                          <DatePicker
-                            multiple
-                            value={modalDays}
-                            onChange={(date) => handleDatePickerModalChange(date)}
-                          />
-                        </div>
+                      <div className="form-group">
+                        <label>Ngày Nghỉ Lễ:{modalDays}</label>
+                        <img
+                          src={require('../../../../assets/icon-time.jpg')}
+                          alt=""
+                          className="fluid-image"
+                        />
+                        <DatePicker
+                          multiple
+                          value={modalDays}
+                          onChange={(date) => handleDatePickerChange(date)}
+                        />
+                      </div>
                     </div>
                     <div className="wrp-button">
-                      <button className="btn btn--green" onClick={(event) => handleUpdate(modalId,modalName,modalDays, event)}>Xác nhận</button>
-                      <button className="btn btn--orange" onClick={closeModal}>Hủy</button>
+                      <button
+                        className="btn btn--green"
+                        onClick={(event) =>
+                          handleUpdate(modalId, modalName, modalDays, event)
+                        }
+                      >
+                        Xác nhận
+                      </button>
+                      <button className="btn btn--orange" onClick={closeModal}>
+                        Hủy
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -498,5 +585,5 @@ export const TimecardSetting = () => {
         }
       </Modal>
     </>
-  )
-}
+  );
+};

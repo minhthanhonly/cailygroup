@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import {
   startOfMonth,
   endOfMonth,
@@ -14,7 +15,6 @@ import { Button } from '../../Button';
 import Modal from '../../Modal/Modal';
 
 //sever
-import { urlControl } from '../../../routes/server/';
 type Holiday = {
   name: string;
   days: string;
@@ -27,6 +27,17 @@ interface SelectMY {
 
 interface RollAdmin {
   admin?: boolean;
+}
+interface Dayoff {
+  allDates: any;
+  id: string;
+  user_id: string;
+  date_start: string;
+  date_end: string;
+  time_start: string;
+  time_end: string;
+  note: string;
+  status: number;
 }
 
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
@@ -307,21 +318,123 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
 
   //get dayoffs for user
-  const [dayoffs, setDayoffs] = useState<Holiday[] | undefined>();
+  const [dayoffs, setDayoffs] = useState<Dayoff[] | undefined>(undefined); // Đặt kiểu là Dayoff[] hoặc undefined
+  const [allDatesByItem, setAllDatesByItem] = useState({});
+  const timeDefault = '8:00';
   const fetchDayoffs = async () => {
     try {
       let $id = 39;
       const response = await axios.get(
         'http://cailygroup.com/dayoffs/getforuser/' + $id,
       );
-      console.log(response.data);
+      setDayoffs(response.data);
       if (response.data && Array.isArray(response.data)) {
-        setDayoffs(response.data);
+        const allDatesArray: string[] = response.data.reduce(
+          (accumulator, dayoff) => {
+            const startDate = moment(dayoff.date_start, 'DD-MM-YYYY').toDate();
+            const endDate = moment(dayoff.date_end, 'DD-MM-YYYY').toDate();
+
+            const allDates = getDatesBetween(startDate, endDate);
+            const formattedAllDates = allDates.map((date) =>
+              moment(date).format('DD/MM/YYYY'),
+            );
+
+            // Hợp nhất mỗi mảng formattedAllDates vào mảng chính
+            return [...accumulator, ...formattedAllDates];
+          },
+          [],
+        );
+
+        setAllDatesByItem(allDatesArray);
+        // console.log('allDatesByItem:', allDatesArray);
       }
     } catch (error) {
       console.error('Error fetching dayoffs:', error);
     }
   };
+
+  const getDatesBetween = (start: Date, end: Date) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const dates = [];
+    let currentDate = startDate;
+
+    while (currentDate <= endDate) {
+      dates.push(currentDate.toLocaleDateString());
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates;
+  };
+
+  const isCancelLeaveDay = (day: string): boolean => {
+    const formattedDay = format(new Date(day), 'dd/MM/yyyy');
+    return (
+      Array.isArray(allDatesByItem) && allDatesByItem.includes(formattedDay)
+    );
+  };
+  // const subtractDates = (date1Str: string, date2Str: string) => {
+  //   const date1 = new Date(date1Str);
+  //   const date2 = new Date(date2Str);
+
+  //   // Chuyển đổi thành số ngày
+  //   const timeDifferenceInMilliseconds = date1 - date2;
+  //   const timeDifferenceInDays =
+  //     timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24);
+
+  //   // Làm tròn kết quả và chuyển đổi thành số nguyên
+  //   const result = Math.round(timeDifferenceInDays);
+
+  //   return result;
+  // };
+  // const calculateDuration = (end: string, start: string) => {
+  //   const parseTime = (time: string) => {
+  //     const [hours, minutes] = time.split(':').map(Number);
+  //     return { hours, minutes };
+  //   };
+  //   const startTime = parseTime(start);
+  //   const endTime = parseTime(end);
+  //   let diffHours = endTime.hours - startTime.hours - 1;
+  //   let diffMinutes = endTime.minutes - startTime.minutes - 30;
+  //   if (diffMinutes < 0) {
+  //     if (diffMinutes < 60) {
+  //       diffHours -= 2;
+  //       diffMinutes += 120;
+  //     } else {
+  //       diffHours -= 1;
+  //       diffMinutes += 60;
+  //     }
+  //   }
+  //   diffHours = Math.max(0, diffHours);
+  //   diffMinutes = Math.max(0, Math.min(diffMinutes, 59));
+
+  //   return `${diffHours}:${diffMinutes}`;
+  // };
+  // const compareTime = (time1: string, time2: string) => {
+  //   const [hours1, minutes1] = time1.split(':').map(Number);
+  //   const [hours2, minutes2] = time2.split(':').map(Number);
+  //   const totalMinutes1 = hours1 * 60 + minutes1;
+  //   const totalMinutes2 = hours2 * 60 + minutes2;
+  //   return totalMinutes1 > totalMinutes2;
+  // };
+  // const subtractTime = (time1: string, time2: string) => {
+  //   const [hours1, minutes1] = time1.split(':').map(Number);
+  //   const [hours2, minutes2] = time2.split(':').map(Number);
+  //   const totalMinutes1 = hours1 * 60 + minutes1;
+  //   const totalMinutes2 = hours2 * 60 + minutes2;
+  //   let timeDifferenceInMinutes;
+  //   if (totalMinutes1 >= totalMinutes2) {
+  //     timeDifferenceInMinutes = totalMinutes1 - totalMinutes2;
+  //   } else {
+  //     timeDifferenceInMinutes = totalMinutes2 - totalMinutes1;
+  //   }
+  //   const resultHours = Math.floor(timeDifferenceInMinutes / 60);
+  //   const resultMinutes = timeDifferenceInMinutes % 60;
+  //   const sign = totalMinutes1 >= totalMinutes2 ? '' : '-';
+  //   return `${sign}${resultHours}:${
+  //     resultMinutes < 10 ? '0' : ''
+  //   }${resultMinutes}`;
+  // };
 
   //tổng số giờ
   const [totalTime, setTotalTime] = useState({ hours: 0, minutes: 0 });
@@ -335,7 +448,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
       if (div instanceof HTMLElement) {
         const timeString = div.innerText.trim();
-
         if (timeString && /^\d+:\d+$/.test(timeString)) {
           const [hours, minutes] = timeString.split(':');
           totalHours += parseInt(hours, 10);
@@ -446,22 +558,27 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     fetchDayoffs();
     calculateTotalTime();
   }, []);
+  useEffect(() => {
+    console.log('allDatesByItem:', allDatesByItem);
+    console.log('dayoffs: ', dayoffs);
+    console.log('holidays: ', holidays);
+  }, [allDatesByItem, dayoffs]);
   return (
     <>
       {allDays.map((day, rowIndex) => (
         <tr
           key={rowIndex}
           className={`
-    ${getDayClassName(day)}
-    ${isToday(day) ? 'today' : ''}
-    ${(() => {
-      const holidayInfo = isHoliday(day);
-      return holidayInfo.isHoliday && 'holiday bg-purple';
-    })()}
-    ${isWaiting(day) ? 'waiting bg-yellow' : ''}
-    ${accreptLeave(day) ? 'accrept bg-green' : ''}
-    ${isCancelLeave(day) ? 'cancel bg-red' : ''}
-  `}
+              ${getDayClassName(day)}
+              ${isToday(day) ? 'today' : ''}
+              ${(() => {
+                const holidayInfo = isHoliday(day);
+                return holidayInfo.isHoliday && 'holiday bg-purple';
+              })()}
+              ${isWaiting(day) ? 'waiting bg-yellow' : ''}
+              ${accreptLeave(day) ? 'accrept bg-green' : ''}
+              
+            `}
         >
           {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
             new Date(day).getFullYear() === parseInt(selectedYear)) ||
