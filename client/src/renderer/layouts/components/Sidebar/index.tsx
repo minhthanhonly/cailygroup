@@ -15,7 +15,7 @@ import {
   faHouse,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button } from '../../../components/Button';
 import useAuth from '../../../hooks/useAuth';
@@ -23,15 +23,17 @@ import { UserRole } from '../../../components/UserRole';
 
 export const Sidebar = () => {
   const naviget = useNavigate();
+  const { auth } = useAuth();
+
   const users = JSON.parse(localStorage.getItem('users') || '{}');
 
-  const isAdmin = users.roles === UserRole.ADMIN;
-  const isManager = users.roles === UserRole.MANAGER;
-  const isLeader = users.roles === UserRole.LEADER;
+  const isAdmin = auth.roles === UserRole.ADMIN;
+  const isManager = auth.roles === UserRole.MANAGER;
+  const isLeader = auth.roles === UserRole.LEADER;
 
   function logoutSubmit() {
     localStorage.setItem('login', 'false');
-    localStorage.setItem('userid', '');
+    localStorage.removeItem('users');
     naviget('/');
   }
 
@@ -110,7 +112,7 @@ export const Sidebar = () => {
             <NavLink to={"/users/detail/"+users.userid} className="acount__name">
               {users.realname}
             </NavLink>
-            <p className="acount__des">Nhóm: {formValue.group_name}</p>
+            <p className="acount__des">Nhóm: {users.user_group}</p>
           </div>
         </div>
         <Button color="orange" onButtonClick={logoutSubmit}>

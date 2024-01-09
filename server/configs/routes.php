@@ -36,6 +36,9 @@
     $routes['timecards/add'] = 'timecards/add';
     $routes['timecards/update/.+-(\d+)'] = 'timecards/update/$1';
     
+    // timecardslist
+    $routes['timecards/list'] = 'timecards/list';
+
     $routes['timecarddetails/add'] = 'timecarddetails/add';
     $routes['timecarddetails/update'] = 'timecarddetails/update';
     $routes['timecarddetails/updatecomment'] = 'timecarddetails/updatecomment';

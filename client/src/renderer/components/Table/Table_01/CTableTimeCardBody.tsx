@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import {
   startOfMonth,
   endOfMonth,
@@ -14,7 +15,6 @@ import { Button } from '../../Button';
 import Modal from '../../Modal/Modal';
 
 //sever
-import { urlControl } from '../../../routes/server/';
 type Holiday = {
   name: string;
   days: string;
@@ -28,9 +28,20 @@ interface SelectMY {
 interface RollAdmin {
   admin?: boolean;
 }
+interface Dayoff {
+  allDates: any;
+  id: string;
+  user_id: string;
+  date_start: string;
+  date_end: string;
+  time_start: string;
+  time_end: string;
+  note: string;
+  status: number;
+}
 
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
-interface CombinedProps extends SelectMY, RollAdmin { }
+interface CombinedProps extends SelectMY, RollAdmin {}
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
@@ -279,11 +290,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     }
   };
   //load ngày lễ
-  const [holidays, setHolidays] = useState<Holiday[] | undefined>([]);
+  const [holidays, setHolidays] = useState<Holiday[] | undefined>();
   const fetchHolidays = async () => {
     try {
       const response = await axios.get('http://cailygroup.com/holidays');
-      // console.log('Holidays from API:', response.data);
       if (response.data && Array.isArray(response.data)) {
         setHolidays(response.data);
       }
@@ -291,24 +301,140 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       console.error('Error fetching holidays:', error);
     }
   };
-  const isHoliday = (day: Date) => {
-    console.log('Current holidays:', holidays);
 
-    const formattedDay = `${day.getDate()}-${day.getMonth() + 1
-      }-${day.getFullYear()}`;
+  const isHoliday = (
+    day: Date,
+  ): { isHoliday: boolean; name: string; days: string } => {
+    const formattedDay = format(day, 'dd-MM-yyyy');
 
-    if (holidays && Array.isArray(holidays)) {
-      const foundHoliday = holidays.find((holiday) =>
-        holiday.days.includes(formattedDay),
+    const foundHoliday = holidays?.find((holiday) => {
+      const holidayDays = holiday.days.split(', ');
+      return holidayDays.includes(formattedDay);
+    });
+
+    return foundHoliday
+      ? { isHoliday: true, name: foundHoliday.name, days: foundHoliday.days }
+      : { isHoliday: false, name: '', days: '' };
+  };
+
+  //get dayoffs for user
+  const [dayoffs, setDayoffs] = useState<Dayoff[] | undefined>(undefined); // Đặt kiểu là Dayoff[] hoặc undefined
+  const [allDatesByItem, setAllDatesByItem] = useState({});
+  const timeDefault = '8:00';
+  const fetchDayoffs = async () => {
+    try {
+      let $id = 39;
+      const response = await axios.get(
+        'http://cailygroup.com/dayoffs/getforuser/' + $id,
       );
+      setDayoffs(response.data);
+      if (response.data && Array.isArray(response.data)) {
+        const allDatesArray: string[] = response.data.reduce(
+          (accumulator, dayoff) => {
+            const startDate = moment(dayoff.date_start, 'DD-MM-YYYY').toDate();
+            const endDate = moment(dayoff.date_end, 'DD-MM-YYYY').toDate();
 
-      return foundHoliday
-        ? { isHoliday: true, name: foundHoliday.name, days: foundHoliday.days }
-        : { isHoliday: false, name: '', days: '' };
+            const allDates = getDatesBetween(startDate, endDate);
+            const formattedAllDates = allDates.map((date) =>
+              moment(date).format('DD/MM/YYYY'),
+            );
+
+            // Hợp nhất mỗi mảng formattedAllDates vào mảng chính
+            return [...accumulator, ...formattedAllDates];
+          },
+          [],
+        );
+
+        setAllDatesByItem(allDatesArray);
+        // console.log('allDatesByItem:', allDatesArray);
+      }
+    } catch (error) {
+      console.error('Error fetching dayoffs:', error);
+    }
+  };
+
+  const getDatesBetween = (start: Date, end: Date) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const dates = [];
+    let currentDate = startDate;
+
+    while (currentDate <= endDate) {
+      dates.push(currentDate.toLocaleDateString());
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    return { isHoliday: false, name: '', days: '' };
+    return dates;
   };
+
+  const isCancelLeaveDay = (day: string): boolean => {
+    const formattedDay = format(new Date(day), 'dd/MM/yyyy');
+    return (
+      Array.isArray(allDatesByItem) && allDatesByItem.includes(formattedDay)
+    );
+  };
+  // const subtractDates = (date1Str: string, date2Str: string) => {
+  //   const date1 = new Date(date1Str);
+  //   const date2 = new Date(date2Str);
+
+  //   // Chuyển đổi thành số ngày
+  //   const timeDifferenceInMilliseconds = date1 - date2;
+  //   const timeDifferenceInDays =
+  //     timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24);
+
+  //   // Làm tròn kết quả và chuyển đổi thành số nguyên
+  //   const result = Math.round(timeDifferenceInDays);
+
+  //   return result;
+  // };
+  // const calculateDuration = (end: string, start: string) => {
+  //   const parseTime = (time: string) => {
+  //     const [hours, minutes] = time.split(':').map(Number);
+  //     return { hours, minutes };
+  //   };
+  //   const startTime = parseTime(start);
+  //   const endTime = parseTime(end);
+  //   let diffHours = endTime.hours - startTime.hours - 1;
+  //   let diffMinutes = endTime.minutes - startTime.minutes - 30;
+  //   if (diffMinutes < 0) {
+  //     if (diffMinutes < 60) {
+  //       diffHours -= 2;
+  //       diffMinutes += 120;
+  //     } else {
+  //       diffHours -= 1;
+  //       diffMinutes += 60;
+  //     }
+  //   }
+  //   diffHours = Math.max(0, diffHours);
+  //   diffMinutes = Math.max(0, Math.min(diffMinutes, 59));
+
+  //   return `${diffHours}:${diffMinutes}`;
+  // };
+  // const compareTime = (time1: string, time2: string) => {
+  //   const [hours1, minutes1] = time1.split(':').map(Number);
+  //   const [hours2, minutes2] = time2.split(':').map(Number);
+  //   const totalMinutes1 = hours1 * 60 + minutes1;
+  //   const totalMinutes2 = hours2 * 60 + minutes2;
+  //   return totalMinutes1 > totalMinutes2;
+  // };
+  // const subtractTime = (time1: string, time2: string) => {
+  //   const [hours1, minutes1] = time1.split(':').map(Number);
+  //   const [hours2, minutes2] = time2.split(':').map(Number);
+  //   const totalMinutes1 = hours1 * 60 + minutes1;
+  //   const totalMinutes2 = hours2 * 60 + minutes2;
+  //   let timeDifferenceInMinutes;
+  //   if (totalMinutes1 >= totalMinutes2) {
+  //     timeDifferenceInMinutes = totalMinutes1 - totalMinutes2;
+  //   } else {
+  //     timeDifferenceInMinutes = totalMinutes2 - totalMinutes1;
+  //   }
+  //   const resultHours = Math.floor(timeDifferenceInMinutes / 60);
+  //   const resultMinutes = timeDifferenceInMinutes % 60;
+  //   const sign = totalMinutes1 >= totalMinutes2 ? '' : '-';
+  //   return `${sign}${resultHours}:${
+  //     resultMinutes < 10 ? '0' : ''
+  //   }${resultMinutes}`;
+  // };
 
   //tổng số giờ
   const [totalTime, setTotalTime] = useState({ hours: 0, minutes: 0 });
@@ -316,31 +442,27 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     const rows = document.querySelectorAll('table tr');
     let totalHours = 0;
     let totalMinutes = 0;
+
     rows.forEach((row) => {
-      const td = row.querySelector('.timecard_time');
-      if (td instanceof HTMLElement && td.innerText.trim() !== '') {
-        const timeString = td.innerText;
-        if (/^\d+:\d+$/.test(timeString)) {
+      const div = row.querySelector('.timecard_time div');
+
+      if (div instanceof HTMLElement) {
+        const timeString = div.innerText.trim();
+        if (timeString && /^\d+:\d+$/.test(timeString)) {
           const [hours, minutes] = timeString.split(':');
-          const time = {
-            hours: parseInt(hours, 10),
-            minutes: parseInt(minutes, 10),
-          };
-          if (totalMinutes >= 60) {
-            totalHours += Math.floor(totalMinutes / 60);
-            totalMinutes %= 60;
-          }
-          totalHours += time.hours;
-          totalMinutes += time.minutes;
+          totalHours += parseInt(hours, 10);
+          totalMinutes += parseInt(minutes, 10);
         } else {
-          console.error(`Chuỗi thời gian không hợp lệ: ${timeString}`);
+          console.error(`Chuỗi thời gian không hợp lệ hoặc trống.`);
         }
       }
     });
+
     if (totalMinutes >= 60) {
       totalHours += Math.floor(totalMinutes / 60);
       totalMinutes %= 60;
     }
+
     setTotalTime({ hours: totalHours, minutes: totalMinutes });
   };
 
@@ -419,11 +541,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     timecard_comment: string;
   }
 
-  const [tableRefresh, setTableRefresh] = useState(0);
   const [timecardOpen, setTimecardOpen] = useState<TimecardData[]>([]);
   const fetchTimecardOpen = async () => {
     try {
-      const response = await axios.get(urlControl + 'TimecardsController.php');
+      const response = await axios.get('http://cailygroup.com/timecards');
       if (response.data && Array.isArray(response.data)) {
         setTimecardOpen(response.data);
       }
@@ -434,23 +555,35 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   useEffect(() => {
     fetchTimecardOpen();
     fetchHolidays();
+    fetchDayoffs();
+  }, []);
+  useEffect(() => {
+    console.log('allDatesByItem:', allDatesByItem);
+    // console.log('dayoffs: ', dayoffs);
+    // console.log('holidays: ', holidays);
     calculateTotalTime();
-  }, [tableRefresh]);
+  }, [allDatesByItem, dayoffs]);
   return (
     <>
       {allDays.map((day, rowIndex) => (
         <tr
           key={rowIndex}
-          className={`${getDayClassName(day)}${isToday(day) ? 'today' : ''}${isHoliday(day).isHoliday && isHoliday(day).name
-              ? 'holiday bg-purple'
-              : ''
-            }${isWaiting(day) ? 'waiting bg-yellow' : ''}${accreptLeave(day) ? 'accrept bg-green' : ''
-            }${isCancelLeave(day) ? 'cancel bg-red' : ''} `}
+          className={`
+            ${getDayClassName(day)}
+            ${isToday(day) ? 'today' : ''}
+            ${(() => {
+              const holidayInfo = isHoliday(day);
+              return holidayInfo.isHoliday && 'holiday bg-purple';
+            })()}
+            ${isWaiting(day) ? 'waiting bg-yellow' : ''}
+            ${accreptLeave(day) ? 'accrept bg-green' : ''}
+            
+          `}
         >
           {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
             new Date(day).getFullYear() === parseInt(selectedYear)) ||
-            (new Date(day).getMonth() + 1 === currentMonth &&
-              new Date(day).getFullYear() === currentYear) ? (
+          (new Date(day).getMonth() + 1 === currentMonth &&
+            new Date(day).getFullYear() === currentYear) ? (
             <>
               <td>{format(day, 'dd-MM-yyyy')}</td>
               {otherColumnData.map((column, colIndex) => (
@@ -459,10 +592,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 </td>
               ))}
               <td
-                className={`${startHours > 7 || (startHours === 7 && startMinutes > 30)
+                className={`${
+                  startHours > 7 || (startHours === 7 && startMinutes > 30)
                     ? 'late'
                     : ''
-                  }`}
+                }`}
               >
                 {timecardOpen.some(
                   (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
@@ -501,7 +635,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                            item.timecard_close !== '' ? (
+                          item.timecard_close !== '' ? (
                             item.timecard_close
                           ) : isToday(day) ? (
                             <button
@@ -536,7 +670,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                            item.timecard_close !== ''
+                          item.timecard_close !== ''
                             ? item.timecard_time
                             : null}
                         </div>
@@ -557,7 +691,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                            item.timecard_close !== ''
+                          item.timecard_close !== ''
                             ? item.timecard_timeover
                             : null}
                         </div>
@@ -578,7 +712,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                            item.timecard_close !== ''
+                          item.timecard_close !== ''
                             ? item.timecard_timeinterval
                             : null}
                         </div>
@@ -638,9 +772,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               </td>
               <td>
                 {admin == true &&
-                  !isHoliday(day) &&
-                  !getDayClassName(day) &&
-                  !accreptLeave(day) ? (
+                !isHoliday(day) &&
+                !getDayClassName(day) &&
+                !accreptLeave(day) ? (
                   <>
                     {!editingStart ? (
                       <>
