@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
-export default function UserEdit() {
+function MemberEdit() {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const {id} = useParams();
@@ -41,7 +41,7 @@ export default function UserEdit() {
         }
         localStorage.setItem('users', JSON.stringify(users));
         setAuth({ isLoggedIn, roles, users });
-        navigate('/users/detail/'+formValue.userid);
+        navigate('/members');
       }, 2000);
     }
 	}
@@ -207,3 +207,5 @@ export default function UserEdit() {
 		</>
 	)
 };
+
+export default MemberEdit;

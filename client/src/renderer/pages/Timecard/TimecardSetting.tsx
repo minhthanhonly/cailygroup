@@ -15,7 +15,6 @@ import { format, isValid } from 'date-fns';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { symlink } from 'fs';
-import { format, parse } from 'date-fns';
 
 interface HolidayProps {
   id: string;
@@ -45,6 +44,7 @@ export const TimecardSetting = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalName, setModalName] = useState('');
   const [modalId, setModalId] = useState('');
+  const [modalDays, setModalDays] = useState([]);
   const [name, setName] = useState('');
   const [days, setDays] = useState([new Date()]);
 
@@ -222,6 +222,13 @@ export const TimecardSetting = () => {
     }
   };
 
+  const handleDatePickerModalChange = (date) => {
+    if (date !== null) {
+      const dateObjects = date.map((dateString) => new Date(dateString));
+      setModalDays(dateObjects);
+    }
+  };
+
   let dynamicUpdate = ({
     id,
     name,
@@ -243,56 +250,81 @@ export const TimecardSetting = () => {
       </button>
     </>
   );
-  const convertDaysToDatePickerFormat = (days: any[]) => {
+  const convertDaysToDatePickerFormat = (days) => {
     if (!Array.isArray(days)) {
       console.error('Lỗi: Tham số days phải là một mảng.');
       return [];
     }
-    return days.map((day) => new Date(day));
-  };
-  const [modalDays, setModalDays] = useState<string[]>([]);
-  const parseAndFormatDate = (dateString: string) => {
-    const parsedDate = parse(dateString, 'dd-MM-yyyy', new Date());
-    if (!isNaN(parsedDate.getTime())) {
-      // Nếu ngày hợp lệ, định dạng lại và trả về chuỗi
-      return format(parsedDate, 'dd/MM/yyyy');
-    }
-    return null; // Trả về null nếu không thể phân tích cú pháp ngày
-  };
-
-  const parseDate = (dateString: string) => {
-    if (dateString.includes(',')) {
-      return dateString
-        .split(', ')
-        .map((date) => parseAndFormatDate(date))
-        .filter((date) => date !== null) as string[]; // Lọc bỏ các ngày không hợp lệ
-    } else {
-      const formattedDate = parseAndFormatDate(dateString);
-      return formattedDate !== null ? [formattedDate] : [];
-    }
+    // Chắc chắn rằng mỗi ngày đã được chuyển đổi thành đối tượng Date
+    const dateObjects = days.map((day) => {
+      const parsedDate = new Date(day);
+      return isNaN(parsedDate) ? null : parsedDate;
+    });
+    return dateObjects;
   };
   const openModal = (
     initialNameId: string,
     initialName: string,
-    initialDays: any,
+    initialDays: string,
   ) => {
     setModalId(initialNameId);
     setModalName(initialName);
-    const initialDateArray = parseDate(initialDays);
-    setModalDays(initialDateArray);
-    console.log(initialDateArray);
-    console.log(modalDays);
+    // Tách các ngày thành mảng sử dụng dấu phẩy và loại bỏ khoảng trắng xung quanh mỗi ngày
+    const daysArray = initialDays.split(',').map((day) => day.trim());
+    // Lọc ra các ngày hợp lệ
+    const validDates = daysArray.filter((day) => !isNaN(new Date(day)));
+    if (validDates.length > 0) {
+      // Chuyển đổi các ngày hợp lệ thành đối tượng Date
+      const dateObjects = convertDaysToDatePickerFormat(validDates);
+      setModalDays(dateObjects);
+      //console.log("Ngày sau khi chuyển đổi:", dateObjects);
+    } else {
+      console.error('Không có ngày hợp lệ để chuyển đổi.');
+    }
     setModalOpen(true);
   };
   const closeModal = () => {
     setModalOpen(false);
   };
+  const handleUpdate = async (
+    id: string,
+    name: string,
+    days: string,
+    event,
+  ) => {
+    if (event) {
+      event.preventDefault();
+      const formattedDays = days
+        .map((day) => {
+          if (day instanceof Date && !isNaN(day)) {
+            return format(day, 'dd-MM-yyyy').toString();
+          } else {
+            // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
+            console.error('Ngày không hợp lệ:', day);
+            return 'Ngày không hợp lệ';
+          }
+        })
+        .join(', ');
+      days = formattedDays;
+      try {
+        const dataUpdate = { id, name, days };
+
+        const response = await axios.put(
+          urlControl + 'TimecardsSettingController.php',
+          dataUpdate,
+          { headers: { 'Content-Type': 'application/json' } },
+        );
+        console.log('Update Response:', response.data);
+        closeModal();
+        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
+  };
 
   // delete
-  const handleDelete = async (
-    holidayId: string,
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
+  const handleDelete = async (holidayId, event) => {
     if (event) {
       event.preventDefault();
       try {
@@ -314,7 +346,7 @@ export const TimecardSetting = () => {
       }
     }
   };
-  let dynamicDelete = (id: string) => (
+  let dynamicDelete = (id) => (
     <>
       <button
         onClick={(event) => {
@@ -356,7 +388,6 @@ export const TimecardSetting = () => {
   let DataTable: FieldHolidays[] = [];
   for (let i = 0; i < listOfHolidays.length; i++) {
     DataTable.push({
-      id: listOfHolidays[i].id,
       days: `${listOfHolidays[i].days}`,
       name: `${listOfHolidays[i].name}`,
       update: dynamicUpdate({
@@ -368,12 +399,8 @@ export const TimecardSetting = () => {
     });
   }
   const handleDatePickerChange = (date) => {
-    console.log('Selected Dates:', date);
     if (date !== null) {
-      // Tiếp tục xử lý như bình thường
-      const dateObjects = date.map(
-        (dateString: string | number | Date) => new Date(dateString),
-      );
+      const dateObjects = date.map((dateString) => new Date(dateString));
       setDays(dateObjects);
     }
   };
@@ -417,14 +444,6 @@ export const TimecardSetting = () => {
         }
       });
   };
-  function handleUpdate(
-    modalId: string,
-    modalName: string,
-    modalDays: never[],
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ): void {
-    throw new Error('Function not implemented.');
-  }
   return (
     <>
       <NavTimcard role="admin" />
@@ -493,7 +512,7 @@ export const TimecardSetting = () => {
       </div>
       <CTable>
         <CTableHead
-          heads={['STT', 'Ngày Tháng Năm', 'Ngày lễ - Ngày nghỉ', 'sửa', 'Xóa']}
+          heads={['Ngày Tháng Năm', 'Ngày lễ - Ngày nghỉ', 'sửa', 'Xóa']}
         />
         <CTableBody
           path_edit={'edit'}
@@ -501,7 +520,6 @@ export const TimecardSetting = () => {
             (currentPage - 1) * itemsPerPage,
             currentPage * itemsPerPage,
           )}
-          path_timecard={''}
         />
       </CTable>
       <Pagination
@@ -528,7 +546,7 @@ export const TimecardSetting = () => {
                       />
                       <input
                         value={modalId}
-                        onChange={(e) => setModalId(e.target.value)}
+                        onChange={(date) => setModalId(e.target.value)}
                         className="form-input"
                         type="text"
                         placeholder="id"
@@ -551,7 +569,7 @@ export const TimecardSetting = () => {
                     </div>
                     <div className="holiday">
                       <div className="form-group">
-                        <label>Ngày Nghỉ Lễ:{modalDays}</label>
+                        <label>Ngày Nghỉ Lễ:</label>
                         <img
                           src={require('../../../../assets/icon-time.jpg')}
                           alt=""
@@ -560,7 +578,7 @@ export const TimecardSetting = () => {
                         <DatePicker
                           multiple
                           value={modalDays}
-                          onChange={(date) => handleDatePickerChange(date)}
+                          onChange={(date) => handleDatePickerModalChange(date)}
                         />
                       </div>
                     </div>

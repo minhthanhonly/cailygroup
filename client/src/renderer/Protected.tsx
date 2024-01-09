@@ -7,7 +7,7 @@ const Protected = (props: { Component: any; }) => {
   useEffect(() => {
     const isLoggedIn = localStorage.getItem('login');
     if(isLoggedIn === 'false'){
-      naviget("/");
+      naviget("/", {replace: true});
     }
   },[]);
 

@@ -1,47 +1,26 @@
 import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
-export default function UserEdit() {
-  const { setAuth } = useAuth();
+function MemberAdd() {
   const navigate = useNavigate();
-  const {id} = useParams();
-  const [formValue, setFormValue] = useState({userid: '', password: '', realname: '', authority: '', user_group: '' });
-  const [passwordNew, setPasswordNew] = useState('');
+
+	const [formValue, setFormValue] = useState({userid: '', password: '', realname: '', authority: '', user_group: ''})
   const [message, setMessage] = useState('');
-  const handleInput = (e) => {
+	const handleInput = (e) => {
 		setFormValue({...formValue, [e.target.name]:e.target.value})
 	}
 
-  useEffect(() => {
-    axios.get('http://cailygroup.com/users/edit/'+id).then(response => {
-      setFormValue(response.data);
-    })
-  }, [])
-
-  const handleSubmit = async(e) => {
+	const handleSubmit = async(e) => {
 		e.preventDefault();
-		const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-		const res = await axios.post("http://cailygroup.com/users/update", formData);
-    const res2 = await axios.get("http://cailygroup.com/users/detail/"+formValue.userid);
+		const formData = {userid:formValue.userid, password:formValue.password, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
+		const res = await axios.post("http://cailygroup.com/users/add", formData);
 
     if(res.data.success){
       setMessage(res.data.success);
       setTimeout(() => {
-        const isLoggedIn = localStorage.getItem('login');
-        const roles = res2.data.authority_name;
-        const users = {
-          "id": res2.data.id,
-          "userid": res2.data.userid,
-          "realname": res2.data.realname,
-          "authority": res2.data.authority_name,
-          "user_group": res2.data.group_name,
-        }
-        localStorage.setItem('users', JSON.stringify(users));
-        setAuth({ isLoggedIn, roles, users });
-        navigate('/users/detail/'+formValue.userid);
+        navigate('/users');
       }, 2000);
     }
 	}
@@ -98,8 +77,8 @@ export default function UserEdit() {
 
 	return (
 		<>
-			<Heading2 text="Sửa thành viên" />
-			{message=='' ? '' : <div className="box-bg"><p className="bg bg-green">{message}</p></div>}
+			<Heading2 text="Thêm thành viên" />
+      {message=='' ? '' : <div className="box-bg"><p className="bg bg-green">{message}</p></div>}
 			<div className="form-user form">
 				<div className="form-content">
 					<div className="row">
@@ -123,7 +102,7 @@ export default function UserEdit() {
 								</div>
 								<div className="form-group">
 									<label>
-										Mật khẩu mới
+										Mật khẩu *
 										<img
 											src={require('../../../../assets/icon-password.jpg')}
 											alt=""
@@ -133,12 +112,6 @@ export default function UserEdit() {
 									<input
 										className="form-input"
 										type="text"
-										name="passwordNew"
-										value={passwordNew} onChange={(event) => setPasswordNew(event.target.value)}
-									/>
-                  <input
-										className="form-input"
-										type="hidden"
 										name="password"
 										value={formValue.password} onChange={handleInput}
 									/>
@@ -169,10 +142,10 @@ export default function UserEdit() {
 										/>
 									</label>
 									<div className="select__box group">
-										<select name="user_group" onChange={handleInput}>
-											<option value="-1">--------------------------- Chọn nhóm ---------------------------</option>
+										<select name="user_group" value={formValue.user_group} onChange={handleInput}>
+                      <option value="-1">----------------------- Chọn nhóm -----------------------</option>
 											{DataGroups.map((value, index) => (
-												<option value={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
+												<option value={value.id} key={index}>{value.group_name}</option>
 											))}
 										</select>
 									</div>
@@ -186,11 +159,11 @@ export default function UserEdit() {
 											className="fluid-image"
 										/>
 									</label>
-									<div className="select__box group" onChange={handleInput}>
-										<select name="authority">
-											<option value="-1">-------------------- Chọn quyền truy cập --------------------</option>
+									<div className="select__box group">
+										<select name="authority" value={formValue.authority} onChange={handleInput}>
+                      <option value="-1">---------------- Chọn quyền truy cập ----------------</option>
 											{DataAuthority.map((value, index) => (
-												<option value={value.id} key={index} selected={value.id == formValue.authority}>{value.authority_name}</option>
+												<option value={value.id} key={index}>{value.authority_name}</option>
 											))}
 										</select>
 									</div>
@@ -207,3 +180,5 @@ export default function UserEdit() {
 		</>
 	)
 };
+
+export default MemberAdd;

@@ -15,7 +15,7 @@ import {
   faHouse,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button } from '../../../components/Button';
 import useAuth from '../../../hooks/useAuth';
@@ -23,26 +23,25 @@ import { UserRole } from '../../../components/UserRole';
 
 export const Sidebar = () => {
   const naviget = useNavigate();
-  const userid = localStorage.getItem('userid');
   const { auth } = useAuth();
+
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+
   const isAdmin = auth.roles === UserRole.ADMIN;
   const isManager = auth.roles === UserRole.MANAGER;
   const isLeader = auth.roles === UserRole.LEADER;
 
   function logoutSubmit() {
     localStorage.setItem('login', 'false');
-    localStorage.setItem('userid', '');
     naviget('/');
   }
 
   const [formValue, setFormValue] = useState({ realname: '', group_name: '' });
   useEffect(() => {
-    axios
-      .get('http://cailygroup.com/users/detail/' + userid)
-      .then((response) => {
-        setFormValue(response.data);
-      });
-  }, []);
+    axios.get('http://cailygroup.com/users/detail/'+users.userid).then(response => {
+      setFormValue(response.data);
+    })
+  }, [])
 
   return (
     <div className="sidebar">
@@ -71,26 +70,14 @@ export const Sidebar = () => {
               Thẻ giờ
             </NavLink>
           </li>
-          {isAdmin && (
-            <li className="nav-global__item">
-              <NavLink to="/users">
-                <span className="icn">
-                  <FontAwesomeIcon icon={faUsers} />
-                </span>
-                Thành viên
-              </NavLink>
-            </li>
-          )}
-          {isManager && (
-            <li className="nav-global__item">
-              <NavLink to="/users">
-                <span className="icn">
-                  <FontAwesomeIcon icon={faUsers} />
-                </span>
-                Thành viên
-              </NavLink>
-            </li>
-          )}
+          {(isAdmin || isManager) ? <li className="nav-global__item">
+            <NavLink to="/members">
+              <span className="icn">
+                <FontAwesomeIcon icon={faUsers} />
+              </span>
+              Thành viên
+            </NavLink>
+          </li> : ''}
           <li className="nav-global__item">
             <NavLink to="/dayoffs">
               <span className="icn">
@@ -121,10 +108,10 @@ export const Sidebar = () => {
             />
           </figure>
           <div className="acount__info">
-            <NavLink to="/users" className="acount__name">
-              {formValue.realname}
+            <NavLink to={"/users/detail/"+users.userid} className="acount__name">
+              {users.realname}
             </NavLink>
-            <p className="acount__des">Nhóm: {formValue.group_name}</p>
+            <p className="acount__des">Nhóm: {users.user_group}</p>
           </div>
         </div>
         <Button color="orange" onButtonClick={logoutSubmit}>
