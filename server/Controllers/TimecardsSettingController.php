@@ -3,7 +3,7 @@ require('../database/DBConnect.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: POST, GET, OPTIONS,DELETE");
+    header("Access-Control-Allow-Methods: POST, GET, OPTIONS,DELETE,PUT");
     header("Access-Control-Allow-Headers: Content-Type");
     http_response_code(200);
     exit;
@@ -60,6 +60,37 @@ switch($method) {
             echo json_encode(["error" => "Dữ liệu không hợp lệ. 'name' bị thiếu"]);
         }
     break;
+    case "PUT":
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (isset($data['id'], $data['name'], $data['days'])) {
+            $id = mysqli_real_escape_string($db_conn, $data['id']);
+            $name = mysqli_real_escape_string($db_conn, $data['name']);
+            $days = mysqli_real_escape_string($db_conn, $data['days']);
+    
+            // Sử dụng prepared statement để tránh SQL injection
+            $updateQuery = "UPDATE holidays SET name = ?, days = ? WHERE id = ?";
+            $stmt = mysqli_prepare($db_conn, $updateQuery);
+    
+            // Kiểm tra và thực hiện truy vấn
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, "ssi", $name, $days, $id);
+                if (mysqli_stmt_execute($stmt)) {
+                    http_response_code(200);
+                    echo json_encode(["message" => "Data updated successfully"]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(["error" => "Failed to update data"]);
+                }
+                mysqli_stmt_close($stmt);
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Failed to prepare statement"]);
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode(["error" => "Invalid data"]);
+        }
+        break;
 
     case "DELETE":
         $data = json_decode(file_get_contents("php://input"), true);

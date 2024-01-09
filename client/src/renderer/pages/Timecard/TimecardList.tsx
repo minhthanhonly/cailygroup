@@ -26,7 +26,16 @@ export const TimecardList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
 
+  const [selectedDates, setSelectedDates] = useState<{ [id: number]: { month: string; year: string; daysInMonth?: Date[] } }>({});
+  const [MonthYearSelectorDefaultMonth, setMonthYearSelectorDefaultMonth] = useState<string>("");
+  const [MonthYearSelectorDefaultYear, setMonthYearSelectorDefaultYear] = useState<string>("");
+
+
   const handleDateChange = (month: string, year: string, daysInMonth: Date[], index: number) => {
+    setSelectedDates(prevState => ({
+      ...prevState,
+      [index]: { month, year, daysInMonth }
+    }));
     // Handle date change logic if needed
   };
 
@@ -35,9 +44,15 @@ export const TimecardList: React.FC = () => {
       .then((response) => {
         setListOfUsers(response.data);
 
+        // Reset selectedDates to an empty object when the user list changes
+        setSelectedDates({});
+        const currentMonth = new Date().getMonth() + 1;
+        const currentYear = new Date().getFullYear();
+        setMonthYearSelectorDefaultMonth(currentMonth.toString());
+        setMonthYearSelectorDefaultYear(currentYear.toString());
       })
       .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
-  }, []);
+  }, [MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear]);
 
 
   useEffect(() => {
@@ -63,7 +78,7 @@ export const TimecardList: React.FC = () => {
   }, [selectedGroupName, listOfUsers]);
 
 
-  const itemsPerPage = 20;
+  const itemsPerPage = 5;
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   const handlePageChange = (page: number) => {
@@ -91,7 +106,7 @@ export const TimecardList: React.FC = () => {
               <td>{data.group_name}</td>
               <td>{data.authority_name}</td>
               <td><MonthYearSelector onChange={(month, year, daysInMonth) => handleDateChange(month, year, daysInMonth, index)} /></td>
-              <td> <NavLink className="btn" to={`/timecards/` + data.id}> Xem Thẻ Giờ </NavLink></td>
+              <td><NavLink className="btn" to={`/timecards/${data.id}?month=${selectedDates[index]?.month || MonthYearSelectorDefaultMonth}&year=${selectedDates[index]?.year || MonthYearSelectorDefaultYear}`}> Xem Thẻ Giờ </NavLink></td>
               <td></td>
             </tr>
           ))}
