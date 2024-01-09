@@ -112,7 +112,7 @@ export const Timecard = () => {
         <button onClick={exportToExcel} className="btn btn--medium btn--green">
           Xuất Thẻ Giờ
         </button>
-        <NavLink className="btn" to="/day-off/register">
+        <NavLink className="btn" to="/dayoffs/register">
           Đăng ký nghỉ phép
         </NavLink>
       </ButtonCenter>

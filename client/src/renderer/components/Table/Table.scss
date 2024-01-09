@@ -13,7 +13,7 @@
     & thead {
       background-color: var(--header-table);
       color: var(--white);
-      th{
+      th {
         font-size: 1.6rem;
       }
     }
@@ -30,28 +30,27 @@
   }
   th,
   td {
-    
     font-size: 1.4rem;
     text-align: center;
     font-weight: 100;
-    padding: 1rem;
+    padding: 1rem 0;
     border-right: 0.1rem solid var(--white);
     border: 0.1rem solid var(--text-color);
     vertical-align: middle;
 
-    input{
-       font-size: 1.6rem;
-        text-align: center;
-        font-weight: 100;
-        padding: 1rem;
-        max-width: 12.5rem;
-        width: 100%;
-        vertical-align: middle;
-        background: transparent;
+    input {
+      font-size: 1.6rem;
+      text-align: center;
+      font-weight: 100;
+      padding: 1rem;
+      max-width: 12.5rem;
+      width: 100%;
+      vertical-align: middle;
+      background: transparent;
 
-         &:disabled{
-            border: none;
-        }
+      &:disabled {
+        border: none;
+      }
     }
   }
   & .sunday {
