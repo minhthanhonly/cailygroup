@@ -319,7 +319,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   //get dayoffs for user
   const [dayoffs, setDayoffs] = useState<Dayoff[] | undefined>(undefined); // Đặt kiểu là Dayoff[] hoặc undefined
-  const [allDatesByItem, setAllDatesByItem] = useState({});
+  const [allDatesByItem, setAllDatesByItem] = useState<string[]>([]);
   const timeDefault = '8:00';
   const fetchDayoffs = async () => {
     try {
@@ -470,10 +470,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const accreptLeave = (date: number | Date) =>
     accreptLeaves.some((accrept) => isSameDay(date, accrept));
 
-  const [cancelLeave, setCancelLeave] = useState([new Date(2024, 1, 22)]);
-  const isCancelLeave = (date: number | Date) =>
-    cancelLeave.some((cancel) => isSameDay(date, cancel));
-
   const [waiting, setWaiting] = useState([new Date(2023, 11, 25)]);
   const isWaiting = (date: number | Date) =>
     waiting.some((cancel) => isSameDay(date, cancel));
@@ -556,19 +552,23 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     fetchTimecardOpen();
     fetchHolidays();
     fetchDayoffs();
-    calculateTotalTime();
   }, []);
   useEffect(() => {
     console.log('allDatesByItem:', allDatesByItem);
-    console.log('dayoffs: ', dayoffs);
-    console.log('holidays: ', holidays);
+    // console.log('dayoffs: ', dayoffs);
+    // console.log('holidays: ', holidays);
+    calculateTotalTime();
   }, [allDatesByItem, dayoffs]);
   return (
     <>
-      {allDays.map((day, rowIndex) => (
-        <tr
-          key={rowIndex}
-          className={`
+      {allDays.map((day, rowIndex) => {
+        const formattedDay = format(day, 'dd/MM/yyyy');
+        const isCancelLeave = allDatesByItem.includes(formattedDay);
+
+        return (
+          <tr
+            key={rowIndex}
+            className={`
               ${getDayClassName(day)}
               ${isToday(day) ? 'today' : ''}
               ${(() => {
@@ -577,240 +577,244 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               })()}
               ${isWaiting(day) ? 'waiting bg-yellow' : ''}
               ${accreptLeave(day) ? 'accrept bg-green' : ''}
-              
+              ${isCancelLeave(day) ? 'cancel bg-red' : ''}
             `}
-        >
-          {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
-            new Date(day).getFullYear() === parseInt(selectedYear)) ||
-          (new Date(day).getMonth() + 1 === currentMonth &&
-            new Date(day).getFullYear() === currentYear) ? (
-            <>
-              <td>{format(day, 'dd-MM-yyyy')}</td>
-              {otherColumnData.map((column, colIndex) => (
-                <td key={colIndex}>
-                  {column.format ? column.format(day) : '...'}
+          >
+            {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
+              new Date(day).getFullYear() === parseInt(selectedYear)) ||
+            (new Date(day).getMonth() + 1 === currentMonth &&
+              new Date(day).getFullYear() === currentYear) ? (
+              <>
+                <td>{format(day, 'dd-MM-yyyy')}</td>
+                {otherColumnData.map((column, colIndex) => (
+                  <td key={colIndex}>
+                    {column.format ? column.format(day) : '...'}
+                  </td>
+                ))}
+                <td
+                  className={`${
+                    startHours > 7 || (startHours === 7 && startMinutes > 30)
+                      ? 'late'
+                      : ''
+                  }`}
+                >
+                  {timecardOpen.some(
+                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                  ) ? (
+                    <>
+                      {timecardOpen
+                        .filter(
+                          (item) =>
+                            item.timecard_date === format(day, 'dd-MM-yyyy'),
+                        )
+                        .map((item, index) => (
+                          <div key={index}>{item.timecard_open}</div>
+                        ))}
+                    </>
+                  ) : isToday(day) && showStartButton ? (
+                    <button
+                      className="btn btn--medium"
+                      onClick={handleButtonClick}
+                    >
+                      Bắt đầu
+                    </button>
+                  ) : (
+                    ''
+                  )}
                 </td>
-              ))}
-              <td
-                className={`${
-                  startHours > 7 || (startHours === 7 && startMinutes > 30)
-                    ? 'late'
-                    : ''
-                }`}
-              >
-                {timecardOpen.some(
-                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                ) ? (
-                  <>
-                    {timecardOpen
-                      .filter(
-                        (item) =>
-                          item.timecard_date === format(day, 'dd-MM-yyyy'),
-                      )
-                      .map((item, index) => (
-                        <div key={index}>{item.timecard_open}</div>
-                      ))}
-                  </>
-                ) : isToday(day) && showStartButton ? (
-                  <button
-                    className="btn btn--medium"
-                    onClick={handleButtonClick}
-                  >
-                    Bắt đầu
-                  </button>
-                ) : (
-                  ''
-                )}
-              </td>
-              <td>
-                {timecardOpen.some(
-                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                ) ? (
-                  <>
-                    {timecardOpen
-                      .filter(
-                        (item) =>
-                          item.timecard_date === format(day, 'dd-MM-yyyy'),
-                      )
-                      .map((item, index) => (
-                        <div key={index}>
-                          {item.timecard_close !== null &&
-                          item.timecard_close !== '' ? (
-                            item.timecard_close
-                          ) : isToday(day) ? (
-                            <button
-                              className="btn btn--medium"
-                              onClick={(event) =>
-                                handleEndButtonClick(
-                                  item.id_groupwaretimecard,
-                                  item.timecard_open,
-                                  event,
-                                )
-                              }
-                            >
-                              Kết thúc
-                            </button>
-                          ) : null}
-                        </div>
-                      ))}
-                  </>
-                ) : null}
-              </td>
-
-              <td className="timecard_time">
-                {timecardOpen.some(
-                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                ) ? (
-                  <>
-                    {timecardOpen
-                      .filter(
-                        (item) =>
-                          item.timecard_date === format(day, 'dd-MM-yyyy'),
-                      )
-                      .map((item, index) => (
-                        <div key={index}>
-                          {item.timecard_close !== null &&
-                          item.timecard_close !== ''
-                            ? item.timecard_time
-                            : null}
-                        </div>
-                      ))}
-                  </>
-                ) : null}
-              </td>
-              <td>
-                {timecardOpen.some(
-                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                ) ? (
-                  <>
-                    {timecardOpen
-                      .filter(
-                        (item) =>
-                          item.timecard_date === format(day, 'dd-MM-yyyy'),
-                      )
-                      .map((item, index) => (
-                        <div key={index}>
-                          {item.timecard_close !== null &&
-                          item.timecard_close !== ''
-                            ? item.timecard_timeover
-                            : null}
-                        </div>
-                      ))}
-                  </>
-                ) : null}
-              </td>
-              <td>
-                {timecardOpen.some(
-                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                ) ? (
-                  <>
-                    {timecardOpen
-                      .filter(
-                        (item) =>
-                          item.timecard_date === format(day, 'dd-MM-yyyy'),
-                      )
-                      .map((item, index) => (
-                        <div key={index}>
-                          {item.timecard_close !== null &&
-                          item.timecard_close !== ''
-                            ? item.timecard_timeinterval
-                            : null}
-                        </div>
-                      ))}
-                  </>
-                ) : null}
-              </td>
-              <td>
-                {accreptLeave(day) ? (
-                  'Xác nhận nghỉ phép'
-                ) : isCancelLeave(day) ? (
-                  <>
-                    Không xác nhận nghỉ phép
-                    <a className="btn btn--green btn--small icon icon--edit">
-                      <img
-                        src={require('../../../../../assets/icnedit.png')}
-                        alt="edit"
-                        className="fluid-image"
-                      />
-                    </a>
-                  </>
-                ) : isHoliday(day).isHoliday ? (
-                  isHoliday(day).name
-                ) : (
-                  <>
-                    {timecardOpen.some(
-                      (item) =>
-                        item.timecard_date === format(day, 'dd-MM-yyyy'),
-                    ) ? (
-                      <>
-                        {timecardOpen
-                          .filter(
-                            (item) =>
-                              item.timecard_date === format(day, 'dd-MM-yyyy'),
-                          )
-                          .map((item, index) => (
-                            <div key={index}>
-                              {item.timecard_comment}
-                              <a
+                <td>
+                  {timecardOpen.some(
+                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                  ) ? (
+                    <>
+                      {timecardOpen
+                        .filter(
+                          (item) =>
+                            item.timecard_date === format(day, 'dd-MM-yyyy'),
+                        )
+                        .map((item, index) => (
+                          <div key={index}>
+                            {item.timecard_close !== null &&
+                            item.timecard_close !== '' ? (
+                              item.timecard_close
+                            ) : isToday(day) ? (
+                              <button
+                                className="btn btn--medium"
                                 onClick={(event) =>
-                                  openModal(item.id_groupwaretimecard)
+                                  handleEndButtonClick(
+                                    item.id_groupwaretimecard,
+                                    item.timecard_open,
+                                    event,
+                                  )
                                 }
-                                className="btn btn--green btn--small icon icon--edit"
                               >
-                                <img
-                                  src={require('../../../../../assets/icnedit.png')}
-                                  alt="edit"
-                                  className="fluid-image"
-                                />
-                              </a>
-                            </div>
-                          ))}
-                      </>
-                    ) : null}
-                  </>
-                )}
-              </td>
-              <td>
-                {admin == true &&
-                !isHoliday(day) &&
-                !getDayClassName(day) &&
-                !accreptLeave(day) ? (
-                  <>
-                    {!editingStart ? (
-                      <>
-                        <Button onButtonClick={handleStartEditClick}>
-                          cập nhật
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <button onClick={handleSaveTimeClick}>
-                          <span className="icon icon--check">
-                            <img
-                              src={require('../../../../../assets/check.png')}
-                              alt="edit"
-                              className="fluid-image"
-                            />
-                          </span>
-                        </button>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  ''
-                )}
-                {isCancelLeave(day) && admin !== true ? (
-                  <span className="bg-red__btn">
-                    <button className="btn btn-white">Hủy bỏ nghỉ phép</button>
-                  </span>
-                ) : (
-                  ''
-                )}
-              </td>
-            </>
-          ) : null}
-        </tr>
-      ))}
+                                Kết thúc
+                              </button>
+                            ) : null}
+                          </div>
+                        ))}
+                    </>
+                  ) : null}
+                </td>
+
+                <td className="timecard_time">
+                  {timecardOpen.some(
+                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                  ) ? (
+                    <>
+                      {timecardOpen
+                        .filter(
+                          (item) =>
+                            item.timecard_date === format(day, 'dd-MM-yyyy'),
+                        )
+                        .map((item, index) => (
+                          <div key={index}>
+                            {item.timecard_close !== null &&
+                            item.timecard_close !== ''
+                              ? item.timecard_time
+                              : null}
+                          </div>
+                        ))}
+                    </>
+                  ) : null}
+                </td>
+                <td>
+                  {timecardOpen.some(
+                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                  ) ? (
+                    <>
+                      {timecardOpen
+                        .filter(
+                          (item) =>
+                            item.timecard_date === format(day, 'dd-MM-yyyy'),
+                        )
+                        .map((item, index) => (
+                          <div key={index}>
+                            {item.timecard_close !== null &&
+                            item.timecard_close !== ''
+                              ? item.timecard_timeover
+                              : null}
+                          </div>
+                        ))}
+                    </>
+                  ) : null}
+                </td>
+                <td>
+                  {timecardOpen.some(
+                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                  ) ? (
+                    <>
+                      {timecardOpen
+                        .filter(
+                          (item) =>
+                            item.timecard_date === format(day, 'dd-MM-yyyy'),
+                        )
+                        .map((item, index) => (
+                          <div key={index}>
+                            {item.timecard_close !== null &&
+                            item.timecard_close !== ''
+                              ? item.timecard_timeinterval
+                              : null}
+                          </div>
+                        ))}
+                    </>
+                  ) : null}
+                </td>
+                <td>
+                  {accreptLeave(day) ? (
+                    'Xác nhận nghỉ phép'
+                  ) : isCancelLeave(day) ? (
+                    <>
+                      Không xác nhận nghỉ phép
+                      <a className="btn btn--green btn--small icon icon--edit">
+                        <img
+                          src={require('../../../../../assets/icnedit.png')}
+                          alt="edit"
+                          className="fluid-image"
+                        />
+                      </a>
+                    </>
+                  ) : isHoliday(day).isHoliday ? (
+                    isHoliday(day).name
+                  ) : (
+                    <>
+                      {timecardOpen.some(
+                        (item) =>
+                          item.timecard_date === format(day, 'dd-MM-yyyy'),
+                      ) ? (
+                        <>
+                          {timecardOpen
+                            .filter(
+                              (item) =>
+                                item.timecard_date ===
+                                format(day, 'dd-MM-yyyy'),
+                            )
+                            .map((item, index) => (
+                              <div key={index}>
+                                {item.timecard_comment}
+                                <a
+                                  onClick={(event) =>
+                                    openModal(item.id_groupwaretimecard)
+                                  }
+                                  className="btn btn--green btn--small icon icon--edit"
+                                >
+                                  <img
+                                    src={require('../../../../../assets/icnedit.png')}
+                                    alt="edit"
+                                    className="fluid-image"
+                                  />
+                                </a>
+                              </div>
+                            ))}
+                        </>
+                      ) : null}
+                    </>
+                  )}
+                </td>
+                <td>
+                  {admin == true &&
+                  !isHoliday(day) &&
+                  !getDayClassName(day) &&
+                  !accreptLeave(day) ? (
+                    <>
+                      {!editingStart ? (
+                        <>
+                          <Button onButtonClick={handleStartEditClick}>
+                            cập nhật
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <button onClick={handleSaveTimeClick}>
+                            <span className="icon icon--check">
+                              <img
+                                src={require('../../../../../assets/check.png')}
+                                alt="edit"
+                                className="fluid-image"
+                              />
+                            </span>
+                          </button>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    ''
+                  )}
+                  {isCancelLeave(day) && admin !== true ? (
+                    <span className="bg-red__btn">
+                      <button className="btn btn-white">
+                        Hủy bỏ nghỉ phép
+                      </button>
+                    </span>
+                  ) : (
+                    ''
+                  )}
+                </td>
+              </>
+            ) : null}
+          </tr>
+        );
+      })}
 
       <tr>
         <td> Tổng số giờ</td>
