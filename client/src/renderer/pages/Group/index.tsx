@@ -104,7 +104,7 @@ export const Group = () => {
       event.preventDefault();
       try {
         const payload = { id: groupId };
-        let response = await axios.delete(urlControl + 'GroupsController.php', {
+        let response = await axios.delete('http://cailygroup.com/groups/delete/', {
           headers: {
             'Content-Type': 'application/json',
           },
