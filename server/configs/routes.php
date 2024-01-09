@@ -8,7 +8,10 @@
 
     // Group
     $routes['groups'] = 'groups';
-    $routes['groups/edit'] = 'groups/edit';
+    $routes['groups/add'] = 'groups/add';
+    $routes['groups/update'] = 'groups/update';
+    $routes['groups/delete'] = 'groups/delete';
+   
 
     // Users
     $routes['users'] = 'users';
