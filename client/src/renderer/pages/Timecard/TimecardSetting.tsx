@@ -233,7 +233,6 @@ export const TimecardSetting = () => {
     <>
       <button onClick={() => openModal(id,name,days)}>
         <p className="icon icon--check">
-          {/* {days} */}
           <img
             src={require('../../../../assets/icnedit.png')}
             alt="edit"
@@ -243,27 +242,66 @@ export const TimecardSetting = () => {
       </button>
     </>
   );
-  useEffect(() => {
-    console.log("Giá trị mới của modalDays:", modalDays);
-  }, [modalDays]);
   const convertDaysToDatePickerFormat = (days) => {
     if (!Array.isArray(days)) {
       console.error("Lỗi: Tham số days phải là một mảng.");
       return [];
     }
-    return days.map((day) => new Date(day));
-    
+    // Chắc chắn rằng mỗi ngày đã được chuyển đổi thành đối tượng Date
+    const dateObjects = days.map((day) => {
+      const parsedDate = new Date(day);
+      return isNaN(parsedDate) ? null : parsedDate;
+    });
+    return dateObjects;
   };
   const openModal = (initialNameId: string, initialName: string, initialDays: string) => {
     setModalId(initialNameId);
     setModalName(initialName);
-    const daysArray = Array.isArray(initialDays) ? initialDays : [initialDays];
-    setModalDays(convertDaysToDatePickerFormat(daysArray));
-    //console.log("Giá trị của setModalDays:", modalDays);
+    // Tách các ngày thành mảng sử dụng dấu phẩy và loại bỏ khoảng trắng xung quanh mỗi ngày
+    const daysArray = initialDays.split(',').map(day => day.trim());
+    // Lọc ra các ngày hợp lệ
+    const validDates = daysArray.filter(day => !isNaN(new Date(day)));
+    if (validDates.length > 0) {
+      // Chuyển đổi các ngày hợp lệ thành đối tượng Date
+      const dateObjects = convertDaysToDatePickerFormat(validDates);
+      setModalDays(dateObjects);
+      //console.log("Ngày sau khi chuyển đổi:", dateObjects);
+    } else {
+      console.error("Không có ngày hợp lệ để chuyển đổi.");
+    }
     setModalOpen(true);
   };
   const closeModal = () => {
     setModalOpen(false);
+  };
+  const handleUpdate = async (id: string, name: string, days:string, event) => {
+    if (event) {
+      event.preventDefault();
+      const formattedDays = days.map((day) => {
+        if (day instanceof Date && !isNaN(day)) {
+          return format(day, 'dd-MM-yyyy').toString();
+        } else {
+          // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
+          console.error('Ngày không hợp lệ:', day);
+          return 'Ngày không hợp lệ';
+        }
+      }).join(', ');
+      days = formattedDays;
+      try {
+        const dataUpdate = { id,name,days };
+        
+        const response = await axios.put(
+          urlControl + 'TimecardsSettingController.php',
+          dataUpdate,
+          { headers: { 'Content-Type': 'application/json' } }
+        );
+        console.log('Update Response:', response.data);
+        closeModal();
+        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
   };
  
   // delete
@@ -450,7 +488,7 @@ export const TimecardSetting = () => {
                       />
                       <input
                         value={modalId}
-                        onChange={(e) => setModalId(e.target.value)}
+                        onChange={(date) => setModalId(e.target.value)}
                         className="form-input"
                         type="text"
                         placeholder="id"
