@@ -26,15 +26,18 @@ export const TimecardEdit = () => {
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[]>([]);
-  const [selectedGroupName, setSelectedGroupName] = useState<string | null>(null);
+  const [selectedGroupName, setSelectedGroupName] = useState<string | null>(
+    null,
+  );
   const [selectedGroupData, setSelectedGroupData] = useState<FieldUsers[]>([]);
 
   useEffect(() => {
-    axios.get('http://cailygroup.com/users/')
+    axios
+      .get('http://cailygroup.com/users/')
       .then((response) => {
         setListOfUsers(response.data);
       })
-      .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
+      .catch((error) => console.error('Lỗi khi lấy dữ liệu:', error));
   }, []);
 
   const handleGroupChange = (groupId: string) => {
@@ -47,9 +50,12 @@ export const TimecardEdit = () => {
 
       // console.log("trimmedSelectedGroupName", trimmedSelectedGroupName);
 
-      const filteredUsers = listOfUsers.filter(users => {
+      const filteredUsers = listOfUsers.filter((users) => {
         const userGroup = users.user_group.trim().toLowerCase();
-        return trimmedSelectedGroupName === "all" || userGroup === trimmedSelectedGroupName;
+        return (
+          trimmedSelectedGroupName === 'all' ||
+          userGroup === trimmedSelectedGroupName
+        );
       });
       setSelectedGroupData(filteredUsers);
     } else {
@@ -88,7 +94,6 @@ export const TimecardEdit = () => {
                 selectedMonth={selectedMonth}
                 selectedYear={selectedYear}
                 daysInMonth={daysInMonth}
-                admin={true}
               />
             </tbody>
           </table>

@@ -1,153 +1,114 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import './Dashboard.scss';
-import TimeDisplayButton from './TimeDisplayButton';
+import { useTimeContext } from '../../context/TimeProvider';
+import DashboardTime from './DashboardTime';
+import CardStartTime from '../Card/CardStartTime';
+import CardDelayTime from '../Card/CardDelayTime';
+import CardEndTime from '../Card/CardEndTime';
 
-export const Dashboard = () => {
-  const [currentDateTime, setCurrentDateTime] = useState('');
-  const [currentDay, setCurrentDay] = useState('');
-  const [currentHour, setCurrentHour] = useState<number>(0); // Đổi kiểu thành số
-  const [currentMinute, setCurrentMinute] = useState<number>(0); // Đổi kiểu thành số
-  const [currentSecond, setCurrentSecond] = useState<number>(0); // Đổi kiểu thành số
-  const [startHours, setStartHours] = useState('');
-  const [startMinutes, setStartMinutes] = useState('');
-
-  useEffect(() => {
-    const fetchTime = async () => {
-      try {
-        const response = await axios.get(
-          'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
-        );
-        const data = response.data;
-
-        // Tạo một đối tượng Date từ chuỗi thời gian
-        const dateObject = new Date(data.datetime);
-
-        // Trích xuất thứ, giờ, phút và giây
-        const weekdays = [
-          'Sunday',
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
-        ];
-        const formattedDay = weekdays[dateObject.getDay()];
-        const formattedHour = dateObject.getHours();
-        const formattedMinute = dateObject.getMinutes();
-        const formattedSecond = dateObject.getSeconds();
-
-        setCurrentDay(formattedDay);
-        setCurrentHour(formattedHour);
-        setCurrentMinute(formattedMinute);
-        setCurrentSecond(formattedSecond);
-
-        // Định dạng thời gian để hiển thị
-        const formattedDateTime = `${formattedDay} ${formattedHour}:${formattedMinute}:${formattedSecond}`;
-
-        setCurrentDateTime(formattedDateTime);
-      } catch (error) {
-        console.error('Error fetching time:', error);
-      }
-    };
-
-    const intervalId = setInterval(() => {
-      fetchTime();
-    }, 1000);
-
-    // Dọn dẹp interval khi component unmount
-    return () => clearInterval(intervalId);
-  }, []);
+function Dashboard() {
+  const { startTime, setStartTime } = useTimeContext();
+  const { delayTime, setDelayTime } = useTimeContext();
+  const { endTime, setEndTime } = useTimeContext();
 
   const [isButtonActive, setIsButtonActive] = useState<boolean>(false);
+
+  /*
+  *
+  * BẤM GIỜ BẮT ĐẦU
+  *
+  */
   const handleStart = async () => {
     try {
       const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
       const { datetime } = response.data;
       const hours = new Date(datetime).getHours();
       const minutes = new Date(datetime).getMinutes();
+      const sHours = String(hours).padStart(2, '0');
+      const sMinutes = String(minutes).padStart(2, '0');
 
-      const timecard_open = {
-        "hours": String(hours).padStart(2, '0'),
-        "minutes": String(minutes).padStart(2, '0'),
-      }
-      localStorage.setItem('timecard_open', JSON.stringify(timecard_open));
-      const getTimecardOpen = JSON.parse(localStorage.getItem('timecard_open') || '{}');
+      setStartTime({sHours, sMinutes});
 
-      setStartHours(getTimecardOpen.hours);
-      setStartMinutes(getTimecardOpen.minutes);
     } catch (error) {
       console.error('Lỗi khi lấy thời gian từ API:', error);
     }
   };
 
-  useEffect(() => {
-    // if (startHours > 22) {
-    //   localStorage.removeItem('timecard_open');
-    //   setIsButtonActive(false);
-    // }
+  /*
+  *
+  * BẤM GIỜ TẠM NGƯNG
+  *
+  */
+  const handleDelay = async () => {
+    try {
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
+      const { datetime } = response.data;
+      const hours = new Date(datetime).getHours();
+      const minutes = new Date(datetime).getMinutes();
+      const dHours = String(hours).padStart(2, '0');
+      const dMinutes = String(minutes).padStart(2, '0');
 
-    const getTimecardOpen = JSON.parse(localStorage.getItem('timecard_open') || '{}');
-    if(getTimecardOpen) {
-      setStartHours(getTimecardOpen.hours);
-      setStartMinutes(getTimecardOpen.minutes);
+      setDelayTime({dHours, dMinutes});
+
+    } catch (error) {
+      console.error('Lỗi khi lấy thời gian từ API:', error);
     }
-    console.log('y');
-  }, [isButtonActive])
+  };
+
+  /*
+  *
+  * BẤM GIỜ KẾT THÚC
+  *
+  */
+  const handleEnd = async () => {
+    try {
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
+      const { datetime } = response.data;
+      const hours = new Date(datetime).getHours();
+      const minutes = new Date(datetime).getMinutes();
+      const eHours = String(hours).padStart(2, '0');
+      const eMinutes = String(minutes).padStart(2, '0');
+
+      setEndTime({eHours, eMinutes});
+
+    } catch (error) {
+      console.error('Lỗi khi lấy thời gian từ API:', error);
+    }
+  };
 
   return (
     <div className="Dashboard">
       <div className="Dashboard-content">
-        <div className="Dashboard-time">
-          <div className="Dashboard-time--content">
-            <p>
-              {/* {currentDateTime} */}
-
-              {currentDay}
-              <span>day</span>
-            </p>
-            :
-            <p>
-              {/* {currentHour} */}
-              {String(currentHour).padStart(2, '0')}
-
-              <span>hour</span>
-            </p>
-            :
-            <p>
-              {String(currentMinute).padStart(2, '0')}
-              <span>munite</span>
-            </p>
-            :
-            <p>
-              {String(currentSecond).padStart(2, '0')}
-              <span>second</span>
-            </p>
-          </div>
-        </div>
+        <DashboardTime/>
         <h4>Thời gian làm việc hôm nay</h4>
-        <div className="Dashboard-action">
-          <div className="Dashboard-action--start">
-            <p>Bắt đầu</p>
-            <TimeDisplayButton type='start' onButtonClick={handleStart} sHours={startHours} sMinutes={startMinutes}
-              initialImage={require('../../../../assets/icon-play.png')}
-            />
+          <div className="Dashboard-action">
+            <div className="Dashboard-action--start">
+              <p>Bắt đầu</p>
+              <button className="Dashboard-action--circle" onClick={handleStart}>
+                <img src={require('../../../../assets/icon-play.png')} alt="" className="fluid-image" />
+              </button>
+              <CardStartTime/>
+            </div>
+            <div className="Dashboard-action--pause">
+              <p>Tạm ngưng</p>
+              <button className="Dashboard-action--circle" onClick={handleDelay}>
+                <img src={require('../../../../assets/icon-pause.png')} alt="" className="fluid-image" />
+              </button>
+              <CardDelayTime/>
+            </div>
+            <div className="Dashboard-action--end">
+              <p>Kết thúc</p>
+              <button className="Dashboard-action--circle" onClick={handleEnd}>
+                <img src={require('../../../../assets/icon-check.png')} alt="" className="fluid-image" />
+              </button>
+              <CardEndTime/>
+            </div>
           </div>
-          <div className="Dashboard-action--pause">
-            <p>Tạm ngưng</p>
-            <TimeDisplayButton sHours='' sMinutes=''
-              initialImage={require('../../../../assets/icon-pause.png')}
-            />
-          </div>
-          <div className="Dashboard-action--end">
-            <p>Kết thúc</p>
-            <TimeDisplayButton sHours='' sMinutes=''
-              initialImage={require('../../../../assets/icon-check.png')}
-            />
-          </div>
-        </div>
       </div>
     </div>
   );
 };
+
+
+export default Dashboard;

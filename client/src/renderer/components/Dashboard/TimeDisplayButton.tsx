@@ -1,29 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CardTime from '../Card/Card';
-import { Console } from 'console';
 
 interface TimeDisplayButtonProps {
-  type: string;
   initialImage: string;
-  sHours: string;
-  sMinutes: string;
-  onButtonClick?: () => void;
 }
 
 const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
-  type,
   initialImage,
-  sHours,
-  sMinutes,
-  onButtonClick,
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [buttonImage, setButtonImage] = useState(initialImage);
-  const [startHours, setStartHours] = useState(sHours);
-  const [startMinutes, setStartMinutes] = useState(sMinutes);
-  // const [endHours, setEndHours] = useState(0);
-  // const [endMinutes, setEndMinutes] = useState(0);
+  const [startHours, setStartHours] = useState(0);
+  const [startMinutes, setStartMinutes] = useState(0);
 
   const fetchCurrentTime = async () => {
     try {
@@ -39,15 +28,32 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
     fetchCurrentTime();
   }, []); // useEffect chỉ chạy một lần sau khi component mount
 
-  const [isButtonActive, setIsButtonActive] = useState<boolean>(false);
+  const handleClick = async () => {
+    try {
+      const response = await axios.get('http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh');
+      const { datetime } = response.data;
+      const hours = new Date(datetime).getHours();
+      const minutes = new Date(datetime).getMinutes();
+
+      setStartHours(hours);
+      setStartMinutes(minutes);
+
+            //  const formattedTime = `${startHours}:${startMinutes}`;
+    } catch (error) {
+      console.error('Lỗi khi lấy thời gian từ API:', error);
+    }
+
+    // Example: Change the image when the button is clicked
+    // setButtonImage(require('../../../../assets/icon-play.png'));
+  };
 
 
   return (
     <>
-      <button className="Dashboard-action--circle" onClick={onButtonClick} disabled={isButtonActive}>
+      <button className="Dashboard-action--circle" onClick={handleClick}>
         <img src={buttonImage} alt="" className="fluid-image" />
       </button>
-      <CardTime defaultHours={startHours} defaultMinutes={startMinutes} type={type}/>
+      <CardTime hours={startHours} minutes={startMinutes} />
     </>
   );
 };

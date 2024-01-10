@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import moment from 'moment';
 import {
   startOfMonth,
   endOfMonth,
@@ -11,8 +10,9 @@ import {
   differenceInMinutes,
   startOfDay,
 } from 'date-fns';
-import { Button } from '../../Button';
 import Modal from '../../Modal/Modal';
+import useAuth from '../../../hooks/useAuth';
+import { UserRole } from '../../../components/UserRole';
 
 //sever
 type Holiday = {
@@ -25,10 +25,6 @@ interface SelectMY {
   selectedYear: string;
   daysInMonth: Date[];
 }
-
-interface RollAdmin {
-  admin?: boolean;
-}
 interface Dayoff {
   id: number;
   user_id: string;
@@ -38,20 +34,39 @@ interface Dayoff {
   note: string;
   status: number;
 }
-// interface DateItem {
-//   note: string;
-//   days: string | null;
-// }
 
+interface TimecardData {
+  timecard_date: string;
+  timecard_id: string;
+  timecard_open: string;
+  timecard_close: string;
+  id_groupwaretimecard: number;
+  timecard_time: string;
+  timecard_timeover: string;
+  timecard_timeinterval: String;
+  timecard_comment: string;
+}
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
-interface CombinedProps extends SelectMY, RollAdmin {}
+interface CombinedProps extends SelectMY {}
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
+  // const { auth } = useAuth();
+
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+  const isAdmin = users.roles === UserRole.ADMIN;
+  const isManager = users.roles === UserRole.MANAGER;
+  const isLeader = users.roles === UserRole.LEADER;
+  const [admin, setAdmin] = useState(false);
+  if (isAdmin || isManager || isLeader) {
+    setAdmin(true);
+  }
+  console.log(admin);
+
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
 
   const selectedMonth = Props.selectedMonth;
   const selectedYear = Props.selectedYear;
-  const admin = Props.admin;
 
   const [currentTime, setCurrentTime] = useState(0);
   const [showStartButton, setShowStartButton] = useState(true);
@@ -61,6 +76,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [endHours, setEndHours] = useState(0);
   const [endMinutes, setEndMinutes] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(false);
+  const [commentText, setCommentText] = useState('');
 
   const [shouldUpdateWorkingHours, setShouldUpdateWorkingHours] =
     useState(false);
@@ -70,9 +87,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [currentItemId, setCurrentItemId] = useState<number | undefined>(
     undefined,
   );
-  const openModal = (itemId: number) => {
-    setCurrentItemId(itemId);
+  const openModal = (itemId: number, isDayoff: boolean) => {
     setModalOpen(true);
+    setCommentText('');
+    setCurrentItemId(itemId);
+    setIsUpdatingDayoff(isDayoff);
   };
 
   const closeModal = () => {
@@ -357,6 +376,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         }
       : { isDayoff: false, id: 0, note: '', status: 0 };
   };
+  const deleteDayoffs = (id: number) => {
+    console.log(id);
+  };
   // const [dayoffs, setDayoffs] = useState<Dayoff[] | undefined>(undefined); // Đặt kiểu là Dayoff[] hoặc undefined
   // const [allDatesByItem, setAllDatesByItem] = useState({});
   // const [dateByItem, setDatesByItem] = useState({});
@@ -527,8 +549,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           const [hours, minutes] = timeString.split(':');
           totalHours += parseInt(hours, 10);
           totalMinutes += parseInt(minutes, 10);
-        } else {
-          console.error(`Chuỗi thời gian không hợp lệ hoặc trống.`);
         }
       }
     });
@@ -562,60 +582,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const currentMonth = new Date().getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
   const currentYear = new Date().getFullYear();
 
-  // admin
-  const handleStartEditClick = () => {
-    setEditingStart(true);
-  };
-
-  const handleSaveTimeClick = () => {
-    setEditingStart(false);
-    setShouldUpdateWorkingHours(true);
-    console.log('shouldUpdateWorkingHours', shouldUpdateWorkingHours);
-  };
-
-  const handleStartInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const [hours, minutes] = e.target.value.split(':');
-    setStartHours(parseInt(hours, 10) || 0);
-    setStartMinutes(parseInt(minutes, 10) || 0);
-  };
-
-  const handleEndInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const [hours, minutes] = e.target.value.split(':');
-    setEndHours(parseInt(hours, 10) || 0);
-    setEndMinutes(parseInt(minutes, 10) || 0);
-  };
-
-  const [commentText, setCommentText] = useState('');
-  const handleUpdateComment = async (Id: number) => {
-    try {
-      const response = await axios.post(
-        'http://cailygroup.com/timecarddetails/updatecomment',
-        {
-          id: Id,
-          comment: commentText,
-        },
-      );
-      console.log(response.data);
-      setCommentText('');
-      fetchTimecardOpen();
-    } catch (error) {
-      console.error('Lỗi khi cập nhật trạng thái:', error);
-    }
-    closeModal();
-  };
-
-  interface TimecardData {
-    timecard_date: string;
-    timecard_id: string;
-    timecard_open: string;
-    timecard_close: string;
-    id_groupwaretimecard: number;
-    timecard_time: string;
-    timecard_timeover: string;
-    timecard_timeinterval: String;
-    timecard_comment: string;
-  }
-
   const [timecardOpen, setTimecardOpen] = useState<TimecardData[]>([]);
   const fetchTimecardOpen = async () => {
     try {
@@ -627,18 +593,33 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       console.error('Error fetching timecard_open:', error);
     }
   };
+  const handleUpdateComment = async (Id: number) => {
+    try {
+      const response = await axios.post(
+        'http://cailygroup.com/timecarddetails/updatecomment',
+        {
+          id: Id,
+          comment: commentText,
+        },
+      );
+      console.log(response.data);
+      fetchTimecardOpen();
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
+    }
+    closeModal();
+  };
+  const handleDeleteDayoffs = (id: number) => {
+    console.log(id);
+  };
+
   useEffect(() => {
     fetchTimecardOpen();
     fetchHolidays();
     fetchDayoffs();
   }, []);
   useEffect(() => {
-    // console.log('allDatesByItem:', allDatesByItem);
-    console.log('dayoffs: ', dayoffs);
-    // console.log('dateByItem: ', dateByItem);
-    console.log('holidays: ', holidays);
     calculateTotalTime();
-    // }, [allDatesByItem, dayoffs]);
   }, [dayoffs]);
   return (
     <>
@@ -814,7 +795,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                     {isDayoff(day).note}
                     {isDayoff(day).status == 0 ? (
                       <a
-                        onClick={(event) => openModal(isHoliday(day).id)}
+                        onClick={(event) => {
+                          openModal(isHoliday(day).id, true);
+                        }}
                         className="btn btn--green btn--small icon icon--edit"
                       >
                         <img
@@ -843,9 +826,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                             <div key={index}>
                               {item.timecard_comment}
                               <a
-                                onClick={(event) =>
-                                  openModal(item.id_groupwaretimecard)
-                                }
+                                onClick={(event) => {
+                                  openModal(item.id_groupwaretimecard, false);
+                                }}
                                 className="btn btn--green btn--small icon icon--edit"
                               >
                                 <img
@@ -862,38 +845,23 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 )}
               </td>
               <td>
-                {admin == true &&
-                !isHoliday(day) &&
-                !getDayClassName(day) &&
-                !accreptLeave(day) ? (
-                  <>
-                    {!editingStart ? (
-                      <>
-                        <Button onButtonClick={handleStartEditClick}>
-                          cập nhật
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <button onClick={handleSaveTimeClick}>
-                          <span className="icon icon--check">
-                            <img
-                              src={require('../../../../../assets/check.png')}
-                              alt="edit"
-                              className="fluid-image"
-                            />
-                          </span>
-                        </button>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  ''
-                )}
-                {isCancelLeave(day) && admin !== true ? (
-                  <span className="bg-red__btn">
-                    <button className="btn btn-white">Hủy bỏ nghỉ phép</button>
-                  </span>
+                {isDayoff(day).isDayoff ? (
+                  isDayoff(day).status == 0 ? (
+                    <span
+                      onClick={(event) => deleteDayoffs(isDayoff(day).id)}
+                      className="btn btn--red btn--medium"
+                    >
+                      Hủy nghỉ phép
+                    </span>
+                  ) : (
+                    <span className="btn btn--red btn--green btn--small icon icon--edit">
+                      <img
+                        src={require('../../../../../assets/check.png')}
+                        alt="edit"
+                        className="fluid-image"
+                      />
+                    </span>
+                  )
                 ) : (
                   ''
                 )}
@@ -925,7 +893,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 <div className="wrp-button">
                   <button
                     className="btn"
-                    onClick={() => handleUpdateComment(currentItemId || 0)}
+                    onClick={() => {
+                      if (isUpdatingDayoff) {
+                        handleDeleteDayoffs(currentItemId || 0);
+                      } else {
+                        handleUpdateComment(currentItemId || 0);
+                      }
+                    }}
                   >
                     Xác nhận
                   </button>
