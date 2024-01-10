@@ -65,11 +65,9 @@ export const Timecard = () => {
   };
 
 
-
   const updateMonthAndYear = (newMonth: string, newYear: string) => {
     const month = newMonth;
     const year = newYear;
-    console.log("Updated month and year:", month, year);
   };
 
   //------------------------------phần lấy user-------------------------------------------------------
@@ -82,7 +80,6 @@ export const Timecard = () => {
         .then((response) => {
           setListOfUsers(response.data);
           const loggedInUser = response.data.find((users: { id: number; }) => users.id === loggedInUserId.id);
-          console.log("loggedInUser", loggedInUser);
           setCurrentUser(loggedInUser);
         })
         .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
@@ -116,12 +113,28 @@ export const Timecard = () => {
 
     // Tạo sheet cho dữ liệu người dùng, tháng và năm
     const wsCombined = XLSX.utils.aoa_to_sheet([
-      ['Người Dùng', currentUser?.realname || ''],
-      ['Tháng', month, 'Năm', year],
+      [{ v: `${currentUser?.realname || ''} \n ${month}/${year}`, s: { alignment: { horizontal: 'center', vertical: 'top' }, font: { color: { rgb: '000000' }, bold: true, sz: 20 }, fill: { fgColor: { rgb: 'FFFF00' } } } },],
     ]);
+    wsCombined['!merges'] = [{ s: { r: 2, c: 0 }, e: { r: 0, c: 8 } }];
+    const wsHead = XLSX.utils.table_to_sheet(document.getElementById('timecards_table_head'));
+    XLSX.utils.sheet_add_json(wsCombined, XLSX.utils.sheet_to_json(wsHead), {
+      skipHeader: true,
+      origin: 'A1', // Nơi bắt đầu thêm dữ liệu từ bảng
+    });
 
     // Thêm dữ liệu từ bảng timecards_table vào sheet
     const wsData = XLSX.utils.table_to_sheet(table);
+    // Duyệt qua từng ô chứa ngày tháng và đặt lại định dạng của cel 
+    Object.keys(wsData).forEach((cell) => {
+      const isDateCell = cell.match(/[1-9][0-9]*$/); // Kiểm tra xem ô có chứa ngày không
+
+      if (isDateCell) {
+        const dateValue = new Date(XLSX.utils.decode_cell(cell).r); // Lấy giá trị ngày
+        XLSX.utils.format_cell(wsData[cell]); // Định dạng ô như một ngày
+        wsData[cell].t = 'd'; // Đặt loại ô thành ngày
+        wsData[cell].z = 'dd-mm-yyyy'; // Đặt định dạng ngày mong muốn
+      }
+    });
     XLSX.utils.sheet_add_json(wsCombined, XLSX.utils.sheet_to_json(wsData), {
       skipHeader: true,
       origin: 'A5', // Nơi bắt đầu thêm dữ liệu từ bảng
@@ -147,7 +160,7 @@ export const Timecard = () => {
       <MonthYearSelector onChange={handleDateChange} />
       <div className="table-container table--01">
         <table id="timecards_table" className="table table__custom">
-          <thead>
+          <thead id="timecards_table_head">
             <CTableTimeCardHead />
           </thead>
           <tbody>
