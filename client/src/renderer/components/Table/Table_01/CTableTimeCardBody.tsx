@@ -25,10 +25,6 @@ interface SelectMY {
   selectedYear: string;
   daysInMonth: Date[];
 }
-
-interface RollAdmin {
-  admin?: boolean;
-}
 interface Dayoff {
   id: number;
   user_id: string;
@@ -50,28 +46,27 @@ interface TimecardData {
   timecard_timeinterval: String;
   timecard_comment: string;
 }
-// interface DateItem {
-//   note: string;
-//   days: string | null;
-// }
-
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
-interface CombinedProps extends SelectMY, RollAdmin {}
+interface CombinedProps extends SelectMY {}
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
-  const { auth } = useAuth();
+  // const { auth } = useAuth();
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
 
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
   const isLeader = users.roles === UserRole.LEADER;
+  const [admin, setAdmin] = useState(false);
+  if (isAdmin || isManager || isLeader) {
+    setAdmin(true);
+  }
+  console.log(admin);
 
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
 
   const selectedMonth = Props.selectedMonth;
   const selectedYear = Props.selectedYear;
-  const admin = Props.admin;
 
   const [currentTime, setCurrentTime] = useState(0);
   const [showStartButton, setShowStartButton] = useState(true);
