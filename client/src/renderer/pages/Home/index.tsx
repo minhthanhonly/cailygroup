@@ -1,6 +1,12 @@
-import { Dashboard } from '../../components/Dashboard/Dashboard';
+import Dashboard from '../../components/Dashboard/Dashboard';
+import { TimeProvider } from '../../context/TimeProvider';
+
 function Home() {
-  return <Dashboard/>
+  return (
+    <TimeProvider>
+      <Dashboard/>
+    </TimeProvider>
+  )
 }
 
 export default Home;
