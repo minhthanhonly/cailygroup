@@ -50,5 +50,5 @@
     $routes['timecardsholidays'] = 'timecardsholidays';
     $routes['timecardsholidays/add'] = 'timecardsholidays/add';
     $routes['timecardsholidays/update'] = 'timecardsholidays/update';
-
+    $routes['timecardsholidays/delete'] = 'timecardsholidays/delete';
 ?>
