@@ -1,13 +1,13 @@
 <?php
-    class GroupsModel{
-        function getGroups(){
+    class TimecardsHolidaysModel{
+        function getTimecardsHolidays(){
             global $conn;
-            $allGroup = mysqli_query($conn, "SELECT * FROM groups");
-            if(mysqli_num_rows($allGroup) > 0) {
-                while($row = mysqli_fetch_array($allGroup)) {
-                    $json_array["groupdata"][] = array("id" => $row['id'], "group_name" => $row['group_name']);
+            $allTimecardsHolidays = mysqli_query($conn, "SELECT * FROM holidays");
+            if(mysqli_num_rows($allTimecardsHolidays) > 0) {
+                while($row = mysqli_fetch_array($allTimecardsHolidays)) {
+                    $json_array["holidaydata"][] = array("id" => $row['id'], "name" => $row['name'], "days" => $row['days']);
                 }
-                echo json_encode($json_array["groupdata"]);
+                echo json_encode($json_array["holidaydata"]);
                 return;
             } else {
                 echo json_encode(["result" => "Please check the Data"]);
@@ -15,17 +15,13 @@
             }
             $conn->close();
         }
-        function addGroups($group_name, $add_level, $owner, $createdAt)
-        {
+        function addTimecardsHolidays($name , $days){
             global $conn;
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
-                $groupPostData = json_decode(file_get_contents("php://input"));
-                $group_name = $groupPostData->group_name;
-                $add_level = $groupPostData->add_level;
-                $owner     = $groupPostData->owner;
-                $createdAt = date('Y-m-d H:i:s');
-                $insertQuery = "INSERT INTO groups (group_name, add_level, owner, createdAt) 
-                    VALUES (?, ?, ?, ?)";
+                $timecardsHolidaysPostData = json_decode(file_get_contents("php://input"));
+                $name = $timecardsHolidaysPostData->name;
+                $days = $timecardsHolidaysPostData->days;
+                $insertQuery = "INSERT INTO holidays (name, days) VALUES (?, ?)";
                 $stmt = mysqli_prepare($conn, $insertQuery);
 
                 if (!$stmt) {
@@ -33,7 +29,7 @@
                     echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($conn)]);
                     exit();
                 }
-                mysqli_stmt_bind_param($stmt, "siss", $group_name, $add_level, $owner, $createdAt);
+                mysqli_stmt_bind_param($stmt, "ss", $name, $days);
 
                 if (mysqli_stmt_execute($stmt)) {
                     http_response_code(201);
@@ -46,14 +42,15 @@
                 mysqli_stmt_close($stmt);
             }
         }
-        function updateGroups($id, $group_name){
+        function updateTimecardsHolidays($id, $name, $days){
             global $conn;
             if ($_SERVER["REQUEST_METHOD"] === "PUT") {
-                $groupUpdateData = json_decode(file_get_contents("php://input"), true);
-                if (isset($groupUpdateData['id'], $groupUpdateData['group_name'])) {
-                    $id = mysqli_real_escape_string($conn, $groupUpdateData['id']);
-                    $group_name = mysqli_real_escape_string($conn, $groupUpdateData['group_name']);
-                    $updateQuery = "UPDATE groups SET group_name = '$group_name' WHERE id = '$id'"; 
+                $timecardsHolidaysUpdateData = json_decode(file_get_contents("php://input"), true);
+                if (isset($timecardsHolidaysUpdateData['id'], $timecardsHolidaysUpdateData['name'], $timecardsHolidaysUpdateData['days'])) {
+                    $id = mysqli_real_escape_string($conn, $timecardsHolidaysUpdateData['id']);
+                    $name = mysqli_real_escape_string($conn, $timecardsHolidaysUpdateData['name']);
+                    $days = mysqli_real_escape_string($conn, $timecardsHolidaysUpdateData['days']);
+                    $updateQuery = "UPDATE holidays SET name = '$name', days = '$days' WHERE id = '$id'"; 
                     if (mysqli_query($conn, $updateQuery)) {
                         http_response_code(200);
                         echo json_encode(["message" => "Dữ liệu được cập nhật thành công"]);
@@ -68,13 +65,13 @@
                 $conn->close();
             }
         }
-        function deleteGroups(){
+        function deleteTimecardsHolidays($id){
             global $conn;
             if ($_SERVER["REQUEST_METHOD"] === "DELETE") {
-                $groupDeleteData = json_decode(file_get_contents("php://input"), true);
-                if (isset($groupDeleteData['id'])) {
-                    $id = mysqli_real_escape_string($conn, $groupDeleteData['id']);
-                    $deleteQuery = "DELETE FROM groups WHERE id = $id";
+                $timecardsHolidaysDeleteData = json_decode(file_get_contents("php://input"), true);
+                if (isset($timecardsHolidaysDeleteData['id'])) {
+                    $id = mysqli_real_escape_string($conn, $timecardsHolidaysDeleteData['id']);
+                    $deleteQuery = "DELETE FROM holidays WHERE id = $id";
                     if (mysqli_query($conn, $deleteQuery)) {
                         http_response_code(200);
                         echo json_encode(["message" => "Data deleted successfully"]);
@@ -90,5 +87,4 @@
             }
         }
     }
-
 ?>

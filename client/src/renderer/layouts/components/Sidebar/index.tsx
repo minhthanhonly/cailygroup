@@ -27,9 +27,9 @@ export const Sidebar = () => {
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
 
-  const isAdmin = auth.roles === UserRole.ADMIN;
-  const isManager = auth.roles === UserRole.MANAGER;
-  const isLeader = auth.roles === UserRole.LEADER;
+  const isAdmin = users.roles === UserRole.ADMIN;
+  const isManager = users.roles === UserRole.MANAGER;
+  const isLeader = users.roles === UserRole.LEADER;
 
   function logoutSubmit() {
     localStorage.setItem('login', 'false');

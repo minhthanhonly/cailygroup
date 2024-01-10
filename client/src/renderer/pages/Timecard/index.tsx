@@ -19,7 +19,21 @@ import { Excel } from '../../components/ExportExcel/Excel';
 import { urlControl } from '../../routes/server';
 import axios from 'axios';
 
+interface FieldUsers {
+  id: number;
+  realname: string;
+  userid: string;
+  authority_name: string;
+  group_name: string;
+  user_group: string;
+}
+
 export const Timecard = () => {
+
+  const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
+  const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
+
+
   type DatabaseTimeCardDetails = {
     id: string;
     id_groupwaretimecard: string;
@@ -47,7 +61,47 @@ export const Timecard = () => {
     setSelectedMonth(month);
     setSelectedYear(year);
     setDaysInMonth(daysInMonth);
+    updateMonthAndYear(month, year);
   };
+
+
+
+  const updateMonthAndYear = (newMonth: string, newYear: string) => {
+    const month = newMonth;
+    const year = newYear;
+    console.log("Updated month and year:", month, year);
+  };
+
+  //------------------------------phần lấy user-------------------------------------------------------
+  useEffect(() => {
+    const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
+    console.log("loggedInUserId", loggedInUserId.id);
+
+    if (loggedInUserId) {
+      axios.get('http://cailygroup.com/timecards/list')
+        .then((response) => {
+          setListOfUsers(response.data);
+          const loggedInUser = response.data.find((users: { id: number; }) => users.id === loggedInUserId.id);
+          console.log("loggedInUser", loggedInUser);
+          setCurrentUser(loggedInUser);
+        })
+        .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
+    } else {
+      console.error('Không tìm thấy giá trị loggedInUserId trong localStorage');
+    }
+  }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
+  //-------------------------------------------------------------------------------------
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const currentYear = String(currentDate.getFullYear());
+
+    // Cập nhật state
+    setSelectedMonth(currentMonth);
+    setSelectedYear(currentYear);
+    updateMonthAndYear(currentMonth, currentYear);
+  }, []);
 
   const exportToExcel = () => {
     // Lấy đối tượng bảng HTML
@@ -56,29 +110,28 @@ export const Timecard = () => {
     // Tạo workbook
     const wb = XLSX.utils.book_new();
 
-    // Tạo sheet cho "Nguyễn Văn A"
-    const wsVA = XLSX.utils.aoa_to_sheet([['Nguyễn Văn A']]);
-    const mergeConfig = { s: { r: 0, c: 0 }, e: { r: 2, c: 7 } };
-    wsVA['!merges'] = [mergeConfig];
+    // Lấy tên tháng và năm từ state
+    const month = selectedMonth;
+    const year = selectedYear;
 
-    // Style cho cell "Nguyễn Văn A"
-    const centerStyle = {
-      hcenter: true,
-      vcenter: true,
-    };
-    wsVA[XLSX.utils.encode_cell(mergeConfig.s)].s = centerStyle;
+    // Tạo sheet cho dữ liệu người dùng, tháng và năm
+    const wsCombined = XLSX.utils.aoa_to_sheet([
+      ['Người Dùng', currentUser?.realname || ''],
+      ['Tháng', month, 'Năm', year],
+    ]);
 
-    // Thêm sheet vào workbook
-    XLSX.utils.book_append_sheet(wb, wsVA, 'Sheet1');
-
-    // Tạo sheet cho dữ liệu từ bảng timecards_table
+    // Thêm dữ liệu từ bảng timecards_table vào sheet
     const wsData = XLSX.utils.table_to_sheet(table);
+    XLSX.utils.sheet_add_json(wsCombined, XLSX.utils.sheet_to_json(wsData), {
+      skipHeader: true,
+      origin: 'A5', // Nơi bắt đầu thêm dữ liệu từ bảng
+    });
 
     // Thêm sheet vào workbook
-    XLSX.utils.book_append_sheet(wb, wsData, 'DataSheet');
+    XLSX.utils.book_append_sheet(wb, wsCombined, `Timecards_${currentUser?.realname}_${month}_${year}`);
 
     // Xuất workbook ra file Excel
-    XLSX.writeFile(wb, 'tableExcelFile.xlsx');
+    XLSX.writeFile(wb, `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`);
   };
 
   return (
@@ -98,7 +151,6 @@ export const Timecard = () => {
             <CTableTimeCardHead />
           </thead>
           <tbody>
-            {/* RowCounts = {RowCounts}  data={DataTable}  data={DataTable} */}
             <CTableTimeCardBody
               selectedMonth={selectedMonth}
               selectedYear={selectedYear}
