@@ -100,6 +100,89 @@ export const Timecard = () => {
     updateMonthAndYear(currentMonth, currentYear);
   }, []);
 
+  // const exportToExcel = () => {
+  //   // Lấy đối tượng bảng HTML
+  //   // const table = document.getElementById('timecards_table');
+  //   // const head = document.getElementById('timecards_table_head');
+
+  //   // // Tạo workbook
+  //   // const wb = XLSX.utils.book_new();
+
+  //   // // Lấy tên tháng và năm từ state
+  //   // const month = selectedMonth;
+  //   // const year = selectedYear;
+
+  //   // // Tạo sheet cho dữ liệu người dùng, tháng và năm
+  //   // const startRow = 5; // Dòng bắt đầu
+  //   // const startCol = 0; // Cột bắt đầu
+
+  //   // const wsCombined = XLSX.utils.aoa_to_sheet([
+  //   //   [{ v: `${currentUser?.realname || ''}\n${month}/${year}`, s: { alignment: { horizontal: 'center', vertical: 'top' }, font: { color: { rgb: '000000' }, bold: true, sz: 20 }, fill: { fgColor: { rgb: 'FFFF00' } } }, r: startRow, c: startCol, },],
+  //   // ]);
+  //   // // Merge ô từ A1 đến I1
+  //   // wsCombined['!merges'] = [{ s: { r: startRow - 1, c: startCol }, e: { r: startRow - 1, c: startCol + 8 } }];
+
+  //   // // Thêm dữ liệu từ bảng timecards_table vào sheet
+  //   // const wsData = XLSX.utils.table_to_sheet(table);
+  //   // // Duyệt qua từng ô chứa ngày tháng và đặt lại định dạng của cel 
+  //   // Object.keys(wsData).forEach((cell) => {
+  //   //   const isDateCell = cell.match(/[1-9][0-9]*$/); // Kiểm tra xem ô có chứa ngày không
+
+  //   //   if (isDateCell) {
+  //   //     const dateValue = new Date(XLSX.utils.decode_cell(cell).r); // Lấy giá trị ngày
+  //   //     XLSX.utils.format_cell(wsData[cell]); // Định dạng ô như một ngày
+  //   //     wsData[cell].t = 'd'; // Đặt loại ô thành ngày
+  //   //     wsData[cell].z = 'dd-mm-yyyy'; // Đặt định dạng ngày mong muốn
+  //   //   }
+  //   // });
+  //   // XLSX.utils.sheet_add_json(wsCombined, XLSX.utils.sheet_to_json(wsData), {
+  //   //   skipHeader: true,
+  //   //   origin: 'A6', // Nơi bắt đầu thêm dữ liệu từ bảng
+  //   // });
+
+  //   // // Thêm sheet vào workbook
+  //   // XLSX.utils.book_append_sheet(wb, wsCombined, `Timecards_${currentUser?.realname}_${month}_${year}`);
+
+  //   // // Xuất workbook ra file Excel
+  //   // XLSX.writeFile(wb, `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`);
+
+
+
+
+
+
+
+
+
+
+
+  //   // Lấy đối tượng bảng HTML
+  //   const table = document.getElementById('timecards_table');
+
+  //   // Tạo workbook
+  //   const wb = XLSX.utils.book_new();
+
+  //   // Lấy tên tháng và năm từ state
+  //   const month = selectedMonth;
+  //   const year = selectedYear;
+
+  //   // Tạo sheet cho dữ liệu người dùng, tháng và năm
+  //   const startRow = 5; // Dòng bắt đầu
+  //   const startCol = 0; // Cột bắt đầu
+
+  //   // Lấy toàn bộ nội dung của bảng (bao gồm cả head và body)
+  //   const wsData = XLSX.utils.table_to_sheet(table);
+
+  //   // Lấy tên sheet từ bảng
+  //   const sheetName = `Timecards_${currentUser?.realname}_${month}_${year}`;
+
+  //   // Thêm sheet vào workbook
+  //   XLSX.utils.book_append_sheet(wb, wsData, sheetName);
+  //   // Xuất workbook ra file Excel
+  //   XLSX.writeFile(wb, `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`);
+  // };
+
+
   const exportToExcel = () => {
     // Lấy đối tượng bảng HTML
     const table = document.getElementById('timecards_table');
@@ -112,37 +195,39 @@ export const Timecard = () => {
     const year = selectedYear;
 
     // Tạo sheet cho dữ liệu người dùng, tháng và năm
-    const wsCombined = XLSX.utils.aoa_to_sheet([
-      [{ v: `${currentUser?.realname || ''} \n ${month}/${year}`, s: { alignment: { horizontal: 'center', vertical: 'top' }, font: { color: { rgb: '000000' }, bold: true, sz: 20 }, fill: { fgColor: { rgb: 'FFFF00' } } } },],
-    ]);
-    wsCombined['!merges'] = [{ s: { r: 2, c: 0 }, e: { r: 0, c: 8 } }];
-    const wsHead = XLSX.utils.table_to_sheet(document.getElementById('timecards_table_head'));
-    XLSX.utils.sheet_add_json(wsCombined, XLSX.utils.sheet_to_json(wsHead), {
-      skipHeader: true,
-      origin: 'A1', // Nơi bắt đầu thêm dữ liệu từ bảng
-    });
+    const startRow = 5; // Dòng bắt đầu
+    const startCol = 0; // Cột bắt đầu
 
-    // Thêm dữ liệu từ bảng timecards_table vào sheet
+    // Lấy toàn bộ nội dung của bảng (bao gồm cả head và body)
     const wsData = XLSX.utils.table_to_sheet(table);
-    // Duyệt qua từng ô chứa ngày tháng và đặt lại định dạng của cel 
-    Object.keys(wsData).forEach((cell) => {
-      const isDateCell = cell.match(/[1-9][0-9]*$/); // Kiểm tra xem ô có chứa ngày không
 
-      if (isDateCell) {
-        const dateValue = new Date(XLSX.utils.decode_cell(cell).r); // Lấy giá trị ngày
-        XLSX.utils.format_cell(wsData[cell]); // Định dạng ô như một ngày
-        wsData[cell].t = 'd'; // Đặt loại ô thành ngày
-        wsData[cell].z = 'dd-mm-yyyy'; // Đặt định dạng ngày mong muốn
+    // Thêm tên người dùng và ngày tháng vào hàng đầu tiên của bảng
+    XLSX.utils.sheet_add_aoa(wsData, [
+      [` ${currentUser?.realname || ''} \n ${month} ${year}`, '', '', '', '', '', '', '', ''],
+    ], { origin: `A${startRow - 2}` });
+
+    // Đẩy bảng xuống 3 ô
+    XLSX.utils.sheet_add_aoa(wsData, [[]], { origin: `A${startRow - 2}` });
+
+    // Lặp qua từng ô trong bảng và đặt kiểu dữ liệu là 's' (string)
+    if (wsData['!range'] && wsData['!range'].e) {
+      for (let r = 0; r < wsData['!range'].e.r + 1; r++) {
+        for (let c = 0; c < wsData['!range'].e.c + 1; c++) {
+          const cellAddress = XLSX.utils.encode_cell({ r, c });
+          const cell = wsData[cellAddress];
+          if (cell && cell.t === 'd') {
+            // Sử dụng hàm `XLSX.utils.format_cell` để định dạng ngày
+            cell.v = XLSX.utils.format_cell(cell);
+          }
+        }
       }
-    });
-    XLSX.utils.sheet_add_json(wsCombined, XLSX.utils.sheet_to_json(wsData), {
-      skipHeader: true,
-      origin: 'A5', // Nơi bắt đầu thêm dữ liệu từ bảng
-    });
+    }
+
+    // Lấy tên sheet từ bảng
+    const sheetName = `Timecards_${currentUser?.realname}_${month}_${year}`;
 
     // Thêm sheet vào workbook
-    XLSX.utils.book_append_sheet(wb, wsCombined, `Timecards_${currentUser?.realname}_${month}_${year}`);
-
+    XLSX.utils.book_append_sheet(wb, wsData, sheetName);
     // Xuất workbook ra file Excel
     XLSX.writeFile(wb, `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`);
   };
