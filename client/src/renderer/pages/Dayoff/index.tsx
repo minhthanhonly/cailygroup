@@ -118,11 +118,11 @@ export const Dayoff = () => {
       <CTable>
         <CTableHead
           heads={[
-            'Họ Và Tên',
+            'Họ và tên',
             'Số Ngày',
-            'Ngày Bắt Đầu',
-            'Ngày Kết Thúc',
-            'Ghi Chú',
+            'Giờ bắt đầu',
+            'Giờ kết thúc',
+            'Ghi chú',
             'Hủy đăng ký nghỉ ',
           ]}
         />
