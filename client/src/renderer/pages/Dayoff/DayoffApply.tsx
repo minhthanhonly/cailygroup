@@ -147,11 +147,6 @@ export const DayoffApply = () => {
     event: { preventDefault: () => void } | undefined,
   ) => {
     if (event) {
-      const isConfirmed = window.confirm('Hủy đăng ký nghỉ phép?');
-
-      if (!isConfirmed) {
-        return;
-      }
       event.preventDefault();
       try {
         const payload = { id: dayoffId };

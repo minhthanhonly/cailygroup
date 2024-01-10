@@ -16,6 +16,7 @@ import Modal from '../../Modal/Modal';
 
 //sever
 type Holiday = {
+  id: number;
   name: string;
   days: string;
 };
@@ -29,16 +30,18 @@ interface RollAdmin {
   admin?: boolean;
 }
 interface Dayoff {
-  allDates: any;
-  id: string;
+  id: number;
   user_id: string;
-  date_start: string;
-  date_end: string;
+  date: string;
   time_start: string;
   time_end: string;
   note: string;
   status: number;
 }
+// interface DateItem {
+//   note: string;
+//   days: string | null;
+// }
 
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
 interface CombinedProps extends SelectMY, RollAdmin {}
@@ -304,7 +307,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   const isHoliday = (
     day: Date,
-  ): { isHoliday: boolean; name: string; days: string } => {
+  ): { isHoliday: boolean; id: number; name: string; days: string } => {
     const formattedDay = format(day, 'dd-MM-yyyy');
 
     const foundHoliday = holidays?.find((holiday) => {
@@ -313,14 +316,18 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     });
 
     return foundHoliday
-      ? { isHoliday: true, name: foundHoliday.name, days: foundHoliday.days }
-      : { isHoliday: false, name: '', days: '' };
+      ? {
+          isHoliday: true,
+          id: foundHoliday.id,
+          name: foundHoliday.name,
+          days: foundHoliday.days,
+        }
+      : { isHoliday: false, id: 0, name: '', days: '' };
   };
 
   //get dayoffs for user
-  const [dayoffs, setDayoffs] = useState<Dayoff[] | undefined>(undefined); // Đặt kiểu là Dayoff[] hoặc undefined
-  const [allDatesByItem, setAllDatesByItem] = useState({});
-  const timeDefault = '8:00';
+
+  const [dayoffs, setDayoffs] = useState<Dayoff[] | undefined>();
   const fetchDayoffs = async () => {
     try {
       let $id = 39;
@@ -328,51 +335,119 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         'http://cailygroup.com/dayoffs/getforuser/' + $id,
       );
       setDayoffs(response.data);
-      if (response.data && Array.isArray(response.data)) {
-        const allDatesArray: string[] = response.data.reduce(
-          (accumulator, dayoff) => {
-            const startDate = moment(dayoff.date_start, 'DD-MM-YYYY').toDate();
-            const endDate = moment(dayoff.date_end, 'DD-MM-YYYY').toDate();
-
-            const allDates = getDatesBetween(startDate, endDate);
-            const formattedAllDates = allDates.map((date) =>
-              moment(date).format('DD/MM/YYYY'),
-            );
-
-            // Hợp nhất mỗi mảng formattedAllDates vào mảng chính
-            return [...accumulator, ...formattedAllDates];
-          },
-          [],
-        );
-
-        setAllDatesByItem(allDatesArray);
-        // console.log('allDatesByItem:', allDatesArray);
-      }
     } catch (error) {
       console.error('Error fetching dayoffs:', error);
     }
   };
+  const isDayoff = (
+    day: Date,
+  ): { isDayoff: boolean; id: number; note: string; status: number } => {
+    const formattedDay = format(day, 'dd-MM-yyyy');
 
-  const getDatesBetween = (start: Date, end: Date) => {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    const dates = [];
-    let currentDate = startDate;
+    const foundDayoff = dayoffs?.find((dayoff) => {
+      return dayoff.date === formattedDay;
+    });
 
-    while (currentDate <= endDate) {
-      dates.push(currentDate.toLocaleDateString());
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return dates;
+    return foundDayoff
+      ? {
+          isDayoff: true,
+          id: foundDayoff.id,
+          note: foundDayoff.note,
+          status: foundDayoff.status,
+        }
+      : { isDayoff: false, id: 0, note: '', status: 0 };
   };
+  // const [dayoffs, setDayoffs] = useState<Dayoff[] | undefined>(undefined); // Đặt kiểu là Dayoff[] hoặc undefined
+  // const [allDatesByItem, setAllDatesByItem] = useState({});
+  // const [dateByItem, setDatesByItem] = useState({});
+  // const fetchDayoffs = async () => {
+  //   try {
+  //     let $id = 39;
+  //     const response = await axios.get(
+  //       'http://cailygroup.com/dayoffs/getforuser/' + $id,
+  //     );
+  //     setDayoffs(response.data);
+  //     const datesByItem: {
+  //       [key: string]: { date_start: string; date_end: string; note: string };
+  //     } = {};
+  //     response.data.forEach((item: Dayoff) => {
+  //       const { date_start, date_end, note } = item;
+  //       // Gán thông tin vào allDatesByItem
+  //       datesByItem[item.id] = { date_start, date_end, note };
+  //     });
+  //     setDatesByItem(datesByItem);
+  //     if (response.data && Array.isArray(response.data)) {
+  //       const allDatesArray: string[] = response.data.reduce(
+  //         (accumulator, dayoff) => {
+  //           const startDate = moment(dayoff.date_start, 'DD-MM-YYYY').toDate();
+  //           const endDate = moment(dayoff.date_end, 'DD-MM-YYYY').toDate();
 
-  const isCancelLeaveDay = (day: string): boolean => {
-    const formattedDay = format(new Date(day), 'dd/MM/yyyy');
-    return (
-      Array.isArray(allDatesByItem) && allDatesByItem.includes(formattedDay)
-    );
-  };
+  //           const allDates = getDatesBetween(startDate, endDate);
+  //           const formattedAllDates = allDates.map((date) =>
+  //             moment(date).format('DD/MM/YYYY'),
+  //           );
+
+  //           // Hợp nhất mỗi mảng formattedAllDates vào mảng chính
+  //           return [...accumulator, ...formattedAllDates];
+  //         },
+  //         [],
+  //       );
+
+  //       setAllDatesByItem(allDatesArray);
+  //       // console.log('allDatesByItem:', allDatesArray);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching dayoffs:', error);
+  //   }
+  // };
+  // const getDatesBetween = (start: Date, end: Date) => {
+  //   const startDate = new Date(start);
+  //   const endDate = new Date(end);
+  //   const dates = [];
+  //   let currentDate = startDate;
+
+  //   while (currentDate <= endDate) {
+  //     dates.push(currentDate.toLocaleDateString());
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
+
+  //   return dates;
+  // };
+  // const convertObjectToArray = (datesByItem: {
+  //   [key: string]: Dayoff;
+  // }): DateItem[] => {
+  //   let newArray: DateItem[] = [];
+
+  //   Object.keys(datesByItem).forEach((key) => {
+  //     const { date_start, date_end, note } = datesByItem[key];
+
+  //     const startDate = new Date(date_start);
+  //     const endDate = new Date(date_end);
+
+  //     let currentDate = new Date(startDate);
+
+  //     while (currentDate <= endDate) {
+  //       const formattedDate = format(currentDate, 'dd/MM/yyyy');
+
+  //       // Thêm vào mảng newArray bên trong vòng lặp ngày
+  //       newArray.push({ days: formattedDate, note: note });
+
+  //       currentDate.setDate(currentDate.getDate() + 1);
+  //     }
+  //   });
+
+  //   return newArray;
+  // };
+
+  // const newArray = convertObjectToArray(dateByItem);
+  // console.log(newArray);
+
+  // const isCancelLeaveDay = (day: string): boolean => {
+  //   const formattedDay = format(new Date(day), 'dd/MM/yyyy');
+  //   return (
+  //     Array.isArray(allDatesByItem) && allDatesByItem.includes(formattedDay)
+  //   );
+  // };
   // const subtractDates = (date1Str: string, date2Str: string) => {
   //   const date1 = new Date(date1Str);
   //   const date2 = new Date(date2Str);
@@ -558,11 +633,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     fetchDayoffs();
   }, []);
   useEffect(() => {
-    console.log('allDatesByItem:', allDatesByItem);
-    // console.log('dayoffs: ', dayoffs);
-    // console.log('holidays: ', holidays);
+    // console.log('allDatesByItem:', allDatesByItem);
+    console.log('dayoffs: ', dayoffs);
+    // console.log('dateByItem: ', dateByItem);
+    console.log('holidays: ', holidays);
     calculateTotalTime();
-  }, [allDatesByItem, dayoffs]);
+    // }, [allDatesByItem, dayoffs]);
+  }, [dayoffs]);
   return (
     <>
       {allDays.map((day, rowIndex) => (
@@ -573,11 +650,18 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
             ${isToday(day) ? 'today' : ''}
             ${(() => {
               const holidayInfo = isHoliday(day);
-              return holidayInfo.isHoliday && 'holiday bg-purple';
+              return holidayInfo.isHoliday && 'bg-purple';
             })()}
-            ${isWaiting(day) ? 'waiting bg-yellow' : ''}
-            ${accreptLeave(day) ? 'accrept bg-green' : ''}
+            ${(() => {
+              const dayoffInfo = isDayoff(day);
+              return dayoffInfo.isDayoff
+                ? dayoffInfo.status == 0
+                  ? 'bg-orange'
+                  : 'bg-red '
+                : '';
+            })()}
             
+            ${isWaiting(day) ? 'waiting bg-yellow' : ''}
           `}
         >
           {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
@@ -598,9 +682,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                     : ''
                 }`}
               >
-                {timecardOpen.some(
-                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                ) ? (
+                {isHoliday(day).isHoliday ? (
+                  ''
+                ) : timecardOpen.some(
+                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                  ) ? (
                   <>
                     {timecardOpen
                       .filter(
@@ -721,21 +807,26 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 ) : null}
               </td>
               <td>
-                {accreptLeave(day) ? (
-                  'Xác nhận nghỉ phép'
-                ) : isCancelLeave(day) ? (
-                  <>
-                    Không xác nhận nghỉ phép
-                    <a className="btn btn--green btn--small icon icon--edit">
-                      <img
-                        src={require('../../../../../assets/icnedit.png')}
-                        alt="edit"
-                        className="fluid-image"
-                      />
-                    </a>
-                  </>
-                ) : isHoliday(day).isHoliday ? (
+                {isHoliday(day).isHoliday ? (
                   isHoliday(day).name
+                ) : isDayoff(day).isDayoff ? (
+                  <>
+                    {isDayoff(day).note}
+                    {isDayoff(day).status == 0 ? (
+                      <a
+                        onClick={(event) => openModal(isHoliday(day).id)}
+                        className="btn btn--green btn--small icon icon--edit"
+                      >
+                        <img
+                          src={require('../../../../../assets/icnedit.png')}
+                          alt="edit"
+                          className="fluid-image"
+                        />
+                      </a>
+                    ) : (
+                      ''
+                    )}
+                  </>
                 ) : (
                   <>
                     {timecardOpen.some(

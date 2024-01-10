@@ -14,6 +14,7 @@ export const FormLeave: React.FC = () => {
   const [note, setNote] = useState('');
   const [timeStart, setTimeStart] = useState('07:30');
   const [timeEnd, setTimeEnd] = useState('17:00');
+  const [leaveDate, setLeaveDate] = useState(new Date());
 
   const handleStartDateChange = (date: Date | null) => {
     if (date !== null) {
@@ -27,15 +28,23 @@ export const FormLeave: React.FC = () => {
     }
   };
 
+  const handleLeaveDateChange = (date: Date | null) => {
+    if (date !== null) {
+      setLeaveDate(date);
+    }
+  };
+
   const handleConfirmClick = () => {
     const group_data = {
       user_id: 39,
-      date_start: format(startDate, 'dd-MM-yyyy').toString(),
-      date_end: format(endDate, 'dd-MM-yyyy').toString(),
+      date: format(leaveDate, 'dd-MM-yyyy').toString(),
+      // date_start: format(startDate, 'dd-MM-yyyy').toString(),
+      // date_end: format(endDate, 'dd-MM-yyyy').toString(),
       time_start: timeStart,
       time_end: timeEnd,
       note: note,
-      day_number: calculateDayDifference(startDate, endDate),
+      // day_number: calculateDayDifference(startDate, endDate),
+      day_number: 1,
       status: 0,
       owner: 'admin',
     };
@@ -70,7 +79,7 @@ export const FormLeave: React.FC = () => {
     <div className="form-leave form">
       <div className="form-content">
         <div className="row">
-          <div className="col-6">
+          {/* <div className="col-6">
             <div className="form-group">
               <label>
                 Ngày bắt đầu
@@ -86,6 +95,25 @@ export const FormLeave: React.FC = () => {
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
+              />
+            </div>
+          </div> */}
+          <div className="col-6">
+            <div className="form-group">
+              <label>
+                Ngày nghỉ phép
+                <img
+                  src={require('../../../../assets/icon-time.jpg')}
+                  alt=""
+                  className="fluid-image"
+                />
+              </label>
+              <DatePicker
+                selected={leaveDate}
+                onChange={(date) => handleLeaveDateChange(date)}
+                // selectsStart
+                // startDate={startDate}
+                // endDate={endDate}
               />
             </div>
           </div>
@@ -105,7 +133,7 @@ export const FormLeave: React.FC = () => {
               />
             </div>
           </div>
-          <div className="col-6">
+          {/* <div className="col-6">
             <div className="form-group">
               <label>
                 Ngày kết thúc
@@ -124,7 +152,7 @@ export const FormLeave: React.FC = () => {
                 minDate={startDate}
               />
             </div>
-          </div>
+          </div> */}
           <div className="col-6">
             <div className="form-group form-group--small">
               <label>
