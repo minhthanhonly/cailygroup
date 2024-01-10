@@ -4,7 +4,7 @@ import {
   AddEditMember,
 } from '../../components/Form/Form';
 import { FormLeave } from '../../components/Form/FormLeave';
-import { Dashboard } from '../../components/Dashboard/Dashboard';
+import Dashboard from '../../components/Dashboard/Dashboard';
 import { Button } from '../../components/Button/';
 import TablePage from '../../components/Table/Table';
 import TableCalendar from '../../components/Dashboard/date';
