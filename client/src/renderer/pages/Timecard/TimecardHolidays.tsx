@@ -258,6 +258,7 @@ const TimecardHolidays = () => {
     const closeModaldelete = () => {
         setDeleteModalOpen(false);
     };
+
     let DataTable: FieldHolidays[] = [];
     for (let i = 0; i < listOfHolidays.length; i++) {
         DataTable.push({
@@ -271,14 +272,14 @@ const TimecardHolidays = () => {
             delete: dynamicDelete(listOfHolidays[i].id),
         });
     }
+
+    // insert
     const handleDatePickerChange = (date) => {
         if (date !== null) {
           const dateObjects = date.map((dateString) => new Date(dateString));
           setDays(dateObjects);
         }
     };
-
-    // insert
     const handleSubmint = () => {
         if (!name) {
         console.error('Tên ngày lễ không được để trống');
