@@ -310,7 +310,7 @@ export const TimecardSetting = () => {
         const dataUpdate = { id, name, days };
 
         const response = await axios.put(
-          urlControl + 'TimecardsSettingController.php',
+          'http://cailygroup.com/timecardsholidays/update/',
           dataUpdate,
           { headers: { 'Content-Type': 'application/json' } },
         );
@@ -330,7 +330,7 @@ export const TimecardSetting = () => {
       try {
         const payload = { id: holidayId };
         let response = await axios.delete(
-          urlControl + 'TimecardsSettingController.php',
+          'http://cailygroup.com/timecardsholidays/delete/',
           {
             headers: {
               'Content-Type': 'application/json',
@@ -429,9 +429,8 @@ export const TimecardSetting = () => {
     setName('');
     setDays([new Date()]);
     axios
-      .post(urlControl + 'TimecardsSettingController.php', { holiday_data })
+      .post('http://cailygroup.com/timecardsholidays/add/', holiday_data)
       .then((response) => {
-        console.log(response.data);
         // Xử lý thành công nếu cần
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
       })

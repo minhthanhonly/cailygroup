@@ -36,7 +36,7 @@ export default function UserEdit() {
           "id": res2.data.id,
           "userid": res2.data.userid,
           "realname": res2.data.realname,
-          "authority": res2.data.authority_name,
+          "roles": res2.data.authority_name,
           "user_group": res2.data.group_name,
         }
         localStorage.setItem('users', JSON.stringify(users));

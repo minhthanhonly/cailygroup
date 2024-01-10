@@ -30,17 +30,17 @@ function MemberEdit() {
     if(res.data.success){
       setMessage(res.data.success);
       setTimeout(() => {
-        const isLoggedIn = localStorage.getItem('login');
-        const roles = res2.data.authority_name;
-        const users = {
-          "id": res2.data.id,
-          "userid": res2.data.userid,
-          "realname": res2.data.realname,
-          "authority": res2.data.authority_name,
-          "user_group": res2.data.group_name,
-        }
-        localStorage.setItem('users', JSON.stringify(users));
-        setAuth({ isLoggedIn, roles, users });
+        // const isLoggedIn = localStorage.getItem('login');
+        // const roles = res2.data.authority_name;
+        // const users = {
+        //   "id": res2.data.id,
+        //   "userid": res2.data.userid,
+        //   "realname": res2.data.realname,
+        //   "roles": res2.data.authority_name,
+        //   "user_group": res2.data.group_name,
+        // }
+        // localStorage.setItem('users', JSON.stringify(users));
+        // setAuth({ isLoggedIn, roles, users });
         navigate('/members');
       }, 2000);
     }
