@@ -50,9 +50,9 @@ interface TimecardData {
 interface CombinedProps extends SelectMY {}
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
-  const [usersID, setUsersID] = useState();
   const [admin, setAdmin] = useState(false);
   // const { auth } = useAuth();
+  const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   if (users) {
     const isAdmin = users.roles === UserRole.ADMIN;

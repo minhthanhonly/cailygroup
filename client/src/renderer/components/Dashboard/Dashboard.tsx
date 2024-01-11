@@ -7,13 +7,52 @@ import React, {
 } from 'react';
 import axios from 'axios';
 import './Dashboard.scss';
-import { useTimeContext } from '../../context/TimeProvider';
 import DashboardTime from './DashboardTime';
 
 function Dashboard() {
-  const { startTime, setStartTime } = useTimeContext();
+  const [usersID, setUsersID] = useState();
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  if (users) {
+    useEffect(() => {
+      setUsersID(users.id);
+      loadStart();
+    }, [usersID]);
+  }
+  const [startTime, setStartTime] = useState<
+    { hours: string; minutes: string } | undefined
+  >(undefined);
+  const [endTime, setEndTime] = useState<
+    { hours: string; minutes: string } | undefined
+  >(undefined);
+  const [checkStart, setCheckStart] = useState(false);
+  const [checkPause, setCheckPause] = useState(false);
+  const [checkEnd, setCheckEnd] = useState(false);
 
-  const [isID, setId] = useState(null);
+  const loadStart = async () => {
+    try {
+      const response = await axios.get(
+        'http://cailygroup.com/timecards/load/' + usersID,
+      );
+      console.log(response.data);
+      if (response.data && response.data.timecard_open) {
+        const timecardClose = response.data.timecard_close;
+        if (response.data.timecard_close) {
+          console.log(response.data.timecard_close);
+          const [hours, minutes] = timecardClose.split(':');
+          setEndTime({ hours, minutes });
+          setCheckEnd(true);
+        }
+        const timecardOpen = response.data.timecard_open;
+        const [hours, minutes] = timecardOpen.split(':');
+        setStartTime({ hours, minutes });
+        setCheckStart(true);
+      } else {
+        console.log('No timecard data found.');
+      }
+    } catch (error) {
+      console.error('Error fetching timecards:', error);
+    }
+  };
   const handleStart = async () => {
     try {
       const response = await axios.get(
@@ -41,16 +80,10 @@ function Dashboard() {
         timecard_temp: 0,
         owner: 'admin',
       };
-      console.log(dataTimeCard);
       const responseTimeCard = await axios.post(
         'http://cailygroup.com/timecards/add',
         { dataTimeCard },
       );
-
-      console.log(responseTimeCard.data);
-      console.log(responseTimeCard.data.id_timecard);
-
-      setId(responseTimeCard.data.id_timecard);
       const dataTimeCardDetails = {
         id_groupwaretimecard: responseTimeCard.data.id_timecard,
         timecard_open: timecard_open_time,
@@ -62,22 +95,49 @@ function Dashboard() {
         'http://cailygroup.com/timecarddetails/add',
         { dataTimeCardDetails },
       );
-
-      console.log(responseTimeCardDetails.data);
+      setCheckStart(true);
+      loadStart();
     } catch (error) {
       console.error(
         'Lỗi khi lấy thời gian từ API hoặc gửi dữ liệu lên server:',
         error,
       );
     }
-    const handleDelay = async () => {
-      try {
-      } catch (error) {}
-    };
-    const handleEnd = async () => {
-      try {
-      } catch (error) {}
-    };
+  };
+  const handleDelay = async () => {
+    try {
+    } catch (error) {}
+  };
+  const handleEnd = async () => {
+    try {
+      const res = await axios.get(
+        'http://cailygroup.com/timecards/load/' + usersID,
+      );
+      const response = await axios.get(
+        'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
+      );
+      let { datetime } = response.data;
+      let currentHour = new Date(datetime).getHours();
+      let currentMinutes = new Date(datetime).getMinutes();
+      let timecard_open_time = `${currentHour}:${String(
+        currentMinutes,
+      ).padStart(2, '0')}`;
+      const dataTime = {
+        id: res.data.id_groupwaretimecard,
+        timecard_open: res.data.timecard_open,
+        timecard_now: timecard_open_time,
+      };
+      const re = await axios.post(
+        'http://cailygroup.com/timecarddetails/update',
+        { dataTime },
+      );
+      console.log(re.data);
+      const timecardClose = res.data.timecard_Close;
+      const [hours, minutes] = timecardClose.split(':');
+      setEndTime({ hours, minutes });
+      setCheckEnd(true);
+      loadStart();
+    } catch (error) {}
   };
 
   return (
@@ -87,85 +147,109 @@ function Dashboard() {
         <h4>Thời gian làm việc hôm nay</h4>
         <div className="Dashboard-action">
           <div className="Dashboard-action--start">
-            <p>Bắt đầu</p>
-            <button className="Dashboard-action--circle" onClick={handleStart}>
-              <img
-                src={require('../../../../assets/icon-play.png')}
-                alt=""
-                className="fluid-image"
-              />
-            </button>
-            <div className="card-time">
-              <div className="card-time--hour">
-                <small>hours</small>
-                <input
-                  value={startTime.sHours}
-                  onChange={(e) => e.target.value}
-                />
+            {checkStart ? (
+              <div className="card-time">
+                <div className="card-time--hour">
+                  <small>hours</small>
+                  <input
+                    value={startTime?.hours || '00:00'}
+                    onChange={(e) => e.target.value}
+                  />
+                </div>
+                :
+                <div className="card-time--minute">
+                  <small>minutes</small>
+                  <input
+                    value={startTime?.minutes || '00:00'}
+                    onChange={(e) => e.target.value}
+                  />
+                </div>
               </div>
-              :
-              <div className="card-time--minute">
-                <small>minutes</small>
-                <input
-                  value={startTime.sMinutes}
-                  onChange={(e) => e.target.value}
-                />
-              </div>
-            </div>
+            ) : (
+              <>
+                <p>Bắt đầu</p>
+                <button
+                  className="Dashboard-action--circle"
+                  onClick={handleStart}
+                >
+                  <img
+                    src={require('../../../../assets/icon-play.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </button>
+              </>
+            )}
           </div>
           <div className="Dashboard-action--pause">
-            <p>Tạm ngưng</p>
-            <button className="Dashboard-action--circle">
-              <img
-                src={require('../../../../assets/icon-pause.png')}
-                alt=""
-                className="fluid-image"
-              />
-            </button>
-            <div className="card-time">
-              <div className="card-time--hour">
-                <small>hours</small>
-                <input
-                  value={startTime.sHours}
-                  onChange={(e) => e.target.value}
-                />
+            {checkPause ? (
+              <div className="card-time">
+                <div className="card-time--hour">
+                  <small>hours</small>
+                  <input
+                    value={endTime?.hours || '00:00'}
+                    onChange={(e) => e.target.value}
+                  />
+                </div>
+                :
+                <div className="card-time--minute">
+                  <small>minutes</small>
+                  <input
+                    value={endTime?.minutes || '00:00'}
+                    onChange={(e) => e.target.value}
+                  />
+                </div>
               </div>
-              :
-              <div className="card-time--minute">
-                <small>minutes</small>
-                <input
-                  value={startTime.sMinutes}
-                  onChange={(e) => e.target.value}
-                />
-              </div>
-            </div>
+            ) : (
+              <>
+                <p>Tạm ngưng</p>
+                <button
+                  className="Dashboard-action--circle"
+                  onClick={handleDelay}
+                >
+                  <img
+                    src={require('../../../../assets/icon-pause.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </button>
+              </>
+            )}
           </div>
           <div className="Dashboard-action--end">
-            <p>Kết thúc</p>
-            <button className="Dashboard-action--circle">
-              <img
-                src={require('../../../../assets/icon-check.png')}
-                alt=""
-                className="fluid-image"
-              />
-            </button>
-            <div className="card-time">
-              <div className="card-time--hour">
-                <small>hours</small>
-                <input
-                  value={startTime.sHours}
-                  onChange={(e) => e.target.value}
-                />
+            {checkEnd ? (
+              <div className="card-time">
+                <div className="card-time--hour">
+                  <small>hours</small>
+                  <input
+                    value={endTime?.hours || '00:00'}
+                    onChange={(e) => e.target.value}
+                  />
+                </div>
+                :
+                <div className="card-time--minute">
+                  <small>minutes</small>
+                  <input
+                    value={endTime?.minutes || '00:00'}
+                    onChange={(e) => e.target.value}
+                  />
+                </div>
               </div>
-              :
-              <div className="card-time--minute">
-                <small>minutes</small>
-                <input
-                  value={startTime.sMinutes}
-                  onChange={(e) => e.target.value}
-                />
-              </div>
-            </div>
+            ) : (
+              <>
+                <p>Kết thúc</p>
+                <button
+                  className="Dashboard-action--circle"
+                  onClick={handleEnd}
+                >
+                  <img
+                    src={require('../../../../assets/icon-check.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
