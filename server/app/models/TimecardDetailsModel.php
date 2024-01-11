@@ -133,8 +133,6 @@
             $data = json_decode(file_get_contents("php://input"), true);
             $id = isset($data["id"]) ? $data["id"] : null;
             $comment = isset($data["comment"]) ? $data["comment"] : null;
-            // echo $id;
-            // exit;
             // if ($id !== null && $comment !== null) {
                 $sql = "UPDATE timecard_details SET timecard_comment = ? WHERE id_groupwaretimecard = ?";
                 $stmt = $conn->prepare($sql);
