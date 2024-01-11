@@ -72,6 +72,11 @@ export const TimecardEdit = () => {
     setSelectedYear(year);
     setDaysInMonth(daysInMonth);
   };
+
+  const handleUserSelect = (userId: any) => {
+    // Use the selected user's id here as needed
+    console.log("Selected user ID:", userId);
+  };
   return (
     <>
       <NavTimcard role="admin" />
@@ -81,7 +86,7 @@ export const TimecardEdit = () => {
             <SelectCustom onGroupChange={handleGroupChange} />
           </div>
           <div className="box-group__item">
-            <SelectCustomName selectedGroupData={selectedGroupData} />
+            <SelectCustomName selectedGroupData={selectedGroupData} onUserSelect={handleUserSelect} />
           </div>
         </div>
         <div className="table-container table--01">
