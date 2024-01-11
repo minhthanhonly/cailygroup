@@ -174,6 +174,9 @@ export const Timecard = () => {
       ],
       { origin: `A${startRow - 2}` },
     );
+    wsData['!merges'] = [{ s: { r: 2, c: 0 }, e: { r: 3, c: 7 } }];
+    const mergedCellAddress = XLSX.utils.encode_cell({ r: 2, c: 0 });
+    wsData[mergedCellAddress].s = { alignment: { horizontal: 'center', vertical: 'center' } };
 
     // Đẩy bảng xuống 3 ô
     XLSX.utils.sheet_add_aoa(wsData, [[]], { origin: `A${startRow - 2}` });
