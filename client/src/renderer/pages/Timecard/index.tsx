@@ -22,42 +22,9 @@ export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
 
-  // const { id } = useParams<{ id: string }>();
-  // const { month, year } = useParams<{ month?: string; year?: string }>();
-
   const location = useLocation();
-  const { id, month, year } = (location.state as { id: number; month: string; year: string }) || {};
-
-  useEffect(() => {
-    // Check if location.state is not null or undefined before destructuring
-    if (id !== undefined && month !== undefined && year !== undefined) {
-      // Log to check the values
-      console.log('IDssss:', id);
-      console.log('Monthssss:', month);
-      console.log('Yearssssss:', year);
-
-      // Additional processing with id, month, year
-    } else {
-      console.error('Invalid or missing parameters in location.state');
-    }
-  }, [id, month, year]);
-
-
-  useEffect(() => {
-    if (id) {
-      // Gọi API chỉ khi id có giá trị
-      axios.get(`http://cailygroup.com/users/${id}`)
-        .then(response => {
-          const user = response.data;
-          console.log("User data:", user);
-          // Thực hiện các xử lý khác với dữ liệu user nếu cần
-        })
-        .catch(error => console.error('Lỗi khi lấy dữ liệu người dùng:', error));
-    }
-  }, [id, month, year]);
-
-
-
+  const { id, month, year } =
+    (location.state as { id: number; month: string; year: string }) || {};
 
   type DatabaseTimeCardDetails = {
     id: string;
@@ -88,6 +55,18 @@ export const Timecard = () => {
     setDaysInMonth(daysInMonth);
     updateMonthAndYear(month, year);
   };
+
+  console.log(daysInMonth);
+
+  useEffect(() => {
+    if (id !== undefined && month !== undefined && year !== undefined) {
+      console.log('IDssss:', id);
+      console.log('Monthssss:', month);
+      console.log('Yearssssss:', year);
+    } else {
+      console.error('Invalid or missing parameters in location.state');
+    }
+  }, [id, month, year]);
 
   const updateMonthAndYear = (newMonth: string, newYear: string) => {
     const month = newMonth;
@@ -158,9 +137,23 @@ export const Timecard = () => {
     }
 
     // Thêm tên người dùng và ngày tháng vào hàng đầu tiên của bảng
-    XLSX.utils.sheet_add_aoa(wsData, [
-      [` ${currentUser?.realname || ''} \n ${month}/${year}`, '', '', '', '', '', '', '', ''],
-    ], { origin: `A${startRow - 2}` });
+    XLSX.utils.sheet_add_aoa(
+      wsData,
+      [
+        [
+          ` ${currentUser?.realname || ''} \n ${month}/${year}`,
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+        ],
+      ],
+      { origin: `A${startRow - 2}` },
+    );
 
     // Đẩy bảng xuống 3 ô
     XLSX.utils.sheet_add_aoa(wsData, [[]], { origin: `A${startRow - 2}` });
@@ -171,7 +164,9 @@ export const Timecard = () => {
       return;
     }
     const tableRows = table.getElementsByTagName('tr');
-    const tableWithRows = table as HTMLTableElement & { rows: HTMLCollectionOf<HTMLTableRowElement> };
+    const tableWithRows = table as HTMLTableElement & {
+      rows: HTMLCollectionOf<HTMLTableRowElement>;
+    };
 
     // Lấy dữ liệu từ dòng 10 trở đi và tạo sheet mới
     const filteredData = [];
@@ -185,7 +180,9 @@ export const Timecard = () => {
     }
 
     // Thêm dữ liệu vào sheet mới
-    XLSX.utils.sheet_add_aoa(wsData, filteredData, { origin: `A${startRow - 1}` });
+    XLSX.utils.sheet_add_aoa(wsData, filteredData, {
+      origin: `A${startRow - 1}`,
+    });
 
     // Lấy tên sheet từ bảng
     const sheetName = `Timecards_${currentUser?.realname}_${month}_${year}`;

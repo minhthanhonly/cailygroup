@@ -16,12 +16,12 @@ export const FormLeave: React.FC = () => {
   const [timeStart, setTimeStart] = useState('07:30');
   const [timeEnd, setTimeEnd] = useState('17:00');
   const [leaveDate, setLeaveDate] = useState(new Date());
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   useEffect(() => {
     setUsersID(users.id);
   }, []);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const openModaldelete = () => {
     setDeleteModalOpen(true);
   };
@@ -211,33 +211,37 @@ export const FormLeave: React.FC = () => {
         </div>
       </div>
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
-        <h2 className="mb15">Xác nhận xin nghỉ phép:</h2>
-        <table className="table-modal">
-          <tr>
-            <td>Ngày xin nghỉ</td>
-            <td>{format(leaveDate, 'dd-MM-yyyy').toString()}</td>
-          </tr>
-          <tr>
-            <td>Giờ bắt đầu</td>
-            <td>{timeStart}</td>
-          </tr>
-          <tr>
-            <td>Giờ kết thúc</td>
-            <td>{timeEnd}</td>
-          </tr>
-          <tr>
-            <td>Lý do nghỉ</td>
-            <td>{note}</td>
-          </tr>
-        </table>
-        <div className="wrp-button">
-          <button className="btn btn--green" onClick={handleConfirmClick}>
-            Đồng ý
-          </button>
-          <button className="btn btn--orange" onClick={closeModaldelete}>
-            Hủy
-          </button>
-        </div>
+        <>
+          <h2 className="mb15">Xác nhận xin nghỉ phép:</h2>
+          <table className="table-modal">
+            <tbody>
+              <tr>
+                <td>Ngày xin nghỉ</td>
+                <td>{format(leaveDate, 'dd-MM-yyyy').toString()}</td>
+              </tr>
+              <tr>
+                <td>Giờ bắt đầu</td>
+                <td>{timeStart}</td>
+              </tr>
+              <tr>
+                <td>Giờ kết thúc</td>
+                <td>{timeEnd}</td>
+              </tr>
+              <tr>
+                <td>Lý do nghỉ</td>
+                <td>{note}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="wrp-button">
+            <button className="btn btn--green" onClick={handleConfirmClick}>
+              Đồng ý
+            </button>
+            <button className="btn btn--orange" onClick={closeModaldelete}>
+              Hủy
+            </button>
+          </div>
+        </>
       </Modaldelete>
     </div>
   );
