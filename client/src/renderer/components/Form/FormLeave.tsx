@@ -7,6 +7,7 @@ import TimePickerButton from '../Modal/TimeSelect';
 import { urlControl } from '../../routes/server';
 import { format } from 'date-fns';
 import axios from 'axios';
+import Modaldelete from '../Modal/Modaldelete';
 
 export const FormLeave: React.FC = () => {
   const [startDate, setStartDate] = useState(new Date());
@@ -15,12 +16,18 @@ export const FormLeave: React.FC = () => {
   const [timeStart, setTimeStart] = useState('07:30');
   const [timeEnd, setTimeEnd] = useState('17:00');
   const [leaveDate, setLeaveDate] = useState(new Date());
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   useEffect(() => {
     setUsersID(users.id);
   }, []);
-
+  const openModaldelete = () => {
+    setDeleteModalOpen(true);
+  };
+  const closeModaldelete = () => {
+    setDeleteModalOpen(false);
+  };
   const handleStartDateChange = (date: Date | null) => {
     if (date !== null) {
       setStartDate(date);
@@ -67,6 +74,7 @@ export const FormLeave: React.FC = () => {
           console.error('Server error message:', error.response.data);
         }
       });
+    closeModaldelete();
   };
 
   const calculateDayDifference = (start: Date, end: Date) => {
@@ -191,12 +199,46 @@ export const FormLeave: React.FC = () => {
           </div>
         </div>
         <div className="wrp-button">
-          <button className="btn btn--green" onClick={handleConfirmClick}>
+          <button
+            className="btn btn--green"
+            onClick={(event) => {
+              openModaldelete();
+            }}
+          >
             Xác nhận
           </button>
           <button className="btn btn--orange">Hủy</button>
         </div>
       </div>
+      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        <h2 className="mb15">Xác nhận xin nghỉ phép:</h2>
+        <table className="table-modal">
+          <tr>
+            <td>Ngày xin nghỉ</td>
+            <td>{format(leaveDate, 'dd-MM-yyyy').toString()}</td>
+          </tr>
+          <tr>
+            <td>Giờ bắt đầu</td>
+            <td>{timeStart}</td>
+          </tr>
+          <tr>
+            <td>Giờ kết thúc</td>
+            <td>{timeEnd}</td>
+          </tr>
+          <tr>
+            <td>Lý do nghỉ</td>
+            <td>{note}</td>
+          </tr>
+        </table>
+        <div className="wrp-button">
+          <button className="btn btn--green" onClick={handleConfirmClick}>
+            Đồng ý
+          </button>
+          <button className="btn btn--orange" onClick={closeModaldelete}>
+            Hủy
+          </button>
+        </div>
+      </Modaldelete>
     </div>
   );
 };
