@@ -43,9 +43,11 @@ const ManagerBranch = [
 const NavTimcard: React.FC<Role> = ({ role }) => {
   const { auth } = useAuth();
 
-  const isAdmin = auth.roles === UserRole.ADMIN;
-  const isManager = auth.roles === UserRole.MANAGER;
-  const isLeader = auth.roles === UserRole.LEADER;
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+  const isAdmin = users.roles === UserRole.ADMIN;
+  const isManager = users.roles === UserRole.MANAGER;
+  const isLeader = users.roles === UserRole.LEADER;
   return (
     <>
       {isAdmin && <ListBranch branch={AdminBranch} />}
