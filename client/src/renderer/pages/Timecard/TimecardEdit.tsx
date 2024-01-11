@@ -22,6 +22,7 @@ interface FieldUsers {
 }
 
 export const TimecardEdit = () => {
+  const [userID, setUserID] = useState();
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
@@ -74,8 +75,7 @@ export const TimecardEdit = () => {
   };
 
   const handleUserSelect = (userId: any) => {
-    // Use the selected user's id here as needed
-    console.log("Selected user ID:", userId);
+    setUserID(userId);
   };
   return (
     <>
@@ -86,7 +86,10 @@ export const TimecardEdit = () => {
             <SelectCustom onGroupChange={handleGroupChange} />
           </div>
           <div className="box-group__item">
-            <SelectCustomName selectedGroupData={selectedGroupData} onUserSelect={handleUserSelect} />
+            <SelectCustomName
+              selectedGroupData={selectedGroupData}
+              onUserSelect={handleUserSelect}
+            />
           </div>
         </div>
         <div className="table-container table--01">
@@ -99,6 +102,7 @@ export const TimecardEdit = () => {
                 selectedMonth={selectedMonth}
                 selectedYear={selectedYear}
                 daysInMonth={daysInMonth}
+                userID={userID}
               />
             </tbody>
           </table>

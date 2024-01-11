@@ -19,7 +19,7 @@ const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({ onChange }) => {
     { length: 5 },
     (_, index) => new Date().getFullYear() - index,
   );
-  console.log(selectedMonth);
+  // console.log(selectedMonth);
   useEffect(() => {
     const currentMonth = new Date().getMonth() + 1;
     const currentYear = new Date().getFullYear();
