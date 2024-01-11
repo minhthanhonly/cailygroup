@@ -142,21 +142,14 @@
             global $conn;
             $query = "SELECT * FROM dayoffs WHERE user_id = '$id'";
             $result = $conn->query($query);
-
             if ($result) {
-                // Chuyển kết quả thành mảng để trả về
                 $dayoffs = array();
                 while ($row = $result->fetch_assoc()) {
                     $dayoffs[] = $row;
                 }
-
-                // Đóng kết nối
                 $conn->close();
-
-                // Trả về kết quả dưới dạng JSON
                 echo json_encode($dayoffs);
             } else {
-                // Xử lý lỗi nếu có
                 echo json_encode(array('error' => 'Error in query'));
             }
         }
@@ -164,10 +157,7 @@
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
             if (isset($id)) {
-                // $id = mysqli_real_escape_string($conn, $data['id']);
-
                 $deleteQuery = "DELETE FROM dayoffs WHERE id = $id";
-
                 if (mysqli_query($conn, $deleteQuery)) {
                     http_response_code(200);
                     echo json_encode(["message" => "Data deleted successfully"]);
@@ -184,12 +174,10 @@
         function updateDayoffs($id){
             global $conn;
             if (isset($id)) {
-                // Cập nhật trạng thái trong cơ sở dữ liệu
                 $status = 1;
                 $sql = "UPDATE dayoffs SET status = ? WHERE id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("ii", $status, $id);
-
                 if ($stmt->execute()) {
                     http_response_code(200);
                     echo json_encode(["success" => true]);
@@ -197,7 +185,27 @@
                     http_response_code(500);
                     echo json_encode(["success" => false, "error" => $stmt->error]);
                 }
-
+                $stmt->close();
+            } else {
+                http_response_code(400);
+                echo json_encode(["success" => false, "error" => "Invalid parameters"]);
+            }
+        }
+        function updateDayoffComment($id){
+            global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            $comment = $data['comment'];
+            if (isset($id)) {
+                $sql = "UPDATE dayoffs SET note = ? WHERE id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $comment, $id);
+                if ($stmt->execute()) {
+                    http_response_code(200);
+                    echo json_encode(["success" => true]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                }
                 $stmt->close();
             } else {
                 http_response_code(400);

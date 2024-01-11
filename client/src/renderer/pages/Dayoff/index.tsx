@@ -6,8 +6,19 @@ import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { urlControl } from '../../routes/server';
+import Modaldelete from '../../components/Modal/Modaldelete';
 
 export const Dayoff = () => {
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [id, setID] = useState();
+  const openModaldelete = (ids: number) => {
+    setID(ids);
+    setDeleteModalOpen(true);
+  };
+  const closeModaldelete = () => {
+    setDeleteModalOpen(false);
+  };
+
   type FieldGroups = {
     id: string;
     realname: string;
@@ -26,15 +37,16 @@ export const Dayoff = () => {
 
     if (listOfGroups[i].status === '0') {
       dynamicAction = (
-        <a
-          className="btn btn--medium btn--orange"
-          href={listOfGroups[i].id}
-          onClick={(event) => {
-            deleteStatus(listOfGroups[i].id, event);
-          }}
-        >
-          Hủy
-        </a>
+        <>
+          <button
+            className="btn btn--medium btn--orange"
+            onClick={(event) => {
+              openModaldelete(listOfGroups[i].id);
+            }}
+          >
+            Hủy
+          </button>
+        </>
       );
     } else {
       dynamicAction = (
@@ -58,8 +70,7 @@ export const Dayoff = () => {
   }
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang
-  // Tính tổng số trang
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
 
   const handlePageChange = (page: any) => {
@@ -70,26 +81,13 @@ export const Dayoff = () => {
     dayoffId: any,
     event: { preventDefault: () => void } | undefined,
   ) => {
+    console.log(dayoffId);
     if (event) {
       event.preventDefault();
       try {
         const payload = { id: dayoffId };
         await axios.delete('http://cailygroup.com/dayoffs/delete/' + dayoffId);
-        // await axios.delete(urlControl + 'DayoffsController.php', {
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   data: payload,
-        // });
         const updatedList = await axios.get('http://cailygroup.com/dayoffs/');
-        // const updatedList = await axios.get(
-        //   urlControl + 'DayoffsController.php',
-        //   {
-        //     params: {
-        //       method: 'GET',
-        //     },
-        //   },
-        // );
         setListOfGroups(updatedList.data);
 
         setCurrentPage(1);
@@ -97,20 +95,13 @@ export const Dayoff = () => {
         console.error('Lỗi khi cập nhật trạng thái:', error);
       }
     }
+    closeModaldelete();
   };
+
   useEffect(() => {
     axios.get('http://cailygroup.com/dayoffs/').then((response) => {
       setListOfGroups(response.data);
     });
-    // axios
-    //   .get(urlControl + 'DayoffsController.php', {
-    //     params: {
-    //       method: 'GET',
-    //     },
-    //   })
-    //   .then((response) => {
-    //     setListOfGroups(response.data);
-    //   });
   }, [currentPage]);
   return (
     <>
@@ -139,9 +130,25 @@ export const Dayoff = () => {
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
+      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        <>
+          <h2 className="mb15">Xác nhận hủy nghỉ phép:</h2>
+          <div className="wrp-button">
+            <a
+              className="btn btn--green"
+              onClick={(event) => {
+                deleteStatus(id, event);
+              }}
+              href={id}
+            >
+              Đồng ý
+            </a>
+            <button className="btn btn--orange" onClick={closeModaldelete}>
+              Hủy
+            </button>
+          </div>
+        </>
+      </Modaldelete>
     </>
   );
 };
-function setCurrentPage(page: any) {
-  throw new Error('Function not implemented.');
-}

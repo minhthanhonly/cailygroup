@@ -5,10 +5,20 @@ import { CTableHead } from '../../components/Table/CTableHead';
 import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import { urlControl } from '../../routes/server';
 import { SelectCustom } from '../../components/Table/SelectCustom';
+import Modaldelete from '../../components/Modal/Modaldelete';
 
 export const DayoffApply = () => {
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [id, setID] = useState();
+  const openModaldelete = (ids: number) => {
+    setID(ids);
+    setDeleteModalOpen(true);
+  };
+  const closeModaldelete = () => {
+    setDeleteModalOpen(false);
+  };
+
   type FieldGroups = {
     id: any;
     realname: string;
@@ -128,14 +138,6 @@ export const DayoffApply = () => {
         const response = await axios.post(
           'http://cailygroup.com/dayoffs/update/' + dayoffId,
         );
-        // const response = await axios.post(
-        //   urlControl + 'DayoffsController.php',
-        //   {
-        //     method: 'UPDATE_STATUS',
-        //     id: dayoffId,
-        //     status: 1, // Đặt status thành 1 khi được chấp nhận
-        //   },
-        // );
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -200,6 +202,25 @@ export const DayoffApply = () => {
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
+      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        <>
+          <h2 className="mb15">Xác nhận hủy nghỉ phép:</h2>
+          <div className="wrp-button">
+            <a
+              className="btn btn--green"
+              onClick={(event) => {
+                deleteStatus(id, event);
+              }}
+              href={id}
+            >
+              Đồng ý
+            </a>
+            <button className="btn btn--orange" onClick={closeModaldelete}>
+              Hủy
+            </button>
+          </div>
+        </>
+      </Modaldelete>
     </>
   );
 };

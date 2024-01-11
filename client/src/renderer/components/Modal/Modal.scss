@@ -59,10 +59,10 @@
     .minus {
     }
   }
-  .hdglv2{
+  .hdglv2 {
     text-align: left;
   }
-  .form-user{
+  .form-user {
     width: 90rem;
     align-items: center;
     margin: 0 auto;
@@ -92,10 +92,10 @@
     text-align: left;
     color: #888888;
   }
-  .form-group{
+  .form-group {
     width: 90rem;
   }
-  .holiday{
+  .holiday {
     align-items: center;
     margin: 3rem auto 0;
     .form-group {
@@ -115,7 +115,7 @@
     }
     .form-group img {
       width: 3rem;
-      padding-right:0;
+      padding-right: 0;
       padding-left: 0;
       margin-right: 1.5rem;
     }
@@ -173,9 +173,13 @@
     left: 0;
     background-color: rgba(0, 0, 0, 0.5);
   }
-  .btn{
+  .btn {
     width: 8rem;
     font-size: 1.4rem;
     height: 4rem;
   }
+}
+
+.table-modal td:nth-child(1) {
+  min-width: 10rem;
 }

@@ -50,9 +50,9 @@ interface TimecardData {
 interface CombinedProps extends SelectMY {}
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
-  const [usersID, setUsersID] = useState(39);
   const [admin, setAdmin] = useState(false);
   // const { auth } = useAuth();
+  const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   if (users) {
     const isAdmin = users.roles === UserRole.ADMIN;
@@ -62,7 +62,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       if (isAdmin || isManager || isLeader) {
         setAdmin(true);
       }
-      // setUsersID(users.id);
+      setUsersID(users.id);
     }, []);
   }
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
@@ -186,8 +186,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     { format: (date: number | Date) => format(startOfDay(date), 'EEEE') }, // Định dạng ngày thành thứ
   ];
 
-  const [isID, setId] = useState(null);
   // Hàm xử lý khi click vào nút bắt đầu
+  const [isID, setId] = useState(null);
   const handleButtonClick = async () => {
     try {
       const response = await axios.get(
@@ -424,11 +424,15 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   const [timecardOpen, setTimecardOpen] = useState<TimecardData[]>([]);
   const fetchTimecardOpen = async () => {
+    // console.log(usersID);
     try {
-      const response = await axios.get('http://cailygroup.com/timecards');
+      const response = await axios.get(
+        'http://cailygroup.com/timecards/getall/' + usersID,
+      );
       if (response.data && Array.isArray(response.data)) {
         setTimecardOpen(response.data);
       }
+      console.log(response.data);
     } catch (error) {
       console.error('Error fetching timecard_open:', error);
     }
@@ -443,21 +447,33 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         },
       );
       console.log(response.data);
-      fetchTimecardOpen();
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
+    fetchTimecardOpen();
     closeModal();
   };
-  const handleDeleteDayoffs = (id: number) => {
-    console.log(id);
+  const handleUpdateCommentDayoffs = async (id: number) => {
+    try {
+      const response = await axios.post(
+        'http://cailygroup.com/dayoffs/updatecomment/' + id,
+        {
+          comment: commentText,
+        },
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
+    }
+    fetchDayoffs();
+    closeModal();
   };
 
   useEffect(() => {
     fetchTimecardOpen();
     fetchHolidays();
     fetchDayoffs();
-  }, []);
+  }, [usersID]);
   useEffect(() => {
     calculateTotalTime();
   }, [dayoffs]);
@@ -636,7 +652,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                     {isDayoff(day).status == 0 ? (
                       <a
                         onClick={(event) => {
-                          openModal(isHoliday(day).id, true);
+                          openModal(isDayoff(day).id, true);
                         }}
                         className="btn btn--green btn--small icon icon--edit"
                       >
@@ -745,7 +761,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                     className="btn"
                     onClick={() => {
                       if (isUpdatingDayoff) {
-                        handleDeleteDayoffs(currentItemId || 0);
+                        handleUpdateCommentDayoffs(currentItemId || 0);
                       } else {
                         handleUpdateComment(currentItemId || 0);
                       }

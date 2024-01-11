@@ -1,8 +1,35 @@
 <?php
     class TimecardsModel{
-        function getTimecards(){
+        function getTimecardUser($id) {
             global $conn;
-            $allTimecards = mysqli_query($conn, "SELECT * FROM timecards");
+            $todayDate = date("d-m-Y");
+            $sql = "SELECT td.timecard_open, td.timecard_close, td.	id_groupwaretimecard
+                FROM timecard_details td
+                INNER JOIN timecards tc ON td.id_groupwaretimecard = tc.id
+                WHERE tc.user_id = $id AND tc.timecard_date = '$todayDate'";
+            $result = mysqli_query($conn, $sql);
+
+            if ($result) {
+                if (mysqli_num_rows($result) >= 0) {
+                    $row = mysqli_fetch_assoc($result);
+                    if ($row !== null) {
+                        echo json_encode($row);
+                    } else {
+                        echo json_encode(["result" => "No timecard data found for the given criteria"]);
+                    }
+                } else {
+                    echo json_encode(["result" => "No data found for the given criteria"]);
+                    return;
+                }
+            } else {
+                echo json_encode(["result" => "Error in query: " . mysqli_error($conn)]);
+                return;
+            }
+        }
+
+        function getTimecards($id){
+            global $conn;
+            $allTimecards = mysqli_query($conn, "SELECT * FROM timecards  WHERE user_id = $id");
             if (mysqli_num_rows($allTimecards) > 0) {
                 $json_array["timecarddata"] = array();
 
