@@ -204,6 +204,29 @@
                 echo json_encode(["success" => false, "error" => "Invalid parameters"]);
             }
         }
+        function updateDayoffComment($id){
+            global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            $comment = $data['comment'];
+            if (isset($id)) {
+                $sql = "UPDATE dayoffs SET note = ? WHERE id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $comment, $id);
+
+                if ($stmt->execute()) {
+                    http_response_code(200);
+                    echo json_encode(["success" => true]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                }
+
+                $stmt->close();
+            } else {
+                http_response_code(400);
+                echo json_encode(["success" => false, "error" => "Invalid parameters"]);
+            }
+        }
     }
 
 ?>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 
 import './From.scss';
@@ -15,6 +15,11 @@ export const FormLeave: React.FC = () => {
   const [timeStart, setTimeStart] = useState('07:30');
   const [timeEnd, setTimeEnd] = useState('17:00');
   const [leaveDate, setLeaveDate] = useState(new Date());
+  const [usersID, setUsersID] = useState();
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  useEffect(() => {
+    setUsersID(users.id);
+  }, []);
 
   const handleStartDateChange = (date: Date | null) => {
     if (date !== null) {
@@ -36,7 +41,7 @@ export const FormLeave: React.FC = () => {
 
   const handleConfirmClick = () => {
     const group_data = {
-      user_id: 39,
+      user_id: usersID,
       date: format(leaveDate, 'dd-MM-yyyy').toString(),
       // date_start: format(startDate, 'dd-MM-yyyy').toString(),
       // date_end: format(endDate, 'dd-MM-yyyy').toString(),

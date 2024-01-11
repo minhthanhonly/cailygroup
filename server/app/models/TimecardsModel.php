@@ -1,8 +1,8 @@
 <?php
     class TimecardsModel{
-        function getTimecards(){
+        function getTimecards($id){
             global $conn;
-            $allTimecards = mysqli_query($conn, "SELECT * FROM timecards");
+            $allTimecards = mysqli_query($conn, "SELECT * FROM timecards  WHERE user_id = $id");
             if (mysqli_num_rows($allTimecards) > 0) {
                 $json_array["timecarddata"] = array();
 

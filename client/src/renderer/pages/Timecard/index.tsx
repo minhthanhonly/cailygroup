@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { Button } from '../../components/Button';
 import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
 import CTableTimeCardBody from '../../components/Table/Table_01/CTableTimeCardBody';
 import MonthYearSelector from '../../components/Table/SelectMonthYears';
@@ -8,15 +7,6 @@ import { NavLink } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import * as XLSX from 'xlsx';
-import {
-  SelectCustom,
-  SelectCustomName,
-} from '../../components/Table/SelectCustom';
-import { Excel } from '../../components/ExportExcel/Excel';
-
-//sever link
-
-import { urlControl } from '../../routes/server';
 import axios from 'axios';
 
 interface FieldUsers {
@@ -29,10 +19,8 @@ interface FieldUsers {
 }
 
 export const Timecard = () => {
-
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
-
 
   type DatabaseTimeCardDetails = {
     id: string;
@@ -64,7 +52,6 @@ export const Timecard = () => {
     updateMonthAndYear(month, year);
   };
 
-
   const updateMonthAndYear = (newMonth: string, newYear: string) => {
     const month = newMonth;
     const year = newYear;
@@ -73,16 +60,19 @@ export const Timecard = () => {
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
     const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
-    console.log("loggedInUserId", loggedInUserId.id);
+    console.log('loggedInUserId', loggedInUserId.id);
 
     if (loggedInUserId) {
-      axios.get('http://cailygroup.com/timecards/list')
+      axios
+        .get('http://cailygroup.com/timecards/list')
         .then((response) => {
           setListOfUsers(response.data);
-          const loggedInUser = response.data.find((users: { id: number; }) => users.id === loggedInUserId.id);
+          const loggedInUser = response.data.find(
+            (users: { id: number }) => users.id === loggedInUserId.id,
+          );
           setCurrentUser(loggedInUser);
         })
-        .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
+        .catch((error) => console.error('Lỗi khi lấy dữ liệu:', error));
     } else {
       console.error('Không tìm thấy giá trị loggedInUserId trong localStorage');
     }
@@ -124,7 +114,7 @@ export const Timecard = () => {
 
   //   // // Thêm dữ liệu từ bảng timecards_table vào sheet
   //   // const wsData = XLSX.utils.table_to_sheet(table);
-  //   // // Duyệt qua từng ô chứa ngày tháng và đặt lại định dạng của cel 
+  //   // // Duyệt qua từng ô chứa ngày tháng và đặt lại định dạng của cel
   //   // Object.keys(wsData).forEach((cell) => {
   //   //   const isDateCell = cell.match(/[1-9][0-9]*$/); // Kiểm tra xem ô có chứa ngày không
 
@@ -145,16 +135,6 @@ export const Timecard = () => {
 
   //   // // Xuất workbook ra file Excel
   //   // XLSX.writeFile(wb, `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`);
-
-
-
-
-
-
-
-
-
-
 
   //   // Lấy đối tượng bảng HTML
   //   const table = document.getElementById('timecards_table');
@@ -181,7 +161,6 @@ export const Timecard = () => {
   //   // Xuất workbook ra file Excel
   //   XLSX.writeFile(wb, `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`);
   // };
-
 
   const exportToExcel = () => {
     // Lấy đối tượng bảng HTML
@@ -248,7 +227,10 @@ export const Timecard = () => {
     XLSX.utils.book_append_sheet(wb, wsData, sheetName);
 
     // Xuất workbook ra file Excel
-    XLSX.writeFile(wb, `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`);
+    XLSX.writeFile(
+      wb,
+      `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`,
+    );
   };
 
   return (
