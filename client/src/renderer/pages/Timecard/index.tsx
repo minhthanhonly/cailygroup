@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
 import CTableTimeCardBody from '../../components/Table/Table_01/CTableTimeCardBody';
 import MonthYearSelector from '../../components/Table/SelectMonthYears';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import * as XLSX from 'xlsx';
@@ -21,6 +21,43 @@ interface FieldUsers {
 export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
+
+  // const { id } = useParams<{ id: string }>();
+  // const { month, year } = useParams<{ month?: string; year?: string }>();
+
+  const location = useLocation();
+  const { id, month, year } = (location.state as { id: number; month: string; year: string }) || {};
+
+  useEffect(() => {
+    // Check if location.state is not null or undefined before destructuring
+    if (id !== undefined && month !== undefined && year !== undefined) {
+      // Log to check the values
+      console.log('IDssss:', id);
+      console.log('Monthssss:', month);
+      console.log('Yearssssss:', year);
+
+      // Additional processing with id, month, year
+    } else {
+      console.error('Invalid or missing parameters in location.state');
+    }
+  }, [id, month, year]);
+
+
+  useEffect(() => {
+    if (id) {
+      // Gọi API chỉ khi id có giá trị
+      axios.get(`http://cailygroup.com/users/${id}`)
+        .then(response => {
+          const user = response.data;
+          console.log("User data:", user);
+          // Thực hiện các xử lý khác với dữ liệu user nếu cần
+        })
+        .catch(error => console.error('Lỗi khi lấy dữ liệu người dùng:', error));
+    }
+  }, [id, month, year]);
+
+
+
 
   type DatabaseTimeCardDetails = {
     id: string;
@@ -60,7 +97,6 @@ export const Timecard = () => {
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
     const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
-    console.log('loggedInUserId', loggedInUserId.id);
 
     if (loggedInUserId) {
       axios
@@ -89,78 +125,6 @@ export const Timecard = () => {
     setSelectedYear(currentYear);
     updateMonthAndYear(currentMonth, currentYear);
   }, []);
-
-  // const exportToExcel = () => {
-  //   // Lấy đối tượng bảng HTML
-  //   // const table = document.getElementById('timecards_table');
-  //   // const head = document.getElementById('timecards_table_head');
-
-  //   // // Tạo workbook
-  //   // const wb = XLSX.utils.book_new();
-
-  //   // // Lấy tên tháng và năm từ state
-  //   // const month = selectedMonth;
-  //   // const year = selectedYear;
-
-  //   // // Tạo sheet cho dữ liệu người dùng, tháng và năm
-  //   // const startRow = 5; // Dòng bắt đầu
-  //   // const startCol = 0; // Cột bắt đầu
-
-  //   // const wsCombined = XLSX.utils.aoa_to_sheet([
-  //   //   [{ v: `${currentUser?.realname || ''}\n${month}/${year}`, s: { alignment: { horizontal: 'center', vertical: 'top' }, font: { color: { rgb: '000000' }, bold: true, sz: 20 }, fill: { fgColor: { rgb: 'FFFF00' } } }, r: startRow, c: startCol, },],
-  //   // ]);
-  //   // // Merge ô từ A1 đến I1
-  //   // wsCombined['!merges'] = [{ s: { r: startRow - 1, c: startCol }, e: { r: startRow - 1, c: startCol + 8 } }];
-
-  //   // // Thêm dữ liệu từ bảng timecards_table vào sheet
-  //   // const wsData = XLSX.utils.table_to_sheet(table);
-  //   // // Duyệt qua từng ô chứa ngày tháng và đặt lại định dạng của cel
-  //   // Object.keys(wsData).forEach((cell) => {
-  //   //   const isDateCell = cell.match(/[1-9][0-9]*$/); // Kiểm tra xem ô có chứa ngày không
-
-  //   //   if (isDateCell) {
-  //   //     const dateValue = new Date(XLSX.utils.decode_cell(cell).r); // Lấy giá trị ngày
-  //   //     XLSX.utils.format_cell(wsData[cell]); // Định dạng ô như một ngày
-  //   //     wsData[cell].t = 'd'; // Đặt loại ô thành ngày
-  //   //     wsData[cell].z = 'dd-mm-yyyy'; // Đặt định dạng ngày mong muốn
-  //   //   }
-  //   // });
-  //   // XLSX.utils.sheet_add_json(wsCombined, XLSX.utils.sheet_to_json(wsData), {
-  //   //   skipHeader: true,
-  //   //   origin: 'A6', // Nơi bắt đầu thêm dữ liệu từ bảng
-  //   // });
-
-  //   // // Thêm sheet vào workbook
-  //   // XLSX.utils.book_append_sheet(wb, wsCombined, `Timecards_${currentUser?.realname}_${month}_${year}`);
-
-  //   // // Xuất workbook ra file Excel
-  //   // XLSX.writeFile(wb, `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`);
-
-  //   // Lấy đối tượng bảng HTML
-  //   const table = document.getElementById('timecards_table');
-
-  //   // Tạo workbook
-  //   const wb = XLSX.utils.book_new();
-
-  //   // Lấy tên tháng và năm từ state
-  //   const month = selectedMonth;
-  //   const year = selectedYear;
-
-  //   // Tạo sheet cho dữ liệu người dùng, tháng và năm
-  //   const startRow = 5; // Dòng bắt đầu
-  //   const startCol = 0; // Cột bắt đầu
-
-  //   // Lấy toàn bộ nội dung của bảng (bao gồm cả head và body)
-  //   const wsData = XLSX.utils.table_to_sheet(table);
-
-  //   // Lấy tên sheet từ bảng
-  //   const sheetName = `Timecards_${currentUser?.realname}_${month}_${year}`;
-
-  //   // Thêm sheet vào workbook
-  //   XLSX.utils.book_append_sheet(wb, wsData, sheetName);
-  //   // Xuất workbook ra file Excel
-  //   XLSX.writeFile(wb, `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`);
-  // };
 
   const exportToExcel = () => {
     // Lấy đối tượng bảng HTML
