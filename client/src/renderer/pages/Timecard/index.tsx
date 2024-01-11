@@ -9,7 +9,6 @@ import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
 
-
 interface FieldUsers {
   id: number;
   realname: string;
@@ -23,7 +22,17 @@ export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
   const location = useLocation();
-  const { id, month, year, daysInMonth: stateDaysInMonth } = (location.state as { id: number; month: string; year: string; daysInMonth?: Date[] }) || {};
+  const {
+    id,
+    month,
+    year,
+    daysInMonth: stateDaysInMonth,
+  } = (location.state as {
+    id: number;
+    month: string;
+    year: string;
+    daysInMonth?: Date[];
+  }) || {};
 
   useEffect(() => {
     if (id !== undefined && month !== undefined && year !== undefined) {
@@ -31,9 +40,7 @@ export const Timecard = () => {
       console.log('IDssss:', id);
       console.log('Monthssss:', month);
       console.log('Yearssssss:', year);
-      console.log("stateDaysInMonth", stateDaysInMonth);
-
-
+      console.log('stateDaysInMonth', stateDaysInMonth);
     } else {
       console.error('Invalid or missing parameters in location.state');
     }
@@ -68,6 +75,18 @@ export const Timecard = () => {
     setDaysInMonth(daysInMonth);
     updateMonthAndYear(month, year);
   };
+
+  console.log(daysInMonth);
+
+  useEffect(() => {
+    if (id !== undefined && month !== undefined && year !== undefined) {
+      console.log('IDssss:', id);
+      console.log('Monthssss:', month);
+      console.log('Yearssssss:', year);
+    } else {
+      console.error('Invalid or missing parameters in location.state');
+    }
+  }, [id, month, year]);
 
   const updateMonthAndYear = (newMonth: string, newYear: string) => {
     const month = newMonth;
@@ -138,9 +157,23 @@ export const Timecard = () => {
     }
 
     // Thêm tên người dùng và ngày tháng vào hàng đầu tiên của bảng
-    XLSX.utils.sheet_add_aoa(wsData, [
-      [` ${currentUser?.realname || ''} \n ${month}/${year}`, '', '', '', '', '', '', '', ''],
-    ], { origin: `A${startRow - 2}` });
+    XLSX.utils.sheet_add_aoa(
+      wsData,
+      [
+        [
+          ` ${currentUser?.realname || ''} \n ${month}/${year}`,
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+        ],
+      ],
+      { origin: `A${startRow - 2}` },
+    );
 
     // Đẩy bảng xuống 3 ô
     XLSX.utils.sheet_add_aoa(wsData, [[]], { origin: `A${startRow - 2}` });
@@ -151,7 +184,9 @@ export const Timecard = () => {
       return;
     }
     const tableRows = table.getElementsByTagName('tr');
-    const tableWithRows = table as HTMLTableElement & { rows: HTMLCollectionOf<HTMLTableRowElement> };
+    const tableWithRows = table as HTMLTableElement & {
+      rows: HTMLCollectionOf<HTMLTableRowElement>;
+    };
 
     // Lấy dữ liệu từ dòng 10 trở đi và tạo sheet mới
     const filteredData = [];
@@ -165,7 +200,9 @@ export const Timecard = () => {
     }
 
     // Thêm dữ liệu vào sheet mới
-    XLSX.utils.sheet_add_aoa(wsData, filteredData, { origin: `A${startRow - 1}` });
+    XLSX.utils.sheet_add_aoa(wsData, filteredData, {
+      origin: `A${startRow - 1}`,
+    });
 
     // Lấy tên sheet từ bảng
     const sheetName = `Timecards_${currentUser?.realname}_${month}_${year}`;

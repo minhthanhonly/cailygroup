@@ -11,6 +11,7 @@ import ButtonEdit from "../../components/Button/ButtonEdit";
 import Modal from "../../components/Modal/Modal";
 import ButtonDelete from "../../components/Button/ButtonDelete";
 import { useNavigate } from "react-router-dom";
+import SelectGroup from "../../components/Select/selectGroup";
 
 export const Users = () => {
   const navigate = useNavigate();
@@ -54,15 +55,15 @@ export const Users = () => {
     handleDelete($id)
   };
 
+  const [selectedGroupName, setSelectedGroupName] = useState<string | null>(null);
+
   return (
     <>
       <Heading2 text="Thông tin thành viên" />
 
       <div className="box-group box-group--second">
         <div className="box-group__item">
-          <SelectCustom onGroupChange={function (groupId: string): void {
-            throw new Error("Function not implemented.");
-          } } />
+          {/* <SelectGroup /> */}
         </div>
         <div className="box-group__item">
           <InputQuantity />
