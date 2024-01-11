@@ -21,10 +21,30 @@ interface FieldUsers {
 export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
-
   const location = useLocation();
-  const { id, month, year } =
-    (location.state as { id: number; month: string; year: string }) || {};
+  const {
+    id,
+    month,
+    year,
+    daysInMonth: stateDaysInMonth,
+  } = (location.state as {
+    id: number;
+    month: string;
+    year: string;
+    daysInMonth?: Date[];
+  }) || {};
+
+  useEffect(() => {
+    if (id !== undefined && month !== undefined && year !== undefined) {
+      // Log to check the values
+      console.log('IDssss:', id);
+      console.log('Monthssss:', month);
+      console.log('Yearssssss:', year);
+      console.log('stateDaysInMonth', stateDaysInMonth);
+    } else {
+      console.error('Invalid or missing parameters in location.state');
+    }
+  }, [id, month, year, stateDaysInMonth]);
 
   type DatabaseTimeCardDetails = {
     id: string;

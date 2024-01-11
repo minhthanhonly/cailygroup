@@ -7,6 +7,7 @@ import { Pagination } from "../../components/Pagination";
 import { SelectCustom } from "../../components/Table/SelectCustom";
 import MonthYearSelector from "../../components/Table/SelectMonthYears";
 import NavTimcard from "../../layouts/components/Nav/NavTimcard";
+import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
 
 interface FieldUsers {
   id: number;
@@ -21,6 +22,7 @@ interface TimecardParams {
   id?: number;
   month?: string;
   year?: string;
+  daysInMonth?: Date[];
 }
 
 export const TimecardList: React.FC = () => {
@@ -88,13 +90,16 @@ export const TimecardList: React.FC = () => {
   const currentItems = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleButtonClick = (dataId: number, selectedIndex: number) => {
-    const { month, year } = selectedDates[selectedIndex] || {};
+    const { month, year, daysInMonth } = selectedDates[selectedIndex] || {};
+
+
 
     // Cập nhật trạng thái selectedParams với ID, tháng và năm được chọn
-    const queryParams: Record<string, string> = {
+    const queryParams: Record<string, string | Date[] | undefined> = {
       id: dataId.toString(),
       month: month || MonthYearSelectorDefaultMonth,
       year: year || MonthYearSelectorDefaultYear,
+      daysInMonth: daysInMonth || undefined,
     };
 
     // Chuyển hướng đến trang mới và truyền tham số qua query string
