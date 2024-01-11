@@ -22,6 +22,7 @@ interface FieldUsers {
 }
 
 export const TimecardEdit = () => {
+  const [userID, setUserID] = useState();
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
@@ -72,6 +73,10 @@ export const TimecardEdit = () => {
     setSelectedYear(year);
     setDaysInMonth(daysInMonth);
   };
+
+  const handleUserSelect = (userId: any) => {
+    setUserID(userId);
+  };
   return (
     <>
       <NavTimcard role="admin" />
@@ -81,7 +86,10 @@ export const TimecardEdit = () => {
             <SelectCustom onGroupChange={handleGroupChange} />
           </div>
           <div className="box-group__item">
-            <SelectCustomName selectedGroupData={selectedGroupData} />
+            <SelectCustomName
+              selectedGroupData={selectedGroupData}
+              onUserSelect={handleUserSelect}
+            />
           </div>
         </div>
         <div className="table-container table--01">
@@ -94,6 +102,7 @@ export const TimecardEdit = () => {
                 selectedMonth={selectedMonth}
                 selectedYear={selectedYear}
                 daysInMonth={daysInMonth}
+                userID={userID}
               />
             </tbody>
           </table>
