@@ -33,7 +33,7 @@ export const Group = () => {
   const [isDeleteModalid, setDeleteModalId] = useState('');
 
   useEffect(() => {
-    axios.get(urlControl + 'GroupsController.php').then((response) => {
+    axios.get('http://cailygroup.com/groups/').then((response) => {
       setListOfGroups(response.data);
       setIsTableUpdated(false); //đặt lại trạng thái khi dữ liệu thay đổi
     });
