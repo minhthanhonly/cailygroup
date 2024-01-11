@@ -175,45 +175,16 @@ export const Timecard = () => {
 
     // Tạo sheet cho dữ liệu người dùng, tháng và năm
     const startRow = 5; // Dòng bắt đầu
-    const startCol = 0; // Cột bắt đầu
-
-    // Tạo tên sheet dựa trên người dùng, tháng và năm
-    const sheetNameBase = `Timecards_${currentUser?.realname}_${month}_${year}`;
-    let sheetName = sheetNameBase;
-    let sheetIndex = 2;
-
-    // Kiểm tra và tạo tên sheet duy nhất
-    while (wb.SheetNames.includes(sheetName)) {
-      sheetName = `${sheetNameBase}_${sheetIndex}`;
-      sheetIndex++;
-    }
-
-    // Tạo sheet và thêm tên người dùng và ngày tháng vào hàng đầu tiên của bảng
-    const wsData = XLSX.utils.aoa_to_sheet([
-      [
-        ` ${currentUser?.realname || ''} \n ${month} ${year}`,
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-      ],
-      [], // Dòng trắng
-    ]);
-    XLSX.utils.book_append_sheet(wb, wsData, sheetName);
 
     // Lấy toàn bộ nội dung của bảng (bao gồm cả head và body)
-    const wsTableData = XLSX.utils.table_to_sheet(table);
+    const wsData = XLSX.utils.table_to_sheet(table);
 
     // Lặp qua từng ô trong bảng và đặt kiểu dữ liệu là 's' (string)
-    if (wsTableData['!range'] && wsTableData['!range'].e) {
-      for (let r = 0; r < wsTableData['!range'].e.r + 1; r++) {
-        for (let c = 0; c < wsTableData['!range'].e.c + 1; c++) {
+    if (wsData['!range'] && wsData['!range'].e) {
+      for (let r = 0; r < wsData['!range'].e.r + 1; r++) {
+        for (let c = 0; c < wsData['!range'].e.c + 1; c++) {
           const cellAddress = XLSX.utils.encode_cell({ r, c });
-          const cell = wsTableData[cellAddress];
+          const cell = wsData[cellAddress];
           if (cell && cell.t === 'd') {
             // Sử dụng hàm `XLSX.utils.format_cell` để định dạng ngày
             cell.v = XLSX.utils.format_cell(cell);
@@ -222,8 +193,38 @@ export const Timecard = () => {
       }
     }
 
-    // Thêm nội dung của bảng vào sheet
-    XLSX.utils.book_append_sheet(wb, wsTableData, sheetName);
+    // Thêm tên người dùng và ngày tháng vào hàng đầu tiên của bảng
+    XLSX.utils.sheet_add_aoa(wsData, [
+      [` ${currentUser?.realname || ''} \n ${month}/${year}`, '', '', '', '', '', '', '', ''],
+    ], { origin: `A${startRow - 2}` });
+
+    // Đẩy bảng xuống 3 ô
+    XLSX.utils.sheet_add_aoa(wsData, [[]], { origin: `A${startRow - 2}` });
+
+    // Lấy dữ liệu từ dòng 10 trở đi và tạo sheet mới
+    if (!table) {
+      console.error('Không tìm thấy bảng.');
+      return;
+    }
+    const tableRows = table.getElementsByTagName('tr');
+    const filteredData = [];
+    for (let i = startRow - 1; i < table.rows.length; i++) {
+      const rowData = [];
+      for (let j = 0; j < (table.rows[i] as HTMLTableRowElement).cells.length; j++) {
+        const cellContent = (table.rows[i] as HTMLTableRowElement).cells[j].textContent;
+        rowData.push(cellContent ? cellContent.trim() : ''); // Kiểm tra nếu `textContent` không tồn tại
+      }
+      filteredData.push(rowData);
+    }
+
+    // Thêm dữ liệu vào sheet mới
+    XLSX.utils.sheet_add_aoa(wsData, filteredData, { origin: `A${startRow - 1}` });
+
+    // Lấy tên sheet từ bảng
+    const sheetName = `Timecards_${currentUser?.realname}_${month}_${year}`;
+
+    // Thêm sheet vào workbook
+    XLSX.utils.book_append_sheet(wb, wsData, sheetName);
 
     // Xuất workbook ra file Excel
     XLSX.writeFile(
