@@ -10,6 +10,7 @@ interface SelectCustomProps {
 
 interface SelectCustomNameProps {
   selectedGroupData: { id: number; realname: string }[];
+  onUserSelect: (userId: number) => void;
 }
 
 
@@ -64,25 +65,29 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
 
 export const SelectCustomName: React.FC<SelectCustomNameProps> = ({
   selectedGroupData,
+  onUserSelect,
 }) => {
-  const [selectedUser, setSelectedUser] = useState<string>(''); // State để lưu trữ người dùng được chọn
+  const [selectedUser, setSelectedUser] = useState<string>('');
 
   const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedUserId = event.target.value;
-    setSelectedUser(selectedUserId);
-    // Thực hiện các hành động khác khi người dùng thay đổi
+    const selectedUserId = parseInt(event.target.value, 10); // Chuyển đổi thành số
+    setSelectedUser(event.target.value);
+
+    // Gọi hàm onUserSelect với id của người dùng đã chọn
+    onUserSelect(selectedUserId);
   };
 
   return (
     <div className="select__box group">
       <div className="select__box--flex grid-row">
         <select value={selectedUser} onChange={handleUserChange}>
-          <option value="">Chọn người dùng</option>
-          {selectedGroupData && selectedGroupData.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.realname}
-            </option>
-          ))}
+          <option value="">Chọn</option>
+          {selectedGroupData &&
+            selectedGroupData.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.realname}
+              </option>
+            ))}
         </select>
       </div>
     </div>
