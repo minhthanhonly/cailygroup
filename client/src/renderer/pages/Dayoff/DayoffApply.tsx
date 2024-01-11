@@ -128,14 +128,6 @@ export const DayoffApply = () => {
         const response = await axios.post(
           'http://cailygroup.com/dayoffs/update/' + dayoffId,
         );
-        // const response = await axios.post(
-        //   urlControl + 'DayoffsController.php',
-        //   {
-        //     method: 'UPDATE_STATUS',
-        //     id: dayoffId,
-        //     status: 1, // Đặt status thành 1 khi được chấp nhận
-        //   },
-        // );
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
