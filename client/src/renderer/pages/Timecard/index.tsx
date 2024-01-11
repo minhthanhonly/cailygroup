@@ -207,11 +207,14 @@ export const Timecard = () => {
       return;
     }
     const tableRows = table.getElementsByTagName('tr');
+    const tableWithRows = table as HTMLTableElement & { rows: HTMLCollectionOf<HTMLTableRowElement> };
+
+    // Lấy dữ liệu từ dòng 10 trở đi và tạo sheet mới
     const filteredData = [];
-    for (let i = startRow - 1; i < table.rows.length; i++) {
+    for (let i = startRow - 1; i < tableWithRows.rows.length; i++) {
       const rowData = [];
-      for (let j = 0; j < (table.rows[i] as HTMLTableRowElement).cells.length; j++) {
-        const cellContent = (table.rows[i] as HTMLTableRowElement).cells[j].textContent;
+      for (let j = 0; j < tableWithRows.rows[i].cells.length; j++) {
+        const cellContent = tableWithRows.rows[i].cells[j].textContent;
         rowData.push(cellContent ? cellContent.trim() : ''); // Kiểm tra nếu `textContent` không tồn tại
       }
       filteredData.push(rowData);
