@@ -432,7 +432,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       if (response.data && Array.isArray(response.data)) {
         setTimecardOpen(response.data);
       }
-      console.log(response.data);
     } catch (error) {
       console.error('Error fetching timecard_open:', error);
     }
