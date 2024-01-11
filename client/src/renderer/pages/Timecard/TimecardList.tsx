@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import { CTable } from "../../components/Table/CTable";
 import { CTableHead } from "../../components/Table/CTableHead";
 import axios from "axios";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { Pagination } from "../../components/Pagination";
 import { SelectCustom } from "../../components/Table/SelectCustom";
 import MonthYearSelector from "../../components/Table/SelectMonthYears";
 import NavTimcard from "../../layouts/components/Nav/NavTimcard";
-import { Route, BrowserRouter as Router } from 'react-router-dom';
-import { Excel } from "../../components/ExportExcel/Excel";
-
 
 interface FieldUsers {
   id: number;
@@ -20,17 +17,26 @@ interface FieldUsers {
   user_group: string;
 }
 
+interface TimecardParams {
+  id?: number;
+  month?: string;
+  year?: string;
+}
+
 export const TimecardList: React.FC = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [selectedGroupName, setSelectedGroupName] = useState<string | null>(null);
   const [filteredUsers, setFilteredUsers] = useState<FieldUsers[] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const navigate = useNavigate();
+
+  // Lưu giá trị biến state trong Link
+  const [selectedParams, setSelectedParams] = useState<TimecardParams>({});
 
   const [selectedDates, setSelectedDates] = useState<{ [id: number]: { month: string; year: string; daysInMonth?: Date[] } }>({});
   const [MonthYearSelectorDefaultMonth, setMonthYearSelectorDefaultMonth] = useState<string>("");
   const [MonthYearSelectorDefaultYear, setMonthYearSelectorDefaultYear] = useState<string>("");
-
 
   const handleDateChange = (month: string, year: string, daysInMonth: Date[], index: number) => {
     setSelectedDates(prevState => ({
@@ -44,8 +50,6 @@ export const TimecardList: React.FC = () => {
     axios.get('http://cailygroup.com/timecards/list')
       .then((response) => {
         setListOfUsers(response.data);
-
-        // Reset selectedDates to an empty object when the user list changes
         setSelectedDates({});
         const currentMonth = new Date().getMonth() + 1;
         const currentYear = new Date().getFullYear();
@@ -55,29 +59,24 @@ export const TimecardList: React.FC = () => {
       .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
   }, [MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear]);
 
-
   useEffect(() => {
     if (selectedGroupName !== null) {
       const trimmedSelectedGroupName = selectedGroupName.trim().toLowerCase();
-
       const filtered = listOfUsers.filter(users => {
         const userGroup = users.user_group.trim().toLowerCase();
-
-        // Kiểm tra giá trị "all"
         if (trimmedSelectedGroupName === "all") {
-          return true; // Hoặc điều kiện của bạn khi giá trị là "all"
+          return true;
         } else {
           return userGroup === trimmedSelectedGroupName;
         }
       });
       setFilteredUsers(filtered);
-      setCurrentPage(1); // Reset trang khi thay đổi bộ lọc
+      setCurrentPage(1);
     } else {
       setFilteredUsers(listOfUsers);
-      setCurrentPage(1); // Reset trang khi thay đổi bộ lọc
+      setCurrentPage(1);
     }
   }, [selectedGroupName, listOfUsers]);
-
 
   const itemsPerPage = 5;
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
@@ -86,9 +85,31 @@ export const TimecardList: React.FC = () => {
     setCurrentPage(page);
   };
 
-  // Trích xuất các items của trang hiện tại
   const currentItems = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  const handleButtonClick = (dataId: number, selectedIndex: number) => {
+    const { month, year } = selectedDates[selectedIndex] || {};
+
+    // Cập nhật trạng thái selectedParams với ID, tháng và năm được chọn
+    const queryParams: Record<string, string> = {
+      id: dataId.toString(),
+      month: month || MonthYearSelectorDefaultMonth,
+      year: year || MonthYearSelectorDefaultYear,
+    };
+
+    // Chuyển hướng đến trang mới và truyền tham số qua query string
+    console.log("selectedParams222", queryParams);
+    navigate(`/timecards`, { state: queryParams });
+    //navigate(`/timecards?${new URLSearchParams(queryParams).toString()}`);
+  };
+
+
+  // useEffect(() => {
+  //   if (selectedParams.id || selectedParams.month || selectedParams.year) {
+  //     console.log("selectedParams", selectedParams);
+  //   }
+  // }, [selectedParams]);
+  // ...
 
 
   return (
@@ -107,15 +128,9 @@ export const TimecardList: React.FC = () => {
               <td>{data.group_name}</td>
               <td>{data.authority_name}</td>
               <td><MonthYearSelector onChange={(month, year, daysInMonth) => handleDateChange(month, year, daysInMonth, index)} /></td>
-              <td><NavLink className="btn" to={`/timecards/`} onClick={() => {
-                const month = selectedDates[index]?.month || MonthYearSelectorDefaultMonth;
-                const year = selectedDates[index]?.year || MonthYearSelectorDefaultYear;
-                console.log("ID:", data.id);
-                console.log("Selected Month:", month);
-                console.log("Selected Year:", year);
-                // Cập nhật giá trị trong MonthYearSelector
-                handleDateChange(month, year, [], index);
-              }}> Xem Thẻ Giờ </NavLink></td>
+              <td>
+                <button className="btn" onClick={() => handleButtonClick(data.id, index)}> Xem Thẻ Giờ </button>
+              </td>
               <td></td>
             </tr>
           ))}
