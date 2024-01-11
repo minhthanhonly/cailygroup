@@ -9,6 +9,7 @@ import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
 
+
 interface FieldUsers {
   id: number;
   realname: string;
@@ -21,43 +22,22 @@ interface FieldUsers {
 export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
-
-  // const { id } = useParams<{ id: string }>();
-  // const { month, year } = useParams<{ month?: string; year?: string }>();
-
   const location = useLocation();
-  const { id, month, year } = (location.state as { id: number; month: string; year: string }) || {};
+  const { id, month, year, daysInMonth: stateDaysInMonth } = (location.state as { id: number; month: string; year: string; daysInMonth?: Date[] }) || {};
 
   useEffect(() => {
-    // Check if location.state is not null or undefined before destructuring
     if (id !== undefined && month !== undefined && year !== undefined) {
       // Log to check the values
       console.log('IDssss:', id);
       console.log('Monthssss:', month);
       console.log('Yearssssss:', year);
+      console.log("stateDaysInMonth", stateDaysInMonth);
 
-      // Additional processing with id, month, year
+
     } else {
       console.error('Invalid or missing parameters in location.state');
     }
-  }, [id, month, year]);
-
-
-  useEffect(() => {
-    if (id) {
-      // Gọi API chỉ khi id có giá trị
-      axios.get(`http://cailygroup.com/users/${id}`)
-        .then(response => {
-          const user = response.data;
-          console.log("User data:", user);
-          // Thực hiện các xử lý khác với dữ liệu user nếu cần
-        })
-        .catch(error => console.error('Lỗi khi lấy dữ liệu người dùng:', error));
-    }
-  }, [id, month, year]);
-
-
-
+  }, [id, month, year, stateDaysInMonth]);
 
   type DatabaseTimeCardDetails = {
     id: string;
