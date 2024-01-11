@@ -1,9 +1,10 @@
 import './InputQuantity.scss';
 
-
-export const InputQuantity = () => {
-
+type InputQuantityProps = {
+  total: number;
+}
+export const InputQuantity = (props: InputQuantityProps) => {
     return (
-        <span className="title-quantity">Số Lượng Hiển Thị <span className='input-show'><input type="text" /></span></span>
+        <span className="title-quantity">Số Lượng Hiển Thị <span className='input-show'><input value={props.total} onChange={(event) => (event.target.value)} type="text" /></span></span>
     );
 };

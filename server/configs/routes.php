@@ -22,6 +22,7 @@
     $routes['users/edit/.+-(\d+)'] = 'users/edit/$1';
     $routes['users/update'] = 'users/update';
     $routes['users/delete'] = 'users/delete';
+    $routes['users/groups/.+-(\d+)'] = 'users/groups/$1';
 
     // Authority
     $routes['authority'] = 'authority';

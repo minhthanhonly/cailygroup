@@ -162,6 +162,30 @@
 				return;
 			}
 		}
+
+		function getMembersByGroup($groupid){
+			global $conn;
+
+			// Thực hiện truy vấn SELECT
+			if($groupid === '-1') {
+				$sql = "SELECT * FROM users";
+			} else {
+				$sql = "SELECT * FROM users WHERE user_group='$groupid'";
+			}
+			$result = $conn->query($sql);
+
+			// Kiểm tra và hiển thị kết quả
+			while ($row = $result->fetch_assoc()) {
+				$data[] = $row;
+			}
+
+			header('Content-Type: application/json');
+			echo json_encode($data);
+			return;
+
+			// Đóng kết nối
+			$conn->close();
+		}
 	}
 
 ?>

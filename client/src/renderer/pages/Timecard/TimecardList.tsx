@@ -97,7 +97,6 @@ export const TimecardList: React.FC = () => {
       <SelectCustom onGroupChange={(groupId: string) => {
         setSelectedGroupName(groupId);
       }} />
-
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Tháng năm", "Thẻ giờ", "Xuất Excel"]} />
         <tbody>
