@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import './From.scss';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../api/axios';
 import useAuth from '../../hooks/useAuth';
 
 function FormLogin(){
@@ -48,8 +48,8 @@ function FormLogin(){
     e.preventDefault();
     if(userid !== "" && password !== ""){
       const formData = {userid:userid, password:password}
-      const res = await axios.post("http://cailygroup.com/login", formData);
-      const res2 = await axios.get("http://cailygroup.com/users/detail/"+userid);
+      const res = await axios.post("login", formData);
+      const res2 = await axios.get("users/detail/"+userid);
       if(res.data.success === 'Mật khẩu không hợp lệ' || res.data.success === 'Tên đăng nhập không hợp lệ'){
         setError(res.data.success);
       } else {
