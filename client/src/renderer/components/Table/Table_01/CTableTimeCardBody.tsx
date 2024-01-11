@@ -47,29 +47,39 @@ interface TimecardData {
   timecard_comment: string;
 }
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
-interface CombinedProps extends SelectMY {}
+interface CombinedProps extends SelectMY {
+  userID: any;
+}
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
-  const [admin, setAdmin] = useState(false);
-  // const { auth } = useAuth();
-  const [usersID, setUsersID] = useState();
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
-  if (users) {
-    const isAdmin = users.roles === UserRole.ADMIN;
-    const isManager = users.roles === UserRole.MANAGER;
-    const isLeader = users.roles === UserRole.LEADER;
-    useEffect(() => {
-      if (isAdmin || isManager || isLeader) {
-        setAdmin(true);
-      }
-      setUsersID(users.id);
-    }, []);
-  }
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
 
   const selectedMonth = Props.selectedMonth;
   const selectedYear = Props.selectedYear;
+  const propsID = Props.userID;
+  const [admin, setAdmin] = useState(false);
+  // const { auth } = useAuth();
+  const [usersID, setUsersID] = useState();
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  useEffect(() => {
+    if (users) {
+      const isAdmin = users.roles === UserRole.ADMIN;
+      const isManager = users.roles === UserRole.MANAGER;
+      const isLeader = users.roles === UserRole.LEADER;
+      if (isAdmin || isManager || isLeader) {
+        setAdmin(true);
+      }
+    }
+    if (propsID) {
+      setUsersID(propsID);
+    } else {
+      setUsersID(users.id);
+    }
 
+    fetchTimecardOpen();
+    fetchHolidays();
+    fetchDayoffs();
+  }, [propsID]);
   const [currentTime, setCurrentTime] = useState(0);
   const [showStartButton, setShowStartButton] = useState(true);
   const [showEndButton, setShowEndButton] = useState(false);
@@ -431,8 +441,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       );
       if (response.data && Array.isArray(response.data)) {
         setTimecardOpen(response.data);
+      } else {
+        setTimecardOpen([]);
       }
-      console.log(response.data);
     } catch (error) {
       console.error('Error fetching timecard_open:', error);
     }
@@ -473,6 +484,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     fetchTimecardOpen();
     fetchHolidays();
     fetchDayoffs();
+    console.log(usersID);
   }, [usersID]);
   useEffect(() => {
     calculateTotalTime();

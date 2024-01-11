@@ -25,26 +25,18 @@ function MemberEdit() {
 		e.preventDefault();
 		const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
 		const res = await axios.post("http://cailygroup.com/users/update", formData);
-    const res2 = await axios.get("http://cailygroup.com/users/detail/"+formValue.userid);
 
     if(res.data.success){
       setMessage(res.data.success);
       setTimeout(() => {
-        const isLoggedIn = localStorage.getItem('login');
-        const roles = res2.data.authority_name;
-        const users = {
-          "id": res2.data.id,
-          "userid": res2.data.userid,
-          "realname": res2.data.realname,
-          "roles": res2.data.authority_name,
-          "user_group": res2.data.group_name,
-        }
-        localStorage.setItem('users', JSON.stringify(users));
-        setAuth({ isLoggedIn, roles, users });
         navigate('/members');
       }, 2000);
     }
 	}
+
+  const handleBack = () => {
+    navigate('/members');
+  }
 
   /*
   *
@@ -104,102 +96,100 @@ function MemberEdit() {
 				<div className="form-content">
 					<div className="row">
 						<div className="col-6">
-							<form onSubmit={handleSubmit} method="POST">
-								<div className="form-group">
-									<label>
-										ID User *
-										<img
-											src={require('../../../../assets/icn-id.png')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<input
-										className="form-input"
-										type="text"
-										name="userid"
-										value={formValue.userid} onChange={handleInput}
-									/>
-								</div>
-								<div className="form-group">
-									<label>
-										Mật khẩu mới
-										<img
-											src={require('../../../../assets/icon-password.jpg')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<input
-										className="form-input"
-										type="text"
-										name="passwordNew"
-										value={passwordNew} onChange={(event) => setPasswordNew(event.target.value)}
-									/>
-                  <input
-										className="form-input"
-										type="hidden"
-										name="password"
-										value={formValue.password} onChange={handleInput}
-									/>
-								</div>
-								<div className="form-group">
-									<label>
-										Họ và tên *
-										<img
-											src={require('../../../../assets/icon-user.jpg')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<input
-										className="form-input"
-										type="text"
-										name="realname"
-										value={formValue.realname} onChange={handleInput}
-									/>
-								</div>
-								<div className="form-group">
-									<label>
-										Nhóm *
-										<img
-											src={require('../../../../assets/icn-group.png')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<div className="select__box group">
-										<select name="user_group" onChange={handleInput}>
-											<option value="-1">--------------------------- Chọn nhóm ---------------------------</option>
-											{DataGroups.map((value, index) => (
-												<option value={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
-											))}
-										</select>
-									</div>
-								</div>
-								<div className="form-group">
-									<label>
-										Quyền truy cập *
-										<img
-											src={require('../../../../assets/authorization.png')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<div className="select__box group" onChange={handleInput}>
-										<select name="authority">
-											<option value="-1">-------------------- Chọn quyền truy cập --------------------</option>
-											{DataAuthority.map((value, index) => (
-												<option value={value.id} key={index} selected={value.id == formValue.authority}>{value.authority_name}</option>
-											))}
-										</select>
-									</div>
-								</div>
-								<div className="wrp-button">
-									<button className="btn btn--green" type="submit">Xác nhận</button>
-									<button className="btn btn--orange">Hủy</button>
-								</div>
-							</form>
+              <div className="form-group">
+                <label>
+                  ID User *
+                  <img
+                    src={require('../../../../assets/icn-id.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="userid"
+                  value={formValue.userid} onChange={handleInput}
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  Mật khẩu mới
+                  <img
+                    src={require('../../../../assets/icon-password.jpg')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="passwordNew"
+                  value={passwordNew} onChange={(event) => setPasswordNew(event.target.value)}
+                />
+                <input
+                  className="form-input"
+                  type="hidden"
+                  name="password"
+                  value={formValue.password} onChange={handleInput}
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  Họ và tên *
+                  <img
+                    src={require('../../../../assets/icon-user.jpg')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="realname"
+                  value={formValue.realname} onChange={handleInput}
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  Nhóm *
+                  <img
+                    src={require('../../../../assets/icn-group.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <div className="select__box group">
+                  <select name="user_group" onChange={handleInput}>
+                    <option value="-1">--------------------------- Chọn nhóm ---------------------------</option>
+                    {DataGroups.map((value, index) => (
+                      <option value={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>
+                  Quyền truy cập *
+                  <img
+                    src={require('../../../../assets/authorization.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <div className="select__box group" onChange={handleInput}>
+                  <select name="authority">
+                    <option value="-1">-------------------- Chọn quyền truy cập --------------------</option>
+                    {DataAuthority.map((value, index) => (
+                      <option value={value.id} key={index} selected={value.id == formValue.authority}>{value.authority_name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="wrp-button">
+                <button className="btn btn--green" type="submit" onClick={handleSubmit}>Xác nhận</button>
+                <button className="btn btn--orange" onClick={handleBack}>Hủy</button>
+              </div>
 						</div>
 					</div>
 				</div>

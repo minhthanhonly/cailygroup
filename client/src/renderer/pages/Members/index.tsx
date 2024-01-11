@@ -90,11 +90,9 @@ function Members() {
   const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
-
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
-
 
   const [message, setMessage] = useState('');
 

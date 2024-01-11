@@ -33,33 +33,6 @@ export const Timecard = () => {
     year: string;
     daysInMonth?: Date[];
   }) || {};
-
-  useEffect(() => {
-    if (id !== undefined && month !== undefined && year !== undefined) {
-      // Log to check the values
-      console.log('IDssss:', id);
-      console.log('Monthssss:', month);
-      console.log('Yearssssss:', year);
-      console.log('stateDaysInMonth', stateDaysInMonth);
-    } else {
-      console.error('Invalid or missing parameters in location.state');
-    }
-  }, [id, month, year, stateDaysInMonth]);
-
-  type DatabaseTimeCardDetails = {
-    id: string;
-    id_groupwaretimecard: string;
-    timecard_open: string;
-    timecard_close: string;
-    timecard_originalopen: string;
-    timecard_originalclose: string;
-    timecard_interval: string;
-    timecard_originalinterval: string;
-    timecard_time: string;
-    timecard_timeover: string;
-    timecard_timeinterval: string;
-    timecard_comment: string;
-  };
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
@@ -75,18 +48,6 @@ export const Timecard = () => {
     setDaysInMonth(daysInMonth);
     updateMonthAndYear(month, year);
   };
-
-  console.log(daysInMonth);
-
-  useEffect(() => {
-    if (id !== undefined && month !== undefined && year !== undefined) {
-      console.log('IDssss:', id);
-      console.log('Monthssss:', month);
-      console.log('Yearssssss:', year);
-    } else {
-      console.error('Invalid or missing parameters in location.state');
-    }
-  }, [id, month, year]);
 
   const updateMonthAndYear = (newMonth: string, newYear: string) => {
     const month = newMonth;
@@ -115,48 +76,45 @@ export const Timecard = () => {
   //-------------------------------------------------------------------------------------
 
   useEffect(() => {
-    const currentDate = new Date();
-    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const currentYear = String(currentDate.getFullYear());
+    if (id !== undefined && month !== undefined && year !== undefined) {
+      console.log('IDssss:', id);
+      console.log('Monthssss:', month);
+      console.log('Yearssssss:', year);
+      console.log('stateDaysInMonth', stateDaysInMonth);
+      setSelectedMonth(month);
+      setSelectedYear(year);
+      updateMonthAndYear(month, year);
+      handleDateChange(month, year, stateDaysInMonth);
+    } else {
+      const currentDate = new Date();
+      const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const currentYear = String(currentDate.getFullYear());
 
-    // Cập nhật state
-    setSelectedMonth(currentMonth);
-    setSelectedYear(currentYear);
-    updateMonthAndYear(currentMonth, currentYear);
-  }, []);
+      // Cập nhật state
+      setSelectedMonth(currentMonth);
+      setSelectedYear(currentYear);
+      updateMonthAndYear(currentMonth, currentYear);
+    }
+  }, [id, month, year, stateDaysInMonth]);
 
   const exportToExcel = () => {
-    // Lấy đối tượng bảng HTML
     const table = document.getElementById('timecards_table');
-
-    // Tạo workbook
     const wb = XLSX.utils.book_new();
-
-    // Lấy tên tháng và năm từ state
     const month = selectedMonth;
     const year = selectedYear;
-
-    // Tạo sheet cho dữ liệu người dùng, tháng và năm
-    const startRow = 5; // Dòng bắt đầu
-
-    // Lấy toàn bộ nội dung của bảng (bao gồm cả head và body)
+    const startRow = 5;
     const wsData = XLSX.utils.table_to_sheet(table);
-
-    // Lặp qua từng ô trong bảng và đặt kiểu dữ liệu là 's' (string)
     if (wsData['!range'] && wsData['!range'].e) {
       for (let r = 0; r < wsData['!range'].e.r + 1; r++) {
         for (let c = 0; c < wsData['!range'].e.c + 1; c++) {
           const cellAddress = XLSX.utils.encode_cell({ r, c });
           const cell = wsData[cellAddress];
           if (cell && cell.t === 'd') {
-            // Sử dụng hàm `XLSX.utils.format_cell` để định dạng ngày
             cell.v = XLSX.utils.format_cell(cell);
           }
         }
       }
     }
-
-    // Thêm tên người dùng và ngày tháng vào hàng đầu tiên của bảng
     XLSX.utils.sheet_add_aoa(
       wsData,
       [
@@ -180,8 +138,6 @@ export const Timecard = () => {
 
     // Đẩy bảng xuống 3 ô
     XLSX.utils.sheet_add_aoa(wsData, [[]], { origin: `A${startRow - 2}` });
-
-    // Lấy dữ liệu từ dòng 10 trở đi và tạo sheet mới
     if (!table) {
       console.error('Không tìm thấy bảng.');
       return;
@@ -190,8 +146,6 @@ export const Timecard = () => {
     const tableWithRows = table as HTMLTableElement & {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
     };
-
-    // Lấy dữ liệu từ dòng 10 trở đi và tạo sheet mới
     const filteredData = [];
     for (let i = startRow - 1; i < tableWithRows.rows.length; i++) {
       const rowData = [];
@@ -201,19 +155,11 @@ export const Timecard = () => {
       }
       filteredData.push(rowData);
     }
-
-    // Thêm dữ liệu vào sheet mới
     XLSX.utils.sheet_add_aoa(wsData, filteredData, {
       origin: `A${startRow - 1}`,
     });
-
-    // Lấy tên sheet từ bảng
     const sheetName = `Timecards_${currentUser?.realname}_${month}_${year}`;
-
-    // Thêm sheet vào workbook
     XLSX.utils.book_append_sheet(wb, wsData, sheetName);
-
-    // Xuất workbook ra file Excel
     XLSX.writeFile(
       wb,
       `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`,
@@ -223,13 +169,6 @@ export const Timecard = () => {
   return (
     <>
       <NavTimcard role="admin" />
-      {/* <div className="left">
-        <SelectCustom
-          onGroupChange={function (groupId: string): void {
-            throw new Error('Function not implemented.');
-          }}
-        />
-      </div> */}
       <MonthYearSelector onChange={handleDateChange} />
       <div className="table-container table--01">
         <table id="timecards_table" className="table table__custom">
