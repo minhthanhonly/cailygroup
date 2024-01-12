@@ -8,25 +8,34 @@ interface MonthYearSelectorProps {
     selectedYear: string,
     daysInMonth: Date[],
   ) => void;
+  initialMonth?: string;
+  initialYear?: string;
 }
 
-const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({ onChange }) => {
+const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({
+  onChange,
+  initialMonth,
+  initialYear,
+}) => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
 
-  const months = Array.from({ length: 12 }, (_, index) => index + 1);
+  const months = Array.from({ length: 12 }, (_, index) =>
+    (index + 1).toString(),
+  );
+
   const years = Array.from(
     { length: 5 },
     (_, index) => new Date().getFullYear() - index,
   );
   // console.log(selectedMonth);
   useEffect(() => {
-    const currentMonth = new Date().getMonth() + 1;
-    const currentYear = new Date().getFullYear();
+    const currentMonth = initialMonth || new Date().getMonth() + 1;
+    const currentYear = initialYear || new Date().getFullYear();
 
     setSelectedMonth(currentMonth.toString());
     setSelectedYear(currentYear.toString());
-  }, []);
+  }, [initialMonth, initialYear]);
 
   const handleMonthChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;

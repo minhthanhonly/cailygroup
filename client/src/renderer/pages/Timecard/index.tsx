@@ -21,39 +21,6 @@ interface FieldUsers {
 export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
-  const location = useLocation();
-  const {
-    id,
-    month,
-    year,
-    daysInMonth: stateDaysInMonth = [], // Provide a default empty array
-  } = (location.state as {
-    id: number;
-    month: string;
-    year: string;
-    daysInMonth?: Date[];
-  }) || {};
-  const [user_id, setUser_id] = useState<number>();
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
-  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
-  const [tableData, setTableData] = useState<string[][]>([]); // Thêm state để lưu trữ dữ liệu bảng
-
-  const handleDateChange = (
-    month: string,
-    year: string,
-    daysInMonth: Date[],
-  ) => {
-    setSelectedMonth(month);
-    setSelectedYear(year);
-    setDaysInMonth(daysInMonth);
-    updateMonthAndYear(month, year);
-  };
-
-  const updateMonthAndYear = (newMonth: string, newYear: string) => {
-    const month = newMonth;
-    const year = newYear;
-  };
 
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
@@ -75,29 +42,6 @@ export const Timecard = () => {
     }
   }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
   //-------------------------------------------------------------------------------------
-
-  useEffect(() => {
-    if (id !== undefined && month !== undefined && year !== undefined) {
-      console.log('IDssss:', id);
-      console.log('Monthssss:', month);
-      console.log('Yearssssss:', year);
-      console.log('stateDaysInMonth', stateDaysInMonth);
-      setSelectedMonth(month);
-      setSelectedYear(year);
-      updateMonthAndYear(month, year);
-      setUser_id(id);
-      handleDateChange(month, year, stateDaysInMonth);
-    } else {
-      const currentDate = new Date();
-      const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const currentYear = String(currentDate.getFullYear());
-
-      // Cập nhật state
-      setSelectedMonth(currentMonth);
-      setSelectedYear(currentYear);
-      updateMonthAndYear(currentMonth, currentYear);
-    }
-  }, [id, month, year, stateDaysInMonth]);
 
   const exportToExcel = () => {
     const table = document.getElementById('timecards_table');
@@ -169,11 +113,65 @@ export const Timecard = () => {
       `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`,
     );
   };
+  const location = useLocation();
+  const {
+    id,
+    month,
+    year,
+    daysInMonth: stateDaysInMonth = [], // Provide a default empty array
+  } = (location.state as {
+    id: number;
+    month: string;
+    year: string;
+    daysInMonth?: Date[];
+  }) || {};
+  const [user_id, setUser_id] = useState<number>();
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
+
+  const handleDateChange = (
+    month: string,
+    year: string,
+    daysInMonth: Date[],
+  ) => {
+    setSelectedMonth(month);
+    setSelectedYear(year);
+    setDaysInMonth(daysInMonth);
+    updateMonthAndYear(month, year);
+  };
+
+  const updateMonthAndYear = (newMonth: string, newYear: string) => {
+    const month = newMonth;
+    const year = newYear;
+  };
+  useEffect(() => {
+    if (id !== undefined && month !== undefined && year !== undefined) {
+      setSelectedMonth(month);
+      setSelectedYear(year);
+      updateMonthAndYear(month, year);
+      setUser_id(id);
+      handleDateChange(month, year, stateDaysInMonth);
+    } else {
+      const currentDate = new Date();
+      const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const currentYear = String(currentDate.getFullYear());
+
+      // Cập nhật state
+      setSelectedMonth(currentMonth);
+      setSelectedYear(currentYear);
+      updateMonthAndYear(currentMonth, currentYear);
+    }
+  }, [id]);
 
   return (
     <>
       <NavTimcard role="admin" />
-      <MonthYearSelector onChange={handleDateChange} />
+      <MonthYearSelector
+        onChange={handleDateChange}
+        initialMonth={month}
+        initialYear={year}
+      />
       <div className="table-container table--01">
         <table id="timecards_table" className="table table__custom">
           <thead id="timecards_table_head">
