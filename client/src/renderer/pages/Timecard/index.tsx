@@ -21,6 +21,19 @@ interface FieldUsers {
 export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
+  const location = useLocation();
+  const {
+    id,
+    month,
+    year,
+    daysInMonth: stateDaysInMonth = [], // Provide a default empty array
+  } = (location.state as {
+    id: number;
+    month: string;
+    year: string;
+    daysInMonth?: Date[];
+  }) || {};
+  const [user_id, setUser_id] = useState<number>();
 
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
@@ -113,19 +126,6 @@ export const Timecard = () => {
       `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`,
     );
   };
-  const location = useLocation();
-  const {
-    id,
-    month,
-    year,
-    daysInMonth: stateDaysInMonth = [], // Provide a default empty array
-  } = (location.state as {
-    id: number;
-    month: string;
-    year: string;
-    daysInMonth?: Date[];
-  }) || {};
-  const [user_id, setUser_id] = useState<number>();
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
