@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Heading3 } from '../../components/Heading';
 import { Heading2 } from '../../components/Heading';
-// import axios from 'axios';
 import axios from "../../api/axios";
 import { CTable } from '../../components/Table/CTable';
 import CTableBody from '../../components/Table/CTableBody';
