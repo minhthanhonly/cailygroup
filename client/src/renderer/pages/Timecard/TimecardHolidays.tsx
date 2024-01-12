@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Heading3 } from '../../components/Heading';
 import { Heading2 } from '../../components/Heading';
-import axios from 'axios';
+// import axios from 'axios';
+import axios from "../../api/axios";
 import { CTable } from '../../components/Table/CTable';
 import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
@@ -48,7 +49,7 @@ const TimecardHolidays = () => {
     
     useEffect(() => {
         axios
-          .get('http://cailygroup.com/timecardsholidays/')
+          .get('timecardsholidays/')
           .then((response) => {
             setListOfHolidays(response.data);
             setIsTableUpdated(false); //đặt lại trạng thái khi dữ liệu thay đổi
@@ -184,7 +185,7 @@ const TimecardHolidays = () => {
             const dataUpdate = { id, name, days };
     
             const response = await axios.put(
-              'http://cailygroup.com/timecardsholidays/update/',
+              'timecardsholidays/update/',
               dataUpdate,
               { headers: { 'Content-Type': 'application/json' } },
             );
@@ -204,7 +205,7 @@ const TimecardHolidays = () => {
             try {
                 const payload = { id: holidayId };
                 let response = await axios.delete(
-                'http://cailygroup.com/timecardsholidays/delete/',
+                'timecardsholidays/delete/',
                 {
                     headers: {
                     'Content-Type': 'application/json',
@@ -303,7 +304,7 @@ const TimecardHolidays = () => {
         setName('');
         setDays([new Date()]);
         axios
-        .post('http://cailygroup.com/timecardsholidays/add/', holiday_data)
+        .post('timecardsholidays/add/', holiday_data)
         .then((response) => {
             // Xử lý thành công nếu cần
             setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
