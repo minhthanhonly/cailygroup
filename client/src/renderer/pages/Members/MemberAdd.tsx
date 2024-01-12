@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import isValidInputs from "../../components/Validate";
 
 function MemberAdd() {
   const navigate = useNavigate();
@@ -12,7 +13,10 @@ function MemberAdd() {
 		setFormValue({...formValue, [e.target.name]:e.target.value})
 	}
 
+
+
 	const handleSubmit = async(e) => {
+    // isValidInputs(formValue.userid, formValue.password);
 		e.preventDefault();
 		const formData = {userid:formValue.userid, password:formValue.password, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
 		const res = await axios.post("http://cailygroup.com/users/add", formData);

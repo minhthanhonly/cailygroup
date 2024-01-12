@@ -23,6 +23,8 @@ import MemberEdit from './pages/Members/MemberEdit';
 import MemberDetail from './pages/Members/MemberDetail';
 import Protected from './Protected';
 import RequireAuth from './components/RequireAuth';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
   return (
@@ -75,6 +77,18 @@ export default function App() {
           </Route>
         </Routes>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </Router>
   );
 }
