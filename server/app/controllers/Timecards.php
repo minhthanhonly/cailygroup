@@ -13,5 +13,8 @@
         function list(){
             return $this->model('TimecardsList')->getList();
         }
+        function setting(){
+            return $this->model('TimecardSetting')->getList();
+        }
     }
 ?>
