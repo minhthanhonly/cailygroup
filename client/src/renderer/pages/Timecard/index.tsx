@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
 import CTableTimeCardBody from '../../components/Table/Table_01/CTableTimeCardBody';
 import MonthYearSelector from '../../components/Table/SelectMonthYears';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import * as XLSX from 'xlsx';
@@ -21,6 +21,25 @@ interface FieldUsers {
 export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
+  const [dataFetched, setDataFetched] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { id, month, year, datacheck, daysInMonth: stateDaysInMonth = [] } = (location.state as {
+    id: number;
+    month: string;
+    year: string;
+    datacheck: number;
+    daysInMonth?: Date[];
+  }) || {};
+  const [user_id, setUser_id] = useState<number>();
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
+
+
+
+  console.log("exportData", datacheck);
+
 
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
@@ -35,6 +54,7 @@ export const Timecard = () => {
             (users: { id: number }) => users.id === loggedInUserId.id,
           );
           setCurrentUser(loggedInUser);
+          setDataFetched(true);
         })
         .catch((error) => console.error('Lỗi khi lấy dữ liệu:', error));
     } else {
@@ -43,6 +63,26 @@ export const Timecard = () => {
   }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
   //-------------------------------------------------------------------------------------
 
+  useEffect(() => {
+    const matchedUser = listOfUsers.find((user) => user.id === id);
+
+    if (matchedUser) {
+      console.log('Tên người dùng tương ứng:', matchedUser.realname);
+      setCurrentUser(matchedUser);
+      if (datacheck === 1) {
+        exportToExcel();
+        navigate(`/timecards/list`);
+      }
+      // You can add additional logic here if needed
+
+    } else {
+      console.log('Không tìm thấy người dùng tương ứng');
+    }
+  }, [listOfUsers]);
+
+  console.log("currentUser", currentUser);
+
+
   const exportToExcel = () => {
     const table = document.getElementById('timecards_table');
     const wb = XLSX.utils.book_new();
@@ -50,6 +90,8 @@ export const Timecard = () => {
     const year = selectedYear;
     const startRow = 5;
     const wsData = XLSX.utils.table_to_sheet(table);
+
+    // Đoạn code để định dạng ngày tháng trong bảng Excel
     if (wsData['!range'] && wsData['!range'].e) {
       for (let r = 0; r < wsData['!range'].e.r + 1; r++) {
         for (let c = 0; c < wsData['!range'].e.c + 1; c++) {
@@ -61,11 +103,16 @@ export const Timecard = () => {
         }
       }
     }
+
+    // Sử dụng matchedUser để lấy tên người dùng
+
+    const matchedUser = listOfUsers.find((user) => user.id === id);
+    const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
     XLSX.utils.sheet_add_aoa(
       wsData,
       [
         [
-          ` ${currentUser?.realname || ''} \n ${month}/${year}`,
+          ` ${realname || ''} \n ${month}/${year}`,
           '',
           '',
           '',
@@ -106,29 +153,14 @@ export const Timecard = () => {
     XLSX.utils.sheet_add_aoa(wsData, filteredData, {
       origin: `A${startRow - 1}`,
     });
-    const sheetName = `Timecards_${currentUser?.realname}_${month}_${year}`;
+    const sheetName = `Timecards_${realname}_${month}_${year}`;
     XLSX.utils.book_append_sheet(wb, wsData, sheetName);
     XLSX.writeFile(
       wb,
-      `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`,
+      `Timecards_${realname}_${month}_${year}.xlsx`,
     );
   };
-  const location = useLocation();
-  const {
-    id,
-    month,
-    year,
-    daysInMonth: stateDaysInMonth = [], // Provide a default empty array
-  } = (location.state as {
-    id: number;
-    month: string;
-    year: string;
-    daysInMonth?: Date[];
-  }) || {};
-  const [user_id, setUser_id] = useState<number>();
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
-  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
+
 
   const handleDateChange = (
     month: string,
@@ -152,6 +184,7 @@ export const Timecard = () => {
       updateMonthAndYear(month, year);
       setUser_id(id);
       handleDateChange(month, year, stateDaysInMonth);
+
     } else {
       const currentDate = new Date();
       const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -163,6 +196,7 @@ export const Timecard = () => {
       updateMonthAndYear(currentMonth, currentYear);
     }
   }, [id]);
+
 
   return (
     <>

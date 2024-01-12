@@ -10,6 +10,8 @@ import NavTimcard from "../../layouts/components/Nav/NavTimcard";
 import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
 import { UserRole } from "../../components/UserRole";
 
+
+
 interface FieldUsers {
   id: number;
   realname: string;
@@ -58,19 +60,6 @@ export const TimecardList: React.FC = () => {
     setMonthYearSelectorDefaultMonth(currentMonth.toString());
     setMonthYearSelectorDefaultYear(currentYear.toString());
   }
-  // useEffect(() => {
-  //   axios.get('http://cailygroup.com/timecards/list')
-  //     .then((response) => {
-  //       setListOfUsers(response.data);
-  //       setSelectedDates({});
-  //       const currentMonth = new Date().getMonth() + 1;
-  //       const currentYear = new Date().getFullYear();
-  //       setMonthYearSelectorDefaultMonth(currentMonth.toString());
-  //       setMonthYearSelectorDefaultYear(currentYear.toString());
-  //     })
-  //     .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
-  // }, [MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear]);
-
   useEffect(() => {
     if (selectedGroupName !== null) {
       const trimmedSelectedGroupName = selectedGroupName.trim().toLowerCase();
@@ -101,30 +90,33 @@ export const TimecardList: React.FC = () => {
 
   const handleButtonClick = (dataId: number, selectedIndex: number) => {
     const { month, year, daysInMonth } = selectedDates[selectedIndex] || {};
+    redirectToTimecards(dataId, month, year, daysInMonth, 0);
+  };
+
+  const handleButtonClickExportData = (dataId: number, selectedIndex: number) => {
+    const { month, year, daysInMonth } = selectedDates[selectedIndex] || {};
+    redirectToTimecards(dataId, month, year, daysInMonth, 1);
 
 
+  };
 
-    // Cập nhật trạng thái selectedParams với ID, tháng và năm được chọn
-    const queryParams: Record<string, string | Date[] | undefined> = {
+  const redirectToTimecards = (
+    dataId: number,
+    month: string | undefined,
+    year: string | undefined,
+    daysInMonth: Date[] | undefined,
+    datacheck: number = 0
+  ) => {
+    const queryParams: Record<string, string | Date[] | number | undefined> = {
       id: dataId.toString(),
       month: month || MonthYearSelectorDefaultMonth,
       year: year || MonthYearSelectorDefaultYear,
       daysInMonth: daysInMonth || undefined,
+      datacheck: datacheck || 0,
     };
 
-    // Chuyển hướng đến trang mới và truyền tham số qua query string
-    console.log("selectedParams222", queryParams);
-    navigate(`/timecards`, { state: queryParams });
-    //navigate(`/timecards?${new URLSearchParams(queryParams).toString()}`);
+    navigate('/timecards', { state: queryParams });
   };
-
-
-  // useEffect(() => {
-  //   if (selectedParams.id || selectedParams.month || selectedParams.year) {
-  //     console.log("selectedParams", selectedParams);
-  //   }
-  // }, [selectedParams]);
-  // ...
 
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -170,7 +162,7 @@ export const TimecardList: React.FC = () => {
               <td>
                 <button className="btn" onClick={() => handleButtonClick(data.id, index)}> Xem Thẻ Giờ </button>
               </td>
-              <td><button className="btn btn--medium btn--green">
+              <td><button className="btn btn--medium btn--green" onClick={() => handleButtonClickExportData(data.id, index)}>
                 Xuất Thẻ Giờ
               </button></td>
             </tr>
