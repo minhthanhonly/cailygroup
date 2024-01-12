@@ -23,6 +23,14 @@ export const Group = () => {
     update: React.ReactNode;
     delete: React.ReactNode;
   };
+  type FieldUsers = {
+    id: number,
+    realname: string,
+    group_name: string,
+    user_email: string,
+    user_skype: string,
+    user_phone: string,
+  };
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -31,6 +39,14 @@ export const Group = () => {
   const [modalGroupNameid, setModalGroupNameId] = useState('');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleteModalid, setDeleteModalId] = useState('');
+  const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [selectedGroup, setSelectedGroup] = useState('');
+  const fetchMembersByGroup = async($groupid: string) => {
+    const groupid = {groupid:$groupid};
+    const res = await axios.get("http://cailygroup.com/users/groups/"+$groupid);
+    setListOfUsers(res.data);
+  };
 
   useEffect(() => {
     axios.get('http://cailygroup.com/groups/').then((response) => {
@@ -38,6 +54,10 @@ export const Group = () => {
       setIsTableUpdated(false); //đặt lại trạng thái khi dữ liệu thay đổi
     });
   }, [isTableUpdated]); // khi state thay đổi useEffect sẽ chạy lại
+
+  // useEffect(() => {
+
+  // },[isDisabled]);
 
 
   let dynamicUpdate = ({ id, groupName, }: { id: string; groupName: string; }) => (
@@ -150,9 +170,10 @@ export const Group = () => {
         </p>
       </button>
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        {/* <h2>{isDisabled ? 'Không thể xóa nhóm có thành viên đang hoạt động' : 'Bạn có chắc chắn muốn xóa không?'}</h2> */}
         <h2>Bạn có chắc chắn muốn xóa không?</h2>
         <div className='wrp-button'>
-          <button className='btn btn--green' onClick={(event) => handleDelete(isDeleteModalid, event)}>Đồng ý</button>
+          <button className='btn btn--green' onClick={(event) => handleDelete(isDeleteModalid, event)} disabled={isDisabled}>Đồng ý</button>
           <button className='btn btn--orange' onClick={closeModaldelete}>Hủy</button>
         </div>
       </Modaldelete>
@@ -160,8 +181,19 @@ export const Group = () => {
   );
 
   const openModaldelete = (initialId: string) => {
-    setDeleteModalId(initialId);
-    setDeleteModalOpen(true);
+    fetchMembersByGroup(initialId);
+    if(listOfUsers.length <= 0){
+      setDeleteModalId(initialId);
+      setDeleteModalOpen(true);
+      setIsDisabled(false);
+      console.log(isDisabled);
+    }
+    else{
+      setDeleteModalId(initialId);
+      setDeleteModalOpen(true);
+      setIsDisabled(true);
+      console.log(isDisabled);
+    }
   };
   const closeModaldelete = () => {
     setDeleteModalOpen(false);

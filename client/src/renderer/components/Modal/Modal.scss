@@ -178,6 +178,11 @@
     font-size: 1.4rem;
     height: 4rem;
   }
+  button[disabled]{
+    border-radius: #ccc;
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 }
 
 .table-modal td:nth-child(1) {
