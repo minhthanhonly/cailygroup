@@ -8,6 +8,7 @@ import { SelectCustom } from "../../components/Table/SelectCustom";
 import MonthYearSelector from "../../components/Table/SelectMonthYears";
 import NavTimcard from "../../layouts/components/Nav/NavTimcard";
 import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
+import { UserRole } from "../../components/UserRole";
 
 interface FieldUsers {
   id: number;
@@ -117,12 +118,18 @@ export const TimecardList: React.FC = () => {
   // ...
 
 
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+  const isAdmin = users.roles === UserRole.ADMIN;
+  const isManager = users.roles === UserRole.MANAGER;
+  const isLeader = users.roles === UserRole.LEADER;
+
   return (
     <>
       <NavTimcard role="admin" />
-      <SelectCustom onGroupChange={(groupId: string) => {
+      {(isAdmin || isManager) ? <SelectCustom onGroupChange={(groupId: string) => {
         setSelectedGroupName(groupId);
-      }} />
+      }} /> : ''}
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Tháng năm", "Thẻ giờ", "Xuất Excel"]} />
         <tbody>
