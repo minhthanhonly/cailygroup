@@ -51,6 +51,10 @@
     $routes['timecarddetails/updatecomment'] = 'timecarddetails/updatecomment';
     $routes['timecarddetails/updateall'] = 'timecarddetails/updateall';
 
+
+    //timecardsetting
+     $routes['timecards/setting'] = 'timecards/setting';
+
     // holidays
     $routes['holidays'] = 'holidays';
 
