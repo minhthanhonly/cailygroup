@@ -1,5 +1,5 @@
 <?php
-    class TimecardsHolidays extends Controller{
+    class Timecardsholidays extends Controller{
         function index(){
             $dataTimecardsHolidays = $this->model('TimecardsHolidaysModel')->getTimecardsHolidays();
         }
