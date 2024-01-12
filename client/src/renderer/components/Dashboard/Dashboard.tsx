@@ -34,14 +34,15 @@ function Dashboard() {
         'http://cailygroup.com/timecards/load/' + usersID,
       );
       console.log(response.data);
-      if (response.data && response.data.timecard_open) {
+
+      if (response.data && response.data.timecard_close) {
         const timecardClose = response.data.timecard_close;
-        if (response.data.timecard_close) {
-          console.log(response.data.timecard_close);
-          const [hours, minutes] = timecardClose.split(':');
-          setEndTime({ hours, minutes });
-          setCheckEnd(true);
-        }
+        console.log(response.data.timecard_close);
+        const [hours, minutes] = timecardClose.split(':');
+        setEndTime({ hours, minutes });
+        setCheckEnd(true);
+      }
+      if (response.data && response.data.timecard_open) {
         const timecardOpen = response.data.timecard_open;
         const [hours, minutes] = timecardOpen.split(':');
         setStartTime({ hours, minutes });
@@ -95,8 +96,8 @@ function Dashboard() {
         'http://cailygroup.com/timecarddetails/add',
         { dataTimeCardDetails },
       );
-      setCheckStart(true);
       loadStart();
+      setCheckStart(true);
     } catch (error) {
       console.error(
         'Lỗi khi lấy thời gian từ API hoặc gửi dữ liệu lên server:',
@@ -132,11 +133,9 @@ function Dashboard() {
         { dataTime },
       );
       console.log(re.data);
-      const timecardClose = res.data.timecard_Close;
-      const [hours, minutes] = timecardClose.split(':');
-      setEndTime({ hours, minutes });
-      setCheckEnd(true);
+
       loadStart();
+      setCheckEnd(true);
     } catch (error) {}
   };
 
@@ -147,6 +146,7 @@ function Dashboard() {
         <h4>Thời gian làm việc hôm nay</h4>
         <div className="Dashboard-action">
           <div className="Dashboard-action--start">
+            <p>Bắt đầu</p>
             {checkStart ? (
               <div className="card-time">
                 <div className="card-time--hour">
@@ -166,22 +166,20 @@ function Dashboard() {
                 </div>
               </div>
             ) : (
-              <>
-                <p>Bắt đầu</p>
-                <button
-                  className="Dashboard-action--circle"
-                  onClick={handleStart}
-                >
-                  <img
-                    src={require('../../../../assets/icon-play.png')}
-                    alt=""
-                    className="fluid-image"
-                  />
-                </button>
-              </>
+              <button
+                className="Dashboard-action--circle"
+                onClick={handleStart}
+              >
+                <img
+                  src={require('../../../../assets/icon-play.png')}
+                  alt=""
+                  className="fluid-image"
+                />
+              </button>
             )}
           </div>
           <div className="Dashboard-action--pause">
+            <p>Tạm ngưng</p>
             {checkPause ? (
               <div className="card-time">
                 <div className="card-time--hour">
@@ -201,22 +199,20 @@ function Dashboard() {
                 </div>
               </div>
             ) : (
-              <>
-                <p>Tạm ngưng</p>
-                <button
-                  className="Dashboard-action--circle"
-                  onClick={handleDelay}
-                >
-                  <img
-                    src={require('../../../../assets/icon-pause.png')}
-                    alt=""
-                    className="fluid-image"
-                  />
-                </button>
-              </>
+              <button
+                className="Dashboard-action--circle"
+                onClick={handleDelay}
+              >
+                <img
+                  src={require('../../../../assets/icon-pause.png')}
+                  alt=""
+                  className="fluid-image"
+                />
+              </button>
             )}
           </div>
           <div className="Dashboard-action--end">
+            <p>Kết thúc</p>
             {checkEnd ? (
               <div className="card-time">
                 <div className="card-time--hour">
@@ -236,19 +232,13 @@ function Dashboard() {
                 </div>
               </div>
             ) : (
-              <>
-                <p>Kết thúc</p>
-                <button
-                  className="Dashboard-action--circle"
-                  onClick={handleEnd}
-                >
-                  <img
-                    src={require('../../../../assets/icon-check.png')}
-                    alt=""
-                    className="fluid-image"
-                  />
-                </button>
-              </>
+              <button className="Dashboard-action--circle" onClick={handleEnd}>
+                <img
+                  src={require('../../../../assets/icon-check.png')}
+                  alt=""
+                  className="fluid-image"
+                />
+              </button>
             )}
           </div>
         </div>

@@ -9,5 +9,11 @@
         function updatecomment($comment = '',$id = ''){
             return $this->model('TimecardDetailsModel')->updateComment($comment,$id);
         }
+        function updateall(){
+            return $this->model('TimecardDetailsModel')->updateAll();
+        }
+        // function updateall($id='', $timecard_open='', $timecard_close='', $timecard_time='', $timecard_timeover='', $timecard_comment='', $updatedAt=''){
+        //     return $this->model('TimecardDetailsModel')->updateAll($id, $timecard_open, $timecard_close, $timecard_time, $timecard_timeover, $timecard_comment, $updatedAt);
+        // }
     }
 ?>
