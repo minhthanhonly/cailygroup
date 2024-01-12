@@ -144,8 +144,13 @@
   left: 0;
   text-align: center;
   z-index: 999;
+  box-sizing: border-box;
+  * {
+    box-sizing: border-box;
+  }
   &-content {
-    width: 50rem;
+    width: 70rem;
+    color: #000;
     background-color: #fff;
     z-index: 1;
     position: relative;
@@ -156,6 +161,10 @@
     border-radius: 2rem;
     & > .hdglv3 {
       margin-top: 0;
+    }
+    h2,
+    h3 {
+      font-size: 2rem;
     }
     textarea {
       width: 100%;
@@ -180,6 +189,21 @@
   }
 }
 
-.table-modal td:nth-child(1) {
-  min-width: 10rem;
+.table-modal {
+  td {
+    text-align: left !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    border: 1px solid #000 !important;
+    &:nth-child(1) {
+      min-width: 10rem;
+    }
+    input {
+      max-width: 100% !important;
+      text-align: left !important;
+    }
+    textarea {
+      height: 12rem;
+    }
+  }
 }

@@ -11,7 +11,7 @@ import Modaldelete from '../../components/Modal/Modaldelete';
 export const DayoffApply = () => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [id, setID] = useState();
-  const openModaldelete = (ids: number) => {
+  const openModaldelete = (ids: any) => {
     setID(ids);
     setDeleteModalOpen(true);
   };

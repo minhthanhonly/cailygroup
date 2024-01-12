@@ -13,6 +13,8 @@ import {
 import Modal from '../../Modal/Modal';
 import useAuth from '../../../hooks/useAuth';
 import { UserRole } from '../../../components/UserRole';
+import Modaldelete from '../../Modal/Modaldelete';
+import { response } from 'express';
 
 //sever
 type Holiday = {
@@ -37,7 +39,7 @@ interface Dayoff {
 
 interface TimecardData {
   timecard_date: string;
-  timecard_id: string;
+  id: number;
   timecard_open: string;
   timecard_close: string;
   id_groupwaretimecard: number;
@@ -111,17 +113,43 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setModalOpen(false);
   };
 
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const [timecardID, setTimecardID] = useState<number>(0);
+  const [timecardDate, setTimecardDate] = useState<string>();
+  const [timecardStart, setTimecardStart] = useState<string>();
+  const [timecardEnd, setTimecardEnd] = useState<string>();
+  const [timecardTime, setTimecardTime] = useState<string>();
+  const [timecardOvertime, setTimecardOvertime] = useState<string>();
+  const [timecardNote, setTimecardNote] = useState<string>();
+  const openModaldelete = (
+    id: number,
+    timecards_date: string,
+    timecards_open: string,
+    timecards_close: string,
+    timecards_time: string,
+    timecards_timeover: string,
+    timecards_comment: string,
+  ) => {
+    setTimecardID(id);
+    setTimecardDate(timecards_date);
+    setTimecardStart(timecards_open);
+    setTimecardEnd(timecards_close);
+    setTimecardTime(timecards_time);
+    setTimecardOvertime(timecards_timeover);
+    setTimecardNote(timecards_comment);
+    setDeleteModalOpen(true);
+  };
+  const closeModaldelete = () => {
+    setDeleteModalOpen(false);
+  };
   useEffect(() => {
-    // Nếu selectedMonth hoặc selectedYear chưa được chọn, gán giá trị mặc định là tháng và năm hiện tại
     if (!selectedMonth || !selectedYear) {
       const currentDate = new Date();
-      const currentMonth = String(currentDate.getMonth() + 1); // Tháng trong JavaScript bắt đầu từ 0
+      const currentMonth = String(currentDate.getMonth() + 1);
       const currentYear = String(currentDate.getFullYear());
-
-      // Gọi hàm update với tháng và năm hiện tại
       updateDaysInMonth(currentMonth, currentYear);
     } else {
-      // Nếu đã có giá trị cho selectedMonth và selectedYear, thì gọi hàm update như bình thường
       updateDaysInMonth(selectedMonth, selectedYear);
     }
   }, [
@@ -372,6 +400,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
+    fetchDayoffs();
   };
   const deleteDayoffs = async (id: number) => {
     try {
@@ -381,6 +410,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
+    fetchDayoffs();
   };
 
   //tổng số giờ
@@ -410,25 +440,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
     setTotalTime({ hours: totalHours, minutes: totalMinutes });
   };
-
-  const [accreptLeaves, setAccreptLeave] = useState([new Date(2024, 1, 15)]);
-  const accreptLeave = (date: number | Date) =>
-    accreptLeaves.some((accrept) => isSameDay(date, accrept));
-
-  const [cancelLeave, setCancelLeave] = useState([new Date(2024, 1, 22)]);
-  const isCancelLeave = (date: number | Date) =>
-    cancelLeave.some((cancel) => isSameDay(date, cancel));
-
-  const [waiting, setWaiting] = useState([new Date(2023, 11, 25)]);
-  const isWaiting = (date: number | Date) =>
-    waiting.some((cancel) => isSameDay(date, cancel));
-
-  const formatMinutesToHours = (totalWorkingHours: number) => {
-    const hours = Math.floor(totalWorkingHours / 60);
-    const minutes = totalWorkingHours % 60;
-    return `${hours}:${String(minutes).padStart(2, '0')}`;
-  };
-
   const currentMonth = new Date().getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
   const currentYear = new Date().getFullYear();
 
@@ -479,12 +490,26 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     fetchDayoffs();
     closeModal();
   };
-
+  const handleChangeTimecards = async (id: number) => {
+    const response = await axios.post(
+      'http://cailygroup.com/timecarddetails/updateall',
+      {
+        id: timecardID,
+        timecard_open: timecardStart,
+        timecard_close: timecardEnd,
+        timecard_time: timecardTime,
+        timecard_timeover: timecardOvertime,
+        timecard_comment: timecardNote,
+      },
+    );
+    console.log(response.data);
+    fetchTimecardOpen();
+    closeModaldelete();
+  };
   useEffect(() => {
     fetchTimecardOpen();
     fetchHolidays();
     fetchDayoffs();
-    console.log(usersID);
   }, [usersID]);
   useEffect(() => {
     calculateTotalTime();
@@ -509,8 +534,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   : 'bg-red '
                 : '';
             })()}
-            
-            ${isWaiting(day) ? 'waiting bg-yellow' : ''}
           `}
         >
           {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
@@ -743,6 +766,44 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 ) : (
                   ''
                 )}
+                {timecardOpen.some(
+                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                ) ? (
+                  <>
+                    {timecardOpen
+                      .filter(
+                        (item) =>
+                          item.timecard_date === format(day, 'dd-MM-yyyy'),
+                      )
+                      .map((item, index) => (
+                        <div key={index}>
+                          {item.timecard_open !== null &&
+                          item.timecard_open !== '' ? (
+                            admin ? (
+                              <>
+                                <span
+                                  className="btn btn--green btn--medium"
+                                  onClick={(event) => {
+                                    openModaldelete(
+                                      item.id,
+                                      item.timecard_date,
+                                      item.timecard_open,
+                                      item.timecard_close,
+                                      item.timecard_time,
+                                      item.timecard_timeover,
+                                      item.timecard_comment,
+                                    );
+                                  }}
+                                >
+                                  Sửa giờ
+                                </span>
+                              </>
+                            ) : null
+                          ) : null}
+                        </div>
+                      ))}
+                  </>
+                ) : null}
               </td>
             </>
           ) : null}
@@ -788,6 +849,78 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               </>
             }
           </Modal>
+          <Modaldelete
+            isOpen={isDeleteModalOpen}
+            onRequestClose={closeModaldelete}
+          >
+            <h2 className="mb15">Sửa thẻ giờ ngày: {timecardDate}</h2>
+            <table className="table-modal">
+              <tbody>
+                <tr>
+                  <td>Giờ bắt đầu</td>
+                  <td>
+                    <input
+                      type="text"
+                      defaultValue={timecardStart}
+                      onChange={(e) => setTimecardStart(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Giờ kết thúc</td>
+                  <td>
+                    <input
+                      type="text"
+                      defaultValue={timecardEnd}
+                      onChange={(e) => setTimecardEnd(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Giờ làm việc</td>
+                  <td>
+                    <input
+                      type="text"
+                      defaultValue={timecardTime}
+                      onChange={(e) => setTimecardTime(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Ngoài giờ</td>
+                  <td>
+                    <input
+                      type="text"
+                      defaultValue={timecardOvertime}
+                      onChange={(e) => setTimecardOvertime(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Ghi chú</td>
+                  <td>
+                    <textarea
+                      defaultValue={timecardNote}
+                      onChange={(e) => setTimecardNote(e.target.value)}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div className="wrp-button">
+              <button
+                className="btn btn--green"
+                onClick={(event) => {
+                  handleChangeTimecards(timecardID);
+                }}
+              >
+                Đồng ý
+              </button>
+              <button className="btn btn--orange" onClick={closeModaldelete}>
+                Hủy
+              </button>
+            </div>
+          </Modaldelete>
         </td>
       </tr>
     </>

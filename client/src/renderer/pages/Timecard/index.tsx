@@ -33,6 +33,7 @@ export const Timecard = () => {
     year: string;
     daysInMonth?: Date[];
   }) || {};
+  const [user_id, setUser_id] = useState<number>();
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
@@ -84,6 +85,7 @@ export const Timecard = () => {
       setSelectedMonth(month);
       setSelectedYear(year);
       updateMonthAndYear(month, year);
+      setUser_id(id);
       handleDateChange(month, year, stateDaysInMonth);
     } else {
       const currentDate = new Date();
@@ -175,6 +177,7 @@ export const Timecard = () => {
               selectedMonth={selectedMonth}
               selectedYear={selectedYear}
               daysInMonth={daysInMonth}
+              userID={user_id}
             />
           </tbody>
         </table>
