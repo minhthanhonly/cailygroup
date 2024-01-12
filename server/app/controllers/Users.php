@@ -24,8 +24,8 @@
             return $this->model('UsersModel')->delete($id);
         }
 
-        function groups($groupid=''){
-            return $this->model('UsersModel')->getMembersByGroup($groupid);
+        function groups($id=''){
+            return $this->model('UsersModel')->getMembersByGroup($id);
         }
     }
 ?>

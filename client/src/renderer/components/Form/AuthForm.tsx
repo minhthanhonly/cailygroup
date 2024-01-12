@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import './From.scss';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import axios from '../../api/axios';
 import useAuth from '../../hooks/useAuth';
 
@@ -8,21 +8,11 @@ function FormLogin(){
   const { setAuth } = useAuth();
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [userid, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
-
-  // useEffect(() => {
-  //   const isLoggedIn = localStorage.getItem('login');
-  //   if(isLoggedIn === 'true') {
-  //     navigate('/dashboard');
-  //   } else {
-  //     navigate('/');
-  //   }
-  // })
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
     switch(type){
@@ -102,7 +92,6 @@ function FormLogin(){
             <div className="form-group">
               <input className="form-input" name="password" type="password" placeholder="Mật Khẩu" onChange={(e) => handleInput(e, "password")}/>
             </div>
-            {/* <input type="hidden" value={} /> */}
             <div className="center">
               <button className="btn" type="submit">Đăng Nhập</button>
             </div>

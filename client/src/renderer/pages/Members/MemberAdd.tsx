@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import isValidInputs from "../../components/Validate";
 
@@ -19,7 +19,7 @@ function MemberAdd() {
     // isValidInputs(formValue.userid, formValue.password);
 		e.preventDefault();
 		const formData = {userid:formValue.userid, password:formValue.password, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-		const res = await axios.post("http://cailygroup.com/users/add", formData);
+		const res = await axios.post("users/add", formData);
 
     if(res.data.success){
       setMessage(res.data.success);
@@ -41,7 +41,7 @@ function MemberAdd() {
 	const [listOfAuthority, setListOfAuthority] = useState<FieldAuthority[] | []>([]);
 
 	useEffect(() => {
-		axios.get('http://cailygroup.com/authority/').then((response) => {
+		axios.get('authority').then((response) => {
 			setListOfAuthority(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
@@ -66,7 +66,7 @@ function MemberAdd() {
 	const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
 	useEffect(() => {
-		axios.get('http://cailygroup.com/groups/').then((response) => {
+		axios.get('groups').then((response) => {
 			setListOfGroups(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
