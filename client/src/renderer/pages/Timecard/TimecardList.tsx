@@ -49,7 +49,7 @@ export const TimecardList: React.FC = () => {
     // Handle date change logic if needed
   };
 
-  const fetchTimecards = async() => {
+  const fetchTimecards = async () => {
     const res = await axios.get("http://cailygroup.com/timecards/list/");
     setListOfUsers(res.data);
     setSelectedDates({});
@@ -133,18 +133,18 @@ export const TimecardList: React.FC = () => {
   const isManager = users.roles === UserRole.MANAGER;
   const isLeader = users.roles === UserRole.LEADER;
 
-  const fetchTimecardsByGroup = async($groupid: string) => {
-    const res = await axios.get("http://cailygroup.com/timecards/groups/"+$groupid);
+  const fetchTimecardsByGroup = async ($groupid: string) => {
+    const res = await axios.get("http://cailygroup.com/timecards/groups/" + $groupid);
     setListOfUsers(res.data);
   };
 
   useEffect(() => {
-    if(isLeader) {
+    if (isLeader) {
       fetchTimecardsByGroup(users.user_group_id);
     } else {
       fetchTimecards();
     }
-  },[MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear])
+  }, [MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear])
 
   return (
     <>
@@ -170,7 +170,9 @@ export const TimecardList: React.FC = () => {
               <td>
                 <button className="btn" onClick={() => handleButtonClick(data.id, index)}> Xem Thẻ Giờ </button>
               </td>
-              <td></td>
+              <td><button className="btn btn--medium btn--green">
+                Xuất Thẻ Giờ
+              </button></td>
             </tr>
           ))}
         </tbody>
