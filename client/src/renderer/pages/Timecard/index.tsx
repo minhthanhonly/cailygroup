@@ -26,13 +26,14 @@ export const Timecard = () => {
     id,
     month,
     year,
-    daysInMonth: stateDaysInMonth,
+    daysInMonth: stateDaysInMonth = [], // Provide a default empty array
   } = (location.state as {
     id: number;
     month: string;
     year: string;
     daysInMonth?: Date[];
   }) || {};
+  const [user_id, setUser_id] = useState<number>();
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
@@ -84,6 +85,7 @@ export const Timecard = () => {
       setSelectedMonth(month);
       setSelectedYear(year);
       updateMonthAndYear(month, year);
+      setUser_id(id);
       handleDateChange(month, year, stateDaysInMonth);
     } else {
       const currentDate = new Date();
@@ -134,7 +136,9 @@ export const Timecard = () => {
     );
     wsData['!merges'] = [{ s: { r: 2, c: 0 }, e: { r: 3, c: 7 } }];
     const mergedCellAddress = XLSX.utils.encode_cell({ r: 2, c: 0 });
-    wsData[mergedCellAddress].s = { alignment: { horizontal: 'center', vertical: 'center' } };
+    wsData[mergedCellAddress].s = {
+      alignment: { horizontal: 'center', vertical: 'center' },
+    };
 
     // Đẩy bảng xuống 3 ô
     XLSX.utils.sheet_add_aoa(wsData, [[]], { origin: `A${startRow - 2}` });
@@ -180,6 +184,7 @@ export const Timecard = () => {
               selectedMonth={selectedMonth}
               selectedYear={selectedYear}
               daysInMonth={daysInMonth}
+              userID={user_id}
             />
           </tbody>
         </table>

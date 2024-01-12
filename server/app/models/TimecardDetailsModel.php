@@ -153,5 +153,30 @@
             //     echo json_encode(["success" => false, "error" => "Invalid parameters"]);
             // }
         }
+        function updateAll(){
+			global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            $id = $data['id'];
+            $timecard_open = $data['timecard_open'];
+            $timecard_close = $data['timecard_close'];
+            $timecard_time = $data['timecard_time'];
+            $timecard_timeover = $data['timecard_timeover'];
+            $timecard_comment = $data['timecard_comment'];
+
+            $sql = "UPDATE timecard_details SET timecard_open = ?, timecard_close = ?, timecard_time = ?, timecard_timeover = ?, timecard_comment = ?, updatedAt = NOW()  WHERE id = $id";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param("sssss", $timecard_open, $timecard_close, $timecard_time, $timecard_timeover ,$timecard_comment);
+            if ($stmt->execute()) {
+                http_response_code(200);
+                echo json_encode(["success" => true]);
+            } else {
+                throw new Exception("Execute failed: " . $stmt->error);
+            }
+
+            $stmt->close();
+        }
     }
 ?>

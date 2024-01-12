@@ -139,11 +139,11 @@ function Members() {
           ))}
         </tbody>
       </CTable>
-      <Pagination
+      {/* <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         onPageChange={handlePageChange}
-      />
+      /> */}
       <Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
         <h2>Bạn có chắc chắn muốn xóa không?</h2>
         <div className='wrp-button'>

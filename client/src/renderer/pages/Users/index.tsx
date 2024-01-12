@@ -63,7 +63,7 @@ export const Users = () => {
 
       <div className="box-group box-group--second">
         <div className="box-group__item">
-          {/* <SelectGroup /> */}
+
         </div>
         <div className="box-group__item">
           <InputQuantity />
