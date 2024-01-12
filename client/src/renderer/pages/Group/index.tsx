@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from "../../api/axios";
 import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';
 import CTableBody from '../../components/Table/CTableBody';
@@ -45,7 +45,7 @@ export const Group = () => {
   const [selectedGroup, setSelectedGroup] = useState('');
   const fetchMembersByGroup = async($groupid: string) => {
     const groupid = {groupid:$groupid};
-    const res = await axios.get("http://cailygroup.com/users/groups/"+$groupid);
+    const res = await axios.get("users/groups/"+$groupid);
     if(res.data.length > 0) {
       setListOfUsers(res.data);
       setIsDisabled(true);
@@ -55,7 +55,7 @@ export const Group = () => {
   };
 
   useEffect(() => {
-    axios.get('http://cailygroup.com/groups/').then((response) => {
+    axios.get('groups/').then((response) => {
       setListOfGroups(response.data);
       setIsTableUpdated(false); //đặt lại trạng thái khi dữ liệu thay đổi
     });
@@ -125,7 +125,7 @@ export const Group = () => {
       event.preventDefault();
       try {
         const payload = { id: groupId };
-        let response = await axios.delete('http://cailygroup.com/groups/delete/', {
+        let response = await axios.delete('groups/delete/', {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -146,7 +146,7 @@ export const Group = () => {
       try {
         const dataUpdate = { id, group_name };
         const response = await axios.put(
-          'http://cailygroup.com/groups/update/',
+          'groups/update/',
           dataUpdate,
           { headers: { 'Content-Type': 'application/json' } }
         );
@@ -191,10 +191,10 @@ export const Group = () => {
   useEffect(() => {
     if(isDeleteModalOpen  == true) {
       fetchMembersByGroup(minitialId);
-      
+
     }
   });
-  
+
   const closeModaldelete = () => {
     setDeleteModalOpen(false);
   };
@@ -223,14 +223,14 @@ export const Group = () => {
         owner: 'admin',
       };
       setGroupName('');
-      const res = await axios.post("http://cailygroup.com/groups/add/", group_data);
+      const res = await axios.post("groups/add/", group_data);
       console.log('Data inserted successfully:', res.data);
       setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
     }
     catch(error){
       console.error('Lỗi khi thêm dữ liệu:', error);
     }
-    
+
   };
 
   return (
