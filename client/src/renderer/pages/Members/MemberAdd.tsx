@@ -20,7 +20,7 @@ function MemberAdd() {
     if(res.data.success){
       setMessage(res.data.success);
       setTimeout(() => {
-        navigate('/users');
+        navigate('/members');
       }, 2000);
     }
 	}

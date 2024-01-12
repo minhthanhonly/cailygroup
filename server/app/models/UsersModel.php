@@ -172,11 +172,16 @@
 			} else {
 				$sql = "SELECT * FROM users WHERE user_group='$groupid'";
 			}
+			
 			$result = $conn->query($sql);
 
 			// Kiểm tra và hiển thị kết quả
-			while ($row = $result->fetch_assoc()) {
-				$data[] = $row;
+			if ($result->num_rows > 0) {
+				while ($row = $result->fetch_assoc()) {
+					$data[] = $row;
+				}
+			} else {
+				$data = [];
 			}
 
 			header('Content-Type: application/json');
