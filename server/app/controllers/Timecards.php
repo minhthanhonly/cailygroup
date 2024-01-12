@@ -13,5 +13,9 @@
         function list(){
             return $this->model('TimecardsList')->getList();
         }
+
+        function groups($groupid=''){
+            return $this->model('TimecardsList')->getTimecardsByGroup($groupid);
+        }
     }
 ?>

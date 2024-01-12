@@ -64,6 +64,7 @@ function FormLogin(){
             "realname": res2.data.realname,
             "roles": res2.data.authority_name,
             "user_group": res2.data.group_name,
+            "user_group_id": res2.data.user_group,
           }
           localStorage.setItem('users', JSON.stringify(users));
           setAuth({ isLoggedIn, roles, users });

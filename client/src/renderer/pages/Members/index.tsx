@@ -90,11 +90,9 @@ function Members() {
   const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
-
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
-
 
   const [message, setMessage] = useState('');
 
@@ -141,11 +139,11 @@ function Members() {
           ))}
         </tbody>
       </CTable>
-      <Pagination
+      {/* <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         onPageChange={handlePageChange}
-      />
+      /> */}
       <Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
         <h2>Bạn có chắc chắn muốn xóa không?</h2>
         <div className='wrp-button'>
