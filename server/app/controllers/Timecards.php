@@ -13,14 +13,5 @@
         function list(){
             return $this->model('TimecardsList')->getList();
         }
-<<<<<<< HEAD
-        function setting(){
-            return $this->model('TimecardSetting')->getList();
-=======
-
-        function groups($groupid=''){
-            return $this->model('TimecardsList')->getTimecardsByGroup($groupid);
->>>>>>> d2925e12aa8d17457971237fe812c3476d877c03
-        }
     }
 ?>

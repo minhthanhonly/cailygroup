@@ -44,16 +44,10 @@
     
     // timecardslist
     $routes['timecards/list'] = 'timecards/list';
-    $routes['timecards/groups/.+-(\d+)'] = 'timecards/groups/$1';
 
     $routes['timecarddetails/add'] = 'timecarddetails/add';
     $routes['timecarddetails/update'] = 'timecarddetails/update';
     $routes['timecarddetails/updatecomment'] = 'timecarddetails/updatecomment';
-    $routes['timecarddetails/updateall'] = 'timecarddetails/updateall';
-
-
-    //timecardsetting
-     $routes['timecards/setting'] = 'timecards/setting';
 
     // holidays
     $routes['holidays'] = 'holidays';
