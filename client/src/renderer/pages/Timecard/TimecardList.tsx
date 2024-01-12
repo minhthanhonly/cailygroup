@@ -49,18 +49,27 @@ export const TimecardList: React.FC = () => {
     // Handle date change logic if needed
   };
 
-  useEffect(() => {
-    axios.get('http://cailygroup.com/timecards/list')
-      .then((response) => {
-        setListOfUsers(response.data);
-        setSelectedDates({});
-        const currentMonth = new Date().getMonth() + 1;
-        const currentYear = new Date().getFullYear();
-        setMonthYearSelectorDefaultMonth(currentMonth.toString());
-        setMonthYearSelectorDefaultYear(currentYear.toString());
-      })
-      .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
-  }, [MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear]);
+  const fetchTimecards = async() => {
+    const res = await axios.get("http://cailygroup.com/timecards/list/");
+    setListOfUsers(res.data);
+    setSelectedDates({});
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
+    setMonthYearSelectorDefaultMonth(currentMonth.toString());
+    setMonthYearSelectorDefaultYear(currentYear.toString());
+  }
+  // useEffect(() => {
+  //   axios.get('http://cailygroup.com/timecards/list')
+  //     .then((response) => {
+  //       setListOfUsers(response.data);
+  //       setSelectedDates({});
+  //       const currentMonth = new Date().getMonth() + 1;
+  //       const currentYear = new Date().getFullYear();
+  //       setMonthYearSelectorDefaultMonth(currentMonth.toString());
+  //       setMonthYearSelectorDefaultYear(currentYear.toString());
+  //     })
+  //     .catch(error => console.error('Lỗi khi lấy dữ liệu:', error));
+  // }, [MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear]);
 
   useEffect(() => {
     if (selectedGroupName !== null) {
@@ -124,12 +133,31 @@ export const TimecardList: React.FC = () => {
   const isManager = users.roles === UserRole.MANAGER;
   const isLeader = users.roles === UserRole.LEADER;
 
+  const fetchTimecardsByGroup = async($groupid: string) => {
+    const res = await axios.get("http://cailygroup.com/timecards/groups/"+$groupid);
+    setListOfUsers(res.data);
+  };
+
+  useEffect(() => {
+    if(isLeader) {
+      fetchTimecardsByGroup(users.user_group_id);
+    } else {
+      fetchTimecards();
+    }
+  },[MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear])
+
   return (
     <>
       <NavTimcard role="admin" />
       {(isAdmin || isManager) ? <SelectCustom onGroupChange={(groupId: string) => {
         setSelectedGroupName(groupId);
       }} /> : ''}
+
+      {isLeader && <div className="select__box group ml0">
+        <div className="select__box--title">
+          <p>Nhóm: {users.user_group}</p>
+        </div>
+      </div>}
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Tháng năm", "Thẻ giờ", "Xuất Excel"]} />
         <tbody>

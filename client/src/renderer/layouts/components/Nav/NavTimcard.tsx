@@ -51,6 +51,7 @@ const NavTimcard: React.FC<Role> = () => {
     <>
       {isAdmin && <ListBranch branch={AdminBranch} />}
       {isManager && <ListBranch branch={ManagerBranch} />}
+      {isLeader && <ListBranch branch={ManagerBranch} />}
     </>
   );
 };
