@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
@@ -16,7 +16,7 @@ export default function UserEdit() {
 	}
 
   useEffect(() => {
-    axios.get('http://cailygroup.com/users/edit/'+id).then(response => {
+    axios.get('users/edit/'+id).then(response => {
       setFormValue(response.data);
     })
   }, [])
@@ -24,8 +24,8 @@ export default function UserEdit() {
   const handleSubmit = async(e) => {
 		e.preventDefault();
 		const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-		const res = await axios.post("http://cailygroup.com/users/update", formData);
-    const res2 = await axios.get("http://cailygroup.com/users/detail/"+formValue.userid);
+		const res = await axios.post("users/update", formData);
+    const res2 = await axios.get("users/detail/"+formValue.userid);
 
     if(res.data.success){
       setMessage(res.data.success);
@@ -59,7 +59,7 @@ export default function UserEdit() {
 	const [listOfAuthority, setListOfAuthority] = useState<FieldAuthority[] | []>([]);
 
 	useEffect(() => {
-		axios.get('http://cailygroup.com/authority/').then((response) => {
+		axios.get('authority/').then((response) => {
 			setListOfAuthority(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
@@ -84,7 +84,7 @@ export default function UserEdit() {
 	const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
 	useEffect(() => {
-		axios.get('http://cailygroup.com/groups/').then((response) => {
+		axios.get('groups/').then((response) => {
 			setListOfGroups(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
