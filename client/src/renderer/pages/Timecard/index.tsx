@@ -26,7 +26,7 @@ export const Timecard = () => {
     id,
     month,
     year,
-    daysInMonth: stateDaysInMonth,
+    daysInMonth: stateDaysInMonth = [], // Provide a default empty array
   } = (location.state as {
     id: number;
     month: string;
@@ -180,6 +180,7 @@ export const Timecard = () => {
               selectedMonth={selectedMonth}
               selectedYear={selectedYear}
               daysInMonth={daysInMonth}
+              userID={id}
             />
           </tbody>
         </table>
