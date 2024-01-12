@@ -60,6 +60,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const selectedYear = Props.selectedYear;
   const propsID = Props.userID;
   const [admin, setAdmin] = useState(false);
+  const [admins, setAdmins] = useState(false);
   // const { auth } = useAuth();
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -70,6 +71,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const isLeader = users.roles === UserRole.LEADER;
       if (isAdmin || isManager || isLeader) {
         setAdmin(true);
+      }
+      if (isAdmin || isManager) {
+        setAdmins(true);
       }
     }
     if (propsID) {
@@ -779,7 +783,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         <div key={index}>
                           {item.timecard_open !== null &&
                           item.timecard_open !== '' ? (
-                            admin ? (
+                            admins ? (
                               <>
                                 <span
                                   className="btn btn--green btn--medium"
