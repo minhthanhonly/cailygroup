@@ -5,7 +5,6 @@ import { CTableHead } from '../../components/Table/CTableHead';
 import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { urlControl } from '../../routes/server';
 import Modaldelete from '../../components/Modal/Modaldelete';
 
 export const Dayoff = () => {
@@ -100,6 +99,7 @@ export const Dayoff = () => {
 
   useEffect(() => {
     axios.get('http://cailygroup.com/dayoffs/').then((response) => {
+      console.log(response.data);
       setListOfGroups(response.data);
     });
   }, [currentPage]);

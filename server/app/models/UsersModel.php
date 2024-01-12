@@ -68,8 +68,8 @@
 				$user_group = $userPostData->user_group;
 			
 				// Thêm dữ liệu vào cơ sở dữ liệu
-				$sql = "INSERT INTO users (id, userid, password, password_default, realname, authority, user_group, user_groupname, user_email, user_skype, user_ruby, user_postcode,user_address, user_addressruby, user_phone, user_mobile, user_order, edit_level, edit_group, edit_user, owner, editor, createdAt, updatedAt) 
-				VALUES ('', '$userid', '$password', '', '$realname', '$authority', '$user_group', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '')";
+				$sql = "INSERT INTO users (userid, password, password_default, realname, authority, user_group, user_groupname, user_email, user_skype, user_ruby, user_postcode,user_address, user_addressruby, user_phone, user_mobile, user_order, edit_level, edit_group, edit_user, owner, editor, createdAt, updatedAt) 
+				VALUES ('$userid', '$password', '', '$realname', '$authority', '$user_group', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '')";
 				$result = $conn->query($sql);
 
 				header('Content-Type: application/json');
@@ -163,14 +163,19 @@
 			}
 		}
 
-		function getMembersByGroup($groupid){
+		function getMembersByGroup($id){
 			global $conn;
 
 			// Thực hiện truy vấn SELECT
-			if($groupid === '-1') {
-				$sql = "SELECT * FROM users";
+			if($id === '-1') {
+				$sql = "SELECT users.*, groups.group_name, authority.authority_name FROM users 
+				JOIN groups ON users.user_group = groups.id
+				JOIN authority ON users.authority = authority.id";
 			} else {
-				$sql = "SELECT * FROM users WHERE user_group='$groupid'";
+				$sql = "SELECT users.*, groups.group_name, authority.authority_name FROM users 
+				JOIN groups ON users.user_group = groups.id
+				JOIN authority ON users.authority = authority.id
+				WHERE user_group='$id'";
 			}
 			
 			$result = $conn->query($sql);

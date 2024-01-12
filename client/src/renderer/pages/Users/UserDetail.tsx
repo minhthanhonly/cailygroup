@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Menberdetails } from '../../components/Menberdetails';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from "../../api/axios";
 
 export const UserDetail = () => {
   const {userid} = useParams();
   const [formValue, setFormValue] = useState({id: '', userid: '', realname: '', group_name: '', user_address: '', user_phone: '', user_email: '', user_skype: ''});
   useEffect(() => {
-    axios.get('http://cailygroup.com/users/detail/'+userid).then(response => {
+    axios.get('users/detail/'+userid).then(response => {
       setFormValue(response.data);
     })
   }, [])

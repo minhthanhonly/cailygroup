@@ -8,7 +8,6 @@
                     return $model;
                 }
             }
-
             return false;
         }
         function render($view, $data=[]){

@@ -21,7 +21,6 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  console.log(users.user_group_id);
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
   const isLeader = users.roles === UserRole.LEADER;
@@ -31,9 +30,7 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
       .then((response) => {
         const responseData = response.data;
         if (Array.isArray(responseData)) {
-          // if (users.user_group_id == 1) {
           setGroupList(responseData);
-          // }
         } else {
           console.error('API không trả về một mảng dữ liệu.');
         }
