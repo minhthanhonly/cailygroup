@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../../api/axios';
 import {
   startOfMonth,
   endOfMonth,
@@ -228,6 +228,19 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     { format: (date: number | Date) => format(startOfDay(date), 'EEEE') }, // Định dạng ngày thành thứ
   ];
 
+  const calculateTime = (timestart: string, timeend: string): string => {
+    const startTime = new Date(`2000-01-01T${timestart}`);
+    const endTime = new Date(`2000-01-01T${timeend}`);
+
+    // Tính hiệu của hai thời điểm
+    const timeDiff: number = endTime.getTime() - startTime.getTime();
+
+    // Chuyển đổi thời gian từ milliseconds sang giờ:phút:giây
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+    return `${hours}:${minutes}`;
+  };
   // Hàm xử lý khi click vào nút bắt đầu
   const [isID, setId] = useState(null);
   const handleButtonClick = async () => {
@@ -258,26 +271,28 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         owner: 'admin',
       };
       console.log(dataTimeCard);
-      const responseTimeCard = await axios.post(
-        'http://cailygroup.com/timecards/add',
-        { dataTimeCard },
-      );
+      const responseTimeCard = await axios.post('timecards/add', {
+        dataTimeCard,
+      });
 
       console.log(responseTimeCard.data);
       console.log(responseTimeCard.data.id_timecard);
-
+      const responseConfig = await axios.post('config');
+      const configData = responseConfig.data;
+      const openlunchValue = findConfigValue(configData, 'openlunch');
+      const closelunchValue = findConfigValue(configData, 'closelunch');
+      let resut = calculateTime(openlunchValue, closelunchValue);
       setId(responseTimeCard.data.id_timecard);
       const dataTimeCardDetails = {
         id_groupwaretimecard: responseTimeCard.data.id_timecard,
         timecard_open: timecard_open_time,
         timecard_originalopen: timecard_open_time,
-        timecard_timeinterval: '1:30',
-        timecard_comment: '',
+        timecard_timeinterval: resut,
       };
-      const responseTimeCardDetails = await axios.post(
-        'http://cailygroup.com/timecarddetails/add',
-        { dataTimeCardDetails },
-      );
+      console.log(dataTimeCardDetails);
+      const responseTimeCardDetails = await axios.post('timecarddetails/add', {
+        dataTimeCardDetails,
+      });
 
       console.log(responseTimeCardDetails.data);
       fetchTimecardOpen();
@@ -288,7 +303,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       );
     }
   };
-
+  function findConfigValue(configArray: any[], key: string) {
+    const configItem = configArray.find((item) => item.config_key === key);
+    return configItem ? configItem.config_value : null;
+  }
   // nhấn nút kết thúc mỗi ngày
   const handleEndButtonClick = async (
     timecardID: any,
@@ -313,21 +331,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       };
 
       try {
-        const response = await axios.post(
-          'http://cailygroup.com/timecarddetails/update',
-          { dataTime },
-        );
+        const response = await axios.post('timecarddetails/update', {
+          dataTime,
+        });
         console.log(response.data);
         fetchTimecardOpen();
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
-
-        // Kiểm tra và chuyển đổi kiểu dữ liệu
-        if (axios.isAxiosError(error) && error.response) {
-          console.log('Error response data:', error.response.data);
-        } else {
-          console.log('Unknown error:', error);
-        }
       }
     }
   };
@@ -335,7 +345,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [holidays, setHolidays] = useState<Holiday[] | undefined>();
   const fetchHolidays = async () => {
     try {
-      const response = await axios.get('http://cailygroup.com/holidays');
+      const response = await axios.get('holidays');
       if (response.data && Array.isArray(response.data)) {
         setHolidays(response.data);
       }
@@ -370,9 +380,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const fetchDayoffs = async () => {
     try {
       let $id = usersID;
-      const response = await axios.get(
-        'http://cailygroup.com/dayoffs/getforuser/' + $id,
-      );
+      const response = await axios.get('dayoffs/getforuser/' + $id);
       setDayoffs(response.data);
     } catch (error) {
       console.error('Error fetching dayoffs:', error);
@@ -398,9 +406,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const updateDayoffs = async (id: number) => {
     try {
-      const response = await axios.post(
-        'http://cailygroup.com/dayoffs/update/' + id,
-      );
+      const response = await axios.post('dayoffs/update/' + id);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -408,9 +414,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const deleteDayoffs = async (id: number) => {
     try {
-      const response = await axios.post(
-        'http://cailygroup.com/dayoffs/delete/' + id,
-      );
+      const response = await axios.post('dayoffs/delete/' + id);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -451,9 +455,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const fetchTimecardOpen = async () => {
     // console.log(usersID);
     try {
-      const response = await axios.get(
-        'http://cailygroup.com/timecards/getall/' + usersID,
-      );
+      const response = await axios.get('timecards/getall/' + usersID);
       if (response.data && Array.isArray(response.data)) {
         setTimecardOpen(response.data);
       } else {
@@ -465,13 +467,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const handleUpdateComment = async (Id: number) => {
     try {
-      const response = await axios.post(
-        'http://cailygroup.com/timecarddetails/updatecomment',
-        {
-          id: Id,
-          comment: commentText,
-        },
-      );
+      const response = await axios.post('timecarddetails/updatecomment', {
+        id: Id,
+        comment: commentText,
+      });
       console.log(response.data);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -481,12 +480,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const handleUpdateCommentDayoffs = async (id: number) => {
     try {
-      const response = await axios.post(
-        'http://cailygroup.com/dayoffs/updatecomment/' + id,
-        {
-          comment: commentText,
-        },
-      );
+      const response = await axios.post('dayoffs/updatecomment/' + id, {
+        comment: commentText,
+      });
       console.log(response.data);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -495,17 +491,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     closeModal();
   };
   const handleChangeTimecards = async (id: number) => {
-    const response = await axios.post(
-      'http://cailygroup.com/timecarddetails/updateall',
-      {
-        id: timecardID,
-        timecard_open: timecardStart,
-        timecard_close: timecardEnd,
-        timecard_time: timecardTime,
-        timecard_timeover: timecardOvertime,
-        timecard_comment: timecardNote,
-      },
-    );
+    const response = await axios.post('timecarddetails/updateall', {
+      id: timecardID,
+      timecard_open: timecardStart,
+      timecard_close: timecardEnd,
+      timecard_time: timecardTime,
+      timecard_timeover: timecardOvertime,
+      timecard_comment: timecardNote,
+    });
     console.log(response.data);
     fetchTimecardOpen();
     closeModaldelete();
