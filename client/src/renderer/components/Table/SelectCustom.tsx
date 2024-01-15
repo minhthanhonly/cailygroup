@@ -1,6 +1,6 @@
 import './SelectMonthYears.scss';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../api/axios';
 import { UserRole } from '../UserRole';
 
 interface SelectCustomProps {
@@ -26,7 +26,7 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
   const isLeader = users.roles === UserRole.LEADER;
   useEffect(() => {
     axios
-      .get('http://cailygroup.com/groups/')
+      .get('groups/')
       .then((response) => {
         const responseData = response.data;
         if (Array.isArray(responseData)) {
@@ -49,7 +49,7 @@ export const SelectCustom: React.FC<SelectCustomProps> = ({
       setSelectedGroup(users.user_group_id);
       onGroupChange(users.user_group_id);
     }
-  }, [users]);
+  }, []);
 
   return (
     <div className="select__box group">

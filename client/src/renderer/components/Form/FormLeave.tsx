@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import TimePickerButton from '../Modal/TimeSelect';
 import { urlControl } from '../../routes/server';
 import { format } from 'date-fns';
-import axios from 'axios';
+import axios from '../../api/axios';
 import Modaldelete from '../Modal/Modaldelete';
 
 export const FormLeave: React.FC = () => {
@@ -61,7 +61,7 @@ export const FormLeave: React.FC = () => {
       owner: 'admin',
     };
     axios
-      .post('http://cailygroup.com/dayoffs/add', { group_data })
+      .post('dayoffs/add', { group_data })
       .then((response) => {
         console.log(response.data);
         // Xử lý thành công nếu cần
