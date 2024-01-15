@@ -32,6 +32,7 @@ type paraUser = {
   userid: string,
   password: string,
   password_confirm: string,
+  passwordNew: string,
   realname: string,
   authority: string,
   user_group: string,
@@ -77,4 +78,34 @@ export const isValidUser = ({...paraUser}) => {
   return true;
 }
 
+export const isValidUserEdit = ({...paraUser}) => {
+  if(!paraUser.userid) {
+    toast.error(ERROR['require'] + useridName + "!");
+    return false;
+  } else if(isZenSpace(paraUser.userid)) {
+    toast.error("Giá trị nhập vào "+ useridName +" không hợp lệ.");
+    return false;
+  }
 
+  if(paraUser.password_confirm != paraUser.passwordNew) {
+    toast.error(passwordConfirmName + " không khớp.");
+    return false;
+  }
+
+  if(!paraUser.realname) {
+    toast.error(ERROR['require'] + realnameName + "!");
+    return false;
+  }
+
+  if(!paraUser.user_group || paraUser.user_group == '-1') {
+    toast.error(ERROR['choose'] + userGroupName + "!");
+    return false;
+  }
+
+  if(!paraUser.authority || paraUser.authority == '-1') {
+    toast.error(ERROR['choose'] + authorityName + "!");
+    return false;
+  }
+
+  return true;
+}
