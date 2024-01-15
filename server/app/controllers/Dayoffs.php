@@ -12,16 +12,16 @@
         //     return $this->model('DayoffsModel')->postAdd($user_id, $date_start, $date_end, $time_start, $time_end, $note, $day_number, $status, $owner);
         // }
 
-        function delete($id){
+        function delete($id=''){
             return $this->model('DayoffsModel')->deleteDayoffs($id);
         }
-        function update($id){
+        function update($id=''){
             return $this->model('DayoffsModel')->updateDayoffs($id);
         }
-        function getforuser($id){
+        function getforuser($id=''){
             return $this->model('DayoffsModel')->getDayoffsUser($id);
         }
-        function updatecomment($id){
+        function updatecomment($id=''){
             return $this->model('DayoffsModel')->updateDayoffComment($id);
         }
     }

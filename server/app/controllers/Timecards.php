@@ -1,9 +1,9 @@
 <?php
     class Timecards extends Controller{
-        function getall($id){
+        function getall($id=''){
             return $this->model('TimecardsModel')->getTimecards($id);
         }
-        function load($id){
+        function load($id=''){
             return $this->model('TimecardsModel')->getTimecardUser($id);
         }
         function add($user_id='', $timecard_year='', $timecard_month='', $timecard_day='', $timecard_date='', $owner='', $timecard_temp=''){
@@ -12,6 +12,12 @@
 
         function list(){
             return $this->model('TimecardsList')->getList();
+        }
+       function setting(){
+            return $this->model('TimecardSetting')->getList();
+        }
+       function getInput($data=''){
+            return $this->model('TimecardSetting')->getInput($data);
         }
     }
 ?>

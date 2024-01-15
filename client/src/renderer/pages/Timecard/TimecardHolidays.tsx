@@ -7,7 +7,7 @@ import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
 import { urlControl } from '../../routes/server';
 import DatePicker from 'react-multi-date-picker';
-import { format, isValid } from 'date-fns';
+import { format, parse } from 'date-fns';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { symlink } from 'fs';
@@ -109,6 +109,7 @@ const TimecardHolidays = () => {
                                     multiple
                                     value={modalDays}
                                     onChange={(date) => handleDatePickerModalChange(date)}
+                                    format="DD-MM-YYYY"
                                     />
                                 </div>
                                 </div>
@@ -278,7 +279,7 @@ const TimecardHolidays = () => {
     const closeModaldelete = () => {
         setDeleteModalOpen(false);
     };
-
+    const formatDate = (date) => format(date, 'dd-MM-yyyy');
     let DataTable: FieldHolidays[] = [];
     for (let i = 0; i < listOfHolidays.length; i++) {
         DataTable.push({
@@ -369,6 +370,7 @@ const TimecardHolidays = () => {
                             multiple
                             value={days}
                             onChange={(date) => handleDatePickerChange(date)}
+                            format="DD-MM-YYYY"
                         />
                     </div>
                 </div>
