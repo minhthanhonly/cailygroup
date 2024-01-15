@@ -3,8 +3,7 @@ import CardTime from '../../components/Card/Card';
 import { Heading3 } from '../../components/Heading';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { Pagination } from '../../components/Pagination';
-import axios from '../../api/axios';
-import { urlControl } from '../../routes/server';
+import axios from "../../api/axios";
 import TimecardHolidays from "./TimecardHolidays";
 import { symlink } from 'fs';
 
