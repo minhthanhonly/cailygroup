@@ -4,7 +4,7 @@ import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
 import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../api/axios';
 import Modaldelete from '../../components/Modal/Modaldelete';
 
 export const Dayoff = () => {
@@ -85,8 +85,8 @@ export const Dayoff = () => {
       event.preventDefault();
       try {
         const payload = { id: dayoffId };
-        await axios.delete('http://cailygroup.com/dayoffs/delete/' + dayoffId);
-        const updatedList = await axios.get('http://cailygroup.com/dayoffs/');
+        await axios.delete('dayoffs/delete/' + dayoffId);
+        const updatedList = await axios.get('dayoffs/');
         setListOfGroups(updatedList.data);
 
         setCurrentPage(1);
@@ -98,8 +98,7 @@ export const Dayoff = () => {
   };
 
   useEffect(() => {
-    axios.get('http://cailygroup.com/dayoffs/').then((response) => {
-      console.log(response.data);
+    axios.get('dayoffs/').then((response) => {
       setListOfGroups(response.data);
     });
   }, [currentPage]);

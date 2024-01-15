@@ -4,7 +4,7 @@ import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
 import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useCallback, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../../api/axios';
 import { SelectCustom } from '../../components/Table/SelectCustom';
 import Modaldelete from '../../components/Modal/Modaldelete';
 
@@ -35,8 +35,8 @@ export const DayoffApply = () => {
   const fetchData = useCallback(async () => {
     try {
       const [groupsResponse, dayoffsResponse] = await Promise.all([
-        axios.get('http://cailygroup.com/groups/'),
-        axios.get('http://cailygroup.com/dayoffs/', {
+        axios.get('groups/'),
+        axios.get('dayoffs/', {
           params: {
             group: selectedGroup,
           },
@@ -135,9 +135,7 @@ export const DayoffApply = () => {
     if (event) {
       event.preventDefault();
       try {
-        const response = await axios.post(
-          'http://cailygroup.com/dayoffs/update/' + dayoffId,
-        );
+        const response = await axios.post('dayoffs/update/' + dayoffId);
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -152,9 +150,7 @@ export const DayoffApply = () => {
       event.preventDefault();
       try {
         const payload = { id: dayoffId };
-        let response = axios.delete(
-          'http://cailygroup.com/dayoffs/delete/' + dayoffId,
-        );
+        let response = axios.delete('dayoffs/delete/' + dayoffId);
         // let response = await axios.delete(
         //   urlControl + 'DayoffsController.php',
         //   {
