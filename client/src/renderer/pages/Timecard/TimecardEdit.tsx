@@ -62,6 +62,7 @@ export const TimecardEdit = () => {
     } else {
       setSelectedGroupData(listOfUsers);
     }
+    console.log(listOfUsers);
   }, [selectedGroupName, listOfUsers]);
 
   const handleDateChange = (

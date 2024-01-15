@@ -65,26 +65,23 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   useEffect(() => {
-    if (users) {
-      const isAdmin = users.roles === UserRole.ADMIN;
-      const isManager = users.roles === UserRole.MANAGER;
-      const isLeader = users.roles === UserRole.LEADER;
-      if (isAdmin || isManager || isLeader) {
-        setAdmin(true);
-      }
-      if (isAdmin || isManager) {
-        setAdmins(true);
-      }
+    const isAdmin = users.roles === UserRole.ADMIN;
+    const isManager = users.roles === UserRole.MANAGER;
+    const isLeader = users.roles === UserRole.LEADER;
+    if (isAdmin || isManager || isLeader) {
+      setAdmin(true);
     }
+    if (isAdmin || isManager) {
+      setAdmins(true);
+    }
+    setUsersID(users.id);
+  }, []);
+  useEffect(() => {
     if (propsID) {
       setUsersID(propsID);
     } else {
       setUsersID(users.id);
     }
-
-    fetchTimecardOpen();
-    fetchHolidays();
-    fetchDayoffs();
   }, [propsID]);
   const [currentTime, setCurrentTime] = useState(0);
   const [showStartButton, setShowStartButton] = useState(true);
@@ -681,7 +678,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 ) : isDayoff(day).isDayoff ? (
                   <>
                     {isDayoff(day).note}
-                    {isDayoff(day).status == 0 ? (
+                    {isDayoff(day).status ? (
                       <a
                         onClick={(event) => {
                           openModal(isDayoff(day).id, true);
