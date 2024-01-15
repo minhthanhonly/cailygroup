@@ -3,15 +3,12 @@ import CardTime from '../../components/Card/Card';
 import { Heading3 } from '../../components/Heading';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { Pagination } from '../../components/Pagination';
-import axios from '../../api/axios';
-import { urlControl } from '../../routes/server';
+import axios from "../../api/axios";
 import TimecardHolidays from "./TimecardHolidays";
 import { symlink } from 'fs';
 
 export const TimecardSetting = () => {
-  const [listOfHolidays, setListOfHolidays] = useState<FieldHolidays[] | []>(
-    [],
-  );
+
 
   const [timeInputHours, setTimeInputHours] = useState<number>(0);
   const [timeInputMinutes, setTimeInputMinutes] = useState<number>(0);
@@ -147,7 +144,9 @@ export const TimecardSetting = () => {
   const handleSaveTimeInput = async () => {
     try {
       // Xác nhận giá trị trước khi gửi request
-      const timeInputString = `${timeInputHours}:${timeInputMinutes}`
+      const formattedHoursInput = String(timeInputHours).padStart(2, '0');
+      const formattedMinutesInput = String(timeInputMinutes).padStart(2, '0');
+      const timeInputString = `${formattedHoursInput}:${formattedMinutesInput}`
       const dataUpdateArray = [{ id: 1, config_key: 'opentime', hoursMinutes: timeInputString },];
       // Thêm các đối tượng khác nếu cần
 
@@ -172,8 +171,11 @@ export const TimecardSetting = () => {
   const handleSaveOutTime = async () => {
 
     try {
+
+      const formattedHoursOutput = String(timeOutHours).padStart(2, '0');
+      const formattedMinutesOutput = String(timeOutMinutes).padStart(2, '0');
       // Xác nhận giá trị trước khi gửi request
-      const timeOutString = `${timeOutHours}:${timeOutMinutes}`
+      const timeOutString = `${formattedHoursOutput}:${formattedMinutesOutput}`
       const dataUpdateArray = [{ id: 2, config_key: 'closetime', hoursMinutes: timeOutString },];
       // Thêm các đối tượng khác nếu cần
 
