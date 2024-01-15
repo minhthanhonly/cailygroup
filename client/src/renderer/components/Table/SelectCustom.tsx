@@ -89,7 +89,6 @@ export const SelectCustomName: React.FC<SelectCustomNameProps> = ({
     // Gọi hàm onUserSelect với id của người dùng đã chọn
     onUserSelect(selectedUserId);
   };
-
   return (
     <div className="select__box group">
       <div className="select__box--flex grid-row">

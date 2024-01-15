@@ -48,9 +48,6 @@ export const TimecardEdit = () => {
   useEffect(() => {
     if (selectedGroupName !== null) {
       const trimmedSelectedGroupName = selectedGroupName.trim().toLowerCase();
-
-      // console.log("trimmedSelectedGroupName", trimmedSelectedGroupName);
-
       const filteredUsers = listOfUsers.filter((users) => {
         const userGroup = users.user_group.trim().toLowerCase();
         return (
@@ -59,10 +56,19 @@ export const TimecardEdit = () => {
         );
       });
       setSelectedGroupData(filteredUsers);
+
+      const firstElementWithSelectedGroupName = listOfUsers.find((user) => {
+        const userGroup = user.user_group.trim().toLowerCase();
+        return userGroup === trimmedSelectedGroupName;
+      });
+
+      if (firstElementWithSelectedGroupName) {
+        const idOfFirstElement = firstElementWithSelectedGroupName.id;
+        setUserID(idOfFirstElement);
+      }
     } else {
       setSelectedGroupData(listOfUsers);
     }
-    console.log(listOfUsers);
   }, [selectedGroupName, listOfUsers]);
 
   const handleDateChange = (
