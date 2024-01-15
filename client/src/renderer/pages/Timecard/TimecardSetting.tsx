@@ -7,6 +7,8 @@ import axios from "../../api/axios";
 import TimecardHolidays from "./TimecardHolidays";
 import { symlink } from 'fs';
 
+import './TimecardSetting.scss';
+
 export const TimecardSetting = () => {
 
 
@@ -15,6 +17,10 @@ export const TimecardSetting = () => {
 
   const [timeOutHours, setTimeOutHours] = useState<number>(0);
   const [timeOutMinutes, setTimeOutMinutes] = useState<number>(0);
+
+  const [serverMessage, setServerMessage] = useState('');
+  const [isTimeChangedInput, setIsTimeChangedInput] = useState(false);
+  const [isTimeChangedOutput, setIsTimeChangedOutput] = useState(false);
 
   const [configData, setConfigData] = useState({
     openhour: 0,
@@ -130,6 +136,7 @@ export const TimecardSetting = () => {
         openhour: hours,
         openminute: minutes,
       }));
+      setIsTimeChangedInput(true)
     } else if (type === 'timeOut') {
       setTimeOutHours(hours);
       setTimeOutMinutes(minutes);
@@ -138,24 +145,40 @@ export const TimecardSetting = () => {
         closehour: hours,
         closeminute: minutes,
       }));
+      setIsTimeChangedOutput(true)
     }
+
   };
 
   const handleSaveTimeInput = async () => {
     try {
-      // Xác nhận giá trị trước khi gửi request
-      const formattedHoursInput = String(timeInputHours).padStart(2, '0');
-      const formattedMinutesInput = String(timeInputMinutes).padStart(2, '0');
-      const timeInputString = `${formattedHoursInput}:${formattedMinutesInput}`
-      const dataUpdateArray = [{ id: 1, config_key: 'opentime', hoursMinutes: timeInputString },];
-      // Thêm các đối tượng khác nếu cần
 
-      console.log("dataUpdateArray", dataUpdateArray);
+      if (isTimeChangedInput === true) {
+        // Xác nhận giá trị trước khi gửi request
+        const formattedHoursInput = String(timeInputHours).padStart(2, '0');
+        const formattedMinutesInput = String(timeInputMinutes).padStart(2, '0');
+        const timeInputString = `${formattedHoursInput}:${formattedMinutesInput}`
+        const dataUpdateArray = [{ id: 1, config_key: 'opentime', hoursMinutes: timeInputString },];
+        // Thêm các đối tượng khác nếu cần
+        const response = await axios.post('timecards/getInput', dataUpdateArray);
+
+        if (response.data.message) {
+          setServerMessage(response.data.message);
+
+          setTimeout(() => {
+            setServerMessage('');
+            setIsTimeChangedInput(false);
+          }, 3000); // 5000 miliseconds = 5 giây
+          // Hiển thị thông điệp thành công cho người dùng
+        } else if (response.data.error) {
+          setServerMessage(response.data.error);
+          setTimeout(() => {
+            setServerMessage('');
 
 
-      const response = await axios.post('timecards/getInput', dataUpdateArray);
-
-      console.log("response.data", response.data);
+          }, 3000);
+        }
+      }
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
       // Xử lý lỗi nếu cần
@@ -170,21 +193,38 @@ export const TimecardSetting = () => {
 
   const handleSaveOutTime = async () => {
 
+
     try {
+      if (isTimeChangedOutput === true) {
+        const formattedHoursOutput = String(timeOutHours).padStart(2, '0');
+        const formattedMinutesOutput = String(timeOutMinutes).padStart(2, '0');
+        // Xác nhận giá trị trước khi gửi request
+        const timeOutString = `${formattedHoursOutput}:${formattedMinutesOutput}`
+        const dataUpdateArray = [{ id: 2, config_key: 'closetime', hoursMinutes: timeOutString },];
+        // Thêm các đối tượng khác nếu cần
 
-      const formattedHoursOutput = String(timeOutHours).padStart(2, '0');
-      const formattedMinutesOutput = String(timeOutMinutes).padStart(2, '0');
-      // Xác nhận giá trị trước khi gửi request
-      const timeOutString = `${formattedHoursOutput}:${formattedMinutesOutput}`
-      const dataUpdateArray = [{ id: 2, config_key: 'closetime', hoursMinutes: timeOutString },];
-      // Thêm các đối tượng khác nếu cần
-
-      console.log("closetime", dataUpdateArray);
+        console.log("closetime", dataUpdateArray);
 
 
-      const response = await axios.post('timecards/getInput', dataUpdateArray);
+        const response = await axios.post('timecards/getInput', dataUpdateArray);
 
-      console.log("response.data", response.data);
+        if (response.data.message) {
+          setServerMessage(response.data.message);
+
+          setTimeout(() => {
+            setServerMessage('');
+            setIsTimeChangedOutput(false)
+          }, 3000); // 5000 miliseconds = 5 giây
+          // Hiển thị thông điệp thành công cho người dùng
+        } else if (response.data.error) {
+          setServerMessage(response.data.error);
+          setTimeout(() => {
+            setServerMessage('');
+
+          }, 3000);
+          // Xử lý lỗi và hiển thị thông điệp lỗi cho người dùng
+        }
+      }
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
       // Xử lý lỗi nếu cần
@@ -198,51 +238,27 @@ export const TimecardSetting = () => {
 
 
 
-    // try {
-    //   const dataUpdateArrayOut = [
-    //     { id: 2, hours: timeOutHours, minutes: timeOutMinutes },
-    //   ];
-
-    //   axios
-    //     .put(
-    //       urlControl + 'ConfigsController.php',
-    //       { data: dataUpdateArrayOut, method: 'UPDATE_OUTTIME' },
-    //       { headers: { 'Content-Type': 'application/json' } },
-    //     )
-    //     .then((response) => {
-    //       console.log(response.data);
-    //       // console.log("cập nhật thành công");
-
-    //       // Xử lý thành công nếu cần
-    //     })
-    //     .catch((error) => {
-    //       console.error('Error inserting data:', error);
-    //       // Xử lý lỗi nếu cần
-    //       if (error.response) {
-    //         console.error('Response status:', error.response.status);
-    //         console.error('Server error message:', error.response.data);
-    //       }
-    //     });
-    // } catch (error) {
-    //   console.error('Lỗi khi cập nhật trạng thái:', error);
-    // }
   };
 
   return (
     <>
       <NavTimcard role="admin" />
       <Heading3 text="Cấu hình giờ vào - giờ ra" />
+      <div className='center'> {serverMessage == '' ? '' : <div className="box-bg"><p className="bg bg-green">{serverMessage}</p></div>}</div>
       <div className="card-box">
+
         <div className="card-box--center">
           <h4>Giờ vào</h4>
+
           <CardTime
             onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')}
             defaultHours={configData.openhour}
             defaultMinutes={configData.openminute}
           />
-          <button className="btn btn--widthAuto" onClick={handleSaveTimeInput}>
+          <button className="btn btn--widthAuto" onClick={handleSaveTimeInput} disabled={!isTimeChangedInput}>
             Cập nhật
           </button>
+
         </div>
         <div className="card-box--center">
           <h4>Giờ ra</h4>
@@ -251,7 +267,7 @@ export const TimecardSetting = () => {
             defaultHours={configData.closehour}
             defaultMinutes={configData.closeminute}
           />
-          <button className="btn btn--widthAuto" onClick={handleSaveOutTime}>
+          <button className="btn btn--widthAuto" onClick={handleSaveOutTime} disabled={!isTimeChangedOutput}>
             Cập nhật
           </button>
         </div>
