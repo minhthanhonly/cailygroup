@@ -2,30 +2,30 @@ import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
-import isValidInputs from "../../components/Validate";
+import {isValidUser} from "../../components/Validate";
 
 function MemberAdd() {
   const navigate = useNavigate();
 
-	const [formValue, setFormValue] = useState({userid: '', password: '', realname: '', authority: '', user_group: ''})
+	const [formValue, setFormValue] = useState({userid: '', password: '', password_confirm: '', realname: '', authority: '', user_group: ''})
   const [message, setMessage] = useState('');
 	const handleInput = (e) => {
 		setFormValue({...formValue, [e.target.name]:e.target.value})
 	}
 
-
-
 	const handleSubmit = async(e) => {
-    // isValidInputs(formValue.userid, formValue.password);
-		e.preventDefault();
-		const formData = {userid:formValue.userid, password:formValue.password, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-		const res = await axios.post("users/add", formData);
+    const validationErrors = isValidUser({...formValue});
+    e.preventDefault();
+    if(validationErrors === true) {
+      const formData = {userid:formValue.userid, password:formValue.password, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
+      const res = await axios.post("users/add", formData);
 
-    if(res.data.success){
-      setMessage(res.data.success);
-      setTimeout(() => {
-        navigate('/members');
-      }, 2000);
+      if(res.data.success){
+        setMessage(res.data.success);
+        setTimeout(() => {
+          navigate('/members');
+        }, 2000);
+      }
     }
 	}
 
@@ -118,6 +118,22 @@ function MemberAdd() {
 										type="text"
 										name="password"
 										value={formValue.password} onChange={handleInput}
+									/>
+                </div>
+                <div className="form-group">
+									<label>
+										Mật khẩu (Xác nhận) *
+										<img
+											src={require('../../../../assets/icon-password.jpg')}
+											alt=""
+											className="fluid-image"
+										/>
+									</label>
+									<input
+										className="form-input"
+										type="text"
+										name="password_confirm"
+										value={formValue.password_confirm} onChange={handleInput}
 									/>
 								</div>
 								<div className="form-group">
