@@ -133,7 +133,7 @@ function MemberAdd() {
 										className="form-input"
 										type="text"
 										name="password_confirm"
-										value={formValue.password_confirm} onChange={handleInput}
+										value={formValue.password_confirm} onChange={handleInput} placeholder="Nhập lại mật khẩu"
 									/>
 								</div>
 								<div className="form-group">

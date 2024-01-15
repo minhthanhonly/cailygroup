@@ -21,7 +21,6 @@ import Members from './pages/Members';
 import MemberAdd from './pages/Members/MemberAdd';
 import MemberEdit from './pages/Members/MemberEdit';
 import MemberDetail from './pages/Members/MemberDetail';
-import Protected from './Protected';
 import RequireAuth from './components/RequireAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
