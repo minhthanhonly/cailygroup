@@ -48,6 +48,8 @@ export const Timecard = () => {
             (users: { id: number }) => users.id === loggedInUserId.id,
           );
           setCurrentUser(loggedInUser);
+
+
         })
         .catch((error) => console.error('Lỗi khi lấy dữ liệu:', error));
     } else {
@@ -57,6 +59,12 @@ export const Timecard = () => {
   //-------------------------------------------------------------------------------------
 
   const exportToExcel = () => {
+
+    const matchedUser = listOfUsers.find((user) => user.id === id);
+    const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
+
+    console.log("realname", realname);
+
     const table = document.getElementById('timecards_table');
     const wb = XLSX.utils.book_new();
     const month = selectedMonth;
@@ -78,7 +86,7 @@ export const Timecard = () => {
       wsData,
       [
         [
-          ` ${currentUser?.realname || ''} \n ${month}/${year}`,
+          ` ${realname || ''} \n ${month}/${year}`,
           '',
           '',
           '',
@@ -119,11 +127,11 @@ export const Timecard = () => {
     XLSX.utils.sheet_add_aoa(wsData, filteredData, {
       origin: `A${startRow - 1}`,
     });
-    const sheetName = `Timecards_${currentUser?.realname}_${month}_${year}`;
+    const sheetName = `Timecards_${realname}_${month}_${year}`;
     XLSX.utils.book_append_sheet(wb, wsData, sheetName);
     XLSX.writeFile(
       wb,
-      `Timecards_${currentUser?.realname}_${month}_${year}.xlsx`,
+      `Timecards_${realname}_${month}_${year}.xlsx`,
     );
   };
   const [selectedMonth, setSelectedMonth] = useState('');
