@@ -157,9 +157,6 @@ const TimecardHolidays = () => {
         setModalName(initialName);
         // Tách các ngày thành mảng sử dụng dấu phẩy và loại bỏ khoảng trắng xung quanh mỗi ngày
         const daysArray = initialDays.split(',').map((day) => day.trim());
-        //console.log(daysArray);
-        // Lọc ra các ngày hợp lệ
-        //const validDates = daysArray.filter((day) => !isNaN(new Date(day)));
         const validDates = daysArray.filter((day) => {
             // Chuyển đổi định dạng ngày
             const [dayPart, monthPart, yearPart] = day.split('-');
@@ -172,7 +169,6 @@ const TimecardHolidays = () => {
             if (!isValid) {
                 console.log(`Ngày không hợp lệ: ${day}`);
             }
-        
             return isValid;
         });
 
