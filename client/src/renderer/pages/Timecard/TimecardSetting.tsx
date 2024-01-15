@@ -3,7 +3,7 @@ import CardTime from '../../components/Card/Card';
 import { Heading3 } from '../../components/Heading';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { Pagination } from '../../components/Pagination';
-import axios from 'axios';
+import axios from '../../api/axios';
 import { urlControl } from '../../routes/server';
 import TimecardHolidays from "./TimecardHolidays";
 import { symlink } from 'fs';
@@ -34,7 +34,7 @@ export const TimecardSetting = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://cailygroup.com/timecards/setting');
+        const response = await axios.get('timecards/setting');
         const data = response.data;
         console.log('Data from server:', data);
 
@@ -93,7 +93,7 @@ export const TimecardSetting = () => {
   useEffect(() => {
     const fetchTimeValues = async () => {
       try {
-        const response = await axios.get('http://cailygroup.com/timecards/setting');
+        const response = await axios.get('timecards/setting');
         const timeValues = response.data;
 
         // Giả sử cấu trúc của response là { openhour: '12', openminute: '30', closehour: '18', closeminute: '45' }
@@ -149,12 +149,12 @@ export const TimecardSetting = () => {
       // Xác nhận giá trị trước khi gửi request
       const timeInputString = `${timeInputHours}:${timeInputMinutes}`
       const dataUpdateArray = [{ id: 1, config_key: 'opentime', hoursMinutes: timeInputString },];
-      // Thêm các đối tượng khác nếu cần 
+      // Thêm các đối tượng khác nếu cần
 
       console.log("dataUpdateArray", dataUpdateArray);
 
 
-      const response = await axios.post('http://cailygroup.com/timecards/getInput', dataUpdateArray);
+      const response = await axios.post('timecards/getInput', dataUpdateArray);
 
       console.log("response.data", response.data);
     } catch (error) {
@@ -175,12 +175,12 @@ export const TimecardSetting = () => {
       // Xác nhận giá trị trước khi gửi request
       const timeOutString = `${timeOutHours}:${timeOutMinutes}`
       const dataUpdateArray = [{ id: 2, config_key: 'closetime', hoursMinutes: timeOutString },];
-      // Thêm các đối tượng khác nếu cần 
+      // Thêm các đối tượng khác nếu cần
 
       console.log("closetime", dataUpdateArray);
 
 
-      const response = await axios.post('http://cailygroup.com/timecards/getInput', dataUpdateArray);
+      const response = await axios.post('timecards/getInput', dataUpdateArray);
 
       console.log("response.data", response.data);
     } catch (error) {
