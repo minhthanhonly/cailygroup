@@ -3,11 +3,8 @@ import axios from "../../api/axios";
 import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';
 import CTableBody from '../../components/Table/CTableBody';
-import { AddGroup } from '../../components/Form/Form';
 import { Heading2 } from '../../components/Heading';
-import { urlControl } from '../../routes/server';
 import Modal from '../../components/Modal/Modal';
-import { EditGroup } from "../../components/Form/Form";
 import Modaldelete from '../../components/Modal/Modaldelete';
 
 interface GroupProps {
@@ -41,7 +38,6 @@ export const Group = () => {
   const [isDeleteModalid, setDeleteModalId] = useState('');
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  // const [isDisabled, setIsDisabled] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState('');
   const fetchMembersByGroup = async($groupid: string) => {
     const groupid = {groupid:$groupid};
