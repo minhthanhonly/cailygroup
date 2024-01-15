@@ -53,10 +53,14 @@
 
     $routes['timecarddetails/add'] = 'timecarddetails/add';
     $routes['timecarddetails/update'] = 'timecarddetails/update';
+    $routes['timecarddetails/updateall'] = 'timecarddetails/updateall';
     $routes['timecarddetails/updatecomment'] = 'timecarddetails/updatecomment';
 
     // holidays
     $routes['holidays'] = 'holidays';
+
+    // config
+    $routes['config'] = 'config';
 
     // timecardsHolidays
     $routes['timecardsholidays'] = 'timecardsholidays';

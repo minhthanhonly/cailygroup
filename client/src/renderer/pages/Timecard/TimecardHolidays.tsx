@@ -7,7 +7,7 @@ import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
 import { urlControl } from '../../routes/server';
 import DatePicker from 'react-multi-date-picker';
-import { format, isValid } from 'date-fns';
+import { format, parse } from 'date-fns';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { symlink } from 'fs';
@@ -109,6 +109,7 @@ const TimecardHolidays = () => {
                                     multiple
                                     value={modalDays}
                                     onChange={(date) => handleDatePickerModalChange(date)}
+                                    format="DD-MM-YYYY"
                                     />
                                 </div>
                                 </div>
@@ -135,27 +136,47 @@ const TimecardHolidays = () => {
         </>
     );
     const convertDaysToDatePickerFormat = (days) => {
-        if (!Array.isArray(days)) {
+      if (!Array.isArray(days)) {
           console.error('Lỗi: Tham số days phải là một mảng.');
           return [];
-        }
-        // Chắc chắn rằng mỗi ngày đã được chuyển đổi thành đối tượng Date
-        const dateObjects = days.map((day) => {
-          const parsedDate = new Date(day);
-          return isNaN(parsedDate) ? null : parsedDate;
-        });
-        return dateObjects;
+      }
+  
+      // Chắc chắn rằng mỗi ngày đã được chuyển đổi thành đối tượng Date
+      const dateObjects = days.map((day) => {
+          // Chuyển đổi định dạng ngày
+          const [dayPart, monthPart, yearPart] = day.split('-');
+          const formattedDate = new Date(`${yearPart}-${monthPart}-${dayPart}T00:00:00Z`);
+  
+          // Kiểm tra xem ngày có hợp lệ không
+          return !isNaN(formattedDate.getTime()) ? formattedDate : null;
+      });
+  
+      return dateObjects.filter(date => date !== null);
     };
     const openModal = (initialNameId: string,initialName: string,initialDays: string) => {
         setModalId(initialNameId);
         setModalName(initialName);
         // Tách các ngày thành mảng sử dụng dấu phẩy và loại bỏ khoảng trắng xung quanh mỗi ngày
         const daysArray = initialDays.split(',').map((day) => day.trim());
-        // Lọc ra các ngày hợp lệ
-        const validDates = daysArray.filter((day) => !isNaN(new Date(day)));
+        const validDates = daysArray.filter((day) => {
+            // Chuyển đổi định dạng ngày
+            const [dayPart, monthPart, yearPart] = day.split('-');
+            const formattedDate = new Date(`${yearPart}-${monthPart}-${dayPart}T00:00:00Z`);
+        
+            // Kiểm tra xem ngày có hợp lệ không
+            const isValid = !isNaN(formattedDate.getTime());
+            
+            // In thông báo để kiểm tra
+            if (!isValid) {
+                console.log(`Ngày không hợp lệ: ${day}`);
+            }
+            return isValid;
+        });
+
         if (validDates.length > 0) {
           // Chuyển đổi các ngày hợp lệ thành đối tượng Date
           const dateObjects = convertDaysToDatePickerFormat(validDates);
+          //console.log(dateObjects)
           setModalDays(dateObjects);
           //console.log("Ngày sau khi chuyển đổi:", dateObjects);
         } else {
@@ -164,7 +185,7 @@ const TimecardHolidays = () => {
         setModalOpen(true);
     };
     const closeModal = () => {
-    setModalOpen(false);
+      setModalOpen(false);
     };
     const handleUpdate = async (id: string,name: string,days: string,event) => {
         if (event) {
@@ -258,10 +279,11 @@ const TimecardHolidays = () => {
     const closeModaldelete = () => {
         setDeleteModalOpen(false);
     };
-
+    const formatDate = (date) => format(date, 'dd-MM-yyyy');
     let DataTable: FieldHolidays[] = [];
     for (let i = 0; i < listOfHolidays.length; i++) {
         DataTable.push({
+            id: listOfHolidays[i].id,
             days: `${listOfHolidays[i].days}`,
             name: `${listOfHolidays[i].name}`,
             update: dynamicUpdate({
@@ -348,6 +370,7 @@ const TimecardHolidays = () => {
                             multiple
                             value={days}
                             onChange={(date) => handleDatePickerChange(date)}
+                            format="DD-MM-YYYY"
                         />
                     </div>
                 </div>
@@ -359,7 +382,7 @@ const TimecardHolidays = () => {
             </div>
             <CTable>
                 <CTableHead
-                heads={['Ngày Tháng Năm', 'Ngày lễ - Ngày nghỉ', 'sửa', 'Xóa']}
+                heads={['STT','Ngày Tháng Năm', 'Ngày lễ - Ngày nghỉ', 'sửa', 'Xóa']}
                 />
                 <CTableBody
                 path_edit={'edit'}
