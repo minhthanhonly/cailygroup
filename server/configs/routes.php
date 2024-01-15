@@ -41,7 +41,13 @@
     $routes['timecards/getall/.+-(\d+)'] = 'timecards/getall/$1';
     $routes['timecards/add'] = 'timecards/add';
     $routes['timecards/update/.+-(\d+)'] = 'timecards/update/$1';
+
+
+    //timecardSetting
+    // <Route path="timecards/setting" element={<TimecardSetting />} />
     
+    $routes['timecards/setting'] = 'timecards/setting';
+    $routes['timecards/getInput'] = 'timecards/getInput';
     // timecardslist
     $routes['timecards/list'] = 'timecards/list';
 

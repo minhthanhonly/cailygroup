@@ -13,5 +13,11 @@
         function list(){
             return $this->model('TimecardsList')->getList();
         }
+       function setting(){
+            return $this->model('TimecardSetting')->getList();
+        }
+       function getInput($data=''){
+            return $this->model('TimecardSetting')->getInput($data);
+        }
     }
 ?>
