@@ -21,39 +21,59 @@ function isZenSpace(str: string){
   }
 }
 
+const useridName = "ID User";
+const passwordName = "Mật khẩu";
+const passwordConfirmName = "Mật khẩu (Xác nhận)";
+const realnameName = "Họ và tên";
+const userGroupName = "Nhóm";
+const authorityName = "Quyền truy cập";
+
 type paraUser = {
   userid: string,
   password: string,
-  // realname: string,
-  // authority: string,
-  // user_group: string,
+  password_confirm: string,
+  realname: string,
+  authority: string,
+  user_group: string,
 }
 
 export const isValidUser = ({...paraUser}) => {
-  const useridName = "ID User";
   if(!paraUser.userid) {
     toast.error(ERROR['require'] + useridName + "!");
     return false;
   } else if(isZenSpace(paraUser.userid)) {
-    toast.error("Giá trị nhập vào "+ useridName +" không hợp lệ");
+    toast.error("Giá trị nhập vào "+ useridName +" không hợp lệ.");
     return false;
   }
+
   if(!paraUser.password) {
-    toast.error("Vui lòng nhập Password!");
+    toast.error(ERROR['require'] + passwordName + "!");
+    return false;
+  } else if(isZenSpace(paraUser.password)) {
+    toast.error("Giá trị nhập vào "+ passwordName +" không hợp lệ.");
     return false;
   }
-  // if(!paraUser.realname) {
-  //   toast.error("Vui lòng nhập realname!");
-  //   return false;
-  // }
-  // if(!paraUser.authority) {
-  //   toast.error("Vui lòng nhập authority!");
-  //   return false;
-  // }
-  // if(!paraUser.user_group) {
-  //   toast.error("Vui lòng nhập user_group!");
-  //   return false;
-  // }
+
+  if(paraUser.password_confirm != paraUser.password) {
+    toast.error(passwordConfirmName + " không khớp.");
+    return false;
+  }
+
+  if(!paraUser.realname) {
+    toast.error(ERROR['require'] + realnameName + "!");
+    return false;
+  }
+
+  if(!paraUser.user_group || paraUser.user_group == '-1') {
+    toast.error(ERROR['choose'] + userGroupName + "!");
+    return false;
+  }
+
+  if(!paraUser.authority || paraUser.authority == '-1') {
+    toast.error(ERROR['choose'] + authorityName + "!");
+    return false;
+  }
+
   return true;
 }
 
