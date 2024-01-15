@@ -39,9 +39,16 @@
             $stmt->bind_param("ss", $hoursMinutes, $configKey);
 
             if ($stmt->execute()) {
-                echo "$hoursMinutes updated successfully.";
+                if($configKey === "opentime"){
+                    $successMessage = "Cập nhật giờ vào $hoursMinutes Thành công.";
+                }
+                 if($configKey === "closetime"){
+                    $successMessage = "Cập nhật giờ ra $hoursMinutes Thành công.";
+                 }
+                echo json_encode(['message' => $successMessage]); // Xuất thông điệp thành công
             } else {
-                echo "Lỗi khi thực hiện truy vấn: " . $stmt->error;
+                $errorMessage = "Lỗi khi thực hiện truy vấn: " . $stmt->error;
+                echo json_encode(['error' => $errorMessage]); // Xuất thông điệp lỗi
             }
 
             $stmt->close();
