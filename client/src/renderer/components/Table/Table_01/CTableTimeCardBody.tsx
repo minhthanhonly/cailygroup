@@ -116,7 +116,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   const [timecardID, setTimecardID] = useState<number>(0);
   const [timecardDate, setTimecardDate] = useState<string>();
-  const [timecardStart, setTimecardStart] = useState<string>();
+  const [timecard_open_time, settimecard_open_time] = useState<string>();
   const [timecardEnd, setTimecardEnd] = useState<string>();
   const [timecardTime, setTimecardTime] = useState<string>();
   const [timecardOvertime, setTimecardOvertime] = useState<string>();
@@ -132,7 +132,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   ) => {
     setTimecardID(id);
     setTimecardDate(timecards_date);
-    setTimecardStart(timecards_open);
+    settimecard_open_time(timecards_open);
     setTimecardEnd(timecards_close);
     setTimecardTime(timecards_time);
     setTimecardOvertime(timecards_timeover);
@@ -296,7 +296,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         '0',
       );
       let currentDate = String(new Date(datetime).getDate()).padStart(2, '0');
-      let timecard_open_time = `${currentHour}:${String(
+      let timecard_close_time = `${currentHour}:${String(
         currentMinutes,
       ).padStart(2, '0')}`;
 
@@ -324,8 +324,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       setId(responseTimeCard.data.id_timecard);
       const dataTimeCardDetails = {
         id_groupwaretimecard: responseTimeCard.data.id_timecard,
-        timecard_open: timecard_open_time,
-        timecard_originalopen: timecard_open_time,
+        timecard_open: timecard_close_time,
+        timecard_originalopen: timecard_close_time,
         timecard_timeinterval: resut,
       };
       console.log(dataTimeCardDetails);
@@ -349,7 +349,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   // nhấn nút kết thúc mỗi ngày
   const handleEndButtonClick = async (
     timecardID: any,
-    timecardStart: string,
+    timecard_open_time: string,
     event: { preventDefault: () => void } | undefined,
   ) => {
     if (event) {
@@ -360,7 +360,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       let { datetime } = response.data;
       let currentHour = new Date(datetime).getHours();
       let currentMinutes = new Date(datetime).getMinutes();
-      let timecard_open_time = `${currentHour}:${String(
+      let timecard_close_time = `${currentHour}:${String(
         currentMinutes,
       ).padStart(2, '0')}`;
       let timecard_time = '';
@@ -370,49 +370,84 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const closetimeValue = findConfigValue(configData, 'closetime');
       const openlunchValue = findConfigValue(configData, 'openlunch');
       const closelunchValue = findConfigValue(configData, 'closelunch');
-      if (compareTime(timecardStart, closelunchValue) != 1) {
+      if (compareTime(timecard_open_time, closelunchValue) != 1) {
         // bắt đầu trước hoặc = 13:00
-        if (compareTime(timecardStart, openlunchValue) != 1) {
+        if (compareTime(timecard_open_time, openlunchValue) != 1) {
           //bắt đầu trước 11:30
-          if (compareTime(timecard_open_time, closelunchValue) != 1) {
+          if (compareTime(timecard_close_time, closelunchValue) != 1) {
             //kết thúc trước hoặc bằng 13:00
-            timecard_time = calculateTime(timecardStart, openlunchValue);
+            timecard_time = calculateTime(timecard_open_time, openlunchValue);
             console.log(
               'bắt đầu trước 11:30 và kết thúc trước hoặc bằng 13:00',
             );
-          } else if (compareTime(timecard_open_time, openlunchValue) != 1) {
+          } else if (compareTime(timecard_close_time, openlunchValue) != 1) {
             //kết thúc trước hoặc = 11h30
-            timecard_time = calculateTime(timecardStart, timecard_open_time);
+            timecard_time = calculateTime(
+              timecard_open_time,
+              timecard_close_time,
+            );
             console.log('bắt đầu trước 11:30 và kết thúc trước hoặc = 11h30');
-          } else if (compareTime(timecard_open_time, closetimeValue) != 1) {
+          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
             // kết thúc trước 17:00
             timecard_time = addTimes(
-              calculateTime(timecardStart, openlunchValue),
-              calculateTime(closelunchValue, timecard_open_time),
+              calculateTime(timecard_open_time, openlunchValue),
+              calculateTime(closelunchValue, timecard_close_time),
             );
             console.log('bắt đầu trước 11:30 và kết thúc trước 17:00');
           } else {
             //kết thúc sau hoặc bằng 17:00
             timecard_time = addTimes(
-              calculateTime(timecardStart, openlunchValue),
+              calculateTime(timecard_open_time, openlunchValue),
               calculateTime(closelunchValue, closetimeValue),
             );
             console.log('bắt đầu trước 11:30 và kết thúc sau bằng 17:00');
           }
-        } else if (compareTime(timecard_open_time, closelunchValue) != 1) {
+        } else if (compareTime(timecard_close_time, closelunchValue) != 1) {
           //bắt đầu và kết thúc đều trong giờ ăn trưa
           timecard_time = '00:00';
+        } else if (compareTime(timecard_close_time, openlunchValue) != 1) {
+          //bắt đầu sau 11:30 và kết thúc trước hoặc = 13:00
+          if (compareTime(timecard_close_time, closelunchValue) != 1) {
+            // kết thúc trước hoặc bằng 13:00
+            timecard_time = calculateTime(timecard_close_time, closelunchValue);
+            console.log('bắt đầu sau 11:30 và kết thúc trước hoặc bằng 13:00');
+          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+            // kết thúc trước 17:00
+            timecard_time = addTimes(
+              calculateTime(timecard_close_time, closelunchValue),
+              calculateTime(closelunchValue, timecard_close_time),
+            );
+            console.log('bắt đầu sau 11:30 và kết thúc trước 17:00');
+          } else {
+            // kết thúc sau hoặc bằng 17:00
+            timecard_time = addTimes(
+              calculateTime(timecard_close_time, closelunchValue),
+              calculateTime(closelunchValue, closetimeValue),
+            );
+            console.log('bắt đầu sau 11:30 và kết thúc sau bằng 17:00');
+          }
+        } else {
+          // bắt đầu sau 13:00
+          if (compareTime(timecard_close_time, closetimeValue) != 1) {
+            // kết thúc trước 17:00
+            timecard_time = calculateTime(closelunchValue, timecard_close_time);
+            console.log('bắt đầu sau 13:00 và kết thúc trước 17:00');
+          } else {
+            // kết thúc sau hoặc bằng 17:00
+            timecard_time = addTimes(
+              calculateTime(closelunchValue, closetimeValue),
+              calculateTime(closelunchValue, timecard_close_time),
+            );
+            console.log('bắt đầu sau 13:00 và kết thúc sau bằng 17:00');
+          }
         }
-        // else if(){
-
-        // }
       }
       // addTimes;
       console.log(timecard_time);
       const dataTime = {
         id: timecardID,
-        timecard_open: timecardStart,
-        timecard_now: timecard_open_time,
+        timecard_open: timecard_open_time,
+        timecard_now: timecard_close_time,
       };
 
       // try {
@@ -578,7 +613,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const handleChangeTimecards = async (id: number) => {
     const response = await axios.post('timecarddetails/updateall', {
       id: timecardID,
-      timecard_open: timecardStart,
+      timecard_open: timecard_open_time,
       timecard_close: timecardEnd,
       timecard_time: timecardTime,
       timecard_timeover: timecardOvertime,
@@ -943,8 +978,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   <td>
                     <input
                       type="text"
-                      defaultValue={timecardStart}
-                      onChange={(e) => setTimecardStart(e.target.value)}
+                      defaultValue={timecard_open_time}
+                      onChange={(e) => settimecard_open_time(e.target.value)}
                     />
                   </td>
                 </tr>
