@@ -3,13 +3,14 @@ import { Heading2, Heading3 } from "../../components/Heading";
 import axios from "../../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import { isValidUserEdit } from "../../components/Validate";
 
 function MemberEdit() {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const {id} = useParams();
-  const [formValue, setFormValue] = useState({userid: '', password: '', password_confirm: '', realname: '', authority: '', user_group: '' });
-  const [passwordNew, setPasswordNew] = useState('');
+  const [formValue, setFormValue] = useState({userid: '', password: '', passwordNew: '', password_confirm: '', realname: '', authority: '', user_group: '' });
+  // const [passwordNew, setPasswordNew] = useState('');
   const [message, setMessage] = useState('');
   const handleInput = (e) => {
 		setFormValue({...formValue, [e.target.name]:e.target.value})
@@ -23,14 +24,17 @@ function MemberEdit() {
 
   const handleSubmit = async(e) => {
 		e.preventDefault();
-		const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-		const res = await axios.post("users/update", formData);
+    const validationErrors = isValidUserEdit({...formValue})
+    if(validationErrors === true) {
+      const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:formValue.passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
+      const res = await axios.post("users/update", formData);
 
-    if(res.data.success){
-      setMessage(res.data.success);
-      setTimeout(() => {
-        navigate('/members');
-      }, 2000);
+      if(res.data.success){
+        setMessage(res.data.success);
+        setTimeout(() => {
+          navigate('/members');
+        }, 2000);
+      }
     }
 	}
 
@@ -178,7 +182,7 @@ function MemberEdit() {
                   className="form-input"
                   type="password"
                   name="password"
-                  value={formValue.password} onChange={handleInput}
+                  value={formValue.password}
                 />
               </div>
               <div className="form-group">
@@ -194,7 +198,7 @@ function MemberEdit() {
                   className="form-input"
                   type="text"
                   name="passwordNew"
-                  value={passwordNew} onChange={(event) => setPasswordNew(event.target.value)}
+                  value={formValue.passwordNew} onChange={handleInput}
                 />
               </div>
               <div className="form-group">
