@@ -403,9 +403,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           //bắt đầu và kết thúc đều trong giờ ăn trưa
           timecard_time = '00:00';
         }
-        else if(){
+        // else if(){
 
-        }
+        // }
       }
       // addTimes;
       console.log(timecard_time);
