@@ -23,11 +23,7 @@ export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
   const location = useLocation();
-  const {
-    id,
-    month,
-    year,
-    daysInMonth: stateDaysInMonth = [], // Provide a default empty array
+  const { id, month, year, daysInMonth: stateDaysInMonth = [],
   } = (location.state as {
     id: number;
     month: string;
