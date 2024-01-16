@@ -4,7 +4,6 @@ import { Timecard } from './pages/Timecard';
 import { TimecardSetting } from './pages/Timecard/TimecardSetting';
 import { TimecardList } from './pages/Timecard/TimecardList';
 import { TimecardEdit } from './pages/Timecard/TimecardEdit';
-import { Users } from './pages/Users';
 import { UserAdd } from './pages/Users/UserAdd';
 import UserEdit from './pages/Users/UserEdit';
 import { UserDetail } from './pages/Users/UserDetail';
@@ -50,7 +49,6 @@ export default function App() {
               />
               <Route path="holidays" element={<Timecard />} />
 
-              <Route path="users" element={<Users />} />
               <Route path="users/add" element={<UserAdd />} />
               <Route path="users/edit/:id" element={<UserEdit />} />
               <Route path="users/detail/:userid" element={<UserDetail />} />

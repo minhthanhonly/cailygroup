@@ -17,7 +17,7 @@ export const Menberdetails = (props: MenberdetailsProps) => {
     <div className="menberdetails-info">
       <p className="menberdetails-info__avatar">
         <img
-          src={require('../../../../assets/avatar.jpg')}
+          src="https://placehold.jp/182x182.png"
           alt=""
           className="fluid-image"
         />
