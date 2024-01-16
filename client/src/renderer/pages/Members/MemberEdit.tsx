@@ -9,18 +9,35 @@ function MemberEdit() {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const {id} = useParams();
+  const [initialValue, setInitialValue] = useState('');
   const [formValue, setFormValue] = useState({userid: '', password: '', passwordNew: '', password_confirm: '', realname: '', authority: '', user_group: '' });
-  // const [passwordNew, setPasswordNew] = useState('');
+  const [passwordNew, setPasswordNew] =  useState('');
   const [message, setMessage] = useState('');
   const handleInput = (e) => {
 		setFormValue({...formValue, [e.target.name]:e.target.value})
 	}
 
+  const fetchUsersById = async function() {
+    const res = await axios.get('users/edit/'+id);
+    setFormValue(res.data);
+  }
+
   useEffect(() => {
-    axios.get('users/edit/'+id).then(response => {
-      setFormValue(response.data);
-    })
-  }, [])
+    fetchUsersById();
+  },[])
+
+  const handleCancel = () => {
+    fetchUsersById();
+    setPasswordNew(initialValue);
+  }
+
+  // useEffect(() => {
+  //   axios.get('users/edit/'+id).then(response => {
+  //     setFormValue(response.data);
+
+  //     console.log(formValue);
+  //   })
+  // }, [])
 
   const handleSubmit = async(e) => {
 		e.preventDefault();
@@ -38,9 +55,7 @@ function MemberEdit() {
     }
 	}
 
-  const handleBack = () => {
-    navigate('/members');
-  }
+
 
   /*
   *
@@ -129,7 +144,7 @@ function MemberEdit() {
                   className="form-input"
                   type="text"
                   name="realname"
-                  defaultValue={formValue.realname} onChange={handleInput}
+                  value={formValue.realname} onChange={handleInput}
                 />
               </div>
               <div className="form-group">
@@ -145,8 +160,7 @@ function MemberEdit() {
                   <select name="user_group" onChange={handleInput}>
                     <option value="-1">--------------------------- Chọn nhóm ---------------------------</option>
                     {DataGroups.map((value, index) => (
-                      // <option defaultValue={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
-                      <option defaultValue={value.id} key={index}>{value.group_name}</option>
+                      <option value={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
                     ))}
                   </select>
                 </div>
@@ -164,8 +178,7 @@ function MemberEdit() {
                   <select name="authority">
                     <option value="-1">-------------------- Chọn quyền truy cập --------------------</option>
                     {DataAuthority.map((value, index) => (
-                      // <option defaultValue={value.id} key={index} selected={value.id == formValue.authority}>{value.authority_name}</option>
-                      <option defaultValue={value.id} key={index}>{value.authority_name}</option>
+                      <option value={value.id} key={index} selected={value.id == formValue.authority}>{value.authority_name}</option>
                     ))}
                   </select>
                 </div>
@@ -199,8 +212,7 @@ function MemberEdit() {
                 <input
                   className="form-input"
                   type="text"
-                  name="passwordNew"
-                  value={formValue.passwordNew} onChange={handleInput}
+                  name="passwordNew" id="passwordNew" defaultValue={passwordNew} onChange={(event) => {(event.target.value)}}
                 />
               </div>
               <div className="form-group">
@@ -221,7 +233,7 @@ function MemberEdit() {
 								</div>
               <div className="wrp-button">
                 <button className="btn btn--green" type="submit" onClick={handleSubmit}>Xác nhận</button>
-                <button className="btn btn--orange" onClick={handleBack}>Hủy</button>
+                <button className="btn btn--orange" onClick={handleCancel}>Hủy</button>
               </div>
 						</div>
 					</div>

@@ -8,6 +8,7 @@ import axios from '../../api/axios';
 import Modaldelete from '../../components/Modal/Modaldelete';
 
 export const Dayoff = () => {
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [id, setID] = useState();
   const openModaldelete = (ids: number) => {
@@ -20,17 +21,24 @@ export const Dayoff = () => {
 
   type FieldGroups = {
     id: string;
+    date: string;
     realname: string;
+    group_name: string;
     day_number: string;
     start_datetime: string;
     end_datetime: string;
     note: string;
+    owner: string;
     status: React.ReactNode;
   };
 
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
-
   let DataTable: FieldGroups[] = [];
+  listOfGroups.sort((a, b) => {
+    const dateA = new Date(a.date.split('-').reverse().join('-')).getTime();
+    const dateB = new Date(b.date.split('-').reverse().join('-')).getTime();
+    return dateA - dateB;
+  });
   for (let i = 0; i < listOfGroups.length; i++) {
     let dynamicAction;
 
@@ -47,6 +55,19 @@ export const Dayoff = () => {
           </button>
         </>
       );
+    } else if (listOfGroups[i].status === '2') {
+      dynamicAction = (
+        <div className="center">
+          <p className="icon icon--check">
+            <img
+              src={require('../../../../assets/minus-button.png')}
+              alt="edit"
+              className="fluid-image"
+            />
+          </p>
+          {listOfGroups[i].owner}
+        </div>
+      );
     } else {
       dynamicAction = (
         <p className="icon icon--check">
@@ -60,6 +81,7 @@ export const Dayoff = () => {
     }
     DataTable.push({
       realname: `${listOfGroups[i].realname}`,
+      group_name: `${listOfGroups[i].group_name}`,
       day_number: `${listOfGroups[i].day_number}`,
       start_datetime: `${listOfGroups[i].start_datetime}`,
       end_datetime: `${listOfGroups[i].end_datetime}`,
@@ -67,7 +89,7 @@ export const Dayoff = () => {
       status: dynamicAction,
     } as unknown as FieldGroups);
   }
-
+  console.log(DataTable);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
@@ -76,6 +98,9 @@ export const Dayoff = () => {
     setCurrentPage(page);
   };
 
+  let data = {
+    id: users.id,
+  };
   const deleteStatus = async (
     dayoffId: any,
     event: { preventDefault: () => void } | undefined,
@@ -86,7 +111,7 @@ export const Dayoff = () => {
       try {
         const payload = { id: dayoffId };
         await axios.delete('dayoffs/delete/' + dayoffId);
-        const updatedList = await axios.get('dayoffs/');
+        const updatedList = await axios.get('dayoffs/getforuser/' + users.id);
         setListOfGroups(updatedList.data);
 
         setCurrentPage(1);
@@ -96,9 +121,8 @@ export const Dayoff = () => {
     }
     closeModaldelete();
   };
-
   useEffect(() => {
-    axios.get('dayoffs/').then((response) => {
+    axios.get('dayoffs/getforuser/' + users.id).then((response) => {
       setListOfGroups(response.data);
     });
   }, [currentPage]);
@@ -109,6 +133,7 @@ export const Dayoff = () => {
         <CTableHead
           heads={[
             'Họ và tên',
+            'nhóm',
             'Số Ngày',
             'Giờ bắt đầu',
             'Giờ kết thúc',

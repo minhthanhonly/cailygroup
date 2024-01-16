@@ -9,6 +9,7 @@ import { SelectCustom } from '../../components/Table/SelectCustom';
 import Modaldelete from '../../components/Modal/Modaldelete';
 
 export const DayoffApply = () => {
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [id, setID] = useState();
   const openModaldelete = (ids: any) => {
@@ -21,6 +22,7 @@ export const DayoffApply = () => {
 
   type FieldGroups = {
     id: any;
+    group_name: string;
     realname: string;
     day_number: string;
     start_datetime: string;
@@ -32,21 +34,71 @@ export const DayoffApply = () => {
   };
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
+  const handleGroupChange = (groupId: string) => {
+    setSelectedGroup(groupId);
+    fetchData();
+  };
+
+  let DataTable: FieldGroups[] = [];
+  listOfGroups.sort((a, b) => {
+    const dateA = new Date(
+      (a as any).date.split('-').reverse().join('-'),
+    ).getTime();
+    const dateB = new Date(
+      (b as any).date.split('-').reverse().join('-'),
+    ).getTime();
+    if (dateA !== dateB) {
+      return dateA - dateB;
+    }
+    return (a as any).group_name.localeCompare((b as any).group_name);
+  });
+
+  for (let i = 0; i < listOfGroups.length; i++) {
+    let dynamicYes = (
+      <a
+        className="btn btn--medium btn--green"
+        onClick={(event) => {
+          updateStatus(listOfGroups[i].id, event);
+        }}
+        href={listOfGroups[i].id}
+      >
+        Đồng ý
+      </a>
+    );
+    let dynamicNo = (
+      <a
+        className="btn btn--medium btn--orange"
+        onClick={(event) => {
+          deleteStatus(listOfGroups[i].id, event);
+        }}
+        href={listOfGroups[i].id}
+      >
+        Từ chối
+      </a>
+    );
+    if (listOfGroups[i].status == 0) {
+      DataTable.push({
+        realname: `${listOfGroups[i].realname}`,
+        group_name: `${listOfGroups[i].group_name}`,
+        day_number: `${listOfGroups[i].day_number}`,
+        start_datetime: `${listOfGroups[i].start_datetime}`,
+        end_datetime: `${listOfGroups[i].end_datetime}`,
+        note: `${listOfGroups[i].note}`,
+        yes: dynamicYes,
+        no: dynamicNo,
+      } as unknown as FieldGroups);
+    }
+  }
+
   const fetchData = useCallback(async () => {
     try {
       const [groupsResponse, dayoffsResponse] = await Promise.all([
-        axios.get('groups/'),
-        axios.get('dayoffs/', {
+        axios.get('groups'),
+        axios.get('dayoffs', {
           params: {
             group: selectedGroup,
           },
         }),
-        // axios.get(urlControl + 'GroupsController.php'),
-        // axios.get(urlControl + 'DayoffsController.php', {
-        //   params: {
-        //     group: selectedGroup,
-        //   },
-        // }),
       ]);
 
       const groupsData = groupsResponse.data;
@@ -77,48 +129,6 @@ export const DayoffApply = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleGroupChange = (groupId: string) => {
-    setSelectedGroup(groupId);
-    fetchData();
-  };
-
-  let DataTable: FieldGroups[] = [];
-  for (let i = 0; i < listOfGroups.length; i++) {
-    let dynamicYes = (
-      <a
-        className="btn btn--medium btn--green"
-        onClick={(event) => {
-          updateStatus(listOfGroups[i].id, event);
-        }}
-        href={listOfGroups[i].id}
-      >
-        Đồng ý
-      </a>
-    );
-    let dynamicNo = (
-      <a
-        className="btn btn--medium btn--orange"
-        onClick={(event) => {
-          deleteStatus(listOfGroups[i].id, event);
-        }}
-        href={listOfGroups[i].id}
-      >
-        Hủy
-      </a>
-    );
-    if (listOfGroups[i].status == 0) {
-      DataTable.push({
-        realname: `${listOfGroups[i].realname}`,
-        day_number: `${listOfGroups[i].day_number}`,
-        start_datetime: `${listOfGroups[i].start_datetime}`,
-        end_datetime: `${listOfGroups[i].end_datetime}`,
-        note: `${listOfGroups[i].note}`,
-        yes: dynamicYes,
-        no: dynamicNo,
-      } as unknown as FieldGroups);
-    }
-  }
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
@@ -127,7 +137,7 @@ export const DayoffApply = () => {
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
-
+  const data = { owner: users.realname };
   const updateStatus = async (
     dayoffId: any,
     event: { preventDefault: () => void } | undefined,
@@ -135,7 +145,9 @@ export const DayoffApply = () => {
     if (event) {
       event.preventDefault();
       try {
-        const response = await axios.post('dayoffs/update/' + dayoffId);
+        const response = await axios.post('dayoffs/update/' + dayoffId, {
+          data,
+        });
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -149,24 +161,16 @@ export const DayoffApply = () => {
     if (event) {
       event.preventDefault();
       try {
-        const payload = { id: dayoffId };
-        let response = axios.delete('dayoffs/delete/' + dayoffId);
-        // let response = await axios.delete(
-        //   urlControl + 'DayoffsController.php',
-        //   {
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //     },
-        //     data: payload,
-        //   },
-        // );
-        fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
+        let response = await axios.post('dayoffs/refuse/' + dayoffId, {
+          data,
+        });
+        console.log(response.data);
+        fetchData();
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
       }
     }
   };
-
   return (
     <>
       <NavDayoff role="admin" />
@@ -177,6 +181,7 @@ export const DayoffApply = () => {
         <CTableHead
           heads={[
             'Họ Và Tên',
+            'nhóm',
             'Số Ngày',
             'Ngày Bắt Đầu',
             'Ngày Kết Thúc',

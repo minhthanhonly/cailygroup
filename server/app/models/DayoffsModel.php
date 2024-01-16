@@ -34,7 +34,7 @@
                         CONCAT(dayoffs.time_start, ' - ' , dayoffs.date) AS start_datetime, 
                         CONCAT(dayoffs.time_end, ' - ', dayoffs.date) AS end_datetime, 
                         users.realname,
-                        groups.group_name
+                        groups.group_name, users.user_group
                 FROM dayoffs
                 JOIN users ON dayoffs.user_id = users.id
                 JOIN groups ON users.user_group = groups.id";
@@ -64,7 +64,7 @@
             }
             $conn->close();
         }
-        function getDayoffsUser($id){
+        function getDayoffsAllUser($id){
             global $conn;
             $query = "SELECT * FROM dayoffs WHERE user_id = '$id'";
             $result = $conn->query($query);
@@ -77,6 +77,39 @@
                 echo json_encode($dayoffs);
             } else {
                 echo json_encode(array('error' => 'Error in query'));
+            }
+        }
+        function getDayoffsUser($id){
+            global $conn;
+            $query = "SELECT dayoffs.*,
+                        CONCAT(dayoffs.time_start, ' - ', dayoffs.date) AS start_datetime, 
+                        CONCAT(dayoffs.time_end, ' - ', dayoffs.date) AS end_datetime, 
+                        users.realname,
+                        groups.group_name
+                    FROM dayoffs
+                    JOIN users ON dayoffs.user_id = users.id
+                    JOIN groups ON users.user_group = groups.id
+                    WHERE users.id = $id";
+
+            $allGroup = mysqli_query($conn, $query);
+            if ($allGroup) {
+                $data = [];
+
+                while ($row = mysqli_fetch_assoc($allGroup)) {
+                    $row['start_datetime'] = $row['start_datetime'];
+                    $row['end_datetime'] = $row['end_datetime'];
+                    $data[] = $row;
+                }
+                if (!empty($data)) {
+                    http_response_code(200);
+                    echo json_encode($data);
+                } else {
+                    http_response_code(200);
+                    echo json_encode(["error" => "No data found with the specified group"]);
+                }
+            } else {
+                http_response_code(500);
+                echo json_encode(["error" => "Internal Server Error"]);
             }
         }
         function deleteDayoffs($id){
@@ -104,6 +137,28 @@
                 $sql = "UPDATE dayoffs SET status = ? WHERE id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("ii", $status, $id);
+                if ($stmt->execute()) {
+                    http_response_code(200);
+                    echo json_encode(["success" => true]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                }
+                $stmt->close();
+            } else {
+                http_response_code(400);
+                echo json_encode(["success" => false, "error" => "Invalid parameters"]);
+            }
+        }
+        function refuseDayoffs($id){
+            global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            $owner = $data['data']['owner'];
+            if (isset($id)) {
+                $status = 2;
+                $sql = "UPDATE dayoffs SET status = ?, owner=? WHERE id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("isi", $status, $owner, $id);
                 if ($stmt->execute()) {
                     http_response_code(200);
                     echo json_encode(["success" => true]);

@@ -28,8 +28,6 @@ function Members() {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   useEffect(() => {
     axios.get('users').then((response) => {
-
-      console.log(response.data);
       setListOfUsers(response.data);
       setIsTableUpdated(false);
     }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
