@@ -349,7 +349,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   // nhấn nút kết thúc mỗi ngày
   const handleEndButtonClick = async (
     timecardID: any,
-    timecard_open_time: string,
+    timecard_open_time1: string,
     event: { preventDefault: () => void } | undefined,
   ) => {
     if (event) {
@@ -360,7 +360,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       let { datetime } = response.data;
       let currentHour = new Date(datetime).getHours();
       let currentMinutes = new Date(datetime).getMinutes();
-      let timecard_close_time = `${currentHour}:${String(
+      let timecard_close_time1 = `${currentHour}:${String(
         currentMinutes,
       ).padStart(2, '0')}`;
       let timecard_time = '';
@@ -370,11 +370,57 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const closetimeValue = findConfigValue(configData, 'closetime');
       const openlunchValue = findConfigValue(configData, 'openlunch');
       const closelunchValue = findConfigValue(configData, 'closelunch');
-      console.log(compareTime(timecard_open_time, opentimeValue));
-      if (compareTime(timecard_open_time, closelunchValue) != 1) {
+      console.log(
+        opentimeValue,
+        closetimeValue,
+        openlunchValue,
+        closelunchValue,
+      );
+      let timecard_open_time = '7:28';
+      let timecard_close_time = '7:49';
+      // console.log(compareTime('7:32', '7:30'));
+      if (compareTime(timecard_open_time, opentimeValue) != 1) {
+        if (compareTime(timecard_close_time, openlunchValue) != 1) {
+          console.log('0');
+        } else if (compareTime(timecard_close_time, closelunchValue) != 1) {
+          console.log('1');
+        } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+          console.log('2');
+        } else {
+          console.log('3');
+        }
+      } else if (compareTime(timecard_open_time, closetimeValue) != 1) {
+        timecard_time = '00:00';
+        console.log('4');
+      } else if (compareTime(timecard_open_time, openlunchValue) != 1) {
+        if (compareTime(timecard_close_time, closetimeValue) != 2) {
+          console.log('5');
+        } else {
+        }
+        console.log('6');
+      } else if (compareTime(timecard_open_time, opentimeValue) == 2) {
+        if (compareTime(timecard_open_time, openlunchValue) != 1) {
+          if (compareTime(timecard_close_time, openlunchValue) != 1) {
+          } else if (compareTime(timecard_close_time, openlunchValue) != 1) {
+            console.log('7');
+          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+            console.log('8');
+          } else {
+            console.log('9');
+          }
+        } else {
+          if (compareTime(timecard_close_time, closelunchValue) != 1) {
+            console.log('10');
+          }
+          if (compareTime(timecard_close_time, closetimeValue) != 1) {
+            console.log('11');
+          } else {
+            console.log('12');
+          }
+        }
       }
       // addTimes;
-      console.log(timecard_time);
+      // console.log(timecard_time);
       const dataTime = {
         id: timecardID,
         timecard_open: timecard_open_time,
