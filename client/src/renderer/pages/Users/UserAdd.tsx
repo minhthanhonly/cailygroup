@@ -1,35 +1,35 @@
 import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 
 export const UserAdd = () => {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-	const [formValue, setFormValue] = useState({userid: '', password: '', realname: '', authority: '', user_group: ''})
-  const [message, setMessage] = useState('');
+	const [formValue, setFormValue] = useState({ userid: '', password: '', realname: '', authority: '', user_group: '' })
+	const [message, setMessage] = useState('');
 	const handleInput = (e) => {
-		setFormValue({...formValue, [e.target.name]:e.target.value})
+		setFormValue({ ...formValue, [e.target.name]: e.target.value })
 	}
 
-	const handleSubmit = async(e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const formData = {userid:formValue.userid, password:formValue.password, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-		const res = await axios.post("http://cailygroup.com/users/add", formData);
+		const formData = { userid: formValue.userid, password: formValue.password, realname: formValue.realname, authority: formValue.authority, user_group: formValue.user_group }
+		const res = await axios.post("users/add", formData);
 
-    if(res.data.success){
-      setMessage(res.data.success);
-      setTimeout(() => {
-        navigate('/users');
-      }, 2000);
-    }
+		if (res.data.success) {
+			setMessage(res.data.success);
+			setTimeout(() => {
+				navigate('/users');
+			}, 2000);
+		}
 	}
 
-  /*
-  *
-  * GET DATA FROM AUTHORITY TABLE
-  *
-  */
+	/*
+	*
+	* GET DATA FROM AUTHORITY TABLE
+	*
+	*/
 	type FieldAuthority = {
 		id: string,
 		authority_name: string,
@@ -37,7 +37,7 @@ export const UserAdd = () => {
 	const [listOfAuthority, setListOfAuthority] = useState<FieldAuthority[] | []>([]);
 
 	useEffect(() => {
-		axios.get('http://cailygroup.com/authority/').then((response) => {
+		axios.get('authority/').then((response) => {
 			setListOfAuthority(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
@@ -50,11 +50,11 @@ export const UserAdd = () => {
 		});
 	}
 
-  /*
-  *
-  * GET DATA FROM GROUPS TABLE
-  *
-  */
+	/*
+	*
+	* GET DATA FROM GROUPS TABLE
+	*
+	*/
 	type FieldGroups = {
 		id: string,
 		group_name: string,
@@ -62,7 +62,7 @@ export const UserAdd = () => {
 	const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
 	useEffect(() => {
-		axios.get('http://cailygroup.com/groups/').then((response) => {
+		axios.get('groups/').then((response) => {
 			setListOfGroups(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
@@ -78,7 +78,7 @@ export const UserAdd = () => {
 	return (
 		<>
 			<Heading2 text="Thêm thành viên" />
-      {message=='' ? '' : <div className="box-bg"><p className="bg bg-green">{message}</p></div>}
+			{message == '' ? '' : <div className="box-bg"><p className="bg bg-green">{message}</p></div>}
 			<div className="form-user form">
 				<div className="form-content">
 					<div className="row">
@@ -143,7 +143,7 @@ export const UserAdd = () => {
 									</label>
 									<div className="select__box group">
 										<select name="user_group" value={formValue.user_group} onChange={handleInput}>
-                      <option value="-1">----------------------- Chọn nhóm -----------------------</option>
+											<option value="-1">----------------------- Chọn nhóm -----------------------</option>
 											{DataGroups.map((value, index) => (
 												<option value={value.id} key={index}>{value.group_name}</option>
 											))}
@@ -161,7 +161,7 @@ export const UserAdd = () => {
 									</label>
 									<div className="select__box group">
 										<select name="authority" value={formValue.authority} onChange={handleInput}>
-                      <option value="-1">---------------- Chọn quyền truy cập ----------------</option>
+											<option value="-1">---------------- Chọn quyền truy cập ----------------</option>
 											{DataAuthority.map((value, index) => (
 												<option value={value.id} key={index}>{value.authority_name}</option>
 											))}
