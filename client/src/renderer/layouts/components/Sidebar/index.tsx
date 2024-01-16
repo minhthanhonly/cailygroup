@@ -16,7 +16,7 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from "../../../api/axios";
 import { Button } from '../../../components/Button';
 import useAuth from '../../../hooks/useAuth';
 import { UserRole } from '../../../components/UserRole';
@@ -39,7 +39,7 @@ export const Sidebar = () => {
 
   const [formValue, setFormValue] = useState({ realname: '', group_name: '' });
   useEffect(() => {
-    axios.get('http://cailygroup.com/users/detail/'+users.userid).then(response => {
+    axios.get('users/detail/' + users.userid).then(response => {
       setFormValue(response.data);
     })
   }, [])
@@ -109,7 +109,7 @@ export const Sidebar = () => {
             />
           </figure>
           <div className="acount__info">
-            <NavLink to={"/users/detail/"+users.userid} className="acount__name">
+            <NavLink to={"/users/detail/" + users.userid} className="acount__name">
               {users.realname}
             </NavLink>
             <p className="acount__des">Nhóm: {users.user_group}</p>
