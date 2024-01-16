@@ -6,7 +6,7 @@ import { CTable } from "../../components/Table/CTable";
 import { CTableHead } from "../../components/Table/CTableHead";
 import { useEffect, useState } from "react";
 import ButtonAdd from "../../components/Button/ButtonAdd";
-import axios from "axios";
+import axios from "../../api/axios";
 import ButtonEdit from "../../components/Button/ButtonEdit";
 import Modal from "../../components/Modal/Modal";
 import ButtonDelete from "../../components/Button/ButtonDelete";
@@ -28,7 +28,7 @@ export const Users = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
 
   useEffect(() => {
-    axios.get('http://cailygroup.com/users/').then((response) => {
+    axios.get('users/').then((response) => {
       setListOfUsers(response.data);
       setIsTableUpdated(false);
     }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
@@ -41,9 +41,9 @@ export const Users = () => {
   const closeModal = () => {
     setModalOpen(false);
   };
-  const handleDelete = async($id: number) => {
-    const formData = {id:$id}
-    const res = await axios.post("http://cailygroup.com/users/delete", formData);
+  const handleDelete = async ($id: number) => {
+    const formData = { id: $id }
+    const res = await axios.post("users/delete", formData);
     setIsTableUpdated(true);
     setTimeout(() => {
       closeModal();
