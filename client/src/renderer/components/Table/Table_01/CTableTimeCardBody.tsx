@@ -370,77 +370,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const closetimeValue = findConfigValue(configData, 'closetime');
       const openlunchValue = findConfigValue(configData, 'openlunch');
       const closelunchValue = findConfigValue(configData, 'closelunch');
+      console.log(compareTime(timecard_open_time, opentimeValue));
       if (compareTime(timecard_open_time, closelunchValue) != 1) {
-        // bắt đầu trước hoặc = 13:00
-        if (compareTime(timecard_open_time, openlunchValue) != 1) {
-          //bắt đầu trước 11:30
-          if (compareTime(timecard_close_time, closelunchValue) != 1) {
-            //kết thúc trước hoặc bằng 13:00
-            timecard_time = calculateTime(timecard_open_time, openlunchValue);
-            console.log(
-              'bắt đầu trước 11:30 và kết thúc trước hoặc bằng 13:00',
-            );
-          } else if (compareTime(timecard_close_time, openlunchValue) != 1) {
-            //kết thúc trước hoặc = 11h30
-            timecard_time = calculateTime(
-              timecard_open_time,
-              timecard_close_time,
-            );
-            console.log('bắt đầu trước 11:30 và kết thúc trước hoặc = 11h30');
-          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
-            // kết thúc trước 17:00
-            timecard_time = addTimes(
-              calculateTime(timecard_open_time, openlunchValue),
-              calculateTime(closelunchValue, timecard_close_time),
-            );
-            console.log('bắt đầu trước 11:30 và kết thúc trước 17:00');
-          } else {
-            //kết thúc sau hoặc bằng 17:00
-            timecard_time = addTimes(
-              calculateTime(timecard_open_time, openlunchValue),
-              calculateTime(closelunchValue, closetimeValue),
-            );
-            console.log('bắt đầu trước 11:30 và kết thúc sau bằng 17:00');
-          }
-        } else if (compareTime(timecard_close_time, closelunchValue) != 1) {
-          //bắt đầu và kết thúc đều trong giờ ăn trưa
-          timecard_time = '00:00';
-        } else if (compareTime(timecard_close_time, openlunchValue) != 1) {
-          //bắt đầu sau 11:30 và kết thúc trước hoặc = 13:00
-          if (compareTime(timecard_close_time, closelunchValue) != 1) {
-            // kết thúc trước hoặc bằng 13:00
-            timecard_time = calculateTime(timecard_close_time, closelunchValue);
-            console.log('bắt đầu sau 11:30 và kết thúc trước hoặc bằng 13:00');
-          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
-            // kết thúc trước 17:00
-            timecard_time = addTimes(
-              calculateTime(timecard_close_time, closelunchValue),
-              calculateTime(closelunchValue, timecard_close_time),
-            );
-            console.log('bắt đầu sau 11:30 và kết thúc trước 17:00');
-          } else {
-            // kết thúc sau hoặc bằng 17:00
-            timecard_time = addTimes(
-              calculateTime(timecard_close_time, closelunchValue),
-              calculateTime(closelunchValue, closetimeValue),
-            );
-            console.log('bắt đầu sau 11:30 và kết thúc sau bằng 17:00');
-          }
-        } else {
-          // bắt đầu sau 13:00
-          if (compareTime(timecard_close_time, closetimeValue) != 1) {
-            // kết thúc trước 17:00
-            timecard_time = calculateTime(closelunchValue, timecard_close_time);
-            console.log('bắt đầu sau 13:00 và kết thúc trước 17:00');
-          } else {
-            // kết thúc sau hoặc bằng 17:00
-            timecard_time = addTimes(
-              calculateTime(closelunchValue, closetimeValue),
-              calculateTime(closelunchValue, timecard_close_time),
-            );
-            console.log('bắt đầu sau 13:00 và kết thúc sau bằng 17:00');
-          }
-        }
       }
       // addTimes;
       console.log(timecard_time);
