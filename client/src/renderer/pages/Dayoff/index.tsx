@@ -28,6 +28,7 @@ export const Dayoff = () => {
     start_datetime: string;
     end_datetime: string;
     note: string;
+    owner: string;
     status: React.ReactNode;
   };
 
@@ -53,6 +54,19 @@ export const Dayoff = () => {
             Hủy
           </button>
         </>
+      );
+    } else if (listOfGroups[i].status === '2') {
+      dynamicAction = (
+        <div className="center">
+          <p className="icon icon--check">
+            <img
+              src={require('../../../../assets/minus-button.png')}
+              alt="edit"
+              className="fluid-image"
+            />
+          </p>
+          {listOfGroups[i].owner}
+        </div>
       );
     } else {
       dynamicAction = (

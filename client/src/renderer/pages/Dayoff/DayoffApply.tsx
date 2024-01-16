@@ -34,45 +34,6 @@ export const DayoffApply = () => {
   };
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
-  const fetchData = useCallback(async () => {
-    try {
-      const [groupsResponse, dayoffsResponse] = await Promise.all([
-        axios.get('groups'),
-        axios.get('dayoffs', {
-          params: {
-            group: selectedGroup,
-          },
-        }),
-      ]);
-
-      const groupsData = groupsResponse.data;
-      const dayoffsData = Array.isArray(dayoffsResponse.data)
-        ? dayoffsResponse.data
-        : [];
-
-      const combinedData = dayoffsData.map((dayoff) => {
-        const groupInfo = groupsData.find(
-          (group: { id: any; user_id: any }) =>
-            group.id === dayoff.user_group || group.user_id === dayoff.user_id,
-        );
-
-        return {
-          ...dayoff,
-          group_name: groupInfo ? groupInfo.group_name : 'Unknown Group',
-        };
-      });
-
-      setListOfGroups(combinedData);
-    } catch (error) {
-      console.error('Lỗi khi gọi API:', error);
-      setListOfGroups([]);
-    }
-  }, [selectedGroup]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
   const handleGroupChange = (groupId: string) => {
     setSelectedGroup(groupId);
     fetchData();
@@ -128,6 +89,45 @@ export const DayoffApply = () => {
       } as unknown as FieldGroups);
     }
   }
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [groupsResponse, dayoffsResponse] = await Promise.all([
+        axios.get('groups'),
+        axios.get('dayoffs', {
+          params: {
+            group: selectedGroup,
+          },
+        }),
+      ]);
+
+      const groupsData = groupsResponse.data;
+      const dayoffsData = Array.isArray(dayoffsResponse.data)
+        ? dayoffsResponse.data
+        : [];
+
+      const combinedData = dayoffsData.map((dayoff) => {
+        const groupInfo = groupsData.find(
+          (group: { id: any; user_id: any }) =>
+            group.id === dayoff.user_group || group.user_id === dayoff.user_id,
+        );
+
+        return {
+          ...dayoff,
+          group_name: groupInfo ? groupInfo.group_name : 'Unknown Group',
+        };
+      });
+
+      setListOfGroups(combinedData);
+    } catch (error) {
+      console.error('Lỗi khi gọi API:', error);
+      setListOfGroups([]);
+    }
+  }, [selectedGroup]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang

@@ -62,7 +62,7 @@ export const FormLeave: React.FC = () => {
       // day_number: calculateDayDifference(startDate, endDate),
       day_number: 1,
       status: 0,
-      owner: 'admin',
+      owner: '',
     };
     if (note) {
       setNoteErr(false);
