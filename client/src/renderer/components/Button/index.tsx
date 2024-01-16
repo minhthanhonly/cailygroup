@@ -9,6 +9,7 @@ type ButtonProps = {
   children?: React.ReactNode;
   onButtonClick?: () => void;
   color?: string | null;
+  btnClassName?: string;
 };
 
 export const Button = (props: ButtonProps) => {
@@ -16,6 +17,7 @@ export const Button = (props: ButtonProps) => {
 
   props.size ? defineClassName.push('btn--' + props.size) : defineClassName;
   props.color ? defineClassName.push('btn--' + props.color) : defineClassName;
+  props.btnClassName ? defineClassName.push('btn--' + props.btnClassName) : defineClassName;
 
   let className: string = defineClassName.join(' ');
   let Comp: ReactElement;

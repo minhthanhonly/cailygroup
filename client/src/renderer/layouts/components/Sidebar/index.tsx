@@ -103,7 +103,7 @@ export const Sidebar = () => {
         <div className="acount__inner">
           <figure className="acount__avatar">
             <img
-              src={require('../../../../../assets/avatar.jpg')}
+              src='https://placehold.jp/50x50.png'
               alt=""
               className="fluid-image"
             />

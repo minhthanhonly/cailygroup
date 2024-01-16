@@ -32,6 +32,13 @@
     padding-left: 2.5rem;
     padding-right: 2.5rem;
   }
+  &--icon {
+    display: inline-block;
+    background: none;
+    width: 5rem;
+    height: auto;
+    padding: 0;
+  }
 }
 .icon {
   background: none;

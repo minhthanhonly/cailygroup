@@ -61,11 +61,7 @@ export const Group = () => {
     <>
       <button onClick={() => openModal(groupName, id)}>
         <p className="icon icon--check">
-          <img
-            src={require('../../../../assets/icnedit.png')}
-            alt="edit"
-            className="fluid-image"
-          />
+          <img src={require('../../../../assets/icnedit.png')} alt="edit" className="fluid-image" />
         </p>
       </button>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
@@ -78,11 +74,7 @@ export const Group = () => {
                   <div className="col-12">
                     <div className="form-group">
                       <label>Sửa Tên nhóm
-                        <img
-                          src={require('../../../../assets/icn-group.png')}
-                          alt=""
-                          className="fluid-image"
-                        />
+                        <img src={require('../../../../assets/icn-group.png')} alt="" className="fluid-image"/>
                       </label>
                       <input
                         value={modalGroupName}
@@ -121,12 +113,7 @@ export const Group = () => {
       event.preventDefault();
       try {
         const payload = { id: groupId };
-        let response = await axios.delete('groups/delete/', {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: payload,
-        });
+        let response = await axios.delete('groups/delete/', {headers: {'Content-Type': 'application/json',},data: payload,});
         console.log('DELETE Response:', response.data);
         closeModaldelete();
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
@@ -141,11 +128,7 @@ export const Group = () => {
       event.preventDefault();
       try {
         const dataUpdate = { id, group_name };
-        const response = await axios.put(
-          'groups/update/',
-          dataUpdate,
-          { headers: { 'Content-Type': 'application/json' } }
-        );
+        const response = await axios.put('groups/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } });
         console.log('Update Response:', response.data);
         closeModal();
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
@@ -157,13 +140,9 @@ export const Group = () => {
 
   let dynamicDelete = (id:string) => (
     <>
-      <button onClick={(event) => { openModaldelete(id, event); }}>
+      <button onClick={(event) => { openModaldelete(id); }}>
         <p className="icon icon--check">
-          <img
-            src={require('../../../../assets/icndelete.png')}
-            alt="edit"
-            className="fluid-image"
-          />
+            <img src={require('../../../../assets/icndelete.png')} alt="edit" className="fluid-image"/>
         </p>
       </button>
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
@@ -187,7 +166,6 @@ export const Group = () => {
   useEffect(() => {
     if(isDeleteModalOpen  == true) {
       fetchMembersByGroup(minitialId);
-
     }
   });
 
@@ -223,10 +201,7 @@ export const Group = () => {
       console.log('Data inserted successfully:', res.data);
       setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
     }
-    catch(error){
-      console.error('Lỗi khi thêm dữ liệu:', error);
-    }
-
+    catch(error){console.error('Lỗi khi thêm dữ liệu:', error);}
   };
 
   return (
@@ -234,11 +209,7 @@ export const Group = () => {
       <Heading2 text="Quản lý nhóm" />
       <div className="form-group form-addgroup">
         <label>Nhập Tên Nhóm:</label>
-        <img
-          src={require('../../../../assets/icn-group.png')}
-          alt=""
-          className="fluid-image form-addgroup__image"
-        />
+        <img src={require('../../../../assets/icn-group.png')} alt="" className="fluid-image form-addgroup__image"/>
         <input
           value={groupName}
           onChange={(event) => setGroupName(event.target.value)}
@@ -246,9 +217,7 @@ export const Group = () => {
           type="text"
           placeholder="Tên nhóm muốn thêm"
         />
-        <button className="btn" onClick={handleSubmint}>
-          Thêm
-        </button>
+        <button className="btn" onClick={handleSubmint}>Thêm</button>
       </div>
       <CTable>
         <CTableHead heads={['STT', 'Tên Nhóm', 'Sửa', 'Xóa']} />
