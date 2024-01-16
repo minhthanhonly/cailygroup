@@ -495,7 +495,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const fetchDayoffs = async () => {
     try {
       let $id = usersID;
-      const response = await axios.get('dayoffs/getforuser/' + $id);
+      const response = await axios.get('dayoffs/getalluser/' + usersID);
       setDayoffs(response.data);
     } catch (error) {
       console.error('Error fetching dayoffs:', error);
