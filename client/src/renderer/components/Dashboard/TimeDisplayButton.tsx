@@ -38,7 +38,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
       setStartHours(hours);
       setStartMinutes(minutes);
 
-            //  const formattedTime = `${startHours}:${startMinutes}`;
+      //  const formattedTime = `${startHours}:${startMinutes}`;
     } catch (error) {
       console.error('Lỗi khi lấy thời gian từ API:', error);
     }
@@ -53,7 +53,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
       <button className="Dashboard-action--circle" onClick={handleClick}>
         <img src={buttonImage} alt="" className="fluid-image" />
       </button>
-      <CardTime hours={startHours} minutes={startMinutes} />
+      <CardTime defaultHours={startHours} defaultMinutes={startMinutes} />
     </>
   );
 };

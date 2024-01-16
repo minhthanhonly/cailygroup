@@ -44,7 +44,7 @@ const CardTime: React.FC<TimeProps> = ({ defaultHours = 0, defaultMinutes = 0, o
   return (
     <div className="card-time">
       <div className="card-time--hour">
-        <small>hours</small>
+        <small>Giờ</small>
         <input
           value={editedHours}
           onChange={handleHoursChange}
@@ -52,7 +52,7 @@ const CardTime: React.FC<TimeProps> = ({ defaultHours = 0, defaultMinutes = 0, o
       </div>
       :
       <div className="card-time--minute">
-        <small>minutes</small>
+        <small>Phút</small>
         <input
           value={editedMinutes}
           onChange={handleMinutesChange}

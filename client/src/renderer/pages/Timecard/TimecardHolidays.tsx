@@ -56,9 +56,9 @@ const TimecardHolidays = () => {
     }, [isTableUpdated]); // khi state thay đổi useEffect sẽ chạy lại
 
     // update
-    const handleDatePickerModalChange = (date) => {
+    const handleDatePickerModalChange = (date:any) => {
     if (date !== null) {
-        const dateObjects = date.map((dateString) => new Date(dateString));
+        const dateObjects = date.map((dateString:any) => new Date(dateString));
         setModalDays(dateObjects);
     }
     };
@@ -135,7 +135,7 @@ const TimecardHolidays = () => {
             </Modal>
         </>
     );
-    const convertDaysToDatePickerFormat = (days) => {
+    const convertDaysToDatePickerFormat = (days:any) => {
       if (!Array.isArray(days)) {
           console.error('Lỗi: Tham số days phải là một mảng.');
           return [];
@@ -190,7 +190,7 @@ const TimecardHolidays = () => {
     const handleUpdate = async (id: string,name: string,days: string,event) => {
         if (event) {
           event.preventDefault();
-          const formattedDays = days .map((day) => {
+          const formattedDays = days .map((day:any) => {
               if (day instanceof Date && !isNaN(day)) {
                 return format(day, 'dd-MM-yyyy').toString();
               } else {
@@ -219,7 +219,7 @@ const TimecardHolidays = () => {
     };
 
     // delete
-    const handleDelete = async (holidayId, event) => {
+    const handleDelete = async (holidayId:string, event) => {
         if (event) {
             event.preventDefault();
             try {
@@ -241,7 +241,7 @@ const TimecardHolidays = () => {
             }
         }
     };
-    let dynamicDelete = (id) => (
+    let dynamicDelete = (id:any) => (
         <>
             <button
                 onClick={(event) => {
@@ -279,7 +279,7 @@ const TimecardHolidays = () => {
     const closeModaldelete = () => {
         setDeleteModalOpen(false);
     };
-    const formatDate = (date) => format(date, 'dd-MM-yyyy');
+    const formatDate = (date:any) => format(date, 'dd-MM-yyyy');
     let DataTable: FieldHolidays[] = [];
     for (let i = 0; i < listOfHolidays.length; i++) {
         DataTable.push({
@@ -296,9 +296,9 @@ const TimecardHolidays = () => {
     }
 
     // insert
-    const handleDatePickerChange = (date) => {
+    const handleDatePickerChange = (date:any) => {
         if (date !== null) {
-          const dateObjects = date.map((dateString) => new Date(dateString));
+          const dateObjects = date.map((dateString:any) => new Date(dateString));
           setDays(dateObjects);
         }
     };
@@ -390,6 +390,7 @@ const TimecardHolidays = () => {
                     (currentPage - 1) * itemsPerPage,
                     currentPage * itemsPerPage,
                 )}
+                path_timecard=''
                 />
             </CTable>
         </>
