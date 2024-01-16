@@ -11,10 +11,8 @@ import {
   startOfDay,
 } from 'date-fns';
 import Modal from '../../Modal/Modal';
-import useAuth from '../../../hooks/useAuth';
 import { UserRole } from '../../../components/UserRole';
 import Modaldelete from '../../Modal/Modaldelete';
-import { response } from 'express';
 
 //sever
 type Holiday = {
@@ -225,19 +223,63 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     { format: (date: number | Date) => format(startOfDay(date), 'EEEE') }, // Định dạng ngày thành thứ
   ];
 
+  const formatTimeDigit = (digit: number): string => {
+    return digit < 10 ? `0${digit}` : `${digit}`;
+  };
+
   const calculateTime = (timestart: string, timeend: string): string => {
     const startTime = new Date(`2000-01-01T${timestart}`);
     const endTime = new Date(`2000-01-01T${timeend}`);
-
-    // Tính hiệu của hai thời điểm
     const timeDiff: number = endTime.getTime() - startTime.getTime();
-
-    // Chuyển đổi thời gian từ milliseconds sang giờ:phút:giây
     const hours = Math.floor(timeDiff / (1000 * 60 * 60));
     const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
 
-    return `${hours}:${minutes}`;
+    const formattedHours = formatTimeDigit(hours);
+    const formattedMinutes = formatTimeDigit(minutes);
+
+    return `${formattedHours}:${formattedMinutes}`;
   };
+  const compareTime = (time1: string, time2: string): number => {
+    const [hour1, minute1] = time1.split(':').map(Number);
+    const [hour2, minute2] = time2.split(':').map(Number);
+
+    if (hour1 > hour2) {
+      return 1;
+    } else if (hour1 < hour2) {
+      return 2;
+    } else {
+      // Nếu giờ bằng nhau, so sánh phút
+      if (minute1 > minute2) {
+        return 1;
+      } else if (minute1 < minute2) {
+        return 2;
+      } else {
+        // Nếu cả giờ và phút đều bằng nhau
+        return 0;
+      }
+    }
+  };
+  const addTimes = (time1: string, time2: string): string => {
+    const [hour1, minute1] = time1.split(':').map(Number);
+    const [hour2, minute2] = time2.split(':').map(Number);
+
+    let totalHours = hour1 + hour2;
+    let totalMinutes = minute1 + minute2;
+
+    // Xử lý nếu tổng phút vượt quá 60
+    if (totalMinutes >= 60) {
+      totalHours += Math.floor(totalMinutes / 60);
+      totalMinutes %= 60;
+    }
+
+    // Định dạng kết quả để đảm bảo có 2 chữ số
+    const formattedHours = totalHours < 10 ? `0${totalHours}` : `${totalHours}`;
+    const formattedMinutes =
+      totalMinutes < 10 ? `0${totalMinutes}` : `${totalMinutes}`;
+
+    return `${formattedHours}:${formattedMinutes}`;
+  };
+
   // Hàm xử lý khi click vào nút bắt đầu
   const [isID, setId] = useState(null);
   const handleButtonClick = async () => {
@@ -321,21 +363,67 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       let timecard_open_time = `${currentHour}:${String(
         currentMinutes,
       ).padStart(2, '0')}`;
+      let timecard_time = '';
+      const responseConfig = await axios.post('config');
+      const configData = responseConfig.data;
+      const opentimeValue = findConfigValue(configData, 'opentime');
+      const closetimeValue = findConfigValue(configData, 'closetime');
+      const openlunchValue = findConfigValue(configData, 'openlunch');
+      const closelunchValue = findConfigValue(configData, 'closelunch');
+      if (compareTime(timecardStart, closelunchValue) != 1) {
+        // bắt đầu trước hoặc = 13:00
+        if (compareTime(timecardStart, openlunchValue) != 1) {
+          //bắt đầu trước 11:30
+          if (compareTime(timecard_open_time, closelunchValue) != 1) {
+            //kết thúc trước hoặc bằng 13:00
+            timecard_time = calculateTime(timecardStart, openlunchValue);
+            console.log(
+              'bắt đầu trước 11:30 và kết thúc trước hoặc bằng 13:00',
+            );
+          } else if (compareTime(timecard_open_time, openlunchValue) != 1) {
+            //kết thúc trước hoặc = 11h30
+            timecard_time = calculateTime(timecardStart, timecard_open_time);
+            console.log('bắt đầu trước 11:30 và kết thúc trước hoặc = 11h30');
+          } else if (compareTime(timecard_open_time, closetimeValue) != 1) {
+            // kết thúc trước 17:00
+            timecard_time = addTimes(
+              calculateTime(timecardStart, openlunchValue),
+              calculateTime(closelunchValue, timecard_open_time),
+            );
+            console.log('bắt đầu trước 11:30 và kết thúc trước 17:00');
+          } else {
+            //kết thúc sau hoặc bằng 17:00
+            timecard_time = addTimes(
+              calculateTime(timecardStart, openlunchValue),
+              calculateTime(closelunchValue, closetimeValue),
+            );
+            console.log('bắt đầu trước 11:30 và kết thúc sau bằng 17:00');
+          }
+        } else if (compareTime(timecard_open_time, closelunchValue) != 1) {
+          //bắt đầu và kết thúc đều trong giờ ăn trưa
+          timecard_time = '00:00';
+        }
+        else if(){
+
+        }
+      }
+      // addTimes;
+      console.log(timecard_time);
       const dataTime = {
         id: timecardID,
         timecard_open: timecardStart,
         timecard_now: timecard_open_time,
       };
 
-      try {
-        const response = await axios.post('timecarddetails/update', {
-          dataTime,
-        });
-        console.log(response.data);
-        fetchTimecardOpen();
-      } catch (error) {
-        console.error('Lỗi khi cập nhật trạng thái:', error);
-      }
+      // try {
+      //   const response = await axios.post('timecarddetails/update', {
+      //     dataTime,
+      //   });
+      //   console.log(response.data);
+      //   fetchTimecardOpen();
+      // } catch (error) {
+      //   console.error('Lỗi khi cập nhật trạng thái:', error);
+      // }
     }
   };
   //load ngày lễ
