@@ -18,8 +18,14 @@
         function update($id=''){
             return $this->model('DayoffsModel')->updateDayoffs($id);
         }
+        function refuse($id=''){
+            return $this->model('DayoffsModel')->refuseDayoffs($id);
+        }
         function getforuser($id=''){
             return $this->model('DayoffsModel')->getDayoffsUser($id);
+        }
+        function getalluser($id=''){
+            return $this->model('DayoffsModel')->getDayoffsAllUser($id);
         }
         function updatecomment($id=''){
             return $this->model('DayoffsModel')->updateDayoffComment($id);

@@ -59,7 +59,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const selectedYear = Props.selectedYear;
   const propsID = Props.userID;
   const [admin, setAdmin] = useState(false);
-  const [admins, setAdmins] = useState(false);
   // const { auth } = useAuth();
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -69,9 +68,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     const isLeader = users.roles === UserRole.LEADER;
     if (isAdmin || isManager || isLeader) {
       setAdmin(true);
-    }
-    if (isAdmin || isManager) {
-      setAdmins(true);
     }
     setUsersID(users.id);
   }, []);
@@ -101,9 +97,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [currentItemId, setCurrentItemId] = useState<number | undefined>(
     undefined,
   );
-  const openModal = (itemId: number, isDayoff: boolean) => {
+  const openModal = (itemId: number, comment: string, isDayoff: boolean) => {
     setModalOpen(true);
-    setCommentText('');
+    setCommentText(comment);
     setCurrentItemId(itemId);
     setIsUpdatingDayoff(isDayoff);
   };
@@ -803,7 +799,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                     {isDayoff(day).status ? (
                       <a
                         onClick={(event) => {
-                          openModal(isDayoff(day).id, true);
+                          openModal(isDayoff(day).id, isDayoff(day).note, true);
                         }}
                         className="btn btn--green btn--small icon icon--edit"
                       >
@@ -834,7 +830,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                               {item.timecard_comment}
                               <a
                                 onClick={(event) => {
-                                  openModal(item.id_groupwaretimecard, false);
+                                  openModal(
+                                    item.id_groupwaretimecard,
+                                    item.timecard_comment,
+                                    false,
+                                  );
                                 }}
                                 className="btn btn--green btn--small icon icon--edit"
                               >
@@ -895,7 +895,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         <div key={index}>
                           {item.timecard_open !== null &&
                           item.timecard_open !== '' ? (
-                            admins ? (
+                            admin ? (
                               <>
                                 <span
                                   className="btn btn--green btn--medium"

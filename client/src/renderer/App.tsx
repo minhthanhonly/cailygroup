@@ -49,23 +49,22 @@ export default function App() {
                 element={<Timecard />}
               />
               <Route path="holidays" element={<Timecard />} />
-
               <Route path="users" element={<Users />} />
               <Route path="users/add" element={<UserAdd />} />
               <Route path="users/edit/:id" element={<UserEdit />} />
               <Route path="users/detail/:userid" element={<UserDetail />} />
-
               <Route path="members" element={<Members />} />
               <Route path="members/add" element={<MemberAdd />} />
               <Route path="members/edit/:id" element={<MemberEdit />} />
               <Route path="members/detail/:userid" element={<MemberDetail />} />
-
               <Route path="dayoffs" element={<Dayoff />} />
               <Route path="dayoffs/apply" element={<DayoffApply />} />
               <Route path="dayoffs/delete/:id" />
               <Route path="dayoffs/update/:id" />
+              <Route path="dayoffs/refuse/:id" />
               <Route path="dayoffs/register" element={<DayoffRegister />} />
               <Route path="dayoffs/getforuser/:id" />
+              <Route path="dayoffs/getalluser/:id" />
 
               <Route path="group" element={<Group />} />
               <Route path="group/edit" element={<GroupEdit />} />
