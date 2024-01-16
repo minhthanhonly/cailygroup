@@ -56,9 +56,9 @@ const TimecardHolidays = () => {
     }, [isTableUpdated]); // khi state thay đổi useEffect sẽ chạy lại
 
     // update
-    const handleDatePickerModalChange = (date) => {
+    const handleDatePickerModalChange = (date:any) => {
     if (date !== null) {
-        const dateObjects = date.map((dateString) => new Date(dateString));
+        const dateObjects = date.map((dateString:any) => new Date(dateString));
         setModalDays(dateObjects);
     }
     };
@@ -135,7 +135,7 @@ const TimecardHolidays = () => {
             </Modal>
         </>
     );
-    const convertDaysToDatePickerFormat = (days) => {
+    const convertDaysToDatePickerFormat = (days:any) => {
       if (!Array.isArray(days)) {
           console.error('Lỗi: Tham số days phải là một mảng.');
           return [];
@@ -177,7 +177,7 @@ const TimecardHolidays = () => {
           // Chuyển đổi các ngày hợp lệ thành đối tượng Date
           const dateObjects = convertDaysToDatePickerFormat(validDates);
           //console.log(dateObjects)
-          setModalDays(dateObjects);
+          setModalDays(dateObjects),
           //console.log("Ngày sau khi chuyển đổi:", dateObjects);
         } else {
           console.error('Không có ngày hợp lệ để chuyển đổi.');
@@ -190,16 +190,27 @@ const TimecardHolidays = () => {
     const handleUpdate = async (id: string,name: string,days: string,event) => {
         if (event) {
           event.preventDefault();
-          const formattedDays = days .map((day) => {
-              if (day instanceof Date && !isNaN(day)) {
-                return format(day, 'dd-MM-yyyy').toString();
-              } else {
-                // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
-                console.error('Ngày không hợp lệ:', day);
-                return 'Ngày không hợp lệ';
-              }
-            })
-            .join(', ');
+        //   const formattedDays = days .map((day:Date) => {
+        //       if (day instanceof Date && !isNaN(day)) {
+        //         return format(day, 'dd-MM-yyyy').toString();
+        //       } else {
+        //         // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
+        //         console.error('Ngày không hợp lệ:', day);
+        //         return 'Ngày không hợp lệ';
+        //       }
+        //     })
+        //     .join(', ');
+        const formattedDays = Array.isArray(days)
+            ? days.map((day: Date) => {
+                if (day instanceof Date && !isNaN(day)) {
+                    return format(day, 'dd-MM-yyyy').toString();
+                } else {
+                    // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
+                    console.error('Ngày không hợp lệ:', day);
+                    return 'Ngày không hợp lệ';
+                }
+        }).join(', ')
+  : 'Ngày không hợp lệ';
           days = formattedDays;
           try {
             const dataUpdate = { id, name, days };
@@ -219,7 +230,7 @@ const TimecardHolidays = () => {
     };
 
     // delete
-    const handleDelete = async (holidayId, event) => {
+    const handleDelete = async (holidayId:string, event:any) => {
         if (event) {
             event.preventDefault();
             try {
@@ -241,7 +252,7 @@ const TimecardHolidays = () => {
             }
         }
     };
-    let dynamicDelete = (id) => (
+    let dynamicDelete = (id:string) => (
         <>
             <button
                 onClick={(event) => {
@@ -279,7 +290,7 @@ const TimecardHolidays = () => {
     const closeModaldelete = () => {
         setDeleteModalOpen(false);
     };
-    const formatDate = (date) => format(date, 'dd-MM-yyyy');
+    const formatDate = (date:any) => format(date, 'dd-MM-yyyy');
     let DataTable: FieldHolidays[] = [];
     for (let i = 0; i < listOfHolidays.length; i++) {
         DataTable.push({
@@ -296,9 +307,9 @@ const TimecardHolidays = () => {
     }
 
     // insert
-    const handleDatePickerChange = (date) => {
+    const handleDatePickerChange = (date:any) => {
         if (date !== null) {
-          const dateObjects = date.map((dateString) => new Date(dateString));
+          const dateObjects = date.map((dateString:any) => new Date(dateString));
           setDays(dateObjects);
         }
     };
@@ -310,7 +321,7 @@ const TimecardHolidays = () => {
         const formattedDays = days
         .map((day) => {
             if (day instanceof Date && !isNaN(day)) {
-            return format(day, 'dd-MM-yyyy').toString();
+                return format(day, 'dd-MM-yyyy').toString();
             } else {
             // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
             console.error('Ngày không hợp lệ:', day);
@@ -384,13 +395,7 @@ const TimecardHolidays = () => {
                 <CTableHead
                 heads={['STT','Ngày Tháng Năm', 'Ngày lễ - Ngày nghỉ', 'sửa', 'Xóa']}
                 />
-                <CTableBody
-                path_edit={'edit'}
-                data={DataTable.slice(
-                    (currentPage - 1) * itemsPerPage,
-                    currentPage * itemsPerPage,
-                )}
-                />
+                <CTableBody path_edit={'edit'}  data={DataTable.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage,)} path_timecard=""/>
             </CTable>
         </>
     )
