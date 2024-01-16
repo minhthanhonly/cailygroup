@@ -107,17 +107,14 @@ const TimecardHolidays = () => {
             console.error('Lỗi: Tham số days phải là một mảng.');
             return [];
         }
-  
         // Chắc chắn rằng mỗi ngày đã được chuyển đổi thành đối tượng Date
         const dateObjects = days.map((day) => {
             // Chuyển đổi định dạng ngày
             const [dayPart, monthPart, yearPart] = day.split('-');
             const formattedDate = new Date(`${yearPart}-${monthPart}-${dayPart}T00:00:00Z`);
-  
             // Kiểm tra xem ngày có hợp lệ không
             return !isNaN(formattedDate.getTime()) ? formattedDate : null;
         });
-  
         return dateObjects.filter(date => date !== null);
     };
     const openModal = (initialNameId: string,initialName: string,initialDays: string) => {
@@ -129,10 +126,8 @@ const TimecardHolidays = () => {
             // Chuyển đổi định dạng ngày
             const [dayPart, monthPart, yearPart] = day.split('-');
             const formattedDate = new Date(`${yearPart}-${monthPart}-${dayPart}T00:00:00Z`);
-        
             // Kiểm tra xem ngày có hợp lệ không
             const isValid = !isNaN(formattedDate.getTime());
-            
             // In thông báo để kiểm tra
             if (!isValid) {
                 console.log(`Ngày không hợp lệ: ${day}`);
@@ -159,9 +154,9 @@ const TimecardHolidays = () => {
                 if (day instanceof Date) {
                     return format(day, 'dd-MM-yyyy').toString();
                 } else {
-                // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
-                console.error('Ngày không hợp lệ:', day);
-                return 'Ngày không hợp lệ';
+                    // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
+                    console.error('Ngày không hợp lệ:', day);
+                    return 'Ngày không hợp lệ';
                 }
             }).join(', ');
             days = formattedDays;
