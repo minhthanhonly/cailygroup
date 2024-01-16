@@ -6,8 +6,9 @@ import MonthYearSelector from '../../components/Table/SelectMonthYears';
 import { NavLink, useLocation } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import axios from '../../api/axios';
+import { saveAs } from 'file-saver';
 
 interface FieldUsers {
   id: number;
@@ -58,82 +59,140 @@ export const Timecard = () => {
   }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
   //-------------------------------------------------------------------------------------
 
-  const exportToExcel = () => {
-
+  const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
 
     console.log("realname", realname);
 
-    const table = document.getElementById('timecards_table');
-    const wb = XLSX.utils.book_new();
-    const month = selectedMonth;
-    const year = selectedYear;
-    const startRow = 5;
-    const wsData = XLSX.utils.table_to_sheet(table);
-    if (wsData['!range'] && wsData['!range'].e) {
-      for (let r = 0; r < wsData['!range'].e.r + 1; r++) {
-        for (let c = 0; c < wsData['!range'].e.c + 1; c++) {
-          const cellAddress = XLSX.utils.encode_cell({ r, c });
-          const cell = wsData[cellAddress];
-          if (cell && cell.t === 'd') {
-            cell.v = XLSX.utils.format_cell(cell);
-          }
-        }
-      }
-    }
-    XLSX.utils.sheet_add_aoa(
-      wsData,
-      [
-        [
-          ` ${realname || ''} \n ${month}/${year}`,
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-        ],
-      ],
-      { origin: `A${startRow - 2}` },
-    );
-    wsData['!merges'] = [{ s: { r: 2, c: 0 }, e: { r: 3, c: 7 } }];
-    const mergedCellAddress = XLSX.utils.encode_cell({ r: 2, c: 0 });
-    wsData[mergedCellAddress].s = {
-      alignment: { horizontal: 'center', vertical: 'center' },
-    };
+    const table = document.getElementById('timecards_table') as HTMLTableElement;
 
-    // Đẩy bảng xuống 3 ô
-    XLSX.utils.sheet_add_aoa(wsData, [[]], { origin: `A${startRow - 2}` });
     if (!table) {
       console.error('Không tìm thấy bảng.');
       return;
     }
-    const tableRows = table.getElementsByTagName('tr');
+
+
     const tableWithRows = table as HTMLTableElement & {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
     };
-    const filteredData = [];
-    for (let i = startRow - 1; i < tableWithRows.rows.length; i++) {
-      const rowData = [];
-      for (let j = 0; j < tableWithRows.rows[i].cells.length; j++) {
-        const cellContent = tableWithRows.rows[i].cells[j].textContent;
-        rowData.push(cellContent ? cellContent.trim() : ''); // Kiểm tra nếu `textContent` không tồn tại
+    const month = selectedMonth;
+    const year = selectedYear;
+    const startRow = 4;
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
+
+    // Merge cells for the name and date
+    worksheet.mergeCells(`A1:I3`);
+    worksheet.getCell(`A1`).value = ` ${realname || ''} \n ${month}/${year}`;
+    worksheet.getCell(`A1`).alignment = { horizontal: 'center', vertical: 'middle' };
+
+    // const DatabaseTest = [
+    //   'Ngày Tháng',
+    //   'Thứ',
+    //   'Bắt Đầu',
+    //   'Kết Thúc',
+    //   'giờ làm việc',
+    //   'ngoài giờ',
+    //   'giờ nghỉ trưa',
+    //   'ghi chú',
+    // ];
+    // DatabaseTest.forEach((DatabaseTest, index) => {
+    //   const cell = worksheet.getCell(`${String.fromCharCode(65 + index)}3`);
+    //   cell.value = DatabaseTest;
+    //   cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    // });
+    // for (let c = 1; c <= DatabaseTest.length; c++) {
+    //   const cell = worksheet.getCell(`${String.fromCharCode(64 + c)}3`);
+    //   cell.border = {
+    //     top: { style: 'thin', color: { argb: 'FF000000' } },
+    //     bottom: { style: 'thin', color: { argb: 'FF000000' } },
+    //     left: { style: 'thin', color: { argb: 'FF000000' } },
+    //     right: { style: 'thin', color: { argb: 'FF000000' } },
+    //   };
+    // }
+
+    // Thêm dữ liệu từ bảng vào ô A4:I4
+    const rowsArray = Array.from(table.rows);
+
+    for (let r = 1; r <= table.rows.length; r++) {
+      const rowStartCell = worksheet.getCell(`A${startRow + r - 1}`);
+      const rowEndCell = worksheet.getCell(`I${startRow + r - 1}`);
+
+      for (let c = 1; c <= table.rows[r - 1].cells.length; c++) {
+        const cell = worksheet.getCell(`${String.fromCharCode(64 + c)}${startRow + r - 1}`);
+        const cellContent = table.rows[r - 1].cells[c - 1].textContent;
+
+        // Chuyển đổi selectedYear và selectedMonth sang kiểu số
+        const numericSelectedYear = parseInt(selectedYear, 10);
+        const numericSelectedMonth = parseInt(selectedMonth, 10);
+
+        // Kiểm tra nếu ngày tương ứng là thứ 7 hoặc chủ nhật
+        const currentDate = new Date(numericSelectedYear, numericSelectedMonth - 1, parseInt(cellContent || '0', 10));
+        const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
+
+        // Thực hiện tô màu nền cho cả dòng
+        if (isWeekend) {
+          rowStartCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFCCCCCC' }, // Màu xám nhạt
+          };
+
+          // Tô màu nền cho các ô trên dòng
+          for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+            const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+            currentCell.fill = {
+              type: 'pattern',
+              pattern: 'solid',
+              fgColor: { argb: 'FFCCCCCC' }, // Màu xám nhạt
+            };
+          }
+        }
+
+        // Thực hiện các thay đổi khác (nếu cần) không ảnh hưởng đến màu chữ
+        cell.value = cellContent;
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FF000000' } },
+          bottom: { style: 'thin', color: { argb: 'FF000000' } },
+          left: { style: 'thin', color: { argb: 'FF000000' } },
+          right: { style: 'thin', color: { argb: 'FF000000' } },
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
       }
-      filteredData.push(rowData);
     }
-    XLSX.utils.sheet_add_aoa(wsData, filteredData, {
-      origin: `A${startRow - 1}`,
-    });
-    const sheetName = `Timecards_${realname}_${month}_${year}`;
-    XLSX.utils.book_append_sheet(wb, wsData, sheetName);
-    XLSX.writeFile(
-      wb,
-      `Timecards_${realname}_${month}_${year}.xlsx`,
-    );
+    const lastColumnIndex = table.rows[0].cells.length;
+    for (let r = 1; r <= rowsArray.length; r++) {
+      const cell = worksheet.getCell(`${String.fromCharCode(64 + lastColumnIndex)}${startRow + r - 1}`);
+      cell.value = null; // Gán giá trị null để xoá nội dung của ô
+    }
+
+    for (let c = 1; c <= table.rows[0].cells.length - 1; c++) {
+      const column = worksheet.getColumn(c);
+
+      // Kiểm tra xem ô và nội dung có tồn tại không
+      const maxWidth = Math.max(20, ...rowsArray.map((row) => {
+        const cell = row.cells[c - 1];
+        return cell && cell.textContent ? cell.clientWidth / 8 : 20; // Nếu ô hoặc nội dung không tồn tại, sử dụng 20 làm giá trị mặc định
+      }));
+
+      column.width = maxWidth; // Sử dụng giá trị maxWidth để đặt độ rộng của cột
+    }
+
+    // Combine the variables and truncate if necessary
+    const sheetName = `Timecards_${realname}_${month}_${year}`.slice(0, 31);
+
+    // Save the workbook to a file
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), `${sheetName}.xlsx`);
   };
+
+
+
+
+
+
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
