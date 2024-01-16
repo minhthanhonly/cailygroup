@@ -39,6 +39,7 @@
     display: flex;
     align-items: flex-start;
     width: 61rem;
+    flex-wrap: wrap;
     &--small {
       label {
         // width: 14rem !important;
@@ -47,6 +48,9 @@
         width: 10rem !important;
         text-align: center;
       }
+    }
+    & > div {
+      width: calc(100% - 23rem);
     }
 
     .select__box--title {
@@ -89,7 +93,7 @@
     font-size: 1.6rem;
     color: #888888;
   }
-  .react-datepicker-wrapper {
+  react-datepicker-wrapper {
     width: calc(100% - 23rem);
   }
   &-user {
@@ -114,6 +118,7 @@
   }
   textarea.form-input {
     height: 15rem;
+    width: 100%;
   }
   .btn {
     margin-top: 3rem;
@@ -152,6 +157,9 @@
   display: flex;
   flex-wrap: wrap;
   .col {
+    &-12 {
+      width: 100%;
+    }
     &-6 {
       @media (min-width: 100rem) {
         width: 50%;

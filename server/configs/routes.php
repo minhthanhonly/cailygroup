@@ -32,8 +32,10 @@
     $routes['dayoffs'] = 'dayoffs';
     $routes['dayoffs/add'] = 'dayoffs/add';
     $routes['dayoffs/update/.+-(\d+)'] = 'dayoffs/update/$1';
+    $routes['dayoffs/refuse/.+-(\d+)'] = 'dayoffs/refuse/$1';
     $routes['dayoffs/delete/.+-(\d+)'] = 'dayoffs/delete/$1';
     $routes['dayoffs/getforuser/.+-(\d+)'] = 'dayoffs/getforuser/$1';
+    $routes['dayoffs/getalluser/.+-(\d+)'] = 'dayoffs/getalluser/$1';
 
     // timecards
     $routes['timecards'] = 'timecards';
