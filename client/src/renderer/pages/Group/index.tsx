@@ -157,7 +157,7 @@ export const Group = () => {
 
   let dynamicDelete = (id:string) => (
     <>
-      <button onClick={(event) => { openModaldelete(id, event); }}>
+      <button onClick={(event) => { openModaldelete(id); }}>
         <p className="icon icon--check">
           <img
             src={require('../../../../assets/icndelete.png')}
