@@ -78,7 +78,7 @@ export const Timecard = () => {
     };
     const month = selectedMonth;
     const year = selectedYear;
-    const startRow = 5;
+    const startRow = 4;
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet(`Timecards_${realname}_${month}_${year}`.slice(0, 31));
@@ -88,7 +88,7 @@ export const Timecard = () => {
     worksheet.getCell(`A1`).value = ` ${realname || ''} \n ${month}/${year}`;
     worksheet.getCell(`A1`).alignment = { horizontal: 'center', vertical: 'middle' };
 
-
+    worksheet.mergeCells(`A5:H8`);
     worksheet.getCell(`A1:H3`).border = {
       top: { style: 'thin', color: { argb: 'FF000000' } },
       bottom: { style: 'thin', color: { argb: 'FF000000' } },
@@ -134,6 +134,18 @@ export const Timecard = () => {
       }
     }
 
+    const rowIndex = 40;
+    const startColumn = 5; // Cột E
+    const endColumn = 6;   // Cột F
+
+    for (let col = startColumn; col <= endColumn; col++) {
+      const cell = worksheet.getCell(`${String.fromCharCode(64 + col)}${rowIndex}`);
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'ffdddd' }, // Mã màu tùy chọn, ở đây là màu đỏ
+      };
+    }
 
     const lastColumnIndex = table.rows[0].cells.length;
     worksheet.spliceColumns(lastColumnIndex, 1);
