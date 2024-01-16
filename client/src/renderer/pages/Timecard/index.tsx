@@ -7,7 +7,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import * as XLSX from 'xlsx';
-import axios from 'axios';
+import axios from '../../api/axios';
 
 interface FieldUsers {
   id: number;
@@ -41,7 +41,7 @@ export const Timecard = () => {
 
     if (loggedInUserId) {
       axios
-        .get('http://cailygroup.com/timecards/list')
+        .get('timecards/list')
         .then((response) => {
           setListOfUsers(response.data);
           const loggedInUser = response.data.find(
