@@ -113,7 +113,7 @@ function MemberEdit() {
                   className="form-input"
                   type="text"
                   name="userid"
-                  value={formValue.userid} onChange={handleInput}
+                  value={formValue.userid} readOnly
                 />
               </div>
               <div className="form-group">
@@ -129,7 +129,7 @@ function MemberEdit() {
                   className="form-input"
                   type="text"
                   name="realname"
-                  value={formValue.realname} onChange={handleInput}
+                  defaultValue={formValue.realname} onChange={handleInput}
                 />
               </div>
               <div className="form-group">
@@ -145,7 +145,8 @@ function MemberEdit() {
                   <select name="user_group" onChange={handleInput}>
                     <option value="-1">--------------------------- Chọn nhóm ---------------------------</option>
                     {DataGroups.map((value, index) => (
-                      <option value={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
+                      // <option defaultValue={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
+                      <option defaultValue={value.id} key={index}>{value.group_name}</option>
                     ))}
                   </select>
                 </div>
@@ -163,7 +164,8 @@ function MemberEdit() {
                   <select name="authority">
                     <option value="-1">-------------------- Chọn quyền truy cập --------------------</option>
                     {DataAuthority.map((value, index) => (
-                      <option value={value.id} key={index} selected={value.id == formValue.authority}>{value.authority_name}</option>
+                      // <option defaultValue={value.id} key={index} selected={value.id == formValue.authority}>{value.authority_name}</option>
+                      <option defaultValue={value.id} key={index}>{value.authority_name}</option>
                     ))}
                   </select>
                 </div>
@@ -182,7 +184,7 @@ function MemberEdit() {
                   className="form-input"
                   type="password"
                   name="password"
-                  value={formValue.password}
+                  value={formValue.password} readOnly
                 />
               </div>
               <div className="form-group">
@@ -214,7 +216,7 @@ function MemberEdit() {
 										className="form-input"
 										type="text"
 										name="password_confirm"
-										value={formValue.password_confirm} onChange={handleInput} placeholder="Nhập lại mật khẩu"
+										defaultValue={formValue.password_confirm} onChange={handleInput} placeholder="Nhập lại mật khẩu"
 									/>
 								</div>
               <div className="wrp-button">
