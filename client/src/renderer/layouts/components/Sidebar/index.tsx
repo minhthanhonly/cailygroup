@@ -37,12 +37,21 @@ export const Sidebar = () => {
     naviget('/');
   }
 
+<<<<<<< HEAD
   const [formValue, setFormValue] = useState({ realname: '', group_name: '' });
   useEffect(() => {
     axios.get('users/detail/' + users.userid).then(response => {
       setFormValue(response.data);
     })
   }, [])
+=======
+  // const [formValue, setFormValue] = useState({ realname: '', group_name: '' });
+  // useEffect(() => {
+  //   axios.get('http://cailygroup.com/users/detail/'+users.userid).then(response => {
+  //     setFormValue(response.data);
+  //   })
+  // }, [])
+>>>>>>> b35e87bdb91caca8705bead3b39660cc563800e9
 
   return (
     <div className="sidebar">

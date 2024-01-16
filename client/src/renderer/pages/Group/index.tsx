@@ -116,7 +116,7 @@ export const Group = () => {
     setModalOpen(false);
   };
 
-  const handleDelete = async (groupId, event) => {
+  const handleDelete = async (groupId:string, event:any) => {
     if (event) {
       event.preventDefault();
       try {
@@ -136,7 +136,7 @@ export const Group = () => {
     }
   };
 
-  const handleUpdate = async (id: string, group_name: string, event) => {
+  const handleUpdate = async (id: string, group_name: string, event:any) => {
     if (event) {
       event.preventDefault();
       try {
@@ -155,7 +155,7 @@ export const Group = () => {
     }
   };
 
-  let dynamicDelete = (id) => (
+  let dynamicDelete = (id:string) => (
     <>
       <button onClick={(event) => { openModaldelete(id, event); }}>
         <p className="icon icon--check">
@@ -252,7 +252,7 @@ export const Group = () => {
       </div>
       <CTable>
         <CTableHead heads={['STT', 'Tên Nhóm', 'Sửa', 'Xóa']} />
-        <CTableBody data={DataTable} path_edit="/group/edit" />
+        <CTableBody data={DataTable} path_edit="/group/edit" path_timecard=""/>
       </CTable>
     </>
   );
