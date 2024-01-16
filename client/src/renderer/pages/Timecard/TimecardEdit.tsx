@@ -10,7 +10,7 @@ import MonthYearSelector from '../../components/Table/SelectMonthYears';
 
 import './Timecard.scss';
 import { Button } from '../../components/Button';
-import axios from 'axios';
+import axios from '../../api/axios';
 
 interface FieldUsers {
   id: number;
@@ -34,7 +34,7 @@ export const TimecardEdit = () => {
 
   useEffect(() => {
     axios
-      .get('http://cailygroup.com/users/')
+      .get('users/')
       .then((response) => {
         setListOfUsers(response.data);
       })
