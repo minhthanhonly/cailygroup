@@ -5,7 +5,7 @@ interface ButtonEditProps {
 }
 
 const ButtonEdit: React.FC<ButtonEditProps> = ({ href }) => {
-  return <Link to={href}><img src={require('../../../../assets/icnedit.png')} alt="edit" className="fluid-image" /></Link>
+  return <Link to={href} className="btn--icon"><img src={require('../../../../assets/icnedit.png')} alt="edit" className="fluid-image" /></Link>
 }
 
 export default ButtonEdit;

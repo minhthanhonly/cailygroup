@@ -5,7 +5,7 @@ interface ButtonDeleteProps {
 }
 
 const ButtonDelete: React.FC<ButtonDeleteProps> = ({ onButtonClick }) => {
-  return <Button onButtonClick={onButtonClick} color="transparent"><img src={require('../../../../assets/icndelete.png')} alt="delete" className="fluid-image" onClick={onButtonClick} /></Button>
+  return <Button onButtonClick={onButtonClick} color="transparent" btnClassName="icon"><img src={require('../../../../assets/icndelete.png')} alt="delete" className="fluid-image" onClick={onButtonClick} /></Button>
 }
 
 export default ButtonDelete;

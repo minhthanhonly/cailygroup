@@ -10,6 +10,7 @@ import ButtonEdit from "../../components/Button/ButtonEdit";
 import ButtonDelete from "../../components/Button/ButtonDelete";
 import Modaldelete from "../../components/Modal/Modaldelete";
 import { Pagination } from "../../components/Pagination";
+import { NavLink } from "react-router-dom";
 
 function Members() {
   const [isTableUpdated, setIsTableUpdated] = useState(false);
@@ -21,13 +22,14 @@ function Members() {
     id: number,
     realname: string,
     group_name: string,
-    user_email: string,
-    user_skype: string,
-    user_phone: string,
+    authority_name: string,
+    userid: string,
   }
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   useEffect(() => {
     axios.get('users').then((response) => {
+
+      console.log(response.data);
       setListOfUsers(response.data);
       setIsTableUpdated(false);
     }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
@@ -124,17 +126,21 @@ function Members() {
       </div>
       <ButtonAdd path_add="/members/add" />
       <CTable>
-        <CTableHead heads={["Họ và tên", "Nhóm", "Email", "Skype ID", "Phone", "Sửa", "Xóa"]} />
+        <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
         <tbody>
           {listOfUsers.map((data, index) => (
             <tr key={index}>
-              <td>{data.realname}</td>
+              <td>
+                <NavLink to={"/users/detail/" + data.userid} className="acount__name">
+                  {data.realname}
+                </NavLink>
+              </td>
               <td>{data.group_name}</td>
-              <td>{data.user_email}</td>
-              <td>{data.user_skype}</td>
-              <td>{data.user_phone}</td>
-              <td><ButtonEdit href={"/members/edit/" + data.id} /></td>
-              <td><ButtonDelete onButtonClick={() => openModal(data.id)} /></td>
+              <td>{data.authority_name}</td>
+              <td>
+                <ButtonEdit href={"/members/edit/" + data.id} />
+                <ButtonDelete onButtonClick={() => openModal(data.id)} />
+              </td>
             </tr>
           ))}
         </tbody>
