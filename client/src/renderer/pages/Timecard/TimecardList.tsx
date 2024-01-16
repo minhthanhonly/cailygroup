@@ -130,13 +130,13 @@ export const TimecardList: React.FC = () => {
     setListOfUsers(res.data);
   };
 
-  useEffect(() => {
-    if (isLeader) {
-      fetchTimecardsByGroup(users.user_group_id);
-    } else {
-      fetchTimecards();
-    }
-  }, [MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear])
+  // useEffect(() => {
+  //   if (isLeader) {
+  //     fetchTimecardsByGroup(users.user_group_id);
+  //   } else {
+  //     fetchTimecards();
+  //   }
+  // }, [MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear])
 
   return (
     <>
