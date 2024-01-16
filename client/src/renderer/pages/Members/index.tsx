@@ -118,9 +118,9 @@ function Members() {
         <div className="box-group__item">
           <InputQuantity total={listOfUsers.length} />
         </div>
-        <div className="box-group__item">
+        {/* <div className="box-group__item">
           <Search />
-        </div>
+        </div> */}
       </div>
       <ButtonAdd path_add="/members/add" />
       <CTable>

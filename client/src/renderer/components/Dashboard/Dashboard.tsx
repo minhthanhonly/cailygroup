@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import axios from 'axios';
+import axios from '../../api/axios';
 import './Dashboard.scss';
 import DashboardTime from './DashboardTime';
 
@@ -30,9 +30,7 @@ function Dashboard() {
 
   const loadStart = async () => {
     try {
-      const response = await axios.get(
-        'http://cailygroup.com/timecards/load/' + usersID,
-      );
+      const response = await axios.get('timecards/load/' + usersID);
       console.log(response.data);
 
       if (response.data && response.data.timecard_close) {
@@ -81,10 +79,9 @@ function Dashboard() {
         timecard_temp: 0,
         owner: 'admin',
       };
-      const responseTimeCard = await axios.post(
-        'http://cailygroup.com/timecards/add',
-        { dataTimeCard },
-      );
+      const responseTimeCard = await axios.post('timecards/add', {
+        dataTimeCard,
+      });
       const dataTimeCardDetails = {
         id_groupwaretimecard: responseTimeCard.data.id_timecard,
         timecard_open: timecard_open_time,
@@ -92,10 +89,9 @@ function Dashboard() {
         timecard_timeinterval: '1:30',
         timecard_comment: '',
       };
-      const responseTimeCardDetails = await axios.post(
-        'http://cailygroup.com/timecarddetails/add',
-        { dataTimeCardDetails },
-      );
+      const responseTimeCardDetails = await axios.post('timecarddetails/add', {
+        dataTimeCardDetails,
+      });
       loadStart();
       setCheckStart(true);
     } catch (error) {
@@ -111,9 +107,7 @@ function Dashboard() {
   };
   const handleEnd = async () => {
     try {
-      const res = await axios.get(
-        'http://cailygroup.com/timecards/load/' + usersID,
-      );
+      const res = await axios.get('timecards/load/' + usersID);
       const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
@@ -128,10 +122,7 @@ function Dashboard() {
         timecard_open: res.data.timecard_open,
         timecard_now: timecard_open_time,
       };
-      const re = await axios.post(
-        'http://cailygroup.com/timecarddetails/update',
-        { dataTime },
-      );
+      const re = await axios.post('timecarddetails/update', { dataTime });
       console.log(re.data);
 
       loadStart();

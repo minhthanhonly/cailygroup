@@ -127,8 +127,6 @@
         }
         function updateAll(){
 			global $conn;
-            // echo "a";
-            // exit;
             $data = json_decode(file_get_contents("php://input"), true);
             $id = $data['id'];
             $timecard_open = $data['timecard_open'];
