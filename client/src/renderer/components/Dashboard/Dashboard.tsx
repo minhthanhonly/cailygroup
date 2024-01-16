@@ -103,7 +103,7 @@ function Dashboard() {
   };
   const handleDelay = async () => {
     try {
-    } catch (error) { }
+    } catch (error) {}
   };
   const handleEnd = async () => {
     try {
@@ -127,7 +127,7 @@ function Dashboard() {
 
       loadStart();
       setCheckEnd(true);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   return (
@@ -135,6 +135,25 @@ function Dashboard() {
       <div className="Dashboard-content">
         <DashboardTime />
         <h4>Thời gian làm việc hôm nay</h4>
+        {/* {checkEnd ? (
+          <div className="card-time">
+            <div className="card-time--hour">
+              <small>Giờ</small>
+              <input
+                value={endTime?.hours || '00:00'}
+                onChange={(e) => e.target.value}
+              />
+            </div>
+            :
+            <div className="card-time--minute">
+              <small>Phút</small>
+              <input
+                value={endTime?.minutes || '00:00'}
+                onChange={(e) => e.target.value}
+              />
+            </div>
+          </div>
+        ) : null} */}
         <div className="Dashboard-action">
           <div className="Dashboard-action--start">
             <p>Bắt đầu</p>
@@ -163,39 +182,6 @@ function Dashboard() {
               >
                 <img
                   src={require('../../../../assets/icon-play.png')}
-                  alt=""
-                  className="fluid-image"
-                />
-              </button>
-            )}
-          </div>
-          <div className="Dashboard-action--pause">
-            <p>Tạm ngưng</p>
-            {checkPause ? (
-              <div className="card-time">
-                <div className="card-time--hour">
-                  <small>Giờ</small>
-                  <input
-                    value={endTime?.hours || '00:00'}
-                    onChange={(e) => e.target.value}
-                  />
-                </div>
-                :
-                <div className="card-time--minute">
-                  <small>Phút</small>
-                  <input
-                    value={endTime?.minutes || '00:00'}
-                    onChange={(e) => e.target.value}
-                  />
-                </div>
-              </div>
-            ) : (
-              <button
-                className="Dashboard-action--circle"
-                onClick={handleDelay}
-              >
-                <img
-                  src={require('../../../../assets/icon-pause.png')}
                   alt=""
                   className="fluid-image"
                 />
