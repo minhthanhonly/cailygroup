@@ -117,7 +117,7 @@ const TimecardHolidays = () => {
                                 <button
                                     className="btn btn--green"
                                     onClick={(event) =>
-                                    handleUpdate(modalId, modalName, modalDays, event)
+                                    handleUpdate(modalId, modalName, modalDays as [], event)
                                     }
                                 >
                                     Xác nhận
@@ -176,9 +176,7 @@ const TimecardHolidays = () => {
         if (validDates.length > 0) {
           // Chuyển đổi các ngày hợp lệ thành đối tượng Date
           const dateObjects = convertDaysToDatePickerFormat(validDates);
-          //console.log(dateObjects)
-          setModalDays(dateObjects);
-          //console.log("Ngày sau khi chuyển đổi:", dateObjects);
+          setModalDays(dateObjects as []);
         } else {
           console.error('Không có ngày hợp lệ để chuyển đổi.');
         }
@@ -187,20 +185,20 @@ const TimecardHolidays = () => {
     const closeModal = () => {
       setModalOpen(false);
     };
-    const handleUpdate = async (id: string,name: string,days: string,event) => {
+    const handleUpdate = async (id: string,name: string,days:any,event :any) => {
         if (event) {
           event.preventDefault();
-          const formattedDays = days .map((day:any) => {
-              if (day instanceof Date && !isNaN(day)) {
-                return format(day, 'dd-MM-yyyy').toString();
-              } else {
+            const formattedDays = days.map((day:any) => {
+                if (day instanceof Date) {
+                    return format(day, 'dd-MM-yyyy').toString();
+                } else {
                 // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
                 console.error('Ngày không hợp lệ:', day);
                 return 'Ngày không hợp lệ';
-              }
+                }
             })
             .join(', ');
-          days = formattedDays;
+            days = formattedDays;
           try {
             const dataUpdate = { id, name, days };
     
@@ -219,7 +217,7 @@ const TimecardHolidays = () => {
     };
 
     // delete
-    const handleDelete = async (holidayId:string, event) => {
+    const handleDelete = async (holidayId:string, event:any) => {
         if (event) {
             event.preventDefault();
             try {
@@ -244,9 +242,7 @@ const TimecardHolidays = () => {
     let dynamicDelete = (id:any) => (
         <>
             <button
-                onClick={(event) => {
-                openModaldelete(id, event);
-                }}
+                onClick={() => {openModaldelete(id);}}
             >
                 <p className="icon icon--check">
                 <img
@@ -307,10 +303,9 @@ const TimecardHolidays = () => {
         console.error('Tên ngày lễ không được để trống');
         return;
         }
-        const formattedDays = days
-        .map((day) => {
-            if (day instanceof Date && !isNaN(day)) {
-            return format(day, 'dd-MM-yyyy').toString();
+        const formattedDays = days.map((day) => {
+            if (day instanceof Date) {
+                return format(day, 'dd-MM-yyyy').toString();
             } else {
             // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
             console.error('Ngày không hợp lệ:', day);
