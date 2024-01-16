@@ -81,45 +81,24 @@ export const Timecard = () => {
     const startRow = 4;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Sheet1');
+    const worksheet = workbook.addWorksheet(`Timecards_${realname}_${month}_${year}`.slice(0, 31));
 
     // Merge cells for the name and date
-    worksheet.mergeCells(`A1:I3`);
+    worksheet.mergeCells(`A1:H3`);
     worksheet.getCell(`A1`).value = ` ${realname || ''} \n ${month}/${year}`;
     worksheet.getCell(`A1`).alignment = { horizontal: 'center', vertical: 'middle' };
 
-    // const DatabaseTest = [
-    //   'Ngày Tháng',
-    //   'Thứ',
-    //   'Bắt Đầu',
-    //   'Kết Thúc',
-    //   'giờ làm việc',
-    //   'ngoài giờ',
-    //   'giờ nghỉ trưa',
-    //   'ghi chú',
-    // ];
-    // DatabaseTest.forEach((DatabaseTest, index) => {
-    //   const cell = worksheet.getCell(`${String.fromCharCode(65 + index)}3`);
-    //   cell.value = DatabaseTest;
-    //   cell.alignment = { horizontal: 'center', vertical: 'middle' };
-    // });
-    // for (let c = 1; c <= DatabaseTest.length; c++) {
-    //   const cell = worksheet.getCell(`${String.fromCharCode(64 + c)}3`);
-    //   cell.border = {
-    //     top: { style: 'thin', color: { argb: 'FF000000' } },
-    //     bottom: { style: 'thin', color: { argb: 'FF000000' } },
-    //     left: { style: 'thin', color: { argb: 'FF000000' } },
-    //     right: { style: 'thin', color: { argb: 'FF000000' } },
-    //   };
-    // }
-
+    worksheet.mergeCells(`A5:H8`);
+    worksheet.getCell(`A1:H3`).border = {
+      top: { style: 'thin', color: { argb: 'FF000000' } },
+      bottom: { style: 'thin', color: { argb: 'FF000000' } },
+      left: { style: 'thin', color: { argb: 'FF000000' } },
+      right: { style: 'thin', color: { argb: 'FF000000' } },
+    };
     // Thêm dữ liệu từ bảng vào ô A4:I4
     const rowsArray = Array.from(table.rows);
 
     for (let r = 1; r <= table.rows.length; r++) {
-      const rowStartCell = worksheet.getCell(`A${startRow + r - 1}`);
-      const rowEndCell = worksheet.getCell(`I${startRow + r - 1}`);
-
       for (let c = 1; c <= table.rows[r - 1].cells.length; c++) {
         const cell = worksheet.getCell(`${String.fromCharCode(64 + c)}${startRow + r - 1}`);
         const cellContent = table.rows[r - 1].cells[c - 1].textContent;
@@ -128,19 +107,12 @@ export const Timecard = () => {
         const numericSelectedYear = parseInt(selectedYear, 10);
         const numericSelectedMonth = parseInt(selectedMonth, 10);
 
-        // Kiểm tra nếu ngày tương ứng là thứ 7 hoặc chủ nhật
+        // Kiểm tra nếu ngày tương ứng là thứ 7
         const currentDate = new Date(numericSelectedYear, numericSelectedMonth - 1, parseInt(cellContent || '0', 10));
-        const isWeekend = currentDate.getDay() === 0 || currentDate.getDay() === 6;
-
-        // Thực hiện tô màu nền cho cả dòng
-        if (isWeekend) {
-          rowStartCell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFCCCCCC' }, // Màu xám nhạt
-          };
-
-          // Tô màu nền cho các ô trên dòng
+        const isSaturday = currentDate.getDay() === 6;
+        const issunday = currentDate.getDay() === 0;
+        // Nếu là thứ 7 thì tô màu nền cho toàn bộ dòng
+        if (isSaturday) {
           for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
             const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
             currentCell.fill = {
@@ -150,7 +122,6 @@ export const Timecard = () => {
             };
           }
         }
-
         // Thực hiện các thay đổi khác (nếu cần) không ảnh hưởng đến màu chữ
         cell.value = cellContent;
         cell.border = {
@@ -162,11 +133,22 @@ export const Timecard = () => {
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
       }
     }
-    const lastColumnIndex = table.rows[0].cells.length;
-    for (let r = 1; r <= rowsArray.length; r++) {
-      const cell = worksheet.getCell(`${String.fromCharCode(64 + lastColumnIndex)}${startRow + r - 1}`);
-      cell.value = null; // Gán giá trị null để xoá nội dung của ô
+
+    const rowIndex = 40;
+    const startColumn = 5; // Cột E
+    const endColumn = 6;   // Cột F
+
+    for (let col = startColumn; col <= endColumn; col++) {
+      const cell = worksheet.getCell(`${String.fromCharCode(64 + col)}${rowIndex}`);
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'ffdddd' }, // Mã màu tùy chọn, ở đây là màu đỏ
+      };
     }
+
+    const lastColumnIndex = table.rows[0].cells.length;
+    worksheet.spliceColumns(lastColumnIndex, 1);
 
     for (let c = 1; c <= table.rows[0].cells.length - 1; c++) {
       const column = worksheet.getColumn(c);
@@ -187,11 +169,6 @@ export const Timecard = () => {
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer]), `${sheetName}.xlsx`);
   };
-
-
-
-
-
 
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
