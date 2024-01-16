@@ -21,13 +21,13 @@ function DashboardTime() {
 
         // Trích xuất thứ, giờ, phút và giây
         const weekdays = [
-          'Sunday',
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
+          'Chủ Nhật',
+          'Thứ Hai',
+          'Thứ Ba',
+          'Thứ Tư',
+          'Thứ Năm',
+          'Thứ Sáu',
+          'Thứ Bảy',
         ];
         const formattedDay = weekdays[dateObject.getDay()];
         const formattedHour = dateObject.getHours();
@@ -62,23 +62,23 @@ function DashboardTime() {
         <p>
           {/* {currentDateTime} */}
           {currentDay}
-          <span>day</span>
+          <span>Ngày</span>
         </p>
         :
         <p>
           {/* {currentHour} */}
           {String(currentHour).padStart(2, '0')}
-          <span>hour</span>
+          <span>Giờ</span>
         </p>
         :
         <p>
           {String(currentMinute).padStart(2, '0')}
-          <span>munite</span>
+          <span>Phút</span>
         </p>
         :
         <p>
           {String(currentSecond).padStart(2, '0')}
-          <span>second</span>
+          <span>Giây</span>
         </p>
       </div>
     </div>

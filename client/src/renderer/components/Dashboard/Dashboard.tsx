@@ -103,7 +103,7 @@ function Dashboard() {
   };
   const handleDelay = async () => {
     try {
-    } catch (error) {}
+    } catch (error) { }
   };
   const handleEnd = async () => {
     try {
@@ -127,7 +127,7 @@ function Dashboard() {
 
       loadStart();
       setCheckEnd(true);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
@@ -141,7 +141,7 @@ function Dashboard() {
             {checkStart ? (
               <div className="card-time">
                 <div className="card-time--hour">
-                  <small>hours</small>
+                  <small>Giờ</small>
                   <input
                     value={startTime?.hours || '00:00'}
                     onChange={(e) => e.target.value}
@@ -149,7 +149,7 @@ function Dashboard() {
                 </div>
                 :
                 <div className="card-time--minute">
-                  <small>minutes</small>
+                  <small>Phút</small>
                   <input
                     value={startTime?.minutes || '00:00'}
                     onChange={(e) => e.target.value}
@@ -174,7 +174,7 @@ function Dashboard() {
             {checkPause ? (
               <div className="card-time">
                 <div className="card-time--hour">
-                  <small>hours</small>
+                  <small>Giờ</small>
                   <input
                     value={endTime?.hours || '00:00'}
                     onChange={(e) => e.target.value}
@@ -182,7 +182,7 @@ function Dashboard() {
                 </div>
                 :
                 <div className="card-time--minute">
-                  <small>minutes</small>
+                  <small>Phút</small>
                   <input
                     value={endTime?.minutes || '00:00'}
                     onChange={(e) => e.target.value}
@@ -207,7 +207,7 @@ function Dashboard() {
             {checkEnd ? (
               <div className="card-time">
                 <div className="card-time--hour">
-                  <small>hours</small>
+                  <small>Giờ</small>
                   <input
                     value={endTime?.hours || '00:00'}
                     onChange={(e) => e.target.value}
@@ -215,7 +215,7 @@ function Dashboard() {
                 </div>
                 :
                 <div className="card-time--minute">
-                  <small>minutes</small>
+                  <small>Phút</small>
                   <input
                     value={endTime?.minutes || '00:00'}
                     onChange={(e) => e.target.value}
