@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CTable } from "../../components/Table/CTable";
 import { CTableHead } from "../../components/Table/CTableHead";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useNavigate } from 'react-router-dom';
 import { Pagination } from "../../components/Pagination";
 import { SelectCustom } from "../../components/Table/SelectCustom";
@@ -52,7 +52,7 @@ export const TimecardList: React.FC = () => {
   };
 
   const fetchTimecards = async () => {
-    const res = await axios.get("http://cailygroup.com/timecards/list/");
+    const res = await axios.get("timecards/list/");
     setListOfUsers(res.data);
     setSelectedDates({});
     const currentMonth = new Date().getMonth() + 1;
@@ -126,7 +126,7 @@ export const TimecardList: React.FC = () => {
   const isLeader = users.roles === UserRole.LEADER;
 
   const fetchTimecardsByGroup = async ($groupid: string) => {
-    const res = await axios.get("http://cailygroup.com/timecards/groups/" + $groupid);
+    const res = await axios.get("timecards/groups/" + $groupid);
     setListOfUsers(res.data);
   };
 
