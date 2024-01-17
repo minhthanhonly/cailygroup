@@ -253,7 +253,11 @@ export const Timecard = () => {
       updateMonthAndYear(currentMonth, currentYear);
     }
   }, [id]);
-
+  useEffect(() => {
+    setTimeout(function () {
+      datacheck == 1 ? exportToExcel() : null;
+    }, 500);
+  }, []);
   return (
     <>
       <NavTimcard role="admin" />
