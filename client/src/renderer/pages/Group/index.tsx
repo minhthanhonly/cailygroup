@@ -148,8 +148,10 @@ export const Group = () => {
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
         <h2>{isDisabled ? 'Bạn không thể xóa vì nhóm có thành viên đang hoạt động' : 'Bạn có chắc chắn muốn xóa không?'}</h2>
         <div className='wrp-button'>
-          <button className='btn btn--green'  onClick={(event) => handleDelete(isDeleteModalid, event)} disabled={isDisabled}>Đồng ý</button>
-          <button className='btn btn--orange' onClick={closeModaldelete}>Hủy</button>
+        {!isDisabled &&
+         <button className='btn btn--green'  onClick={(event) => handleDelete(isDeleteModalid, event)} disabled={isDisabled}>Đồng ý</button>
+        }
+          <button className='btn btn--orange' onClick={closeModaldelete}>Quay lại</button>
         </div>
       </Modaldelete>
     </>

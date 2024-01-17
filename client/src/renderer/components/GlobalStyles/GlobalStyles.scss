@@ -2145,12 +2145,17 @@ textarea {
     margin-top: 1rem;
     display: flex;
     align-items: center;
+    width: 100%;
+    box-sizing: border-box;
     & > a {
       padding: 1rem 1.5rem;
       font-size: 1.6rem;
       font-weight: bold;
       color: var(--text-color);
-      border-radius: 1.5rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      width: 100%;
       &.active {
         color: var(--main);
         background: rgba(160, 198, 42, 0.2);
@@ -2158,11 +2163,11 @@ textarea {
     }
   }
   .icn {
-    display: inline-block;
+    display: flex;
     margin-right: 1rem;
     width: 3rem;
     & svg {
-      font-size: 2.4rem;
+      font-size: 2rem;
     }
   }
 }
