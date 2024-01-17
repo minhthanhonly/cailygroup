@@ -28,6 +28,8 @@
             $timecard_now = isset($data["dataTime"]["timecard_now"]) ? $data["dataTime"]["timecard_now"] : null;
             $timecard_time = isset($data["dataTime"]["timecard_time"]) ? $data["dataTime"]["timecard_time"] : null;
             $timecard_timeover = isset($data["dataTime"]["timecard_timeover"]) ? $data["dataTime"]["timecard_timeover"] : null;
+            $editor = isset($data["dataTime"]["editor"]) ? $data["dataTime"]["editor"] : null;
+            
             $sql = "UPDATE timecard_details SET timecard_close = ?, timecard_originalclose = ?, timecard_time= ?, timecard_timeover = ? WHERE id_groupwaretimecard = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("ssssi", $timecard_now, $timecard_now, $timecard_time, $timecard_timeover, $timecardId);

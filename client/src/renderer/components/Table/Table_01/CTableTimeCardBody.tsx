@@ -227,6 +227,21 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     return digit < 10 ? `0${digit}` : `${digit}`;
   };
 
+  const [timecardOpen, setTimecardOpen] = useState<TimecardData[]>([]);
+  const fetchTimecardOpen = async () => {
+    try {
+      const response = await axios.get('timecards/getall/' + usersID);
+      if (response.data && Array.isArray(response.data)) {
+        setTimecardOpen(response.data);
+        console.log(response.data);
+      } else {
+        setTimecardOpen([]);
+      }
+    } catch (error) {
+      console.error('Error fetching timecard_open:', error);
+    }
+  };
+
   const calculateTime = (timestart: string, timeend: string): string => {
     const normalizeTime = (time: string): string => {
       return time.length === 4 ? `0${time}` : time;
@@ -284,8 +299,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
 
   // Hàm xử lý khi click vào nút bắt đầu
-  const [isID, setId] = useState(null);
+  const [startClick, setStartClick] = useState(true);
   const handleButtonClick = async () => {
+    setStartClick(false);
     try {
       const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
@@ -310,7 +326,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_day: currentDate,
         timecard_date: `${currentDate}-${currentMonth}-${currentYear}`,
         timecard_temp: 0,
-        owner: 'admin',
+        owner: '',
       };
       const responseTimeCard = await axios.post('timecards/add', {
         dataTimeCard,
@@ -322,7 +338,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const openlunchValue = findConfigValue(configData, 'openlunch');
       const closelunchValue = findConfigValue(configData, 'closelunch');
       let resut = calculateTime(openlunchValue, closelunchValue);
-      setId(responseTimeCard.data.id_timecard);
       const dataTimeCardDetails = {
         id_groupwaretimecard: responseTimeCard.data.id_timecard,
         timecard_open: timecard_close_time,
@@ -443,6 +458,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_open: timecard_open_time,
         timecard_now: timecard_close_time,
         timecard_time: timecard_time,
+        editor: users.realname,
       };
 
       try {
@@ -566,21 +582,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const currentMonth = new Date().getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
   const currentYear = new Date().getFullYear();
 
-  const [timecardOpen, setTimecardOpen] = useState<TimecardData[]>([]);
-  const fetchTimecardOpen = async () => {
-    // console.log(usersID);
-    try {
-      const response = await axios.get('timecards/getall/' + usersID);
-      if (response.data && Array.isArray(response.data)) {
-        setTimecardOpen(response.data);
-        console.log(response.data);
-      } else {
-        setTimecardOpen([]);
-      }
-    } catch (error) {
-      console.error('Error fetching timecard_open:', error);
-    }
-  };
   const handleUpdateComment = async (Id: number) => {
     try {
       const response = await axios.post('timecarddetails/updatecomment', {
@@ -620,13 +621,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     closeModaldelete();
   };
   useEffect(() => {
-    fetchTimecardOpen();
-    fetchHolidays();
-    fetchDayoffs();
+    const fetchData = async () => {
+      await fetchHolidays();
+      await fetchDayoffs();
+      await fetchTimecardOpen();
+      calculateTotalTime();
+    };
+    fetchData();
   }, [usersID]);
-  useEffect(() => {
-    calculateTotalTime();
-  }, []);
   return (
     <>
       {allDays.map((day, rowIndex) => (
@@ -683,12 +685,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       ))}
                   </>
                 ) : isToday(day) ? (
-                  <button
-                    className="btn btn--medium"
-                    onClick={handleButtonClick}
-                  >
-                    Bắt đầu
-                  </button>
+                  startClick ? (
+                    <button
+                      className="btn btn--medium"
+                      onClick={handleButtonClick}
+                    >
+                      Bắt đầu
+                    </button>
+                  ) : null
                 ) : (
                   ''
                 )}
