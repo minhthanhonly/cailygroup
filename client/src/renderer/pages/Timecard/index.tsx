@@ -68,10 +68,29 @@ export const Timecard = () => {
   }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
   //-------------------------------------------------------------------------------------
 
+  const isSunday = (year: number, month: number, day: number | undefined) => {
+    const currentDate = new Date(year, month - 1, day);
+    return currentDate.getDay() === 0; // 0 là Chủ Nhật
+  };
+
+  const countSundays = (year: any, month: any, days: any) => {
+    let sundayCount = 0;
+
+    for (let day of days) {
+      if (isSunday(year, month, day)) {
+        sundayCount++;
+      }
+    }
+
+    return sundayCount;
+  };
+
+
+
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
-
+    let sundayCount = 0; // Biến đếm số ngày Chủ Nhật
     const table = document.getElementById(
       'timecards_table',
     ) as HTMLTableElement;
@@ -105,49 +124,94 @@ export const Timecard = () => {
       right: { style: 'thin', color: { argb: 'FF000000' } },
     };
 
-    worksheet.mergeCells(`A5:G8`);
-    worksheet.getCell(`A5:G8`).fill = {
-      type: 'pattern',
-      pattern: 'solid',
-      fgColor: { argb: 'FFCCCCCC' }, // Mã màu tùy chọn, ở đây là màu đỏ
-    };
+
+    for (let rowIndex = 5; rowIndex <= 8; rowIndex++) {
+      const currentRow = worksheet.getRow(rowIndex);
+      currentRow.height = 0.5; // Đặt chiều cao mong muốn (đơn vị là pixels)
+    }
     // Thêm dữ liệu từ bảng vào ô A4:I4
     const rowsArray = Array.from(table.rows);
+
+
+    const startRowToDelete = 5;
+    const numberOfRowsToDelete = 4;
+    worksheet.spliceRows(startRowToDelete, numberOfRowsToDelete);
     const numericSelectedYear = parseInt(selectedYear, 10);
     const numericSelectedMonth = parseInt(selectedMonth, 10);
 
-    console.log('numericSelectedYear', numericSelectedYear);
-    console.log('numericSelectedMonth', numericSelectedMonth);
     for (let r = 1; r <= table.rows.length; r++) {
+
       for (let c = 1; c <= table.rows[r - 1].cells.length; c++) {
         const cell = worksheet.getCell(
           `${String.fromCharCode(64 + c)}${startRow + r - 1}`,
         );
         const cellContent = table.rows[r - 1].cells[c - 1].textContent;
 
-        // Chuyển đổi selectedYear và selectedMonth sang kiểu số
-
-        // Kiểm tra nếu ngày tương ứng là thứ 7
         const currentDate = new Date(
           numericSelectedYear,
           numericSelectedMonth - 1,
           parseInt(cellContent || '0', 10),
         );
+
         const dayOfWeek = currentDate.getDay();
+        // Chuyển đổi selectedYear và selectedMonth sang kiểu số
+
 
         switch (dayOfWeek) {
-          case 6: // Thứ 7
+          case 1: // Thứ 2
             for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
               const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
-                fgColor: { argb: 'ffdddd' }, // Màu xám nhạt cho Thứ 7
+                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
               };
             }
             break;
+          case 2: // Thứ 3
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+              currentCell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
+              };
+            }
+            break;
+          case 3: // Thứ 4
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+              currentCell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
+              };
+            }
+            break;
+          case 4: // Thứ 5
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+              currentCell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
+              };
+            }
+            break;
+          case 5: // Thứ 5
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+              currentCell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
+              };
+            }
+            break;
+
+
           default:
-            // Không là Chủ nhật hoặc Thứ 7, không thực hiện gì cả
+
             break;
         }
         cell.value = cellContent;
@@ -163,6 +227,8 @@ export const Timecard = () => {
     const rowIndexHead = 4;
     const startColumnHead = 1; // Cột A
     const endColumnHead = 8; // Cột H
+
+    console.log("sundayCount", sundayCount);
 
     for (let col = startColumnHead; col <= endColumnHead; col++) {
       const cell = worksheet.getCell(
