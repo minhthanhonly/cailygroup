@@ -9,6 +9,7 @@ import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import ExcelJS from 'exceljs';
 import axios from '../../api/axios';
 import { saveAs } from 'file-saver';
+import './Timecard.scss';
 
 interface FieldUsers {
   id: number;
@@ -23,17 +24,28 @@ export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
   const location = useLocation();
-  const { id, month, year, daysInMonth: stateDaysInMonth = [], datacheck, } = (location.state as { id: number; month: string; year: string; daysInMonth?: Date[]; datacheck: number; }) || {};
+  const {
+    id,
+    month,
+    year,
+    daysInMonth: stateDaysInMonth = [],
+    datacheck,
+  } = (location.state as {
+    id: number;
+    month: string;
+    year: string;
+    daysInMonth?: Date[];
+    datacheck: number;
+  }) || {};
   const [user_id, setUser_id] = useState<number>();
-
 
   // lấy thông tin của người bên trong timecardlist list
   const matchedUser = listOfUsers.find((user) => user.id === id);
-  const realname = matchedUser ? matchedUser.realname : "";
-  const matchedUser_month = month ? month : "";
-  const matchedUser_year = year ? year : "";
-  const datacheck_hi = datacheck ? datacheck : "";
-
+  const realname = matchedUser ? matchedUser.realname : '';
+  const matchedUser_month = month ? month : '';
+  const matchedUser_year = year ? year : '';
+  const datacheck_hi = datacheck ? datacheck : '';
+  console.log(datacheck_hi)
 
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
@@ -48,8 +60,6 @@ export const Timecard = () => {
             (users: { id: number }) => users.id === loggedInUserId.id,
           );
           setCurrentUser(loggedInUser);
-
-
         })
         .catch((error) => console.error('Lỗi khi lấy dữ liệu:', error));
     } else {
@@ -62,14 +72,14 @@ export const Timecard = () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
 
-
-    const table = document.getElementById('timecards_table') as HTMLTableElement;
+    const table = document.getElementById(
+      'timecards_table',
+    ) as HTMLTableElement;
 
     if (!table) {
       console.error('Không tìm thấy bảng.');
       return;
     }
-
 
     const tableWithRows = table as HTMLTableElement & {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
@@ -103,17 +113,23 @@ export const Timecard = () => {
     const numericSelectedYear = parseInt(selectedYear, 10);
     const numericSelectedMonth = parseInt(selectedMonth, 10);
 
-    console.log("numericSelectedYear", numericSelectedYear);
-    console.log("numericSelectedMonth", numericSelectedMonth);
+    console.log('numericSelectedYear', numericSelectedYear);
+    console.log('numericSelectedMonth', numericSelectedMonth);
     for (let r = 1; r <= table.rows.length; r++) {
       for (let c = 1; c <= table.rows[r - 1].cells.length; c++) {
-        const cell = worksheet.getCell(`${String.fromCharCode(64 + c)}${startRow + r - 1}`);
+        const cell = worksheet.getCell(
+          `${String.fromCharCode(64 + c)}${startRow + r - 1}`,
+        );
         const cellContent = table.rows[r - 1].cells[c - 1].textContent;
 
         // Chuyển đổi selectedYear và selectedMonth sang kiểu số
 
         // Kiểm tra nếu ngày tương ứng là thứ 7
-        const currentDate = new Date(numericSelectedYear, numericSelectedMonth - 1, parseInt(cellContent || '0', 10));
+        const currentDate = new Date(
+          numericSelectedYear,
+          numericSelectedMonth - 1,
+          parseInt(cellContent || '0', 10),
+        );
         const dayOfWeek = currentDate.getDay();
 
         switch (dayOfWeek) {
@@ -143,10 +159,12 @@ export const Timecard = () => {
     }
     const rowIndexHead = 4;
     const startColumnHead = 1; // Cột A
-    const endColumnHead = 8;   // Cột H
+    const endColumnHead = 8; // Cột H
 
     for (let col = startColumnHead; col <= endColumnHead; col++) {
-      const cell = worksheet.getCell(`${String.fromCharCode(64 + col)}${rowIndexHead}`);
+      const cell = worksheet.getCell(
+        `${String.fromCharCode(64 + col)}${rowIndexHead}`,
+      );
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
@@ -156,10 +174,12 @@ export const Timecard = () => {
 
     const rowIndex = 40;
     const startColumn = 5; // Cột E
-    const endColumn = 6;   // Cột F
+    const endColumn = 6; // Cột F
 
     for (let col = startColumn; col <= endColumn; col++) {
-      const cell = worksheet.getCell(`${String.fromCharCode(64 + col)}${rowIndex}`);
+      const cell = worksheet.getCell(
+        `${String.fromCharCode(64 + col)}${rowIndex}`,
+      );
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
@@ -174,10 +194,13 @@ export const Timecard = () => {
       const column = worksheet.getColumn(c);
 
       // Kiểm tra xem ô và nội dung có tồn tại không
-      const maxWidth = Math.max(20, ...rowsArray.map((row) => {
-        const cell = row.cells[c - 1];
-        return cell && cell.textContent ? cell.clientWidth / 8 : 20; // Nếu ô hoặc nội dung không tồn tại, sử dụng 20 làm giá trị mặc định
-      }));
+      const maxWidth = Math.max(
+        20,
+        ...rowsArray.map((row) => {
+          const cell = row.cells[c - 1];
+          return cell && cell.textContent ? cell.clientWidth / 8 : 20; // Nếu ô hoặc nội dung không tồn tại, sử dụng 20 làm giá trị mặc định
+        }),
+      );
 
       column.width = maxWidth; // Sử dụng giá trị maxWidth để đặt độ rộng của cột
     }
@@ -247,7 +270,9 @@ export const Timecard = () => {
           </NavLink>
         </ButtonCenter>
       </div>
-
+      {realname ? (
+        <h3 className="timecard-title">Thẻ giờ của: {realname}</h3>
+      ) : null}
 
       <div className="table-container table--01">
         <table id="timecards_table" className="table table__custom">
@@ -265,7 +290,6 @@ export const Timecard = () => {
         </table>
       </div>
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
-
     </>
   );
 };
