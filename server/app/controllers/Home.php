@@ -14,6 +14,7 @@
             $this->data['home'] = $dataHome;
             // Render view
             $this->render('home/index', $this->data);
+            Session::data('username');
         }
 
         function detail($id=0){
@@ -23,8 +24,21 @@
             
         }
 
-        // function search(){
-        //     $keyword = $_GET['keyword'];
-        // }
+        function get_category(){
+            $request = new Request();
+            $data = $request->getFields();
+            echo '<pre>';
+            print_r($data);
+            echo '</pre>';
+            $this->render('categories/add');
+        }
+
+        function post_category(){
+            $request = new Request();
+            echo $request->getMethod();
+            $cate = $request->getFields()['category_name'];
+            $response = new Response();
+            $response->redirect('users');
+        }
     }
 ?>

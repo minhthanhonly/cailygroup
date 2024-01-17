@@ -27,6 +27,10 @@
         function handleUrl(){
             $url = $this->getUrl();
             $url = $this->__routes->handleRoute($url);
+
+            // Middleware App
+            $this->handleRouteMiddleWare($this->__routes->getUri());
+
             $urlArr = array_filter(explode('/', $url));
             $urlArr = array_values($urlArr);
             
@@ -69,6 +73,27 @@
 
         function loadError($name='404'){
             require_once 'errors/'.$name.'.php';
+        }
+
+        function handleRouteMiddleWare($routeKey){
+            global $config;
+            $routeKey = trim($routeKey);
+            if(!empty($config['app']['routeMiddleware'])){
+                $routeMiddleWareArr = $config['app']['routeMiddleware'];
+                foreach($routeMiddleWareArr as $key=>$middleWareItem){
+                    if($routeKey == trim($key) && file_exists('app/middlewares/'.$middleWareItem.'.php')){
+                        require_once 'app/middlewares/'.$middleWareItem.'.php';
+                        if(class_exists($middleWareItem)){
+                            $middleWareObject = new $middleWareItem();
+                            $middleWareObject->handle();
+                        }
+                    }
+                }
+            }
+        }
+
+        function handleGlobalMiddleWare(){
+            global $config;
         }
     }
 ?>
