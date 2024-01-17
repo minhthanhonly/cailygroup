@@ -11,6 +11,7 @@
     text-align: center;
     padding: 2rem 2rem 0.2rem;
     box-sizing: border-box;
+    pointer-events: none;
     & > div {
       position: relative;
     }
@@ -54,5 +55,5 @@
       margin-top: 5rem;
     }
   }
- 
+
 }

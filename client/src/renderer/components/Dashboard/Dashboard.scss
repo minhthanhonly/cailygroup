@@ -12,7 +12,7 @@
     }
   }
   &-time {
-    width: 63rem;
+    width: 56rem;
     border: 2px solid #89b502;
     background-color: rgba(160, 198, 42, 30%);
     padding: 4rem 5rem 6rem;
@@ -21,6 +21,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+    em{
+      font-size: 2rem;
+      font-style: normal;
     }
     p {
       text-align: center;
@@ -37,6 +41,8 @@
       left: 50%;
       transform: translateX(-50%);
       bottom: -1rem;
+      color: #999;
+      font-weight: bold;
     }
   }
   &-action {
