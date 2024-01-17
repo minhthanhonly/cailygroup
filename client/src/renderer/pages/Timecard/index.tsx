@@ -48,8 +48,6 @@ export const Timecard = () => {
             (users: { id: number }) => users.id === loggedInUserId.id,
           );
           setCurrentUser(loggedInUser);
-
-
         })
         .catch((error) => console.error('Lỗi khi lấy dữ liệu:', error));
     } else {
@@ -183,7 +181,7 @@ export const Timecard = () => {
       }
     }
     const rowIndexHead = 4;
-    const startColumnHead = 1; // Cột A 
+    const startColumnHead = 1; // Cột A
     const endColumnHead = 8;   // Cột H
 
     for (let col = startColumnHead; col <= endColumnHead; col++) {
@@ -288,9 +286,14 @@ export const Timecard = () => {
       <p> năm đã được click từ danh sách thẻ giờ = {matchedUser_year}</p>
       <p> Nút click nếu 0 là xem thẻ giờ , 1 là xuất excel = {datacheck_click}</p>
 
-
-
-
+       <ButtonCenter>
+        <button onClick={exportToExcel} className="btn btn--medium btn--green">
+          Xuất Thẻ Giờ
+        </button>
+        <NavLink className="btn" to="/dayoffs/register">
+          Đăng ký nghỉ phép
+        </NavLink>
+      </ButtonCenter>
       <div className="table-container table--01">
         <table id="timecards_table" className="table table__custom">
           <thead id="timecards_table_head">
@@ -307,14 +310,7 @@ export const Timecard = () => {
         </table>
       </div>
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
-      <ButtonCenter>
-        <button onClick={exportToExcel} className="btn btn--medium btn--green">
-          Xuất Thẻ Giờ
-        </button>
-        <NavLink className="btn" to="/dayoffs/register">
-          Đăng ký nghỉ phép
-        </NavLink>
-      </ButtonCenter>
+
     </>
   );
 };
