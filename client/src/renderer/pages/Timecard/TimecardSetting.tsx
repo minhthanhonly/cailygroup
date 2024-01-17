@@ -18,15 +18,28 @@ export const TimecardSetting = () => {
   const [timeOutHours, setTimeOutHours] = useState<number>(0);
   const [timeOutMinutes, setTimeOutMinutes] = useState<number>(0);
 
+
+  const [timeLunchStartHouse, setTimeLunchStartHouse] = useState<number>(0);
+  const [timeLunchStartMinutes, setTimeLunchStartMinutes] = useState<number>(0);
+
+  const [timeLunchEndHouse, setTimeLunchEndHouse] = useState<number>(0);
+  const [timeLunchEndMinutes, setTimeLunchEndMinutes] = useState<number>(0);
+
   const [serverMessage, setServerMessage] = useState('');
   const [isTimeChangedInput, setIsTimeChangedInput] = useState(false);
   const [isTimeChangedOutput, setIsTimeChangedOutput] = useState(false);
+  const [isTimeLunchStart, setIsTimeLunchStart] = useState(false);
+  const [isTimeLunchEnd, setIsTimeLunchEnd] = useState(false);
 
   const [configData, setConfigData] = useState({
     openhour: 0,
     openminute: 0,
     closehour: 0,
     closeminute: 0,
+    lunchStartHour: 0,
+    lunchStartMinutes: 0,
+    lunchEndHour: 0,
+    lunchEndMinutes: 0,
   });
 
   const Data = [
@@ -52,21 +65,37 @@ export const TimecardSetting = () => {
         // Tìm đối tượng có config_key là 'closetime'
         const closetimeObject = data.find((item: { config_key: string; }) => item.config_key === 'closetime');
 
-        if (opentimeObject && closetimeObject) {
+        const lunchStarttimeObject = data.find((item: { config_key: string; }) => item.config_key === 'openlunch');
+        const lunchEndtimeObject = data.find((item: { config_key: string; }) => item.config_key === 'closelunch');
+
+
+
+
+        if (opentimeObject && closetimeObject && lunchStarttimeObject && lunchEndtimeObject) {
           // Tách giờ và phút từ chuỗi
           const opentimeParts = opentimeObject.config_value.trim().split(':');
           const closetimeParts = closetimeObject.config_value.trim().split(':');
+          const lunchStartParts = lunchStarttimeObject.config_value.trim().split(':');
+          const lunchEndParts = lunchEndtimeObject.config_value.trim().split(':');
 
           // Chắc chắn rằng có đủ phần tử để tránh lỗi
-          if (opentimeParts.length === 2 && closetimeParts.length === 2) {
+          if (opentimeParts.length === 2 && closetimeParts.length === 2 && lunchStartParts.length === 2 && lunchEndParts.length === 2) {
+
+
             const openHour = parseInt(opentimeParts[0], 10);
             const openMinute = parseInt(opentimeParts[1], 10);
 
             const closeHour = parseInt(closetimeParts[0], 10);
             const closeMinute = parseInt(closetimeParts[1], 10);
 
+            const lunchHourStart = parseInt(lunchStartParts[0], 10);
+            const lunchMinuteStart = parseInt(lunchStartParts[1], 10);
+
+            const lunchHourEnd = parseInt(lunchEndParts[0], 10);
+            const lunchMinuteEnd = parseInt(lunchEndParts[1], 10);
+
             // Kiểm tra xem giá trị đã được chuyển đổi đúng cách chưa
-            if (!isNaN(openHour) && !isNaN(openMinute) && !isNaN(closeHour) && !isNaN(closeMinute)) {
+            if (!isNaN(openHour) && !isNaN(openMinute) && !isNaN(closeHour) && !isNaN(closeMinute) && !isNaN(lunchHourStart) && !isNaN(lunchMinuteStart) && !isNaN(lunchHourEnd) && !isNaN(lunchMinuteEnd)) {
               // Cập nhật state với giá trị số
               setConfigData((prevState) => ({
                 ...prevState,
@@ -74,6 +103,10 @@ export const TimecardSetting = () => {
                 openminute: openMinute,
                 closehour: closeHour,
                 closeminute: closeMinute,
+                lunchStartHour: lunchHourStart,
+                lunchStartMinutes: lunchMinuteStart,
+                lunchEndHour: lunchHourEnd,
+                lunchEndMinutes: lunchMinuteEnd,
               }));
             } else {
               console.error('Giá trị giờ và phút không hợp lệ');
@@ -104,6 +137,13 @@ export const TimecardSetting = () => {
         setTimeInputMinutes(parseInt(timeValues.openminute, 10) || 0);
         setTimeOutHours(parseInt(timeValues.closehour, 10) || 0);
         setTimeOutMinutes(parseInt(timeValues.closeminute, 10) || 0);
+
+
+        setTimeLunchStartHouse(parseInt(timeValues.lunchStartHour, 10) || 0);
+        setTimeLunchStartMinutes(parseInt(timeValues.lunchStartMinutes, 10) || 0);
+
+        setTimeLunchEndHouse(parseInt(timeValues.lunchEndHour, 10) || 0);
+        setTimeLunchEndMinutes(parseInt(timeValues.lunchEndMinutes, 10) || 0);
 
 
 
@@ -147,6 +187,27 @@ export const TimecardSetting = () => {
       }));
       setIsTimeChangedOutput(true)
     }
+    else if (type === 'openlunch') {
+      setTimeLunchStartHouse(hours);
+      setTimeLunchStartMinutes(minutes);
+      setConfigData((prevState) => ({
+        ...prevState,
+        lunchStartHour: hours,
+        lunchStartMinutes: minutes,
+      }));
+      setIsTimeLunchStart(true)
+    }
+    else if (type === 'closelunch') {
+      setTimeLunchEndHouse(hours);
+      setTimeLunchEndMinutes(minutes);
+      setConfigData((prevState) => ({
+        ...prevState,
+        lunchEndHour: hours,
+        lunchEndMinutes: minutes,
+      }));
+      setIsTimeLunchEnd(true)
+    }
+
 
   };
 
@@ -192,8 +253,6 @@ export const TimecardSetting = () => {
   };
 
   const handleSaveOutTime = async () => {
-
-
     try {
       if (isTimeChangedOutput === true) {
         const formattedHoursOutput = String(timeOutHours).padStart(2, '0');
@@ -214,6 +273,98 @@ export const TimecardSetting = () => {
           setTimeout(() => {
             setServerMessage('');
             setIsTimeChangedOutput(false)
+          }, 3000); // 5000 miliseconds = 5 giây
+          // Hiển thị thông điệp thành công cho người dùng
+        } else if (response.data.error) {
+          setServerMessage(response.data.error);
+          setTimeout(() => {
+            setServerMessage('');
+
+          }, 3000);
+          // Xử lý lỗi và hiển thị thông điệp lỗi cho người dùng
+        }
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
+      // Xử lý lỗi nếu cần
+      if (error && typeof error === 'object' && 'response' in error) {
+        console.error('Response status:', (error as any).response.status);
+        console.error('Server error message:', (error as any).response.data);
+      } else {
+        console.error('Unexpected error:', error);
+      }
+    }
+
+
+
+  };
+
+  const handleSaveLunchStartTime = async () => {
+    try {
+      if (isTimeLunchStart === true) {
+        const formattedLunchStartHouse = String(timeLunchStartHouse).padStart(2, '0');
+        const formattedLunchStartMinutes = String(timeLunchStartMinutes).padStart(2, '0');
+        // Xác nhận giá trị trước khi gửi request
+        const timeOutString = `${formattedLunchStartHouse}:${formattedLunchStartMinutes}`
+        const dataUpdateArray = [{ id: 2, config_key: 'openlunch', hoursMinutes: timeOutString },];
+        // Thêm các đối tượng khác nếu cần
+
+        console.log("closetime", dataUpdateArray);
+
+
+        const response = await axios.post('timecards/getInput', dataUpdateArray);
+
+        if (response.data.message) {
+          setServerMessage(response.data.message);
+
+          setTimeout(() => {
+            setServerMessage('');
+            setIsTimeLunchStart(false)
+          }, 3000); // 5000 miliseconds = 5 giây
+          // Hiển thị thông điệp thành công cho người dùng
+        } else if (response.data.error) {
+          setServerMessage(response.data.error);
+          setTimeout(() => {
+            setServerMessage('');
+
+          }, 3000);
+          // Xử lý lỗi và hiển thị thông điệp lỗi cho người dùng
+        }
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
+      // Xử lý lỗi nếu cần
+      if (error && typeof error === 'object' && 'response' in error) {
+        console.error('Response status:', (error as any).response.status);
+        console.error('Server error message:', (error as any).response.data);
+      } else {
+        console.error('Unexpected error:', error);
+      }
+    }
+
+
+
+  };
+  const handleSaveLunchEndTime = async () => {
+    try {
+      if (isTimeLunchEnd === true) {
+        const formattedLunchEndHouse = String(timeLunchEndHouse).padStart(2, '0');
+        const formattedLunchEndMinutes = String(timeLunchEndMinutes).padStart(2, '0');
+        // Xác nhận giá trị trước khi gửi request
+        const timeOutString = `${formattedLunchEndHouse}:${formattedLunchEndMinutes}`
+        const dataUpdateArray = [{ id: 2, config_key: 'closelunch', hoursMinutes: timeOutString },];
+        // Thêm các đối tượng khác nếu cần
+
+
+
+        const response = await axios.post('timecards/getInput', dataUpdateArray);
+
+        if (response.data.message) {
+          setServerMessage(response.data.message);
+
+          setTimeout(() => {
+            setServerMessage('');
+            setIsTimeLunchEnd(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
         } else if (response.data.error) {
@@ -268,6 +419,29 @@ export const TimecardSetting = () => {
             defaultMinutes={configData.closeminute}
           />
           <button className="btn btn--widthAuto" onClick={handleSaveOutTime} disabled={!isTimeChangedOutput}>
+            Cập nhật
+          </button>
+        </div>
+
+        <div className="card-box--center">
+          <h4>Bắt Đầu Nghỉ Trưa</h4>
+          <CardTime
+            onChange={(h, m) => handleCardTimeChange(h, m, 'openlunch')}
+            defaultHours={configData.lunchStartHour}
+            defaultMinutes={configData.lunchStartMinutes}
+          />
+          <button className="btn btn--widthAuto" onClick={handleSaveLunchStartTime} disabled={!isTimeLunchStart}>
+            Cập nhật
+          </button>
+        </div>
+        <div className="card-box--center">
+          <h4>Kết Thúc Nghỉ Trưa</h4>
+          <CardTime
+            onChange={(h, m) => handleCardTimeChange(h, m, 'closelunch')}
+            defaultHours={configData.lunchEndHour}
+            defaultMinutes={configData.lunchEndMinutes}
+          />
+          <button className="btn btn--widthAuto" onClick={handleSaveLunchEndTime} disabled={!isTimeLunchEnd}>
             Cập nhật
           </button>
         </div>

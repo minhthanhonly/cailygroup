@@ -4,7 +4,7 @@
             global $conn;
 
             // Thực hiện truy vấn SELECT
-            $sql = "SELECT config_key, config_value FROM configs WHERE config_key IN ('opentime', 'closetime')";
+            $sql = "SELECT config_key, config_value FROM configs WHERE config_key IN ('opentime', 'closetime', 'openlunch', 'closelunch')";
             $result = $conn->query($sql);
 
             // Kiểm tra và hiển thị kết quả
@@ -44,6 +44,12 @@
                 }
                  if($configKey === "closetime"){
                     $successMessage = "Cập nhật giờ ra $hoursMinutes Thành công.";
+                 }
+                 if($configKey === "openlunch"){
+                    $successMessage = "Cập nhật bắt đầu nghỉ trưa $hoursMinutes Thành công.";
+                 }
+                if($configKey === "closelunch"){
+                    $successMessage = "Cập nhật kết thúc giờ nghỉ trưa $hoursMinutes Thành công.";
                  }
                 echo json_encode(['message' => $successMessage]); // Xuất thông điệp thành công
             } else {
