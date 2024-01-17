@@ -629,6 +629,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     };
     fetchData();
   }, [usersID]);
+  useEffect(() => {
+    calculateTotalTime();
+  }, []);
+
+  const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
   return (
     <>
       {allDays.map((day, rowIndex) => (
@@ -656,12 +661,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           (new Date(day).getMonth() + 1 === currentMonth &&
             new Date(day).getFullYear() === currentYear) ? (
             <>
-              <td>{format(day, 'dd-MM-yyyy')}</td>
-              {otherColumnData.map((column, colIndex) => (
+              <td>
+                {format(day, 'dd/MM')} ({weekdays[day.getDay()]})
+              </td>
+              {/* {otherColumnData.map((column, colIndex) => (
                 <td key={colIndex}>
                   {column.format ? column.format(day) : '...'}
                 </td>
-              ))}
+              ))} */}
               <td
                 className={`${
                   startHours > 7 || (startHours === 7 && startMinutes > 30)
