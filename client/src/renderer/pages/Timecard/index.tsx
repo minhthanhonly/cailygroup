@@ -117,61 +117,21 @@ export const Timecard = () => {
         const dayOfWeek = currentDate.getDay();
 
         switch (dayOfWeek) {
-          case 0: // Chủ nhật
-            console.log("Chủ nhật");
-            break;
-          case 1: // Thứ 2
-            console.log("Thứ 2");
-            break;
-          case 2: // Thứ 3
-            console.log("Thứ 3");
-            break;
-          case 3: // Thứ 4
-            console.log("Thứ 4");
-            break;
-          case 4: // Thứ 5
-            console.log("Thứ 5");
-            break;
-          case 5: // Thứ 6
-            console.log("Thứ 6");
-            break;
           case 6: // Thứ 7
-            console.log("Thứ 7");
+            console.log("tao ở đây từ tối");
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+              currentCell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'ffdddd' }, // Màu xám nhạt cho Thứ 7
+              };
+            }
             break;
           default:
-            // Default, không là Chủ nhật hoặc Thứ 7
+            // Không là Chủ nhật hoặc Thứ 7, không thực hiện gì cả
             break;
         }
-
-
-        // switch (dayOfWeek) {
-        //   case 0: // Chủ nhật
-        //     console.log("tao ở đây từ chiều");
-
-        //     for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
-        //       const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
-        //       currentCell.fill = {
-        //         type: 'pattern',
-        //         pattern: 'solid',
-        //         fgColor: { argb: 'FF0000' }, // Màu đỏ cho Chủ nhật
-        //       };
-        //     }
-        //     break;
-        //   case 6: // Thứ 7
-        //     console.log("tao ở đây từ tối");
-        //     for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
-        //       const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
-        //       currentCell.fill = {
-        //         type: 'pattern',
-        //         pattern: 'solid',
-        //         fgColor: { argb: 'ffdddd' }, // Màu xám nhạt cho Thứ 7
-        //       };
-        //     }
-        //     break;
-        //   default:
-        //     // Không là Chủ nhật hoặc Thứ 7, không thực hiện gì cả
-        //     break;
-        // }
         cell.value = cellContent;
         cell.border = {
           top: { style: 'thin', color: { argb: 'FF000000' } },

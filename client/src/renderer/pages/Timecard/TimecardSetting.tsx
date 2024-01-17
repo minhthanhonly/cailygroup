@@ -360,6 +360,7 @@ export const TimecardSetting = () => {
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
         if (response.data.message) {
+
           setServerMessage(response.data.message);
 
           setTimeout(() => {

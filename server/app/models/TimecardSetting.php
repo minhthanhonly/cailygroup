@@ -39,21 +39,24 @@
             $stmt->bind_param("ss", $hoursMinutes, $configKey);
 
             if ($stmt->execute()) {
-                if($configKey === "opentime"){
-                    $successMessage = "Cập nhật giờ vào $hoursMinutes Thành công.";
-                }
-                 if($configKey === "closetime"){
-                    $successMessage = "Cập nhật giờ ra $hoursMinutes Thành công.";
-                 }
-                 if($configKey === "openlunch"){
-                    $successMessage = "Cập nhật bắt đầu nghỉ trưa $hoursMinutes Thành công.";
-                 }
-                if($configKey === "closelunch"){
-                    $successMessage = "Cập nhật kết thúc giờ nghỉ trưa $hoursMinutes Thành công.";
-                 }
-                echo json_encode(['message' => $successMessage]); // Xuất thông điệp thành công
+                    switch ($configKey) {
+                        case "opentime": 
+                            http_response_code(200);
+                            break;
+                        case "closetime": 
+                            http_response_code(200);
+                            break;
+                        case "openlunch":
+                            http_response_code(200);
+                            break;
+                        case "closelunch": 
+                            http_response_code(200);
+                            break;
+                        }
+               
+                     echo json_encode(['message' => http_response_code(200)]); // Xuất thông điệp thành công
             } else {
-                $errorMessage = "Lỗi khi thực hiện truy vấn: " . $stmt->error;
+                $errorMessage = http_response_code(400);
                 echo json_encode(['error' => $errorMessage]); // Xuất thông điệp lỗi
             }
 
