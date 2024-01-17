@@ -183,7 +183,7 @@ export const Timecard = () => {
       }
     }
     const rowIndexHead = 4;
-    const startColumnHead = 1; // Cột A 
+    const startColumnHead = 1; // Cột A
     const endColumnHead = 8;   // Cột H
 
     for (let col = startColumnHead; col <= endColumnHead; col++) {
@@ -272,11 +272,23 @@ export const Timecard = () => {
   return (
     <>
       <NavTimcard role="admin" />
-      <MonthYearSelector
-        onChange={handleDateChange}
-        initialMonth={month}
-        initialYear={year}
-      />
+
+      <div className="timecard-head-bar" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <MonthYearSelector
+            onChange={handleDateChange}
+            initialMonth={month}
+            initialYear={year}
+          />
+          <ButtonCenter>
+            <button onClick={exportToExcel} className="btn btn--medium btn--green">
+              Xuất Thẻ Giờ
+            </button>
+            <NavLink className="btn" to="/dayoffs/register">
+              Đăng ký nghỉ phép
+            </NavLink>
+          </ButtonCenter>
+      </div>
+
 
       <div className="table-container table--01">
         <table id="timecards_table" className="table table__custom">
@@ -294,14 +306,7 @@ export const Timecard = () => {
         </table>
       </div>
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
-      <ButtonCenter>
-        <button onClick={exportToExcel} className="btn btn--medium btn--green">
-          Xuất Thẻ Giờ
-        </button>
-        <NavLink className="btn" to="/dayoffs/register">
-          Đăng ký nghỉ phép
-        </NavLink>
-      </ButtonCenter>
+
     </>
   );
 };
