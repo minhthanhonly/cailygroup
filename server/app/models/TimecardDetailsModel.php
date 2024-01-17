@@ -33,7 +33,7 @@
             
             $sql = "UPDATE timecard_details SET timecard_close = ?, timecard_originalclose = ?, timecard_time= ?, timecard_timeover = ?, editor=? WHERE id_groupwaretimecard = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssssi", $timecard_now, $timecard_now, $timecard_time, $timecard_timeover, $editor, $timecardId);
+            $stmt->bind_param("sssssi", $timecard_now, $timecard_now, $timecard_time, $timecard_timeover, $editor, $timecardId);
 
             if ($stmt->execute()) {
                 http_response_code(200);
