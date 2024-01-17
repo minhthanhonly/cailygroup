@@ -111,6 +111,7 @@ export const isValidUserEdit = ({...paraUser}) => {
   return true;
 }
 
+/* =======================================================================* */
 
 const groupName = "tên nhóm";
 type paraGroup = {
@@ -133,3 +134,4 @@ export const isValidGroup = ({...paraGroup}) => {
   return true;
 }
 
+/* =======================================================================* */
