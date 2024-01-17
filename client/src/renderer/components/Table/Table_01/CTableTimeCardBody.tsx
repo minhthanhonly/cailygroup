@@ -451,13 +451,16 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           }
         }
       }
-      // addTimes;
-      console.log(timecard_time);
+      let timecard_timeover = '00:00';
+      if (compareTime(timecard_close_time, closetimeValue) == 1) {
+        timecard_timeover = calculateTime(closetimeValue, timecard_close_time);
+      }
       const dataTime = {
         id: timecardID,
         timecard_open: timecard_open_time,
         timecard_now: timecard_close_time,
         timecard_time: timecard_time,
+        timecard_timeover: timecard_timeover,
         editor: users.realname,
       };
 
@@ -472,6 +475,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       }
     }
   };
+  console.log(calculateTime('17:00', '17:02'));
   //load ngày lễ
   const [holidays, setHolidays] = useState<Holiday[] | undefined>();
   const fetchHolidays = async () => {
