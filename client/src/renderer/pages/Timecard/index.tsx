@@ -89,10 +89,7 @@ export const Timecard = () => {
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
-<<<<<<< HEAD
     let sundayCount = 0; // Biến đếm số ngày Chủ Nhật
-=======
->>>>>>> 6e0cc918184f28648d051b8ae19f18ec97da6342
     const table = document.getElementById(
       'timecards_table',
     ) as HTMLTableElement;
@@ -163,21 +160,9 @@ export const Timecard = () => {
 
 
         switch (dayOfWeek) {
-<<<<<<< HEAD
           case 1: // Thứ 2
             for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
               const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
-=======
-          case 6: // Thứ 7
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
->>>>>>> 6e0cc918184f28648d051b8ae19f18ec97da6342
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
