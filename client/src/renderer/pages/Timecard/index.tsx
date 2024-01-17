@@ -79,21 +79,21 @@ export const Timecard = () => {
     const startRow = 4;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet(`Timecards_${realname}_${month}_${year}`.slice(0, 31));
+    const worksheet = workbook.addWorksheet(`Timecards_${realname}_${month}_${year}`.slice(0, 50));
 
     // Merge cells for the name and date
-    worksheet.mergeCells(`A1:H3`);
+    worksheet.mergeCells(`A1:G3`);
     worksheet.getCell(`A1`).value = ` ${realname || ''} \n ${month}/${year}`;
     worksheet.getCell(`A1`).alignment = { horizontal: 'center', vertical: 'middle' };
-    worksheet.getCell(`A1:H3`).border = {
+    worksheet.getCell(`A1:G3`).border = {
       top: { style: 'thin', color: { argb: 'FF000000' } },
       bottom: { style: 'thin', color: { argb: 'FF000000' } },
       left: { style: 'thin', color: { argb: 'FF000000' } },
       right: { style: 'thin', color: { argb: 'FF000000' } },
     };
 
-    worksheet.mergeCells(`A5:H8`);
-    worksheet.getCell(`A5:H8`).fill = {
+    worksheet.mergeCells(`A5:G8`);
+    worksheet.getCell(`A5:G8`).fill = {
       type: 'pattern',
       pattern: 'solid',
       fgColor: { argb: 'FFCCCCCC' }, // Mã màu tùy chọn, ở đây là màu đỏ
@@ -118,7 +118,6 @@ export const Timecard = () => {
 
         switch (dayOfWeek) {
           case 6: // Thứ 7
-            console.log("tao ở đây từ tối");
             for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
               const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
               currentCell.fill = {
@@ -233,20 +232,20 @@ export const Timecard = () => {
     <>
       <NavTimcard role="admin" />
 
-      <div className="timecard-head-bar" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-          <MonthYearSelector
-            onChange={handleDateChange}
-            initialMonth={month}
-            initialYear={year}
-          />
-          <ButtonCenter>
-            <button onClick={exportToExcel} className="btn btn--medium btn--green">
-              Xuất Thẻ Giờ
-            </button>
-            <NavLink className="btn" to="/dayoffs/register">
-              Đăng ký nghỉ phép
-            </NavLink>
-          </ButtonCenter>
+      <div className="timecard-head-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <MonthYearSelector
+          onChange={handleDateChange}
+          initialMonth={month}
+          initialYear={year}
+        />
+        <ButtonCenter>
+          <button onClick={exportToExcel} className="btn btn--medium btn--green">
+            Xuất Thẻ Giờ
+          </button>
+          <NavLink className="btn" to="/dayoffs/register">
+            Đăng ký nghỉ phép
+          </NavLink>
+        </ButtonCenter>
       </div>
 
 
