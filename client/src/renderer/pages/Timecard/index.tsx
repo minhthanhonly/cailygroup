@@ -45,7 +45,6 @@ export const Timecard = () => {
   const matchedUser_month = month ? month : '';
   const matchedUser_year = year ? year : '';
   const datacheck_hi = datacheck ? datacheck : '';
-  console.log(datacheck_hi)
 
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
@@ -90,7 +89,10 @@ export const Timecard = () => {
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
+<<<<<<< HEAD
     let sundayCount = 0; // Biến đếm số ngày Chủ Nhật
+=======
+>>>>>>> 6e0cc918184f28648d051b8ae19f18ec97da6342
     const table = document.getElementById(
       'timecards_table',
     ) as HTMLTableElement;
@@ -109,14 +111,17 @@ export const Timecard = () => {
 
     const workbook = new ExcelJS.Workbook();
     const maxWorksheetNameLength = 100;
-    const truncatedWorksheetName = `Timecard_${realname}_${month}_${year}`.slice(0, maxWorksheetNameLength);
+    const truncatedWorksheetName =
+      `Timecard_${realname}_${month}_${year}`.slice(0, maxWorksheetNameLength);
     const worksheet = workbook.addWorksheet(truncatedWorksheetName);
-
 
     // Merge cells for the name and date
     worksheet.mergeCells(`A1:G3`);
     worksheet.getCell(`A1`).value = ` ${realname || ''} \n ${month}/${year}`;
-    worksheet.getCell(`A1`).alignment = { horizontal: 'center', vertical: 'middle' };
+    worksheet.getCell(`A1`).alignment = {
+      horizontal: 'center',
+      vertical: 'middle',
+    };
     worksheet.getCell(`A1:G3`).border = {
       top: { style: 'thin', color: { argb: 'FF000000' } },
       bottom: { style: 'thin', color: { argb: 'FF000000' } },
@@ -158,9 +163,21 @@ export const Timecard = () => {
 
 
         switch (dayOfWeek) {
+<<<<<<< HEAD
           case 1: // Thứ 2
             for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
               const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+=======
+          case 6: // Thứ 7
+            for (
+              let colIndex = 1;
+              colIndex <= table.rows[r - 1].cells.length;
+              colIndex++
+            ) {
+              const currentCell = worksheet.getCell(
+                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
+              );
+>>>>>>> 6e0cc918184f28648d051b8ae19f18ec97da6342
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -275,7 +292,10 @@ export const Timecard = () => {
     }
 
     // Combine the variables and truncate if necessary
-    const sheetName = `Timecard_${realname}_${month}_${year}`.slice(0, maxWorksheetNameLength);
+    const sheetName = `Timecard_${realname}_${month}_${year}`.slice(
+      0,
+      maxWorksheetNameLength,
+    );
 
     // Save the workbook to a file
     const buffer = await workbook.xlsx.writeBuffer();
@@ -328,14 +348,24 @@ export const Timecard = () => {
     <>
       <NavTimcard role="admin" />
 
-      <div className="timecard-head-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div
+        className="timecard-head-bar"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
         <MonthYearSelector
           onChange={handleDateChange}
           initialMonth={month}
           initialYear={year}
         />
         <ButtonCenter>
-          <button onClick={exportToExcel} className="btn btn--medium btn--green">
+          <button
+            onClick={exportToExcel}
+            className="btn btn--medium btn--green"
+          >
             Xuất Thẻ Giờ
           </button>
           <NavLink className="btn" to="/dayoffs/register">

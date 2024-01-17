@@ -6,7 +6,7 @@ import CTableBody from '../../components/Table/CTableBody';
 import { Heading2 } from '../../components/Heading';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
-import {isValidUser} from "../../components/Validate";
+import {isValidGroupEdit, isValidGroup} from "../../components/Validate";
 
 interface GroupProps {
   id: string;
@@ -40,7 +40,7 @@ export const Group = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [selectedGroup, setSelectedGroup] = useState('');
-  const [formValue, setFormValue] = useState({ group_name: '' })
+  
   const fetchMembersByGroup = async($groupid: string) => {
     const groupid = {groupid:$groupid};
     const res = await axios.get("users/groups/"+$groupid);
@@ -126,18 +126,18 @@ export const Group = () => {
   };
 
   const handleUpdate = async (id: string, group_name: string, event:any) => {
-    const validationErrors = isValidUser({...formValue});
+    const validationErrors = isValidGroupEdit({group_name});
     if (event) {
-      event.preventDefault();
-      try {
-        const dataUpdate = { id, group_name };
-        const response = await axios.put('groups/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } });
-        console.log('Update Response:', response.data);
-        closeModal();
-        setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-      } catch (error) {
-        console.error('Lỗi khi cập nhật trạng thái:', error);
-      }
+        event.preventDefault();
+        if(validationErrors === true) {
+          try {
+            const dataUpdate = { id, group_name };
+            const response = await axios.put('groups/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } });
+            console.log('Update Response:', response.data);
+            closeModal();
+            setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+          } catch (error) { console.error('Lỗi khi cập nhật trạng thái:', error); }
+        }
     }
   };
 
@@ -191,22 +191,22 @@ export const Group = () => {
     });
   }
   const handleSubmint = async() => {
-    if (!groupName) {
-      console.error('Tên nhóm không hợp lệ');
-      return;
-    }
-    try{
-      const group_data = {
-        group_name: groupName,
-        add_level: 1,
-        owner: 'admin',
-      };
-      setGroupName('');
-      const res = await axios.post("groups/add/", group_data);
-      console.log('Data inserted successfully:', res.data);
-      setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-    }
-    catch(error){console.error('Lỗi khi thêm dữ liệu:', error);}
+    const group_name = groupName;
+    const validationErrors = isValidGroup({group_name});
+    if (validationErrors === true) {
+        try{
+          const group_data = {
+            group_name: groupName,
+            add_level: 1,
+            owner: 'admin',
+          };
+          setGroupName('');
+          const res = await axios.post("groups/add/", group_data);
+          console.log('Data inserted successfully:', res.data);
+          setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+        }
+        catch(error){console.error('Lỗi khi thêm dữ liệu:', error);}
+    } 
   };
 
   return (
