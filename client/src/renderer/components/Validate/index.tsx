@@ -3,7 +3,8 @@ import { toast } from "react-toastify";
 const ERROR: {[key: string]: any} = {
   require: "Vui lòng nhập ",
   choose: "Vui lòng chọn ",
-  illegal: "Giá trị nhập vào không hợp lệ"
+  illegal: "Giá trị nhập vào không hợp lệ",
+  indispensable:"Tên nhóm là bắt buộc"
 };
 
 function validateEmail(email: string) {
@@ -109,3 +110,18 @@ export const isValidUserEdit = ({...paraUser}) => {
 
   return true;
 }
+
+
+const groupName = "Tên Nhóm";
+type paraGroup = {
+  group_name: string;
+}
+
+export const isValidGroup = ({...paraGroup}) => {
+  if(!paraGroup.group_name) {
+    toast.error(ERROR['indispensable'] + "!");
+    return false;
+  }
+  return true;
+}
+

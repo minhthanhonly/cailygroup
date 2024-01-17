@@ -6,6 +6,7 @@ import CTableBody from '../../components/Table/CTableBody';
 import { Heading2 } from '../../components/Heading';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
+import {isValidUser} from "../../components/Validate";
 
 interface GroupProps {
   id: string;
@@ -39,6 +40,7 @@ export const Group = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [selectedGroup, setSelectedGroup] = useState('');
+  const [formValue, setFormValue] = useState({ group_name: '' })
   const fetchMembersByGroup = async($groupid: string) => {
     const groupid = {groupid:$groupid};
     const res = await axios.get("users/groups/"+$groupid);
@@ -124,6 +126,7 @@ export const Group = () => {
   };
 
   const handleUpdate = async (id: string, group_name: string, event:any) => {
+    const validationErrors = isValidUser({...formValue});
     if (event) {
       event.preventDefault();
       try {
