@@ -481,11 +481,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
     return foundHoliday
       ? {
-          isHoliday: true,
-          id: foundHoliday.id,
-          name: foundHoliday.name,
-          days: foundHoliday.days,
-        }
+        isHoliday: true,
+        id: foundHoliday.id,
+        name: foundHoliday.name,
+        days: foundHoliday.days,
+      }
       : { isHoliday: false, id: 0, name: '', days: '' };
   };
 
@@ -512,11 +512,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
     return foundDayoff
       ? {
-          isDayoff: true,
-          id: foundDayoff.id,
-          note: foundDayoff.note,
-          status: foundDayoff.status,
-        }
+        isDayoff: true,
+        id: foundDayoff.id,
+        note: foundDayoff.note,
+        status: foundDayoff.status,
+      }
       : { isDayoff: false, id: 0, note: '', status: 0 };
   };
   const updateDayoffs = async (id: number) => {
@@ -651,8 +651,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         >
           {(new Date(day).getMonth() + 1 === parseInt(selectedMonth) &&
             new Date(day).getFullYear() === parseInt(selectedYear)) ||
-          (new Date(day).getMonth() + 1 === currentMonth &&
-            new Date(day).getFullYear() === currentYear) ? (
+            (new Date(day).getMonth() + 1 === currentMonth &&
+              new Date(day).getFullYear() === currentYear) ? (
             <>
               <td>{format(day, 'dd-MM-yyyy')}</td>
               {otherColumnData.map((column, colIndex) => (
@@ -661,17 +661,16 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 </td>
               ))}
               <td
-                className={`${
-                  startHours > 7 || (startHours === 7 && startMinutes > 30)
+                className={`${startHours > 7 || (startHours === 7 && startMinutes > 30)
                     ? 'late'
                     : ''
-                }`}
+                  }`}
               >
                 {isHoliday(day).isHoliday ? (
                   ''
                 ) : timecardOpen.some(
-                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                  ) ? (
+                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                ) ? (
                   <>
                     {timecardOpen
                       .filter(
@@ -706,7 +705,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                          item.timecard_close !== '' ? (
+                            item.timecard_close !== '' ? (
                             item.timecard_close
                           ) : isToday(day) ? (
                             <button
@@ -741,7 +740,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                          item.timecard_close !== ''
+                            item.timecard_close !== ''
                             ? item.timecard_time
                             : null}
                         </div>
@@ -762,7 +761,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                          item.timecard_close !== ''
+                            item.timecard_close !== ''
                             ? item.timecard_timeover
                             : null}
                         </div>
@@ -783,7 +782,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_close !== null &&
-                          item.timecard_close !== ''
+                            item.timecard_close !== ''
                             ? (item.timecard_timeinterval,
                               item.timecard_timeover)
                             : null}
@@ -896,7 +895,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       .map((item, index) => (
                         <div key={index}>
                           {item.timecard_open !== null &&
-                          item.timecard_open !== '' ? (
+                            item.timecard_open !== '' ? (
                             admin ? (
                               <>
                                 <span
