@@ -31,11 +31,9 @@ function Dashboard() {
   const loadStart = async () => {
     try {
       const response = await axios.get('timecards/load/' + usersID);
-      console.log(response.data);
 
       if (response.data && response.data.timecard_close) {
         const timecardClose = response.data.timecard_close;
-        console.log(response.data.timecard_close);
         const [hours, minutes] = timecardClose.split(':');
         setEndTime({ hours, minutes });
         setCheckEnd(true);

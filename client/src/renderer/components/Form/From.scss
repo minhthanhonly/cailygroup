@@ -12,9 +12,10 @@
     text-align: center;
     & .form-content {
       width: 54.5rem;
-      padding: 6rem 7rem;
+      padding: 4rem 10rem;
       background-color: #fff;
-      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 0.2rem 1rem rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
     }
     &--logo {
       width: 100%;
@@ -28,18 +29,22 @@
       text-align: center;
       font-weight: 600;
       color: var(--text-color);
-      margin-bottom: 3.5rem;
+      margin-bottom: 2rem;
     }
     .form-group {
       width: 100%;
+    }
+  }
+  &-leave {
+    .form-group {
+      flex-wrap: wrap;
     }
   }
   &-group {
     margin-bottom: 2rem;
     display: flex;
     align-items: flex-start;
-    width: 61rem;
-    flex-wrap: wrap;
+    width: 60rem;
     &--small {
       label {
         // width: 14rem !important;
@@ -87,11 +92,11 @@
   &-input,
   input {
     width: 100%;
-    border-radius: 2rem;
+    border-radius: 0.5rem;
     border: 1px solid #d8d8d8;
-    padding: 1.5rem 2.4rem;
+    padding: 1rem 2.4rem;
     font-size: 1.6rem;
-    color: #888888;
+    color: #000;
   }
   react-datepicker-wrapper {
     width: calc(100% - 23rem);

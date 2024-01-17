@@ -38,7 +38,6 @@
                     }
 
                     if(password_verify($password, $data['password'])) {
-                        $result = "Đăng nhập thành công! chuyển hướng...";
                         $header = [
                             'alg' => 'SHA256',
                             'typ' => 'JWT'
@@ -56,11 +55,12 @@
                         $jwt = generate_jwt($header, $payload);
                         $data['token'] = $jwt;
                         unset($data['password']);
+                        $result = "ok";
                     } else {
-                        $result = "Mật khẩu không hợp lệ";
+                        $result = "error";
                     }
                 } else {
-                    $result = "Tên đăng nhập không hợp lệ";
+                    $result = "error";
                 }
                 
 				header('Content-Type: application/json');

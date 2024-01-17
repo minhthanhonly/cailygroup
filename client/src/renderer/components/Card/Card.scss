@@ -1,10 +1,10 @@
 .card {
   &-time {
     border-radius: 1rem;
-    border: 1px solid #146b9c;
+    border: 2px solid #146b9c;
     color: #146b9c;
-    font-size: 2.4rem;
-    width: 12rem;
+    font-size: 4rem;
+    width: 16rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -19,15 +19,16 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: -1.5rem;
+      top: 0rem;
       //   margin-top: 0.5rem;
     }
     &--hour > input ,  &--minute > input {
         color: #146b9c;
-          font-size: 2.4rem;
-          width: 100%;
-          border: none;
-          background: transparent;
+        width: 100%;
+        border: none;
+        background: transparent;
+        font-size: 4rem;
+        text-align: center;
     }
   }
   &-box {
@@ -54,5 +55,5 @@
       margin-top: 5rem;
     }
   }
- 
+
 }

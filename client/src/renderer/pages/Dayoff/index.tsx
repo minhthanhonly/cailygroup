@@ -89,7 +89,6 @@ export const Dayoff = () => {
       status: dynamicAction,
     } as unknown as FieldGroups);
   }
-  console.log(DataTable);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);

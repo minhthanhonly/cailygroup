@@ -23,14 +23,17 @@ export const Timecard = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
   const location = useLocation();
-  const { id, month, year, daysInMonth: stateDaysInMonth = [],
-  } = (location.state as {
-    id: number;
-    month: string;
-    year: string;
-    daysInMonth?: Date[];
-  }) || {};
+  const { id, month, year, daysInMonth: stateDaysInMonth = [], datacheck, } = (location.state as { id: number; month: string; year: string; daysInMonth?: Date[]; datacheck: number; }) || {};
   const [user_id, setUser_id] = useState<number>();
+
+
+  // lấy thông tin của người bên trong timecardlist list
+  const matchedUser = listOfUsers.find((user) => user.id === id);
+  const realname = matchedUser ? matchedUser.realname : "";
+  const matchedUser_month = month ? month : "";
+  const matchedUser_year = year ? year : "";
+  const datacheck_hi = datacheck ? datacheck : "";
+
 
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
@@ -59,7 +62,6 @@ export const Timecard = () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
 
-    console.log("realname", realname);
 
     const table = document.getElementById('timecards_table') as HTMLTableElement;
 
@@ -83,42 +85,53 @@ export const Timecard = () => {
     worksheet.mergeCells(`A1:H3`);
     worksheet.getCell(`A1`).value = ` ${realname || ''} \n ${month}/${year}`;
     worksheet.getCell(`A1`).alignment = { horizontal: 'center', vertical: 'middle' };
-
-    worksheet.mergeCells(`A5:H8`);
     worksheet.getCell(`A1:H3`).border = {
       top: { style: 'thin', color: { argb: 'FF000000' } },
       bottom: { style: 'thin', color: { argb: 'FF000000' } },
       left: { style: 'thin', color: { argb: 'FF000000' } },
       right: { style: 'thin', color: { argb: 'FF000000' } },
     };
+
+    worksheet.mergeCells(`A5:H8`);
+    worksheet.getCell(`A5:H8`).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFCCCCCC' }, // Mã màu tùy chọn, ở đây là màu đỏ
+    };
     // Thêm dữ liệu từ bảng vào ô A4:I4
     const rowsArray = Array.from(table.rows);
+    const numericSelectedYear = parseInt(selectedYear, 10);
+    const numericSelectedMonth = parseInt(selectedMonth, 10);
 
+    console.log("numericSelectedYear", numericSelectedYear);
+    console.log("numericSelectedMonth", numericSelectedMonth);
     for (let r = 1; r <= table.rows.length; r++) {
       for (let c = 1; c <= table.rows[r - 1].cells.length; c++) {
         const cell = worksheet.getCell(`${String.fromCharCode(64 + c)}${startRow + r - 1}`);
         const cellContent = table.rows[r - 1].cells[c - 1].textContent;
 
         // Chuyển đổi selectedYear và selectedMonth sang kiểu số
-        const numericSelectedYear = parseInt(selectedYear, 10);
-        const numericSelectedMonth = parseInt(selectedMonth, 10);
 
         // Kiểm tra nếu ngày tương ứng là thứ 7
         const currentDate = new Date(numericSelectedYear, numericSelectedMonth - 1, parseInt(cellContent || '0', 10));
-        const isSaturday = currentDate.getDay() === 6;
-        const issunday = currentDate.getDay() === 0;
-        // Nếu là thứ 7 thì tô màu nền cho toàn bộ dòng
-        if (isSaturday) {
-          for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
-            const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
-            currentCell.fill = {
-              type: 'pattern',
-              pattern: 'solid',
-              fgColor: { argb: 'FFCCCCCC' }, // Màu xám nhạt
-            };
-          }
+        const dayOfWeek = currentDate.getDay();
+
+        switch (dayOfWeek) {
+          case 6: // Thứ 7
+            console.log("tao ở đây từ tối");
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+              currentCell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'ffdddd' }, // Màu xám nhạt cho Thứ 7
+              };
+            }
+            break;
+          default:
+            // Không là Chủ nhật hoặc Thứ 7, không thực hiện gì cả
+            break;
         }
-        // Thực hiện các thay đổi khác (nếu cần) không ảnh hưởng đến màu chữ
         cell.value = cellContent;
         cell.border = {
           top: { style: 'thin', color: { argb: 'FF000000' } },
@@ -128,6 +141,18 @@ export const Timecard = () => {
         };
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
       }
+    }
+    const rowIndexHead = 4;
+    const startColumnHead = 1; // Cột A
+    const endColumnHead = 8;   // Cột H
+
+    for (let col = startColumnHead; col <= endColumnHead; col++) {
+      const cell = worksheet.getCell(`${String.fromCharCode(64 + col)}${rowIndexHead}`);
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'ffdddd' }, // Mã màu tùy chọn, ở đây là màu đỏ
+      };
     }
 
     const rowIndex = 40;
@@ -207,11 +232,24 @@ export const Timecard = () => {
   return (
     <>
       <NavTimcard role="admin" />
-      <MonthYearSelector
-        onChange={handleDateChange}
-        initialMonth={month}
-        initialYear={year}
-      />
+
+      <div className="timecard-head-bar" style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+          <MonthYearSelector
+            onChange={handleDateChange}
+            initialMonth={month}
+            initialYear={year}
+          />
+          <ButtonCenter>
+            <button onClick={exportToExcel} className="btn btn--medium btn--green">
+              Xuất Thẻ Giờ
+            </button>
+            <NavLink className="btn" to="/dayoffs/register">
+              Đăng ký nghỉ phép
+            </NavLink>
+          </ButtonCenter>
+      </div>
+
+
       <div className="table-container table--01">
         <table id="timecards_table" className="table table__custom">
           <thead id="timecards_table_head">
@@ -228,14 +266,7 @@ export const Timecard = () => {
         </table>
       </div>
       <p className="txt-note">Giờ nghỉ trưa từ 11:30 - 13:00.</p>
-      <ButtonCenter>
-        <button onClick={exportToExcel} className="btn btn--medium btn--green">
-          Xuất Thẻ Giờ
-        </button>
-        <NavLink className="btn" to="/dayoffs/register">
-          Đăng ký nghỉ phép
-        </NavLink>
-      </ButtonCenter>
+
     </>
   );
 };

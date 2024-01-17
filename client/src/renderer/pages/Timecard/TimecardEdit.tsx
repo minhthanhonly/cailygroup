@@ -87,6 +87,9 @@ export const TimecardEdit = () => {
   return (
     <>
       <NavTimcard role="admin" />
+      <div className="grid-row mt-5 timeCard-edit--flex">
+        <MonthYearSelector onChange={handleDateChange} />
+      </div>
       <div className="timeCard-edit">
         <div className="box-group box-group--second">
           <div className="box-group__item select-ml0">
@@ -115,14 +118,7 @@ export const TimecardEdit = () => {
           </table>
         </div>
 
-        <div className="grid-row mt-5 timeCard-edit--flex">
-          <MonthYearSelector onChange={handleDateChange} />
-          {/* <Button color="orange">Tính Lại</Button> */}
-          {/* <Button>Hiện giờ trước khi chỉnh sửa</Button> */}
-          <Button color="green" size="medium">
-            Xuất Thẻ Giờ
-          </Button>
-        </div>
+
       </div>
     </>
   );

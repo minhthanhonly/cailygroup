@@ -227,6 +227,21 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     return digit < 10 ? `0${digit}` : `${digit}`;
   };
 
+  const [timecardOpen, setTimecardOpen] = useState<TimecardData[]>([]);
+  const fetchTimecardOpen = async () => {
+    try {
+      const response = await axios.get('timecards/getall/' + usersID);
+      if (response.data && Array.isArray(response.data)) {
+        setTimecardOpen(response.data);
+        console.log(response.data);
+      } else {
+        setTimecardOpen([]);
+      }
+    } catch (error) {
+      console.error('Error fetching timecard_open:', error);
+    }
+  };
+
   const calculateTime = (timestart: string, timeend: string): string => {
     const normalizeTime = (time: string): string => {
       return time.length === 4 ? `0${time}` : time;
@@ -284,8 +299,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
 
   // Hàm xử lý khi click vào nút bắt đầu
-  const [isID, setId] = useState(null);
+  const [startClick, setStartClick] = useState(true);
   const handleButtonClick = async () => {
+    setStartClick(false);
     try {
       const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
@@ -310,7 +326,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_day: currentDate,
         timecard_date: `${currentDate}-${currentMonth}-${currentYear}`,
         timecard_temp: 0,
-        owner: 'admin',
+        owner: '',
       };
       const responseTimeCard = await axios.post('timecards/add', {
         dataTimeCard,
@@ -322,7 +338,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const openlunchValue = findConfigValue(configData, 'openlunch');
       const closelunchValue = findConfigValue(configData, 'closelunch');
       let resut = calculateTime(openlunchValue, closelunchValue);
-      setId(responseTimeCard.data.id_timecard);
       const dataTimeCardDetails = {
         id_groupwaretimecard: responseTimeCard.data.id_timecard,
         timecard_open: timecard_close_time,
@@ -416,7 +431,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         } else if (compareTime(timecard_open_time, closelunchValue) == 1) {
           // bắt đầu sau 13:00
           if (compareTime(timecard_open_time, closetimeValue) == 1) {
-            console.log('00:00');
+            timecard_time = '00:00';
           } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
             timecard_time = calculateTime(
               timecard_open_time,
@@ -436,13 +451,17 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           }
         }
       }
-      // addTimes;
-      console.log(timecard_time);
+      let timecard_timeover = '00:00';
+      if (compareTime(timecard_close_time, closetimeValue) == 1) {
+        timecard_timeover = calculateTime(closetimeValue, timecard_close_time);
+      }
       const dataTime = {
         id: timecardID,
         timecard_open: timecard_open_time,
         timecard_now: timecard_close_time,
         timecard_time: timecard_time,
+        timecard_timeover: timecard_timeover,
+        editor: users.realname,
       };
 
       try {
@@ -456,6 +475,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       }
     }
   };
+  console.log(calculateTime('17:00', '17:02'));
   //load ngày lễ
   const [holidays, setHolidays] = useState<Holiday[] | undefined>();
   const fetchHolidays = async () => {
@@ -566,20 +586,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const currentMonth = new Date().getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
   const currentYear = new Date().getFullYear();
 
-  const [timecardOpen, setTimecardOpen] = useState<TimecardData[]>([]);
-  const fetchTimecardOpen = async () => {
-    // console.log(usersID);
-    try {
-      const response = await axios.get('timecards/getall/' + usersID);
-      if (response.data && Array.isArray(response.data)) {
-        setTimecardOpen(response.data);
-      } else {
-        setTimecardOpen([]);
-      }
-    } catch (error) {
-      console.error('Error fetching timecard_open:', error);
-    }
-  };
   const handleUpdateComment = async (Id: number) => {
     try {
       const response = await axios.post('timecarddetails/updatecomment', {
@@ -619,13 +625,19 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     closeModaldelete();
   };
   useEffect(() => {
-    fetchTimecardOpen();
-    fetchHolidays();
-    fetchDayoffs();
+    const fetchData = async () => {
+      await fetchHolidays();
+      await fetchDayoffs();
+      await fetchTimecardOpen();
+      calculateTotalTime();
+    };
+    fetchData();
   }, [usersID]);
   useEffect(() => {
     calculateTotalTime();
   }, []);
+
+  const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
   return (
     <>
       {allDays.map((day, rowIndex) => (
@@ -653,12 +665,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           (new Date(day).getMonth() + 1 === currentMonth &&
             new Date(day).getFullYear() === currentYear) ? (
             <>
-              <td>{format(day, 'dd-MM-yyyy')}</td>
-              {otherColumnData.map((column, colIndex) => (
+              <td>
+                {format(day, 'dd/MM')} ({weekdays[day.getDay()]})
+              </td>
+              {/* {otherColumnData.map((column, colIndex) => (
                 <td key={colIndex}>
                   {column.format ? column.format(day) : '...'}
                 </td>
-              ))}
+              ))} */}
               <td
                 className={`${
                   startHours > 7 || (startHours === 7 && startMinutes > 30)
@@ -682,12 +696,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       ))}
                   </>
                 ) : isToday(day) ? (
-                  <button
-                    className="btn btn--medium"
-                    onClick={handleButtonClick}
-                  >
-                    Bắt đầu
-                  </button>
+                  startClick ? (
+                    <button
+                      className="btn btn--medium"
+                      onClick={handleButtonClick}
+                    >
+                      Bắt đầu
+                    </button>
+                  ) : null
                 ) : (
                   ''
                 )}
@@ -783,7 +799,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         <div key={index}>
                           {item.timecard_close !== null &&
                           item.timecard_close !== ''
-                            ? item.timecard_timeinterval
+                            ? (item.timecard_timeinterval,
+                              item.timecard_timeover)
                             : null}
                         </div>
                       ))}
