@@ -18,9 +18,9 @@
                         $data = $row;
                     }
                     if(password_verify($password, $data['password'])) {
-                        $result = "Đăng nhập thành công! chuyển hướng...";
+                        $result = "ok";
                     } else {
-                        $result = "Mật khẩu không hợp lệ";
+                        $result = "error";
                     }
                     // if($password != $data['password']) {
                     //     $result = "Mật khẩu không hợp lệ";
@@ -28,7 +28,7 @@
                     //     $result = "Đăng nhập thành công! chuyển hướng...";
                     // }
                 } else {
-                    $result = "Tên đăng nhập không hợp lệ";
+                    $result = "error";
                 }
                 
 				header('Content-Type: application/json');
