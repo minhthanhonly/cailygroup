@@ -6,7 +6,7 @@ import CTableBody from '../../components/Table/CTableBody';
 import { Heading2 } from '../../components/Heading';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
-import {isValidGroup} from "../../components/Validate";
+import {isValidGroupEdit, isValidGroup} from "../../components/Validate";
 
 interface GroupProps {
   id: string;
@@ -126,7 +126,7 @@ export const Group = () => {
   };
 
   const handleUpdate = async (id: string, group_name: string, event:any) => {
-    const validationErrors = isValidGroup({group_name});
+    const validationErrors = isValidGroupEdit({group_name});
     if (event) {
         event.preventDefault();
         if(validationErrors === true) {
@@ -191,22 +191,22 @@ export const Group = () => {
     });
   }
   const handleSubmint = async() => {
-    if (!groupName) {
-      console.error('Tên nhóm không hợp lệ');
-      return;
-    }
-    try{
-      const group_data = {
-        group_name: groupName,
-        add_level: 1,
-        owner: 'admin',
-      };
-      setGroupName('');
-      const res = await axios.post("groups/add/", group_data);
-      console.log('Data inserted successfully:', res.data);
-      setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-    }
-    catch(error){console.error('Lỗi khi thêm dữ liệu:', error);}
+    const group_name = groupName;
+    const validationErrors = isValidGroup({group_name});
+    if (validationErrors === true) {
+        try{
+          const group_data = {
+            group_name: groupName,
+            add_level: 1,
+            owner: 'admin',
+          };
+          setGroupName('');
+          const res = await axios.post("groups/add/", group_data);
+          console.log('Data inserted successfully:', res.data);
+          setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+        }
+        catch(error){console.error('Lỗi khi thêm dữ liệu:', error);}
+    } 
   };
 
   return (

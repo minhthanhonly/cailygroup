@@ -112,14 +112,22 @@ export const isValidUserEdit = ({...paraUser}) => {
 }
 
 
-const groupName = "Tên Nhóm";
+const groupName = "tên nhóm";
 type paraGroup = {
   group_name: string;
 }
 
-export const isValidGroup = ({...paraGroup}) => {
+export const isValidGroupEdit = ({...paraGroup}) => {
   if(!paraGroup.group_name) {
     toast.error(ERROR['indispensable'] + "!");
+    return false;
+  }
+  return true;
+}
+
+export const isValidGroup = ({...paraGroup}) => {
+  if(!paraGroup.group_name) {
+    toast.error(ERROR['require'] + groupName +  "!");
     return false;
   }
   return true;
