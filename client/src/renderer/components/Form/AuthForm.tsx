@@ -2,6 +2,7 @@ import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import './From.scss';
 import { ChangeEvent, useState } from 'react';
 import axios from '../../api/axios';
+// import axios from '../../api/axiosLocal';
 import useAuth from '../../hooks/useAuth';
 
 function FormLogin(){
@@ -45,6 +46,7 @@ function FormLogin(){
       } else {
         setMsg('Đăng nhập thành công. Đang chuyển hướng...');
         setTimeout(() => {
+          console.log(res.data.info);
           localStorage.setItem('login', 'true');
           const isLoggedIn = localStorage.getItem('login');
           const roles = res2.data.authority_name;
@@ -57,7 +59,8 @@ function FormLogin(){
             "user_group_id": res2.data.user_group,
           }
           localStorage.setItem('users', JSON.stringify(users));
-          setAuth({ isLoggedIn, roles, users });
+          const token = localStorage.setItem('token', res.data.info.token);
+          setAuth({ isLoggedIn, roles, token });
           navigate('/dashboard', { replace: true });
         }, 1500);
       }
