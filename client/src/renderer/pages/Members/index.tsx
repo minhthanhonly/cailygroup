@@ -52,9 +52,9 @@ function Members() {
   * LẤY DANH SÁCH USER THEO NHÓM
   */
   const [selectedGroup, setSelectedGroup] = useState('');
-  const fetchMembersByGroup = async($groupid: string) => {
-    const groupid = {groupid:$groupid};
-    const res = await axios.get("users/groups/"+$groupid);
+  const fetchMembersByGroup = async ($groupid: string) => {
+    const groupid = { groupid: $groupid };
+    const res = await axios.get("users/groups/" + $groupid);
     setListOfUsers(res.data);
   };
   useEffect(() => {
@@ -68,9 +68,9 @@ function Members() {
   */
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDeleteModalid, setDeleteModalId] = useState(0);
-  const handleDelete = async($id: number) => {
+  const handleDelete = async ($id: number) => {
 
-  const formData = {id:$id}
+    const formData = { id: $id }
     const res = await axios.post("users/delete", formData);
     setIsTableUpdated(true);
     closeModal();
@@ -87,7 +87,7 @@ function Members() {
 
   let DataTable: FieldUsers[] = [];
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Số mục muốn hiển thị trên mỗi trang
+  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
   // Tính tổng số trang
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
   const handlePageChange = (page: any) => {
@@ -112,8 +112,8 @@ function Members() {
                   <option value={value.id} key={index}>{value.group_name}</option>
                 ))}
               </select>
+            </div>
           </div>
-        </div>
         </div>
         <div className="box-group__item">
           <InputQuantity total={listOfUsers.length} />
@@ -143,11 +143,11 @@ function Members() {
           ))}
         </tbody>
       </CTable>
-      {/* <Pagination
+      <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         onPageChange={handlePageChange}
-      /> */}
+      />
       <Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
         <h2>Bạn có chắc chắn muốn xóa không?</h2>
         <div className='wrp-button'>

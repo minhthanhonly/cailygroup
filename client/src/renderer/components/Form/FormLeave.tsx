@@ -48,9 +48,136 @@ export const FormLeave: React.FC = () => {
       setLeaveDate(date);
     }
   };
+  const formatTimeDigit = (digit: number): string => {
+    return digit < 10 ? `0${digit}` : `${digit}`;
+  };
+  const calculateTime = (timestart: string, timeend: string): string => {
+    const normalizeTime = (time: string): string => {
+      return time.length === 4 ? `0${time}` : time;
+    };
+    const startTime = new Date(`2000-01-01T${normalizeTime(timestart)}`);
+    const endTime = new Date(`2000-01-01T${normalizeTime(timeend)}`);
+    const timeDiff: number = endTime.getTime() - startTime.getTime();
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
 
-  const handleConfirmClick = () => {
-    console.log(timeStart, timeEnd);
+    const formattedHours = formatTimeDigit(hours);
+    const formattedMinutes = formatTimeDigit(minutes);
+
+    return `${formattedHours}:${formattedMinutes}`;
+  };
+  const compareTime = (time1: string, time2: string): number => {
+    const [hour1, minute1] = time1.split(':').map(Number);
+    const [hour2, minute2] = time2.split(':').map(Number);
+
+    if (hour1 > hour2) {
+      return 1;
+    } else if (hour1 < hour2) {
+      return 2;
+    } else {
+      // Nếu giờ bằng nhau, so sánh phút
+      if (minute1 > minute2) {
+        return 1;
+      } else if (minute1 < minute2) {
+        return 2;
+      } else {
+        // Nếu cả giờ và phút đều bằng nhau
+        return 0;
+      }
+    }
+  };
+  const addTimes = (time1: string, time2: string): string => {
+    const [hour1, minute1] = time1.split(':').map(Number);
+    const [hour2, minute2] = time2.split(':').map(Number);
+
+    let totalHours = hour1 + hour2;
+    let totalMinutes = minute1 + minute2;
+
+    // Xử lý nếu tổng phút vượt quá 60
+    if (totalMinutes >= 60) {
+      totalHours += Math.floor(totalMinutes / 60);
+      totalMinutes %= 60;
+    }
+
+    // Định dạng kết quả để đảm bảo có 2 chữ số
+    const formattedHours = totalHours < 10 ? `0${totalHours}` : `${totalHours}`;
+    const formattedMinutes =
+      totalMinutes < 10 ? `0${totalMinutes}` : `${totalMinutes}`;
+
+    return `${formattedHours}:${formattedMinutes}`;
+  };
+  function findConfigValue(configArray: any[], key: string) {
+    const configItem = configArray.find((item) => item.config_key === key);
+    return configItem ? configItem.config_value : null;
+  }
+  const handleConfirmClick = async () => {
+    let timeLeave = '';
+    const responseConfig = await axios.post('config');
+    const configData = responseConfig.data;
+    const opentimeValue = findConfigValue(configData, 'opentime');
+    const closetimeValue = findConfigValue(configData, 'closetime');
+    const openlunchValue = findConfigValue(configData, 'openlunch');
+    const closelunchValue = findConfigValue(configData, 'closelunch');
+    if (compareTime(timeStart, timeEnd) == 0) {
+      timeLeave = '00:00';
+    } else if (compareTime(timeStart, opentimeValue) != 1) {
+      // bắt đầu trước 7:30
+      if (compareTime(timeEnd, opentimeValue) != 1) {
+        timeLeave = '00:00';
+      } else if (compareTime(timeEnd, openlunchValue) != 1) {
+        timeLeave = calculateTime(opentimeValue, timeEnd);
+      } else if (compareTime(timeEnd, closelunchValue) != 1) {
+        timeLeave = calculateTime(opentimeValue, openlunchValue);
+      } else if (compareTime(timeEnd, closetimeValue) != 1) {
+        timeLeave = addTimes(
+          calculateTime(opentimeValue, openlunchValue),
+          calculateTime(closelunchValue, timeEnd),
+        );
+      } else {
+        timeLeave = addTimes(
+          calculateTime(opentimeValue, openlunchValue),
+          calculateTime(closelunchValue, closetimeValue),
+        );
+      }
+    } else {
+      //bắt đầu sau 7:30
+      if (compareTime(timeStart, openlunchValue) != 1) {
+        // bắt đầu trước 11:30
+        if (compareTime(timeEnd, openlunchValue) != 1) {
+          timeLeave = calculateTime(timeStart, timeEnd);
+        } else if (compareTime(timeEnd, closelunchValue) != 1) {
+          timeLeave = calculateTime(timeStart, openlunchValue);
+        } else if (compareTime(timeEnd, closetimeValue) != 1) {
+          timeLeave = addTimes(
+            calculateTime(timeStart, openlunchValue),
+            calculateTime(closelunchValue, timeEnd),
+          );
+        } else {
+          timeLeave = addTimes(
+            calculateTime(timeStart, openlunchValue),
+            calculateTime(closelunchValue, closetimeValue),
+          );
+        }
+      } else if (compareTime(timeStart, closelunchValue) == 1) {
+        // bắt đầu sau 13:00
+        if (compareTime(timeStart, closetimeValue) == 1) {
+          timeLeave = '00:00';
+        } else if (compareTime(timeEnd, closetimeValue) != 1) {
+          timeLeave = calculateTime(timeStart, timeEnd);
+        } else {
+          timeLeave = calculateTime(timeStart, closetimeValue);
+        }
+      } else {
+        // bắt đầu trong khoảng 11:30-13:00
+        if (compareTime(timeEnd, closelunchValue) != 1) {
+          timeLeave = '00:00';
+        } else if (compareTime(timeEnd, closetimeValue) != 1) {
+          timeLeave = calculateTime(closelunchValue, timeEnd);
+        } else {
+          timeLeave = calculateTime(closelunchValue, closetimeValue);
+        }
+      }
+    }
     const group_data = {
       user_id: usersID,
       date: format(leaveDate, 'dd-MM-yyyy').toString(),
@@ -60,7 +187,7 @@ export const FormLeave: React.FC = () => {
       time_end: timeEnd,
       note: note,
       // day_number: calculateDayDifference(startDate, endDate),
-      day_number: 1,
+      day_number: timeLeave,
       status: 0,
       owner: '',
     };
@@ -132,9 +259,6 @@ export const FormLeave: React.FC = () => {
               <DatePicker
                 selected={leaveDate}
                 onChange={(date) => handleLeaveDateChange(date)}
-                // selectsStart
-                // startDate={startDate}
-                // endDate={endDate}
               />
             </div>
           </div>

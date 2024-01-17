@@ -7,24 +7,19 @@ import axios from "../../api/axios";
 import TimecardHolidays from "./TimecardHolidays";
 import { symlink } from 'fs';
 
+import { toast } from "react-toastify";
+
 import './TimecardSetting.scss';
 
 export const TimecardSetting = () => {
-
-
   const [timeInputHours, setTimeInputHours] = useState<number>(0);
   const [timeInputMinutes, setTimeInputMinutes] = useState<number>(0);
-
   const [timeOutHours, setTimeOutHours] = useState<number>(0);
   const [timeOutMinutes, setTimeOutMinutes] = useState<number>(0);
-
-
   const [timeLunchStartHouse, setTimeLunchStartHouse] = useState<number>(0);
   const [timeLunchStartMinutes, setTimeLunchStartMinutes] = useState<number>(0);
-
   const [timeLunchEndHouse, setTimeLunchEndHouse] = useState<number>(0);
   const [timeLunchEndMinutes, setTimeLunchEndMinutes] = useState<number>(0);
-
   const [serverMessage, setServerMessage] = useState('');
   const [isTimeChangedInput, setIsTimeChangedInput] = useState(false);
   const [isTimeChangedOutput, setIsTimeChangedOutput] = useState(false);
@@ -52,7 +47,6 @@ export const TimecardSetting = () => {
       try {
         const response = await axios.get('timecards/setting');
         const data = response.data;
-        console.log('Data from server:', data);
 
         if (!Array.isArray(data)) {
           console.error('Dữ liệu không phải là một mảng');
@@ -61,15 +55,10 @@ export const TimecardSetting = () => {
 
         // Tìm đối tượng có config_key là 'opentime'
         const opentimeObject = data.find((item: { config_key: string; }) => item.config_key === 'opentime');
-
         // Tìm đối tượng có config_key là 'closetime'
         const closetimeObject = data.find((item: { config_key: string; }) => item.config_key === 'closetime');
-
         const lunchStarttimeObject = data.find((item: { config_key: string; }) => item.config_key === 'openlunch');
         const lunchEndtimeObject = data.find((item: { config_key: string; }) => item.config_key === 'closelunch');
-
-
-
 
         if (opentimeObject && closetimeObject && lunchStarttimeObject && lunchEndtimeObject) {
           // Tách giờ và phút từ chuỗi
@@ -80,17 +69,12 @@ export const TimecardSetting = () => {
 
           // Chắc chắn rằng có đủ phần tử để tránh lỗi
           if (opentimeParts.length === 2 && closetimeParts.length === 2 && lunchStartParts.length === 2 && lunchEndParts.length === 2) {
-
-
             const openHour = parseInt(opentimeParts[0], 10);
             const openMinute = parseInt(opentimeParts[1], 10);
-
             const closeHour = parseInt(closetimeParts[0], 10);
             const closeMinute = parseInt(closetimeParts[1], 10);
-
             const lunchHourStart = parseInt(lunchStartParts[0], 10);
             const lunchMinuteStart = parseInt(lunchStartParts[1], 10);
-
             const lunchHourEnd = parseInt(lunchEndParts[0], 10);
             const lunchMinuteEnd = parseInt(lunchEndParts[1], 10);
 
@@ -137,15 +121,10 @@ export const TimecardSetting = () => {
         setTimeInputMinutes(parseInt(timeValues.openminute, 10) || 0);
         setTimeOutHours(parseInt(timeValues.closehour, 10) || 0);
         setTimeOutMinutes(parseInt(timeValues.closeminute, 10) || 0);
-
-
         setTimeLunchStartHouse(parseInt(timeValues.lunchStartHour, 10) || 0);
         setTimeLunchStartMinutes(parseInt(timeValues.lunchStartMinutes, 10) || 0);
-
         setTimeLunchEndHouse(parseInt(timeValues.lunchEndHour, 10) || 0);
         setTimeLunchEndMinutes(parseInt(timeValues.lunchEndMinutes, 10) || 0);
-
-
 
       } catch (error) {
         console.error('Lỗi khi lấy giá trị thời gian:', error);
@@ -159,9 +138,7 @@ export const TimecardSetting = () => {
   const itemsPerPage = 10;
   const totalPages = Math.ceil(Data.length / itemsPerPage);
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
+  const handlePageChange = (page: any) => { setCurrentPage(page); };
 
   const handleCardTimeChange = (
     hours: number,
@@ -208,7 +185,6 @@ export const TimecardSetting = () => {
       setIsTimeLunchEnd(true)
     }
 
-
   };
 
   const handleSaveTimeInput = async () => {
@@ -224,19 +200,13 @@ export const TimecardSetting = () => {
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
-          setServerMessage(`Chỉnh giờ vào là: ${timeInputString} thành công`);
-
+          toast.success(`Chỉnh giờ vào là: ${timeInputString} thành công`);
           setTimeout(() => {
-            setServerMessage('');
             setIsTimeChangedInput(false);
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
         } else if (response.status === 400) {
-          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
-          setTimeout(() => {
-            setServerMessage('');
-
-          }, 3000);
+          toast.error("bạn bị lỗi vui lòng kiểm tra lại nhập");
         }
       }
     } catch (error) {
@@ -264,19 +234,14 @@ export const TimecardSetting = () => {
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
-          setServerMessage(`Chỉnh giờ kết thúc là: ${timeOutString} thành công`);
+          toast.success(`Chỉnh giờ kết thúc là: ${timeOutString} thành công`);
 
           setTimeout(() => {
-            setServerMessage('');
             setIsTimeChangedOutput(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
         } else if (response.status === 400) {
-          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
-          setTimeout(() => {
-            setServerMessage('');
-
-          }, 3000);
+          toast.error("bạn bị lỗi vui lòng kiểm tra lại nhập");
           // Xử lý lỗi và hiển thị thông điệp lỗi cho người dùng
         }
       }
@@ -305,19 +270,13 @@ export const TimecardSetting = () => {
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
-          setServerMessage(`Chỉnh giờ bắt đầu nghỉ trưa là: ${timeOutString} thành công`);
-
+          toast.success(`Chỉnh giờ bắt đầu nghỉ trưa là: ${timeOutString} thành công`);
           setTimeout(() => {
-            setServerMessage('');
             setIsTimeLunchStart(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
         } else if (response.status === 400) {
-          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
-          setTimeout(() => {
-            setServerMessage('');
-
-          }, 3000);
+          toast.error("bạn bị lỗi vui lòng kiểm tra lại nhập");
           // Xử lý lỗi và hiển thị thông điệp lỗi cho người dùng
         }
       }
@@ -331,9 +290,6 @@ export const TimecardSetting = () => {
         console.error('Unexpected error:', error);
       }
     }
-
-
-
   };
   const handleSaveLunchEndTime = async () => {
     try {
@@ -344,22 +300,16 @@ export const TimecardSetting = () => {
         const timeOutString = `${formattedLunchEndHouse}:${formattedLunchEndMinutes}`
         const dataUpdateArray = [{ id: 2, config_key: 'closelunch', hoursMinutes: timeOutString },];
         // Thêm các đối tượng khác nếu cần
-
-
-
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
-
-          setServerMessage(`Chỉnh giờ kết thúc nghỉ trưa là: ${timeOutString} thành công`);
-
+          toast.success(`Chỉnh giờ kết thúc nghỉ trưa là: ${timeOutString} thành công`);
           setTimeout(() => {
-            setServerMessage('');
             setIsTimeLunchEnd(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
         } else if (response.status === 400) {
-          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
+          toast.error("bạn bị lỗi vui lòng kiểm tra lại nhập");
           setTimeout(() => {
             setServerMessage('');
 
@@ -377,9 +327,6 @@ export const TimecardSetting = () => {
         console.error('Unexpected error:', error);
       }
     }
-
-
-
   };
 
   return (
@@ -388,61 +335,29 @@ export const TimecardSetting = () => {
       <Heading3 text="Cấu hình giờ vào - giờ ra" />
       <div className='center'> {serverMessage == '' ? '' : <div className="box-bg"><p className="bg bg-green">{serverMessage}</p></div>}</div>
       <div className="card-box">
-
         <div className="card-box--center">
           <h4>Giờ vào</h4>
-
-          <CardTime
-            onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')}
-            defaultHours={configData.openhour}
-            defaultMinutes={configData.openminute}
-          />
-          <button className="btn btn--widthAuto" onClick={handleSaveTimeInput} disabled={!isTimeChangedInput}>
-            Cập nhật
-          </button>
-
+          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeInput')} defaultHours={configData.openhour} defaultMinutes={configData.openminute} />
+          <button className="btn btn--widthAuto" onClick={handleSaveTimeInput} disabled={!isTimeChangedInput}> Cập nhật</button>
         </div>
         <div className="card-box--center">
           <h4>Giờ ra</h4>
-          <CardTime
-            onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')}
-            defaultHours={configData.closehour}
-            defaultMinutes={configData.closeminute}
-          />
-          <button className="btn btn--widthAuto" onClick={handleSaveOutTime} disabled={!isTimeChangedOutput}>
-            Cập nhật
-          </button>
+          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'timeOut')} defaultHours={configData.closehour} defaultMinutes={configData.closeminute} />
+          <button className="btn btn--widthAuto" onClick={handleSaveOutTime} disabled={!isTimeChangedOutput}> Cập nhật </button>
         </div>
-
         <div className="card-box--center">
           <h4>Bắt Đầu Nghỉ Trưa</h4>
-          <CardTime
-            onChange={(h, m) => handleCardTimeChange(h, m, 'openlunch')}
-            defaultHours={configData.lunchStartHour}
-            defaultMinutes={configData.lunchStartMinutes}
-          />
-          <button className="btn btn--widthAuto" onClick={handleSaveLunchStartTime} disabled={!isTimeLunchStart}>
-            Cập nhật
-          </button>
+          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'openlunch')} defaultHours={configData.lunchStartHour} defaultMinutes={configData.lunchStartMinutes} />
+          <button className="btn btn--widthAuto" onClick={handleSaveLunchStartTime} disabled={!isTimeLunchStart}>  Cập nhật </button>
         </div>
         <div className="card-box--center">
           <h4>Kết Thúc Nghỉ Trưa</h4>
-          <CardTime
-            onChange={(h, m) => handleCardTimeChange(h, m, 'closelunch')}
-            defaultHours={configData.lunchEndHour}
-            defaultMinutes={configData.lunchEndMinutes}
-          />
-          <button className="btn btn--widthAuto" onClick={handleSaveLunchEndTime} disabled={!isTimeLunchEnd}>
-            Cập nhật
-          </button>
+          <CardTime onChange={(h, m) => handleCardTimeChange(h, m, 'closelunch')} defaultHours={configData.lunchEndHour} defaultMinutes={configData.lunchEndMinutes} />
+          <button className="btn btn--widthAuto" onClick={handleSaveLunchEndTime} disabled={!isTimeLunchEnd}>   Cập nhật  </button>
         </div>
       </div>
       <TimecardHolidays />
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      />
+      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
     </>
   );
 };
