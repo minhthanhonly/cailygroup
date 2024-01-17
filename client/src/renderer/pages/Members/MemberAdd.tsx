@@ -29,6 +29,10 @@ function MemberAdd() {
     }
 	}
 
+  const handleBack = () => {
+    navigate('/members');
+  }
+
   /*
   *
   * GET DATA FROM AUTHORITY TABLE
@@ -190,7 +194,7 @@ function MemberAdd() {
 								</div>
 								<div className="wrp-button">
 									<button className="btn btn--green" type="submit">Xác nhận</button>
-									<button className="btn btn--orange">Hủy</button>
+									<button className="btn btn--orange" onClick={handleBack}>Hủy</button>
 								</div>
 							</form>
 						</div>

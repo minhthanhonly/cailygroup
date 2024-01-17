@@ -223,19 +223,18 @@ export const TimecardSetting = () => {
         // Thêm các đối tượng khác nếu cần
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
-        if (response.data.message) {
-          setServerMessage(response.data.message);
+        if (response.status === 200) {
+          setServerMessage(`Chỉnh giờ vào là: ${timeInputString} thành công`);
 
           setTimeout(() => {
             setServerMessage('');
             setIsTimeChangedInput(false);
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
-        } else if (response.data.error) {
-          setServerMessage(response.data.error);
+        } else if (response.status === 400) {
+          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
           setTimeout(() => {
             setServerMessage('');
-
 
           }, 3000);
         }
@@ -262,21 +261,18 @@ export const TimecardSetting = () => {
         const dataUpdateArray = [{ id: 2, config_key: 'closetime', hoursMinutes: timeOutString },];
         // Thêm các đối tượng khác nếu cần
 
-        console.log("closetime", dataUpdateArray);
-
-
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
-        if (response.data.message) {
-          setServerMessage(response.data.message);
+        if (response.status === 200) {
+          setServerMessage(`Chỉnh giờ kết thúc là: ${timeOutString} thành công`);
 
           setTimeout(() => {
             setServerMessage('');
             setIsTimeChangedOutput(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
-        } else if (response.data.error) {
-          setServerMessage(response.data.error);
+        } else if (response.status === 400) {
+          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
           setTimeout(() => {
             setServerMessage('');
 
@@ -295,8 +291,6 @@ export const TimecardSetting = () => {
       }
     }
 
-
-
   };
 
   const handleSaveLunchStartTime = async () => {
@@ -308,22 +302,18 @@ export const TimecardSetting = () => {
         const timeOutString = `${formattedLunchStartHouse}:${formattedLunchStartMinutes}`
         const dataUpdateArray = [{ id: 2, config_key: 'openlunch', hoursMinutes: timeOutString },];
         // Thêm các đối tượng khác nếu cần
-
-        console.log("closetime", dataUpdateArray);
-
-
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
-        if (response.data.message) {
-          setServerMessage(response.data.message);
+        if (response.status === 200) {
+          setServerMessage(`Chỉnh giờ bắt đầu nghỉ trưa là: ${timeOutString} thành công`);
 
           setTimeout(() => {
             setServerMessage('');
             setIsTimeLunchStart(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
-        } else if (response.data.error) {
-          setServerMessage(response.data.error);
+        } else if (response.status === 400) {
+          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
           setTimeout(() => {
             setServerMessage('');
 
@@ -359,16 +349,17 @@ export const TimecardSetting = () => {
 
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
-        if (response.data.message) {
-          setServerMessage(response.data.message);
+        if (response.status === 200) {
+
+          setServerMessage(`Chỉnh giờ kết thúc nghỉ trưa là: ${timeOutString} thành công`);
 
           setTimeout(() => {
             setServerMessage('');
             setIsTimeLunchEnd(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
-        } else if (response.data.error) {
-          setServerMessage(response.data.error);
+        } else if (response.status === 400) {
+          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
           setTimeout(() => {
             setServerMessage('');
 

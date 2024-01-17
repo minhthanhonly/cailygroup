@@ -158,7 +158,7 @@ export const AddGroup = () => {
       <input
         className="form-input"
         type="text"
-        placeholder="Tên nhóm muốn thêm"
+        placeholder="Tên nhóm"
       />
       <button className="btn">Thêm</button>
     </div>
@@ -184,7 +184,7 @@ export const EditGroup = () => {
                 <input
                   className="form-input"
                   type="text"
-                  placeholder="Nhập Tên nhóm"
+                  placeholder="Nhập tên nhóm"
                 />
               </div>
               <div className="wrp-button">
@@ -260,7 +260,7 @@ export const AddEditMember = () => {
                     className="fluid-image"
                   />
                 </label>
-                <SelectCustom />
+                <SelectCustom onGroupChange={()=>{}}/>
               </div>
 
               <div className="form-group box-group__item left">
@@ -272,7 +272,7 @@ export const AddEditMember = () => {
                     className="fluid-image"
                   />
                 </label>
-                <SelectCustom />
+                <SelectCustom onGroupChange={()=>{}}/>
               </div>
               <div className="wrp-button">
                 <button className="btn btn--green">Xác nhận</button>

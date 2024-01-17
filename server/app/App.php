@@ -37,12 +37,6 @@
                 $this->__controller = ucfirst($this->__controller);
             }
 
-            // echo '<pre>';
-            // print_r($urlArr);
-            // echo '</pre>';
-
-            // echo $this->__controller;
-
             if(file_exists('app/controllers/'.$this->__controller.'.php')) {
                 require_once 'app/controllers/'.($this->__controller).'.php';
                 // Kiểm tra class $this->__controller tồn tại
@@ -64,11 +58,6 @@
 
             // Xử lý params
             $this->__params = array_values($urlArr);
-
-            // echo '<pre>';
-            // print_r($this->__controller);
-            // echo '</pre>';
-            // echo $this->__action."<br/>";
 
             // Kiểm tra method tồn tại
             if(method_exists($this->__controller, $this->__action)) {

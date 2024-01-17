@@ -30,33 +30,6 @@
 		function getDetail($userid){
 			global $conn;
 
-			// $header = [
-            //     'alg' => 'SHA256',
-            //     'typ' => 'JWT'
-            // ];
-
-			// $payload = [
-            //     'sub' => '1234567890',
-            //     'name' => 'John Doe',
-			// 	'admin' => true,
-            // ];
-
-			// function base64url_encode($str){
-			// 	return rtrim(strtr(base64_encode($str), '+/', '-_'), '=');
-			// }
-			
-			// function generate_jwt($header, $payload, $secret = 'secret'){
-			// 	$header_encode = base64url_encode(json_encode($header));
-			// 	$payload_encode = base64url_encode(json_encode($payload));
-
-			// 	$signature = hash_hmac('SHA256',  $header_encode . '.' . $payload_encode, $secret, true);
-			// 	$signature_encode = base64url_encode($signature);
-
-			// 	$jwt = $header_encode . '.' . $payload_encode .'.' . $signature_encode;
-			// 	return $jwt;
-			// }
-			// $jwt = generate_jwt($header, $payload);
-
 			// Thực hiện truy vấn SELECT
 			$sql = "SELECT users.*, groups.group_name, authority.authority_name FROM users 
 			JOIN groups ON users.user_group = groups.id
@@ -69,9 +42,8 @@
 			if ($result->num_rows > 0) {
 				// Duyệt qua từng dòng dữ liệu
 				while ($row = $result->fetch_assoc()) {
-					$data= $row;
+					$data = $row;
 				}
-				// $data['token']= $jwt;
 			} else {
 				echo "Không có dữ liệu";
 			}
