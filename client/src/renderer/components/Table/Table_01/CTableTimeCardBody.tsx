@@ -46,6 +46,7 @@ interface TimecardData {
   timecard_timeover: string;
   timecard_timeinterval: String;
   timecard_comment: string;
+  editor: string;
 }
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
 interface CombinedProps extends SelectMY {
@@ -233,7 +234,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const response = await axios.get('timecards/getall/' + usersID);
       if (response.data && Array.isArray(response.data)) {
         setTimecardOpen(response.data);
-        console.log(response.data);
       } else {
         setTimecardOpen([]);
       }
@@ -461,7 +461,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_now: timecard_close_time,
         timecard_time: timecard_time,
         timecard_timeover: timecard_timeover,
-        editor: users.realname,
       };
 
       try {
@@ -475,7 +474,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       }
     }
   };
-  console.log(calculateTime('17:00', '17:02'));
   //load ngày lễ
   const [holidays, setHolidays] = useState<Holiday[] | undefined>();
   const fetchHolidays = async () => {
@@ -619,6 +617,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       timecard_time: timecardTime,
       timecard_timeover: timecardOvertime,
       timecard_comment: timecardNote,
+      editor: users.realname,
     });
     console.log(response.data);
     fetchTimecardOpen();
@@ -930,6 +929,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                 >
                                   Sửa giờ
                                 </span>
+                                <p>{item.editor}</p>
                               </>
                             ) : null
                           ) : null}

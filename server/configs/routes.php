@@ -46,10 +46,9 @@
 
 
     //timecardSetting
-    // <Route path="timecards/setting" element={<TimecardSetting />} />
-    
     $routes['timecards/setting'] = 'timecards/setting';
     $routes['timecards/getInput'] = 'timecards/getInput';
+    
     // timecardslist
     $routes['timecards/list'] = 'timecards/list';
 

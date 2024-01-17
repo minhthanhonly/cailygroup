@@ -20,7 +20,7 @@
             }
             $conn->close();
         }
-		function postUpdate($timecard_now, $timecard_originalclose, $timecard_interval, $overtime, $editor, $timecardId){
+		function postUpdate($timecard_now, $timecard_originalclose, $timecard_interval, $overtime, $timecardId){
 			global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
             $timecardId = isset($data["dataTime"]["id"]) ? $data["dataTime"]["id"] : null;
@@ -28,12 +28,11 @@
             $timecard_now = isset($data["dataTime"]["timecard_now"]) ? $data["dataTime"]["timecard_now"] : null;
             $timecard_time = isset($data["dataTime"]["timecard_time"]) ? $data["dataTime"]["timecard_time"] : null;
             $timecard_timeover = isset($data["dataTime"]["timecard_timeover"]) ? $data["dataTime"]["timecard_timeover"] : null;
-            $editor = isset($data["dataTime"]["editor"]) ? $data["dataTime"]["editor"] : null;
             
             
-            $sql = "UPDATE timecard_details SET timecard_close = ?, timecard_originalclose = ?, timecard_time= ?, timecard_timeover = ?, editor=? WHERE id_groupwaretimecard = ?";
+            $sql = "UPDATE timecard_details SET timecard_close = ?, timecard_originalclose = ?, timecard_time= ?, timecard_timeover = ? WHERE id_groupwaretimecard = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssssi", $timecard_now, $timecard_now, $timecard_time, $timecard_timeover, $editor, $timecardId);
+            $stmt->bind_param("ssssi", $timecard_now, $timecard_now, $timecard_time, $timecard_timeover, $timecardId);
 
             if ($stmt->execute()) {
                 http_response_code(200);
@@ -79,13 +78,15 @@
             $timecard_time = $data['timecard_time'];
             $timecard_timeover = $data['timecard_timeover'];
             $timecard_comment = $data['timecard_comment'];
+            $editor = $data['editor'];
+            
 
-            $sql = "UPDATE timecard_details SET timecard_open = ?, timecard_close = ?, timecard_time = ?, timecard_timeover = ?, timecard_comment = ?, updatedAt = NOW()  WHERE id = $id";
+            $sql = "UPDATE timecard_details SET timecard_open = ?, timecard_close = ?, timecard_time = ?, timecard_timeover = ?, timecard_comment = ?, editor= ?, updatedAt = NOW()  WHERE id = $id";
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
             }
-            $stmt->bind_param("sssss", $timecard_open, $timecard_close, $timecard_time, $timecard_timeover ,$timecard_comment);
+            $stmt->bind_param("ssssss", $timecard_open, $timecard_close, $timecard_time, $timecard_timeover ,$timecard_comment, $editor);
             if ($stmt->execute()) {
                 http_response_code(200);
                 echo json_encode(["success" => true]);
