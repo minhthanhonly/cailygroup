@@ -34,12 +34,16 @@
       width: 100%;
     }
   }
+  &-leave {
+    .form-group {
+      flex-wrap: wrap;
+    }
+  }
   &-group {
     margin-bottom: 2rem;
     display: flex;
     align-items: flex-start;
     width: 61rem;
-    flex-wrap: wrap;
     &--small {
       label {
         // width: 14rem !important;

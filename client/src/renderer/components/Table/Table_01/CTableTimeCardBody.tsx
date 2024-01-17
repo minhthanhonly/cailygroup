@@ -416,7 +416,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         } else if (compareTime(timecard_open_time, closelunchValue) == 1) {
           // bắt đầu sau 13:00
           if (compareTime(timecard_open_time, closetimeValue) == 1) {
-            console.log('00:00');
+            timecard_time = '00:00';
           } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
             timecard_time = calculateTime(
               timecard_open_time,
@@ -573,6 +573,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const response = await axios.get('timecards/getall/' + usersID);
       if (response.data && Array.isArray(response.data)) {
         setTimecardOpen(response.data);
+        console.log(response.data);
       } else {
         setTimecardOpen([]);
       }
@@ -783,7 +784,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         <div key={index}>
                           {item.timecard_close !== null &&
                           item.timecard_close !== ''
-                            ? item.timecard_timeinterval
+                            ? (item.timecard_timeinterval,
+                              item.timecard_timeover)
                             : null}
                         </div>
                       ))}
