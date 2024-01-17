@@ -87,9 +87,10 @@ export const Timecard = () => {
     const startRow = 4;
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet(
-      `Timecards_${realname}_${month}_${year}`.slice(0, 50),
-    );
+    const maxWorksheetNameLength = 100;
+    const truncatedWorksheetName =
+      `Timecard_${realname}_${month}_${year}`.slice(0, maxWorksheetNameLength);
+    const worksheet = workbook.addWorksheet(truncatedWorksheetName);
 
     // Merge cells for the name and date
     worksheet.mergeCells(`A1:G3`);
@@ -215,7 +216,10 @@ export const Timecard = () => {
     }
 
     // Combine the variables and truncate if necessary
-    const sheetName = `Timecards_${realname}_${month}_${year}`.slice(0, 31);
+    const sheetName = `Timecard_${realname}_${month}_${year}`.slice(
+      0,
+      maxWorksheetNameLength,
+    );
 
     // Save the workbook to a file
     const buffer = await workbook.xlsx.writeBuffer();

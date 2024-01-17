@@ -7,6 +7,8 @@ import axios from "../../api/axios";
 import TimecardHolidays from "./TimecardHolidays";
 import { symlink } from 'fs';
 
+import { toast } from "react-toastify";
+
 import './TimecardSetting.scss';
 
 export const TimecardSetting = () => {
@@ -198,19 +200,13 @@ export const TimecardSetting = () => {
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
-          setServerMessage(`Chỉnh giờ vào là: ${timeInputString} thành công`);
-
+          toast.success(`Chỉnh giờ vào là: ${timeInputString} thành công`);
           setTimeout(() => {
-            setServerMessage('');
             setIsTimeChangedInput(false);
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
         } else if (response.status === 400) {
-          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
-          setTimeout(() => {
-            setServerMessage('');
-
-          }, 3000);
+          toast.error("bạn bị lỗi vui lòng kiểm tra lại nhập");
         }
       }
     } catch (error) {
@@ -238,19 +234,14 @@ export const TimecardSetting = () => {
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
-          setServerMessage(`Chỉnh giờ kết thúc là: ${timeOutString} thành công`);
+          toast.success(`Chỉnh giờ kết thúc là: ${timeOutString} thành công`);
 
           setTimeout(() => {
-            setServerMessage('');
             setIsTimeChangedOutput(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
         } else if (response.status === 400) {
-          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
-          setTimeout(() => {
-            setServerMessage('');
-
-          }, 3000);
+          toast.error("bạn bị lỗi vui lòng kiểm tra lại nhập");
           // Xử lý lỗi và hiển thị thông điệp lỗi cho người dùng
         }
       }
@@ -279,18 +270,13 @@ export const TimecardSetting = () => {
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
-          setServerMessage(`Chỉnh giờ bắt đầu nghỉ trưa là: ${timeOutString} thành công`);
-
+          toast.success(`Chỉnh giờ bắt đầu nghỉ trưa là: ${timeOutString} thành công`);
           setTimeout(() => {
-            setServerMessage('');
             setIsTimeLunchStart(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
         } else if (response.status === 400) {
-          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
-          setTimeout(() => {
-            setServerMessage('');
-          }, 3000);
+          toast.error("bạn bị lỗi vui lòng kiểm tra lại nhập");
           // Xử lý lỗi và hiển thị thông điệp lỗi cho người dùng
         }
       }
@@ -317,14 +303,13 @@ export const TimecardSetting = () => {
         const response = await axios.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
-          setServerMessage(`Chỉnh giờ kết thúc nghỉ trưa là: ${timeOutString} thành công`);
+          toast.success(`Chỉnh giờ kết thúc nghỉ trưa là: ${timeOutString} thành công`);
           setTimeout(() => {
-            setServerMessage('');
             setIsTimeLunchEnd(false)
           }, 3000); // 5000 miliseconds = 5 giây
           // Hiển thị thông điệp thành công cho người dùng
         } else if (response.status === 400) {
-          setServerMessage("bạn bị lỗi vui lòng kiểm tra lại nhập");
+          toast.error("bạn bị lỗi vui lòng kiểm tra lại nhập");
           setTimeout(() => {
             setServerMessage('');
 

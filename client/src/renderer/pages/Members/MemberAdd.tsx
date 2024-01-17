@@ -2,42 +2,42 @@ import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
-import {isValidUser} from "../../components/Validate";
+import { isValidUser } from "../../components/Validate";
 
 function MemberAdd() {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-	const [formValue, setFormValue] = useState({userid: '', password: '', password_confirm: '', realname: '', authority: '', user_group: ''})
-  const [message, setMessage] = useState('');
+	const [formValue, setFormValue] = useState({ userid: '', password: '', password_confirm: '', realname: '', authority: '', user_group: '' })
+	const [message, setMessage] = useState('');
 	const handleInput = (e) => {
-		setFormValue({...formValue, [e.target.name]:e.target.value})
+		setFormValue({ ...formValue, [e.target.name]: e.target.value })
 	}
 
-	const handleSubmit = async(e) => {
-    const validationErrors = isValidUser({...formValue});
-    e.preventDefault();
-    if(validationErrors === true) {
-      const formData = {userid:formValue.userid, password:formValue.password, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-      const res = await axios.post("users/add", formData);
+	const handleSubmit = async (e) => {
+		const validationErrors = isValidUser({ ...formValue });
+		e.preventDefault();
+		if (validationErrors === true) {
+			const formData = { userid: formValue.userid, password: formValue.password, realname: formValue.realname, authority: formValue.authority, user_group: formValue.user_group }
+			const res = await axios.post("users/add", formData);
 
-      if(res.data.success){
-        setMessage(res.data.success);
-        setTimeout(() => {
-          navigate('/members');
-        }, 2000);
-      }
-    }
+			if (res.data.success) {
+				setMessage(res.data.success);
+				setTimeout(() => {
+					navigate('/members');
+				}, 2000);
+			}
+		}
 	}
 
-  const handleBack = () => {
-    navigate('/members');
-  }
+	const handleBack = () => {
+		navigate('/members');
+	}
 
-  /*
-  *
-  * GET DATA FROM AUTHORITY TABLE
-  *
-  */
+	/*
+	*
+	* GET DATA FROM AUTHORITY TABLE
+	*
+	*/
 	type FieldAuthority = {
 		id: string,
 		authority_name: string,
@@ -58,11 +58,11 @@ function MemberAdd() {
 		});
 	}
 
-  /*
-  *
-  * GET DATA FROM GROUPS TABLE
-  *
-  */
+	/*
+	*
+	* GET DATA FROM GROUPS TABLE
+	*
+	*/
 	type FieldGroups = {
 		id: string,
 		group_name: string,
@@ -86,7 +86,7 @@ function MemberAdd() {
 	return (
 		<>
 			<Heading2 text="Thêm thành viên" />
-      {message=='' ? '' : <div className="box-bg"><p className="bg bg-green">{message}</p></div>}
+			{message == '' ? '' : <div className="box-bg"><p className="bg bg-green">{message}</p></div>}
 			<div className="form-user form">
 				<div className="form-content">
 					<div className="row">
@@ -119,12 +119,12 @@ function MemberAdd() {
 									</label>
 									<input
 										className="form-input"
-										type="text"
+										type="password"
 										name="password"
 										value={formValue.password} onChange={handleInput}
 									/>
-                </div>
-                <div className="form-group">
+								</div>
+								<div className="form-group">
 									<label>
 										Mật khẩu (Xác nhận) *
 										<img
@@ -135,7 +135,7 @@ function MemberAdd() {
 									</label>
 									<input
 										className="form-input"
-										type="text"
+										type="password"
 										name="password_confirm"
 										value={formValue.password_confirm} onChange={handleInput} placeholder="Nhập lại mật khẩu"
 									/>
@@ -167,7 +167,7 @@ function MemberAdd() {
 									</label>
 									<div className="select__box group">
 										<select name="user_group" value={formValue.user_group} onChange={handleInput}>
-                      <option value="-1">----------------------- Chọn nhóm -----------------------</option>
+											<option value="-1">----------------------- Chọn nhóm -----------------------</option>
 											{DataGroups.map((value, index) => (
 												<option value={value.id} key={index}>{value.group_name}</option>
 											))}
@@ -185,7 +185,7 @@ function MemberAdd() {
 									</label>
 									<div className="select__box group">
 										<select name="authority" value={formValue.authority} onChange={handleInput}>
-                      <option value="-1">---------------- Chọn quyền truy cập ----------------</option>
+											<option value="-1">---------------- Chọn quyền truy cập ----------------</option>
 											{DataAuthority.map((value, index) => (
 												<option value={value.id} key={index}>{value.authority_name}</option>
 											))}

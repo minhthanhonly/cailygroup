@@ -14,7 +14,7 @@ function DashboardTime() {
     'T7',
   ];
   useEffect(() => {
-    const fetchTime = async() => {
+    const fetchTime = async () => {
       try {
         const response = await axios.get(
           urlTimeApi,
@@ -40,7 +40,7 @@ function DashboardTime() {
 
 
   let formattedDay, formattedMonth, formattedDate, formattedHour, formattedMinute, formattedSecond, formattedDatef;
-  if(currentTime){
+  if (currentTime) {
     formattedDay = weekdays[currentTime.getDay()];
     formattedMonth = currentTime.getMonth() + 1;
     formattedDate = currentTime.getDate();
