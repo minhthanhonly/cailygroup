@@ -133,7 +133,7 @@ export const Dayoff = () => {
           heads={[
             'Họ và tên',
             'nhóm',
-            'Số Ngày',
+            'Số giờ',
             'Giờ bắt đầu',
             'Giờ kết thúc',
             'Ghi chú',
@@ -146,6 +146,7 @@ export const Dayoff = () => {
             currentPage * itemsPerPage,
           )}
           path_edit="/"
+          path_timecard={''}
         />
       </CTable>
       <Pagination

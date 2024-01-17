@@ -65,18 +65,21 @@ export const DayoffApply = () => {
         Đồng ý
       </a>
     );
-    let dynamicNo = (
-      <a
-        className="btn btn--medium btn--orange"
-        onClick={(event) => {
-          deleteStatus(listOfGroups[i].id, event);
-        }}
-        href={listOfGroups[i].id}
-      >
-        Từ chối
-      </a>
-    );
-    if (listOfGroups[i].status == 0) {
+    let dynamicNo =
+      listOfGroups[i].status == 0 ? (
+        <a
+          className="btn btn--medium btn--orange"
+          onClick={(event) => {
+            deleteStatus(listOfGroups[i].id, event);
+          }}
+          href={listOfGroups[i].id}
+        >
+          Từ chối
+        </a>
+      ) : (
+        'đã từ chối'
+      );
+    if (listOfGroups[i].status != 1) {
       DataTable.push({
         realname: `${listOfGroups[i].realname}`,
         group_name: `${listOfGroups[i].group_name}`,
@@ -182,7 +185,7 @@ export const DayoffApply = () => {
           heads={[
             'Họ Và Tên',
             'nhóm',
-            'Số Ngày',
+            'Số giờ',
             'Ngày Bắt Đầu',
             'Ngày Kết Thúc',
             'Ghi Chú',
@@ -196,6 +199,7 @@ export const DayoffApply = () => {
             currentPage * itemsPerPage,
           )}
           path_edit="/"
+          path_timecard={''}
         />
       </CTable>
       <Pagination

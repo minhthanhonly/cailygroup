@@ -6,8 +6,6 @@ import {
   eachDayOfInterval,
   format,
   isToday,
-  isSameDay,
-  differenceInMinutes,
   startOfDay,
 } from 'date-fns';
 import Modal from '../../Modal/Modal';
@@ -61,6 +59,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const propsID = Props.userID;
   const [admin, setAdmin] = useState(false);
   // const { auth } = useAuth();
+  console.log(propsID);
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   useEffect(() => {
@@ -79,21 +78,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       setUsersID(users.id);
     }
   }, [propsID]);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [showStartButton, setShowStartButton] = useState(true);
-  const [showEndButton, setShowEndButton] = useState(false);
-  const [startHours, setStartHours] = useState(0);
-  const [startMinutes, setStartMinutes] = useState(0);
-  const [endHours, setEndHours] = useState(0);
-  const [endMinutes, setEndMinutes] = useState(0);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(false);
   const [commentText, setCommentText] = useState('');
-
-  const [shouldUpdateWorkingHours, setShouldUpdateWorkingHours] =
-    useState(false);
-
-  const [editingStart, setEditingStart] = useState(false);
 
   const [currentItemId, setCurrentItemId] = useState<number | undefined>(
     undefined,
@@ -149,17 +136,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     } else {
       updateDaysInMonth(selectedMonth, selectedYear);
     }
-  }, [
-    selectedMonth,
-    selectedYear,
-    startHours,
-    startMinutes,
-    endHours,
-    endMinutes,
-    showStartButton,
-    showEndButton,
-    shouldUpdateWorkingHours,
-  ]);
+  }, [selectedMonth, selectedYear]);
 
   const updateDaysInMonth = (month: string, year: string) => {
     const firstDayOfMonth = startOfMonth(
@@ -555,15 +532,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
 
   //tổng số giờ
-  const [totalTime, setTotalTime] = useState({ hours: 0, minutes: 0 });
+  const [totalTime, setTotalTime] = useState({ hours: '0', minutes: '0' });
+  const [overTime, setOverTime] = useState({ hours: '0', minutes: '0' });
   const calculateTotalTime = () => {
-    const rows = document.querySelectorAll('table tr');
+    const timeDivs = document.querySelectorAll('.timecard_time');
     let totalHours = 0;
     let totalMinutes = 0;
 
-    rows.forEach((row) => {
-      const div = row.querySelector('.timecard_time div');
-
+    timeDivs.forEach((div) => {
       if (div instanceof HTMLElement) {
         const timeString = div.innerText.trim();
         if (timeString && /^\d+:\d+$/.test(timeString)) {
@@ -578,10 +554,43 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       totalHours += Math.floor(totalMinutes / 60);
       totalMinutes %= 60;
     }
+    const formattedHours = totalHours.toString().padStart(2, '0');
+    const formattedMinutes = totalMinutes.toString().padStart(2, '0');
+    setTotalTime({ hours: formattedHours, minutes: formattedMinutes });
 
-    setTotalTime({ hours: totalHours, minutes: totalMinutes });
+    const timeOver = document.querySelectorAll('.timecard_overtime');
+    const timeOvers = document.querySelectorAll('.timecard_overtime');
+    let overMinutes = 0;
+
+    timeOver.forEach((div) => {
+      if (div instanceof HTMLElement) {
+        const timeStrings = div.innerText.trim();
+        if (timeStrings && /^\d+:\d+$/.test(timeStrings)) {
+          const [hourss, minutess] = timeStrings.split(':');
+          const totalMinutesForRow =
+            parseInt(hourss, 10) * 60 + parseInt(minutess, 10);
+
+          // Làm tròn về phía dưới đến 30 phút gần nhất
+          const roundedMinutes = Math.floor(totalMinutesForRow / 30) * 30;
+
+          // Nếu số phút là 30, chuyển thành 0 và thêm 1 giờ
+          if (roundedMinutes === 30 && totalMinutesForRow >= 60) {
+            overMinutes += 60;
+          } else {
+            overMinutes += roundedMinutes;
+          }
+        }
+      }
+    });
+
+    overMinutes = Math.floor(overMinutes / 30) * 30;
+    const overHours = Math.floor(overMinutes / 60);
+    overMinutes %= 60;
+    const formattedOverHours = overHours.toString().padStart(2, '0');
+    const formattedOverMinutes = overMinutes.toString().padStart(2, '0');
+    setOverTime({ hours: formattedOverHours, minutes: formattedOverMinutes });
   };
-  const currentMonth = new Date().getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
+  const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
 
   const handleUpdateComment = async (Id: number) => {
@@ -625,17 +634,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   useEffect(() => {
     const fetchData = async () => {
-      await fetchHolidays();
-      await fetchDayoffs();
-      await fetchTimecardOpen();
+      await Promise.all([fetchHolidays(), fetchDayoffs(), fetchTimecardOpen()]);
       calculateTotalTime();
     };
     fetchData();
-  }, [usersID]);
-  useEffect(() => {
-    calculateTotalTime();
-  }, []);
-
+  }, [propsID, daysInMonth]);
   const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
   return (
     <>
@@ -672,13 +675,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   {column.format ? column.format(day) : '...'}
                 </td>
               ))} */}
-              <td
-                className={`${
-                  startHours > 7 || (startHours === 7 && startMinutes > 30)
-                    ? 'late'
-                    : ''
-                }`}
-              >
+              <td>
                 {isHoliday(day).isHoliday ? (
                   ''
                 ) : timecardOpen.some(
@@ -742,7 +739,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 ) : null}
               </td>
 
-              <td className="timecard_time">
+              <td>
                 {timecardOpen.some(
                   (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
                 ) ? (
@@ -753,7 +750,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                           item.timecard_date === format(day, 'dd-MM-yyyy'),
                       )
                       .map((item, index) => (
-                        <div key={index}>
+                        <div key={index} className="timecard_time">
                           {item.timecard_close !== null &&
                           item.timecard_close !== ''
                             ? item.timecard_time
@@ -774,7 +771,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                           item.timecard_date === format(day, 'dd-MM-yyyy'),
                       )
                       .map((item, index) => (
-                        <div key={index}>
+                        <div key={index} className="timecard_overtime">
                           {item.timecard_close !== null &&
                           item.timecard_close !== ''
                             ? item.timecard_timeover
@@ -798,8 +795,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         <div key={index}>
                           {item.timecard_close !== null &&
                           item.timecard_close !== ''
-                            ? (item.timecard_timeinterval,
-                              item.timecard_timeover)
+                            ? item.timecard_timeinterval
                             : null}
                         </div>
                       ))}
@@ -947,11 +943,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         <td> Tổng số giờ</td>
         <td></td>
         <td></td>
-        <td></td>
         <td>
           {totalTime.hours}:{totalTime.minutes}
         </td>
-        <td>00:00</td>
+        <td>
+          {overTime.hours}:{overTime.minutes}
+        </td>
+        <td></td>
         <td></td>
         <td>
           <Modal isOpen={isModalOpen} onClose={closeModal}>
