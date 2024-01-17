@@ -1,0 +1,17 @@
+.dayoffs-menu {
+  display: flex;
+  align-items: center;
+  li {
+    font-weight: bold;
+    font-size: 1.8rem;
+    border-bottom: 3px solid orange;
+    cursor: pointer;
+    transition: 0.3s;
+    & + li {
+      margin-left: 2rem;
+    }
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}

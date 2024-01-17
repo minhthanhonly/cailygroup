@@ -3,13 +3,16 @@ import { CTable } from '../../components/Table/CTable';
 import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
 import NavDayoff from '../../layouts/components/Nav/NavDayoff';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from '../../api/axios';
 import Modaldelete from '../../components/Modal/Modaldelete';
+import './Dayoffs.scss';
+import { SelectCustom } from '../../components/Table/SelectCustom';
 
 export const Dayoff = () => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [showTable, setShowTable] = useState(true);
   const [id, setID] = useState();
   const openModaldelete = (ids: number) => {
     setID(ids);
@@ -125,9 +128,60 @@ export const Dayoff = () => {
       setListOfGroups(response.data);
     });
   }, [currentPage]);
+  const handleShowMe = () => {
+    setShowTable(true);
+  };
+  const handleShowAll = () => {
+    setShowTable(false);
+  };
+  const [selectedGroup, setSelectedGroup] = useState<string>('all');
+  const handleGroupChange = (groupId: string) => {
+    setSelectedGroup(groupId);
+    fetchData();
+  };
+  const fetchData = useCallback(async () => {
+    try {
+      const [groupsResponse, dayoffsResponse] = await Promise.all([
+        axios.get('groups'),
+        axios.get('dayoffs', {
+          params: {
+            group: selectedGroup,
+          },
+        }),
+      ]);
+
+      const groupsData = groupsResponse.data;
+      const dayoffsData = Array.isArray(dayoffsResponse.data)
+        ? dayoffsResponse.data
+        : [];
+
+      const combinedData = dayoffsData.map((dayoff) => {
+        const groupInfo = groupsData.find(
+          (group: { id: any; user_id: any }) =>
+            group.id === dayoff.user_group || group.user_id === dayoff.user_id,
+        );
+
+        return {
+          ...dayoff,
+          group_name: groupInfo ? groupInfo.group_name : 'Unknown Group',
+        };
+      });
+
+      setListOfGroups(combinedData);
+    } catch (error) {
+      console.error('Lỗi khi gọi API:', error);
+      setListOfGroups([]);
+    }
+  }, [selectedGroup]);
   return (
     <>
       <NavDayoff role="admin" />
+      <ul className="dayoffs-menu">
+        <li onClick={handleShowMe}>Của tôi</li>
+      </ul>
+      <div className="left select-ml0">
+        <SelectCustom onGroupChange={handleGroupChange} />
+      </div>
       <CTable>
         <CTableHead
           heads={[
