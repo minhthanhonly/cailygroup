@@ -136,6 +136,7 @@ export const Timecard = () => {
         );
 
         const dayOfWeek = currentDate.getDay();
+        const isLastRow = r === table.rows.length;
         // Chuyển đổi selectedYear và selectedMonth sang kiểu số
 
         switch (dayOfWeek) {
@@ -221,6 +222,7 @@ export const Timecard = () => {
             break;
 
           default:
+
             break;
         }
         cell.value = cellContent;
@@ -231,6 +233,7 @@ export const Timecard = () => {
           right: { style: 'thin', color: { argb: 'FF000000' } },
         };
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
+
       }
     }
     const rowIndexHead = 4;
@@ -247,10 +250,10 @@ export const Timecard = () => {
         fgColor: { argb: 'ffdddd' }, // Mã màu tùy chọn, ở đây là màu đỏ
       };
     }
-
-    const rowIndex = 40;
-    const startColumn = 5; // Cột E
-    const endColumn = 6; // Cột F
+    const lastRowIndex = table.rows.length + 3;
+    const rowIndex = lastRowIndex;
+    const startColumn = 1; // Cột E
+    const endColumn = 7; // Cột F
 
     for (let col = startColumn; col <= endColumn; col++) {
       const cell = worksheet.getCell(
