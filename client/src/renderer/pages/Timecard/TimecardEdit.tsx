@@ -9,7 +9,6 @@ import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import MonthYearSelector from '../../components/Table/SelectMonthYears';
 
 import './Timecard.scss';
-import { Button } from '../../components/Button';
 import axios from '../../api/axios';
 
 interface FieldUsers {
@@ -117,8 +116,6 @@ export const TimecardEdit = () => {
             </tbody>
           </table>
         </div>
-
-
       </div>
     </>
   );

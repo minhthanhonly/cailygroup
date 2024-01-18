@@ -59,25 +59,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const propsID = Props.userID;
   const [admin, setAdmin] = useState(false);
   // const { auth } = useAuth();
-  console.log(propsID);
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  useEffect(() => {
-    const isAdmin = users.roles === UserRole.ADMIN;
-    const isManager = users.roles === UserRole.MANAGER;
-    const isLeader = users.roles === UserRole.LEADER;
-    if (isAdmin || isManager || isLeader) {
-      setAdmin(true);
-    }
-    setUsersID(users.id);
-  }, []);
-  useEffect(() => {
-    if (propsID) {
-      setUsersID(propsID);
-    } else {
-      setUsersID(users.id);
-    }
-  }, [propsID]);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(false);
   const [commentText, setCommentText] = useState('');
@@ -327,6 +310,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
       console.log(responseTimeCardDetails.data);
       fetchTimecardOpen();
+      setTimeout(() => {
+        calculateTotalTime();
+      }, 400);
     } catch (error) {
       console.error(
         'Lỗi khi lấy thời gian từ API hoặc gửi dữ liệu lên server:',
@@ -604,6 +590,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
     fetchTimecardOpen();
+    setTimeout(() => {
+      calculateTotalTime();
+    }, 400);
     closeModal();
   };
   const handleUpdateCommentDayoffs = async (id: number) => {
@@ -630,15 +619,59 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     });
     console.log(response.data);
     fetchTimecardOpen();
+    setTimeout(() => {
+      calculateTotalTime();
+    }, 400);
     closeModaldelete();
   };
+
+  const [isload, setIsLoad] = useState(false);
   useEffect(() => {
-    const fetchData = async () => {
-      await Promise.all([fetchHolidays(), fetchDayoffs(), fetchTimecardOpen()]);
-      calculateTotalTime();
-    };
-    fetchData();
-  }, [propsID, daysInMonth]);
+    const isAdmin = users.roles === UserRole.ADMIN;
+    const isManager = users.roles === UserRole.MANAGER;
+    const isLeader = users.roles === UserRole.LEADER;
+    if (isAdmin || isManager || isLeader) {
+      setAdmin(true);
+    }
+  }, []);
+  useEffect(() => {
+    if (propsID) {
+      setUsersID(propsID);
+    } else {
+      setUsersID(users.id);
+    }
+    setTimeout(() => {
+      setIsLoad(true);
+    }, 200);
+  }, [propsID]);
+  useEffect(() => {
+    if (isload) {
+      const fetchData = async () => {
+        await Promise.all([
+          fetchHolidays(),
+          fetchDayoffs(),
+          fetchTimecardOpen(),
+        ]);
+        setTimeout(() => {
+          calculateTotalTime();
+        }, 200);
+      };
+      fetchData();
+    } else {
+      const fetchData = async () => {
+        await Promise.all([
+          fetchHolidays(),
+          fetchDayoffs(),
+          fetchTimecardOpen(),
+        ]);
+        setTimeout(() => {
+          calculateTotalTime();
+        }, 200);
+      };
+      fetchData();
+    }
+    setIsLoad(false);
+  }, [isload]);
   const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
   return (
     <>

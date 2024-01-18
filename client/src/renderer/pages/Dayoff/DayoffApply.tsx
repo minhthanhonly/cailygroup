@@ -6,20 +6,9 @@ import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useCallback, useEffect, useState } from 'react';
 import axios from '../../api/axios';
 import { SelectCustom } from '../../components/Table/SelectCustom';
-import Modaldelete from '../../components/Modal/Modaldelete';
 
 export const DayoffApply = () => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [id, setID] = useState();
-  const openModaldelete = (ids: any) => {
-    setID(ids);
-    setDeleteModalOpen(true);
-  };
-  const closeModaldelete = () => {
-    setDeleteModalOpen(false);
-  };
-
   type FieldGroups = {
     id: any;
     group_name: string;
@@ -41,16 +30,24 @@ export const DayoffApply = () => {
 
   let DataTable: FieldGroups[] = [];
   listOfGroups.sort((a, b) => {
-    const dateA = new Date(
-      (a as any).date.split('-').reverse().join('-'),
-    ).getTime();
-    const dateB = new Date(
-      (b as any).date.split('-').reverse().join('-'),
-    ).getTime();
-    if (dateA !== dateB) {
+    const groupNameComparison = (a as any).group_name.localeCompare(
+      (b as any).group_name,
+    );
+
+    if (groupNameComparison !== 0) {
+      // Nếu group_name khác nhau, sắp xếp theo group_name
+      return groupNameComparison;
+    } else {
+      // Nếu group_name giống nhau, sắp xếp theo date
+      const dateA = new Date(
+        (a as any).date.split('-').reverse().join('-'),
+      ).getTime();
+      const dateB = new Date(
+        (b as any).date.split('-').reverse().join('-'),
+      ).getTime();
+
       return dateA - dateB;
     }
-    return (a as any).group_name.localeCompare((b as any).group_name);
   });
 
   for (let i = 0; i < listOfGroups.length; i++) {
@@ -207,25 +204,6 @@ export const DayoffApply = () => {
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
-      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
-        <>
-          <h2 className="mb15">Xác nhận hủy nghỉ phép:</h2>
-          <div className="wrp-button">
-            <a
-              className="btn btn--green"
-              onClick={(event) => {
-                deleteStatus(id, event);
-              }}
-              href={id}
-            >
-              Đồng ý
-            </a>
-            <button className="btn btn--orange" onClick={closeModaldelete}>
-              Hủy
-            </button>
-          </div>
-        </>
-      </Modaldelete>
     </>
   );
 };
