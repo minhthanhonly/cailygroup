@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import axios from '../../api/axios';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import './Dayoffs.scss';
-import { SelectCustom } from '../../components/Table/SelectCustom';
+import { SelectCustomDayoff } from '../../components/Table/SelectCustom';
 
 export const Dayoff = () => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -36,11 +36,34 @@ export const Dayoff = () => {
   };
 
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
+  const [listOfGroupsDayoff, setListOfGroupsDayoff] = useState<
+    FieldGroups[] | []
+  >([]);
   let DataTable: FieldGroups[] = [];
+  let DataTables: FieldGroups[] = [];
+  listOfGroupsDayoff.sort((a, b) => {
+    const dateA = new Date(
+      (a as any).date.split('-').reverse().join('-'),
+    ).getTime();
+    const dateB = new Date(
+      (b as any).date.split('-').reverse().join('-'),
+    ).getTime();
+    if (dateA !== dateB) {
+      return dateA - dateB;
+    }
+    return (a as any).group_name.localeCompare((b as any).group_name);
+  });
   listOfGroups.sort((a, b) => {
-    const dateA = new Date(a.date.split('-').reverse().join('-')).getTime();
-    const dateB = new Date(b.date.split('-').reverse().join('-')).getTime();
-    return dateA - dateB;
+    const dateA = new Date(
+      (a as any).date.split('-').reverse().join('-'),
+    ).getTime();
+    const dateB = new Date(
+      (b as any).date.split('-').reverse().join('-'),
+    ).getTime();
+    if (dateA !== dateB) {
+      return dateA - dateB;
+    }
+    return (a as any).group_name.localeCompare((b as any).group_name);
   });
   for (let i = 0; i < listOfGroups.length; i++) {
     let dynamicAction;
@@ -92,9 +115,48 @@ export const Dayoff = () => {
       status: dynamicAction,
     } as unknown as FieldGroups);
   }
+  for (let i = 0; i < listOfGroupsDayoff.length; i++) {
+    let dynamicAction;
+    if (listOfGroupsDayoff[i].status === '0') {
+      dynamicAction = <div className="center">chưa xác nhận</div>;
+    } else if (listOfGroupsDayoff[i].status === '2') {
+      dynamicAction = (
+        <div className="center">
+          <p className="icon icon--check">
+            <img
+              src={require('../../../../assets/minus-button.png')}
+              alt="edit"
+              className="fluid-image"
+            />
+          </p>
+          {listOfGroupsDayoff[i].owner}
+        </div>
+      );
+    } else {
+      dynamicAction = (
+        <p className="icon icon--check">
+          <img
+            src={require('../../../../assets/check.png')}
+            alt="edit"
+            className="fluid-image"
+          />
+        </p>
+      );
+    }
+    DataTables.push({
+      realname: `${listOfGroupsDayoff[i].realname}`,
+      group_name: `${listOfGroupsDayoff[i].group_name}`,
+      day_number: `${listOfGroupsDayoff[i].day_number}`,
+      start_datetime: `${listOfGroupsDayoff[i].start_datetime}`,
+      end_datetime: `${listOfGroupsDayoff[i].end_datetime}`,
+      note: `${listOfGroupsDayoff[i].note}`,
+      status: dynamicAction,
+    } as unknown as FieldGroups);
+  }
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(DataTable.length / itemsPerPage);
+  const totalPagess = Math.ceil(DataTables.length / itemsPerPage);
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -131,13 +193,14 @@ export const Dayoff = () => {
   const handleShowMe = () => {
     setShowTable(true);
   };
-  const handleShowAll = () => {
-    setShowTable(false);
-  };
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const handleGroupChange = (groupId: string) => {
     setSelectedGroup(groupId);
     fetchData();
+  };
+  const handleShowAll = () => {
+    setShowTable(false);
+    handleGroupChange('all');
   };
   const fetchData = useCallback(async () => {
     try {
@@ -166,11 +229,10 @@ export const Dayoff = () => {
           group_name: groupInfo ? groupInfo.group_name : 'Unknown Group',
         };
       });
-
-      setListOfGroups(combinedData);
+      setListOfGroupsDayoff(combinedData);
     } catch (error) {
       console.error('Lỗi khi gọi API:', error);
-      setListOfGroups([]);
+      setListOfGroupsDayoff([]);
     }
   }, [selectedGroup]);
   return (
@@ -178,10 +240,13 @@ export const Dayoff = () => {
       <NavDayoff role="admin" />
       <ul className="dayoffs-menu">
         <li onClick={handleShowMe}>Của tôi</li>
+        <li onClick={handleShowAll}>Của mọi người</li>
       </ul>
-      <div className="left select-ml0">
-        <SelectCustom onGroupChange={handleGroupChange} />
-      </div>
+      {showTable ? null : (
+        <div className="left select-ml0 mt20">
+          <SelectCustomDayoff onGroupChange={handleGroupChange} />
+        </div>
+      )}
       <CTable>
         <CTableHead
           heads={[
@@ -194,20 +259,39 @@ export const Dayoff = () => {
             'Hủy đăng ký nghỉ ',
           ]}
         />
-        <CTableBody
-          data={DataTable.slice(
-            (currentPage - 1) * itemsPerPage,
-            currentPage * itemsPerPage,
-          )}
-          path_edit="/"
-          path_timecard={''}
-        />
+        {showTable ? (
+          <CTableBody
+            data={DataTable.slice(
+              (currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage,
+            )}
+            path_edit="/"
+            path_timecard={''}
+          />
+        ) : (
+          <CTableBody
+            data={DataTables.slice(
+              (currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage,
+            )}
+            path_edit="/"
+            path_timecard={''}
+          />
+        )}
       </CTable>
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      />
+      {showTable ? (
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ) : (
+        <Pagination
+          totalPages={totalPagess}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      )}
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
         <>
           <h2 className="mb15">Xác nhận hủy nghỉ phép:</h2>
