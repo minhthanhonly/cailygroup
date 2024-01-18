@@ -84,15 +84,10 @@ export const Timecard = () => {
     return sundayCount;
   };
 
-
-
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
-<<<<<<< HEAD
     let sundayCount = 0; // Biến đếm số ngày Chủ Nhật
-=======
->>>>>>> 6e0cc918184f28648d051b8ae19f18ec97da6342
     const table = document.getElementById(
       'timecards_table',
     ) as HTMLTableElement;
@@ -129,14 +124,12 @@ export const Timecard = () => {
       right: { style: 'thin', color: { argb: 'FF000000' } },
     };
 
-
     for (let rowIndex = 5; rowIndex <= 8; rowIndex++) {
       const currentRow = worksheet.getRow(rowIndex);
       currentRow.height = 0.5; // Đặt chiều cao mong muốn (đơn vị là pixels)
     }
     // Thêm dữ liệu từ bảng vào ô A4:I4
     const rowsArray = Array.from(table.rows);
-
 
     const startRowToDelete = 5;
     const numberOfRowsToDelete = 4;
@@ -145,7 +138,6 @@ export const Timecard = () => {
     const numericSelectedMonth = parseInt(selectedMonth, 10);
 
     for (let r = 1; r <= table.rows.length; r++) {
-
       for (let c = 1; c <= table.rows[r - 1].cells.length; c++) {
         const cell = worksheet.getCell(
           `${String.fromCharCode(64 + c)}${startRow + r - 1}`,
@@ -161,13 +153,7 @@ export const Timecard = () => {
         const dayOfWeek = currentDate.getDay();
         // Chuyển đổi selectedYear và selectedMonth sang kiểu số
 
-
         switch (dayOfWeek) {
-<<<<<<< HEAD
-          case 1: // Thứ 2
-            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
-              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
-=======
           case 6: // Thứ 7
             for (
               let colIndex = 1;
@@ -177,7 +163,6 @@ export const Timecard = () => {
               const currentCell = worksheet.getCell(
                 `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
               );
->>>>>>> 6e0cc918184f28648d051b8ae19f18ec97da6342
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -186,8 +171,14 @@ export const Timecard = () => {
             }
             break;
           case 2: // Thứ 3
-            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
-              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+            for (
+              let colIndex = 1;
+              colIndex <= table.rows[r - 1].cells.length;
+              colIndex++
+            ) {
+              const currentCell = worksheet.getCell(
+                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
+              );
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -196,8 +187,14 @@ export const Timecard = () => {
             }
             break;
           case 3: // Thứ 4
-            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
-              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+            for (
+              let colIndex = 1;
+              colIndex <= table.rows[r - 1].cells.length;
+              colIndex++
+            ) {
+              const currentCell = worksheet.getCell(
+                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
+              );
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -206,8 +203,14 @@ export const Timecard = () => {
             }
             break;
           case 4: // Thứ 5
-            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
-              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+            for (
+              let colIndex = 1;
+              colIndex <= table.rows[r - 1].cells.length;
+              colIndex++
+            ) {
+              const currentCell = worksheet.getCell(
+                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
+              );
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -216,8 +219,14 @@ export const Timecard = () => {
             }
             break;
           case 5: // Thứ 5
-            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
-              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`);
+            for (
+              let colIndex = 1;
+              colIndex <= table.rows[r - 1].cells.length;
+              colIndex++
+            ) {
+              const currentCell = worksheet.getCell(
+                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
+              );
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -226,9 +235,7 @@ export const Timecard = () => {
             }
             break;
 
-
           default:
-
             break;
         }
         cell.value = cellContent;
@@ -245,7 +252,7 @@ export const Timecard = () => {
     const startColumnHead = 1; // Cột A
     const endColumnHead = 8; // Cột H
 
-    console.log("sundayCount", sundayCount);
+    console.log('sundayCount', sundayCount);
 
     for (let col = startColumnHead; col <= endColumnHead; col++) {
       const cell = worksheet.getCell(
