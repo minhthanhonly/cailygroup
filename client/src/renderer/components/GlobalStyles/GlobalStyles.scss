@@ -2495,6 +2495,9 @@ textarea {
     box-sizing: border-box;
     font-size: 1.6rem;
   }
+  &.--full {
+    max-width: 100%;
+  }
 }
 .txt-title {
   font-size: 1.6rem;

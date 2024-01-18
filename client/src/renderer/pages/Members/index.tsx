@@ -26,12 +26,30 @@ function Members() {
     userid: string,
   }
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
+
   useEffect(() => {
-    axios.get('users').then((response) => {
-      setListOfUsers(response.data);
-      setIsTableUpdated(false);
-    }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
-  }, [isTableUpdated])
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const getUsers = async () => {
+      try {
+        const response = await axios.get('users', {
+          signal: controller.signal
+        });
+        console.log(response.data);
+        isMounted && setListOfUsers(response.data);
+      } catch(err) {
+        console.log(err);
+      }
+    }
+
+    getUsers();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    }
+  }, [])
 
   /*
   * LẤY TẤT CẢ NHÓM
@@ -123,38 +141,38 @@ function Members() {
         </div> */}
       </div>
       <ButtonAdd path_add="/members/add" />
-      <CTable>
-        <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
-        <tbody>
-          {listOfUsers.map((data, index) => (
-            <tr key={index}>
-              <td>
-                <NavLink to={"/users/detail/" + data.userid} className="acount__name">
-                  {data.realname}
-                </NavLink>
-              </td>
-              <td>{data.group_name}</td>
-              <td>{data.authority_name}</td>
-              <td>
-                <ButtonEdit href={"/members/edit/" + data.id} />
-                <ButtonDelete onButtonClick={() => openModal(data.id)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </CTable>
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      />
-      <Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
-        <h2>Bạn có chắc chắn muốn xóa không?</h2>
-        <div className='wrp-button'>
-          <button className='btn btn--green' onClick={() => handleDelete(isDeleteModalid)}>Đồng ý</button>
-          <button className='btn btn--orange' onClick={closeModal}>Hủy</button>
-        </div>
-      </Modaldelete>
+      {(listOfUsers?.length)
+        ? (
+        <><CTable>
+            <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
+            <tbody>
+              {listOfUsers.map((data, index) => (
+                <tr key={index}>
+                  <td>
+                    <NavLink to={"/users/detail/" + data.userid} className="acount__name">
+                      {data.realname}
+                    </NavLink>
+                  </td>
+                  <td>{data.group_name}</td>
+                  <td>{data.authority_name}</td>
+                  <td>
+                    <ButtonEdit href={"/members/edit/" + data.id} />
+                    <ButtonDelete onButtonClick={() => openModal(data.id)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </CTable><Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange} /><Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
+              <h2>Bạn có chắc chắn muốn xóa không?</h2>
+              <div className='wrp-button'>
+                <button className='btn btn--green' onClick={() => handleDelete(isDeleteModalid)}>Đồng ý</button>
+                <button className='btn btn--orange' onClick={closeModal}>Hủy</button>
+              </div>
+            </Modaldelete></>
+        ) :  <div className="box-bg --full mt30 mb20"><p className="bg bg-red">Không có thành viên nào để hiển thị</p></div>}
     </>
   )
 };

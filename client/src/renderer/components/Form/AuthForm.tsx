@@ -2,7 +2,6 @@ import { useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import './From.scss';
 import { ChangeEvent, useState } from 'react';
 import axios from '../../api/axios';
-// import axios from '../../api/axiosLocal';
 import useAuth from '../../hooks/useAuth';
 
 function FormLogin(){
@@ -14,6 +13,7 @@ function FormLogin(){
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
+
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>, type: string) => {
     switch(type){
@@ -59,8 +59,9 @@ function FormLogin(){
             "user_group_id": res2.data.user_group,
           }
           localStorage.setItem('users', JSON.stringify(users));
-          // const token = localStorage.setItem('token', res.data.info.token);
-          setAuth({ isLoggedIn, roles, users });
+          localStorage.setItem('token', res.data.info.token);
+          const token = localStorage.getItem('token');
+          setAuth({ isLoggedIn, roles, token });
           navigate('/dashboard', { replace: true });
         }, 1500);
       }

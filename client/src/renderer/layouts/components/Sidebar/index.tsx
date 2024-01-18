@@ -25,6 +25,8 @@ export const Sidebar = () => {
   const naviget = useNavigate();
   const { auth } = useAuth();
 
+  console.log(auth);
+
   const users = JSON.parse(localStorage.getItem('users') || '{}');
 
   const isAdmin = users.roles === UserRole.ADMIN;
