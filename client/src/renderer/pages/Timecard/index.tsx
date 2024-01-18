@@ -46,6 +46,7 @@ export const Timecard = () => {
   const matchedUser_year = year ? year : '';
   const datacheck_hi = datacheck ? datacheck : '';
 
+
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
     const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
@@ -55,8 +56,7 @@ export const Timecard = () => {
         .get('timecards/list')
         .then((response) => {
           setListOfUsers(response.data);
-          const loggedInUser = response.data.find(
-            (users: { id: number }) => users.id === loggedInUserId.id,
+          const loggedInUser = response.data.find((users: { id: number }) => users.id === loggedInUserId.id,
           );
           setCurrentUser(loggedInUser);
         })
@@ -67,27 +67,12 @@ export const Timecard = () => {
   }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
   //-------------------------------------------------------------------------------------
 
-  const isSunday = (year: number, month: number, day: number | undefined) => {
-    const currentDate = new Date(year, month - 1, day);
-    return currentDate.getDay() === 0; // 0 là Chủ Nhật
-  };
 
-  const countSundays = (year: any, month: any, days: any) => {
-    let sundayCount = 0;
-
-    for (let day of days) {
-      if (isSunday(year, month, day)) {
-        sundayCount++;
-      }
-    }
-
-    return sundayCount;
-  };
 
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
-    let sundayCount = 0; // Biến đếm số ngày Chủ Nhật
+
     const table = document.getElementById(
       'timecards_table',
     ) as HTMLTableElement;
@@ -252,8 +237,6 @@ export const Timecard = () => {
     const startColumnHead = 1; // Cột A
     const endColumnHead = 8; // Cột H
 
-    console.log('sundayCount', sundayCount);
-
     for (let col = startColumnHead; col <= endColumnHead; col++) {
       const cell = worksheet.getCell(
         `${String.fromCharCode(64 + col)}${rowIndexHead}`,
@@ -285,14 +268,11 @@ export const Timecard = () => {
 
     for (let c = 1; c <= table.rows[0].cells.length - 1; c++) {
       const column = worksheet.getColumn(c);
-
       // Kiểm tra xem ô và nội dung có tồn tại không
-      const maxWidth = Math.max(
-        20,
-        ...rowsArray.map((row) => {
-          const cell = row.cells[c - 1];
-          return cell && cell.textContent ? cell.clientWidth / 8 : 20; // Nếu ô hoặc nội dung không tồn tại, sử dụng 20 làm giá trị mặc định
-        }),
+      const maxWidth = Math.max(20, ...rowsArray.map((row) => {
+        const cell = row.cells[c - 1];
+        return cell && cell.textContent ? cell.clientWidth / 8 : 20; // Nếu ô hoặc nội dung không tồn tại, sử dụng 20 làm giá trị mặc định
+      }),
       );
 
       column.width = maxWidth; // Sử dụng giá trị maxWidth để đặt độ rộng của cột
@@ -346,11 +326,42 @@ export const Timecard = () => {
       updateMonthAndYear(currentMonth, currentYear);
     }
   }, [id]);
+
+
+
   useEffect(() => {
-    setTimeout(function () {
-      datacheck == 1 ? exportToExcel() : null;
-    }, 500);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const matchedUser = listOfUsers.find((user) => user.id === id);
+
+        if (matchedUser) {
+          console.log('Tên người dùng tương ứng:', matchedUser.realname);
+          setCurrentUser(matchedUser);
+
+          if (datacheck === 1) {
+            // Gọi hàm exportToExcel với await
+            await exportToExcel();
+          }
+
+          // Bạn có thể thêm logic bổ sung ở đây nếu cần
+        } else {
+          console.log('Không tìm thấy người dùng tương ứng');
+        }
+      } catch (error) {
+        console.error('Lỗi khi thực hiện các tác vụ không đồng bộ:', error);
+      }
+    };
+
+    const initializeComponent = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Đợi 500 milliseconds
+      await fetchData(); // Gọi hàm fetchData trong initializeComponent
+      // Thêm bất kỳ logic khởi tạo nào bạn muốn thực hiện sau khi fetchData và exportToExcel đã hoàn thành
+    };
+
+    initializeComponent(); // Gọi hàm initializeComponent trong useEffect
+
+  }, [listOfUsers]);
+
   return (
     <>
       <NavTimcard role="admin" />
