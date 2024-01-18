@@ -154,7 +154,7 @@ export const Timecard = () => {
         // Chuyển đổi selectedYear và selectedMonth sang kiểu số
 
         switch (dayOfWeek) {
-          case 6: // Thứ 7
+          case 1: // Thứ 2
             for (
               let colIndex = 1;
               colIndex <= table.rows[r - 1].cells.length;
