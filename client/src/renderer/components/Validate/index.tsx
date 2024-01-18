@@ -4,7 +4,8 @@ const ERROR: {[key: string]: any} = {
   require: "Vui lòng nhập ",
   choose: "Vui lòng chọn ",
   illegal: "Giá trị nhập vào không hợp lệ",
-  indispensable:"Tên nhóm là bắt buộc"
+  indispensable:"Tên nhóm là bắt buộc",
+  obligatory:"Tên ngày lễ là bắt buộc"
 };
 
 function validateEmail(email: string) {
@@ -135,3 +136,25 @@ export const isValidGroup = ({...paraGroup}) => {
 }
 
 /* =======================================================================* */
+
+const names = "tên ngày lễ";
+type paraTimecardsholidays = {
+  name: string;
+  names: string;
+}
+
+export const isValidTimecardsholidaysEdit = ({...paraTimecardsholidays}) => {
+  if(!paraTimecardsholidays.name) {
+    toast.error(ERROR['obligatory'] + "!");
+    return false;
+  }
+  return true;
+}
+
+export const isValidTimecardsholidays = ({...paraTimecardsholidays}) => {
+  if(!paraTimecardsholidays.names) {
+    toast.error(ERROR['require'] + names +  "!");
+    return false;
+  }
+  return true;
+}
