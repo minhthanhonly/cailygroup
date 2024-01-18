@@ -9,8 +9,8 @@ export default axios.create({
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-// axios.interceptors.request.use(function(config){
-//   config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
-// }, function (error){
-//   return Promise.reject(error);
-// })
+axios.interceptors.request.use(function(config){
+  return config;
+}, function (error){
+  return Promise.reject(error);
+})

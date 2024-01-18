@@ -11,9 +11,12 @@ import ButtonDelete from "../../components/Button/ButtonDelete";
 import Modaldelete from "../../components/Modal/Modaldelete";
 import { Pagination } from "../../components/Pagination";
 import { NavLink } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 function Members() {
+  const axiosPrivate = useAxiosPrivate();
   const [isTableUpdated, setIsTableUpdated] = useState(false);
+  const token = localStorage.getItem('token');
 
   /*
   * LẤY DANH SÁCH THÀNH VIÊN
@@ -34,7 +37,8 @@ function Members() {
     const getUsers = async () => {
       try {
         const response = await axios.get('users', {
-          signal: controller.signal
+          signal: controller.signal,
+
         });
         console.log(response.data);
         isMounted && setListOfUsers(response.data);
