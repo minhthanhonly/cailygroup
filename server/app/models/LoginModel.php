@@ -39,9 +39,12 @@
 
                     if(password_verify($password, $data['password'])) {
                         $header = [
-                            'alg' => 'SHA256',
+                            'alg' => 'HS256',
                             'typ' => 'JWT'
                         ];
+
+                        $date = new DateTime();
+                        $timestamp = $date->getTimestamp();
         
                         $payload = [
                             'id' => $data['id'],
@@ -50,6 +53,8 @@
                             'roles' => $data['authority_name'],
                             'user_group' => $data['group_name'],
                             'user_group_id' => $data['user_group'],
+                            'iat'=> $timestamp,
+                            'exp'=>$timestamp+10
                         ];
         
                         $jwt = generate_jwt($header, $payload);

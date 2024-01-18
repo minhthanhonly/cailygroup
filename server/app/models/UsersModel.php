@@ -16,7 +16,7 @@
 					$data[] = $row;
 				}
 			} else {
-				echo "Không có dữ liệu";
+				$data = [];
 			}
 
 			header('Content-Type: application/json');
@@ -72,6 +72,7 @@
 				// Thêm dữ liệu vào cơ sở dữ liệu
 				$sql = "INSERT INTO users (userid, password, password_default, realname, authority, user_group, user_groupname, user_email, user_skype, user_ruby, user_postcode,user_address, user_addressruby, user_phone, user_mobile, user_order, edit_level, edit_group, edit_user, owner, editor, createdAt, updatedAt) 
 				VALUES ('$userid', '$password', '', '$realname', '$authority', '$user_group', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '')";
+				
 				$result = $conn->query($sql);
 
 				header('Content-Type: application/json');
