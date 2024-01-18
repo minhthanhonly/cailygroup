@@ -59,25 +59,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const propsID = Props.userID;
   const [admin, setAdmin] = useState(false);
   // const { auth } = useAuth();
-  console.log(propsID);
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  useEffect(() => {
-    const isAdmin = users.roles === UserRole.ADMIN;
-    const isManager = users.roles === UserRole.MANAGER;
-    const isLeader = users.roles === UserRole.LEADER;
-    if (isAdmin || isManager || isLeader) {
-      setAdmin(true);
-    }
-    setUsersID(users.id);
-  }, []);
-  useEffect(() => {
-    if (propsID) {
-      setUsersID(propsID);
-    } else {
-      setUsersID(users.id);
-    }
-  }, [propsID]);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(false);
   const [commentText, setCommentText] = useState('');
@@ -632,13 +615,46 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     fetchTimecardOpen();
     closeModaldelete();
   };
+
+  const [isload, setIsLoad] = useState(false);
   useEffect(() => {
+    const isAdmin = users.roles === UserRole.ADMIN;
+    const isManager = users.roles === UserRole.MANAGER;
+    const isLeader = users.roles === UserRole.LEADER;
+    if (isAdmin || isManager || isLeader) {
+      setAdmin(true);
+    }
+  }, []);
+  useEffect(() => {
+    if (propsID) {
+      setUsersID(propsID);
+    } else {
+      setUsersID(users.id);
+    }
     const fetchData = async () => {
       await Promise.all([fetchHolidays(), fetchDayoffs(), fetchTimecardOpen()]);
       calculateTotalTime();
     };
     fetchData();
-  }, [propsID, daysInMonth]);
+    setTimeout(() => {
+      setIsLoad(true);
+    }, 300);
+  }, [propsID]);
+  useEffect(() => {
+    if (isload) {
+      console.log('a');
+      const fetchData = async () => {
+        await Promise.all([
+          fetchHolidays(),
+          fetchDayoffs(),
+          fetchTimecardOpen(),
+        ]);
+        calculateTotalTime();
+      };
+      fetchData();
+    }
+    setIsLoad(false);
+  }, [isload]);
   const weekdays = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
   return (
     <>

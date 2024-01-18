@@ -13,8 +13,8 @@ export const Dayoff = () => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [showTable, setShowTable] = useState(true);
-  const [id, setID] = useState();
-  const openModaldelete = (ids: number) => {
+  const [id, setID] = useState<string>();
+  const openModaldelete = (ids: string) => {
     setID(ids);
     setDeleteModalOpen(true);
   };
