@@ -42,28 +42,36 @@ export const Dayoff = () => {
   let DataTable: FieldGroups[] = [];
   let DataTables: FieldGroups[] = [];
   listOfGroupsDayoff.sort((a, b) => {
-    const dateA = new Date(
-      (a as any).date.split('-').reverse().join('-'),
-    ).getTime();
-    const dateB = new Date(
-      (b as any).date.split('-').reverse().join('-'),
-    ).getTime();
-    if (dateA !== dateB) {
+    const groupNameComparison = (a as any).group_name.localeCompare(
+      (b as any).group_name,
+    );
+    if (groupNameComparison !== 0) {
+      return groupNameComparison;
+    } else {
+      const dateA = new Date(
+        (a as any).date.split('-').reverse().join('-'),
+      ).getTime();
+      const dateB = new Date(
+        (b as any).date.split('-').reverse().join('-'),
+      ).getTime();
       return dateA - dateB;
     }
-    return (a as any).group_name.localeCompare((b as any).group_name);
   });
   listOfGroups.sort((a, b) => {
-    const dateA = new Date(
-      (a as any).date.split('-').reverse().join('-'),
-    ).getTime();
-    const dateB = new Date(
-      (b as any).date.split('-').reverse().join('-'),
-    ).getTime();
-    if (dateA !== dateB) {
+    const groupNameComparison = (a as any).group_name.localeCompare(
+      (b as any).group_name,
+    );
+    if (groupNameComparison !== 0) {
+      return groupNameComparison;
+    } else {
+      const dateA = new Date(
+        (a as any).date.split('-').reverse().join('-'),
+      ).getTime();
+      const dateB = new Date(
+        (b as any).date.split('-').reverse().join('-'),
+      ).getTime();
       return dateA - dateB;
     }
-    return (a as any).group_name.localeCompare((b as any).group_name);
   });
   for (let i = 0; i < listOfGroups.length; i++) {
     let dynamicAction;
@@ -196,7 +204,7 @@ export const Dayoff = () => {
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const handleGroupChange = (groupId: string) => {
     setSelectedGroup(groupId);
-    fetchData();
+    // console.log(groupId);
   };
   const handleShowAll = () => {
     setShowTable(false);
@@ -235,6 +243,11 @@ export const Dayoff = () => {
       setListOfGroupsDayoff([]);
     }
   }, [selectedGroup]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   return (
     <>
       <NavDayoff role="admin" />

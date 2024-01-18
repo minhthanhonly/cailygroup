@@ -30,16 +30,24 @@ export const DayoffApply = () => {
 
   let DataTable: FieldGroups[] = [];
   listOfGroups.sort((a, b) => {
-    const dateA = new Date(
-      (a as any).date.split('-').reverse().join('-'),
-    ).getTime();
-    const dateB = new Date(
-      (b as any).date.split('-').reverse().join('-'),
-    ).getTime();
-    if (dateA !== dateB) {
+    const groupNameComparison = (a as any).group_name.localeCompare(
+      (b as any).group_name,
+    );
+
+    if (groupNameComparison !== 0) {
+      // Nếu group_name khác nhau, sắp xếp theo group_name
+      return groupNameComparison;
+    } else {
+      // Nếu group_name giống nhau, sắp xếp theo date
+      const dateA = new Date(
+        (a as any).date.split('-').reverse().join('-'),
+      ).getTime();
+      const dateB = new Date(
+        (b as any).date.split('-').reverse().join('-'),
+      ).getTime();
+
       return dateA - dateB;
     }
-    return (a as any).group_name.localeCompare((b as any).group_name);
   });
 
   for (let i = 0; i < listOfGroups.length; i++) {
