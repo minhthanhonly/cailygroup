@@ -640,16 +640,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     } else {
       setUsersID(users.id);
     }
-    const fetchData = async () => {
-      await Promise.all([fetchHolidays(), fetchDayoffs(), fetchTimecardOpen()]);
-      setTimeout(() => {
-        calculateTotalTime();
-      }, 400);
-    };
-    fetchData();
     setTimeout(() => {
       setIsLoad(true);
-    }, 300);
+    }, 200);
   }, [propsID]);
   useEffect(() => {
     if (isload) {
@@ -661,7 +654,19 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         ]);
         setTimeout(() => {
           calculateTotalTime();
-        }, 400);
+        }, 200);
+      };
+      fetchData();
+    } else {
+      const fetchData = async () => {
+        await Promise.all([
+          fetchHolidays(),
+          fetchDayoffs(),
+          fetchTimecardOpen(),
+        ]);
+        setTimeout(() => {
+          calculateTotalTime();
+        }, 200);
       };
       fetchData();
     }
