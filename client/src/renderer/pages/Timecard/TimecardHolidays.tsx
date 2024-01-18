@@ -11,6 +11,7 @@ import { format, parse } from 'date-fns';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { symlink } from 'fs';
+import {isValidTimecardsholidaysEdit, isValidTimecardsholidays} from "../../components/Validate";
 
 interface HolidayProps {
     id: string;
@@ -148,6 +149,7 @@ const TimecardHolidays = () => {
         setModalOpen(false);
     };
     const handleUpdate = async (id: string,name: string,days:any,event :any) => {
+       const validationErrors = isValidTimecardsholidaysEdit({name});
         if (event) {
             event.preventDefault();
             const formattedDays = days.map((day:any) => {
@@ -160,13 +162,15 @@ const TimecardHolidays = () => {
                 }
             }).join(', ');
             days = formattedDays;
-            try {
-                const dataUpdate = { id, name, days };
-                const response = await axios.put('timecardsholidays/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } }, );
-                console.log('Update Response:', response.data);
-                closeModal();
-                setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-            } catch (error) { console.error('Lỗi khi cập nhật trạng thái:', error); }
+            if(validationErrors === true) {
+                try {
+                    const dataUpdate = { id, name, days };
+                    const response = await axios.put('timecardsholidays/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } }, );
+                    console.log('Update Response:', response.data);
+                    closeModal();
+                    setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+                } catch (error) { console.error('Lỗi khi cập nhật trạng thái:', error); }
+           }
         }
     };
 
@@ -232,10 +236,8 @@ const TimecardHolidays = () => {
         }
     };
     const handleSubmint = () => {
-        if (!name) {
-            console.error('Tên ngày lễ không được để trống');
-            return;
-        }
+        const names = name;
+        const validationErrors = isValidTimecardsholidays({names});
         const formattedDays = days.map((day) => {
             if (day instanceof Date) {
                 return format(day, 'dd-MM-yyyy').toString();
@@ -245,26 +247,28 @@ const TimecardHolidays = () => {
                 return 'Ngày không hợp lệ';
             }
         }).join(', ');
-        const holiday_data = {
-            name: name,
-            days: formattedDays,
-        };
-        setName('');
-        setDays([new Date()]);
-        axios
-            .post('timecardsholidays/add/', holiday_data)
-            .then((response) => {
-                // Xử lý thành công nếu cần
-                setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-            })
-        .catch((error) => {
-            console.error('Error inserting data:', error);
-            // Xử lý lỗi nếu cần
-            if (error.response) {
-                console.error('Response status:', error.response.status);
-                console.error('Server error message:', error.response.data);
-            }
-        });
+        if (validationErrors === true) {
+            const holiday_data = {
+                name: name,
+                days: formattedDays,
+            };
+            setName('');
+            setDays([new Date()]);
+            axios
+                .post('timecardsholidays/add/', holiday_data)
+                .then((response) => {
+                    // Xử lý thành công nếu cần
+                    setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+                })
+            .catch((error) => {
+                console.error('Error inserting data:', error);
+                // Xử lý lỗi nếu cần
+                if (error.response) {
+                    console.error('Response status:', error.response.status);
+                    console.error('Server error message:', error.response.data);
+                }
+            });
+        }
     };
     return (
         <>
