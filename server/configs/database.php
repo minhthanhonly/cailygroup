@@ -28,6 +28,10 @@
     // PORT
     define('DB_PORT', '');
 
+    // if($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    //     header('HTTP/1.1 200 OK');
+    // }
+
     $conn = mysqli_connect(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
     if($conn===false) {
         die("ERROR: Could Not Connect".mysqli_connect_error());

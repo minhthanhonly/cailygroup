@@ -6,11 +6,10 @@ export default axios.create({
   baseURL: BASE_URL
 });
 
+export const axiosPrivate = axios.create({
+  baseURL: BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+  // withCredentials: true
+});
 
-axios.defaults.withCredentials = true;
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-axios.interceptors.request.use(function(config){
-  return config;
-}, function (error){
-  return Promise.reject(error);
-})
+axiosPrivate.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
