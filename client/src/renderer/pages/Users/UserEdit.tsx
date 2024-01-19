@@ -4,8 +4,10 @@ import axios from "../../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { isValidUserEdit } from "../../components/Validate";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 export default function UserEdit() {
+  const axiosPrivate = useAxiosPrivate();
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const {id} = useParams();
@@ -17,7 +19,7 @@ export default function UserEdit() {
 	}
 
   useEffect(() => {
-    axios.get('users/edit/'+id).then(response => {
+    axiosPrivate.get('users/edit/'+id).then(response => {
       setFormValue(response.data);
     })
   }, [])
@@ -27,8 +29,8 @@ export default function UserEdit() {
     const validationErrors = isValidUserEdit({...formValue})
     if(validationErrors === true) {
       const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:formValue.passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-		const res = await axios.post("users/update", formData);
-    const res2 = await axios.get("users/detail/"+formValue.userid);
+		const res = await axiosPrivate.post("users/update", formData);
+    const res2 = await axiosPrivate.get("users/detail/"+formValue.userid);
 
     if(res.data.success){
       setMessage(res.data.success);
@@ -63,7 +65,7 @@ export default function UserEdit() {
 	const [listOfAuthority, setListOfAuthority] = useState<FieldAuthority[] | []>([]);
 
 	useEffect(() => {
-		axios.get('authority/').then((response) => {
+		axiosPrivate.get('authority/').then((response) => {
 			setListOfAuthority(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
@@ -88,7 +90,7 @@ export default function UserEdit() {
 	const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
 	useEffect(() => {
-		axios.get('groups/').then((response) => {
+		axiosPrivate.get('groups/').then((response) => {
 			setListOfGroups(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])

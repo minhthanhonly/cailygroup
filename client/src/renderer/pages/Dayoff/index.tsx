@@ -8,8 +8,10 @@ import axios from '../../api/axios';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import './Dayoffs.scss';
 import { SelectCustomDayoff } from '../../components/Table/SelectCustom';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export const Dayoff = () => {
+  const axiosPrivate = useAxiosPrivate();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [showTable, setShowTable] = useState(true);
@@ -182,8 +184,10 @@ export const Dayoff = () => {
       event.preventDefault();
       try {
         const payload = { id: dayoffId };
-        await axios.delete('dayoffs/delete/' + dayoffId);
-        const updatedList = await axios.get('dayoffs/getforuser/' + users.id);
+        await axiosPrivate.delete('dayoffs/delete/' + dayoffId);
+        const updatedList = await axiosPrivate.get(
+          'dayoffs/getforuser/' + users.id,
+        );
         setListOfGroups(updatedList.data);
 
         setCurrentPage(1);
@@ -194,7 +198,7 @@ export const Dayoff = () => {
     closeModaldelete();
   };
   useEffect(() => {
-    axios.get('dayoffs/getforuser/' + users.id).then((response) => {
+    axiosPrivate.get('dayoffs/getforuser/' + users.id).then((response) => {
       setListOfGroups(response.data);
     });
   }, [currentPage]);
@@ -215,8 +219,8 @@ export const Dayoff = () => {
   const fetchData = useCallback(async () => {
     try {
       const [groupsResponse, dayoffsResponse] = await Promise.all([
-        axios.get('groups'),
-        axios.get('dayoffs', {
+        axiosPrivate.get('groups'),
+        axiosPrivate.get('dayoffs', {
           params: {
             group: selectedGroup,
           },
