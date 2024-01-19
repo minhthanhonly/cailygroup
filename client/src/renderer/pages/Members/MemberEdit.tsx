@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Heading2, Heading3 } from "../../components/Heading";
-import axios from "../../api/axios";
+import { Heading2 } from "../../components/Heading";
 import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { isValidUserEdit } from "../../components/Validate";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 function MemberEdit() {
+  const axiosPrivate = useAxiosPrivate();
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const {id} = useParams();
@@ -18,7 +19,7 @@ function MemberEdit() {
 	}
 
   const fetchUsersById = async function() {
-    const res = await axios.get('users/edit/'+id);
+    const res = await axiosPrivate.get('users/edit/'+id);
     setFormValue(res.data);
   }
 
@@ -44,7 +45,7 @@ function MemberEdit() {
     const validationErrors = isValidUserEdit({...formValue})
     if(validationErrors === true) {
       const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:formValue.passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-      const res = await axios.post("users/update", formData);
+      const res = await axiosPrivate.post("users/update", formData);
 
       if(res.data.success){
         setMessage(res.data.success);
@@ -69,7 +70,7 @@ function MemberEdit() {
 	const [listOfAuthority, setListOfAuthority] = useState<FieldAuthority[] | []>([]);
 
 	useEffect(() => {
-		axios.get('authority').then((response) => {
+		axiosPrivate.get('authority').then((response) => {
 			setListOfAuthority(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
@@ -94,7 +95,7 @@ function MemberEdit() {
 	const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
 	useEffect(() => {
-		axios.get('groups').then((response) => {
+		axiosPrivate.get('groups').then((response) => {
 			setListOfGroups(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])

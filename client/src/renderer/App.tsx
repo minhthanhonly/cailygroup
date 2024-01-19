@@ -18,7 +18,6 @@ import FluidLayout from './layouts/FluidLayout/FluidLayout';
 import Members from './pages/Members';
 import MemberAdd from './pages/Members/MemberAdd';
 import MemberEdit from './pages/Members/MemberEdit';
-import MemberDetail from './pages/Members/MemberDetail';
 import RequireAuth from './components/RequireAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -52,7 +51,6 @@ export default function App() {
               <Route path="members" element={<Members />} />
               <Route path="members/add" element={<MemberAdd />} />
               <Route path="members/edit/:id" element={<MemberEdit />} />
-              <Route path="members/detail/:userid" element={<MemberDetail />} />
               <Route path="dayoffs" element={<Dayoff />} />
               <Route path="dayoffs/apply" element={<DayoffApply />} />
               <Route path="dayoffs/delete/:id" />
