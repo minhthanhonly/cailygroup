@@ -168,7 +168,6 @@ export const FormLeave: React.FC = () => {
           timeLeave = calculateTime(timeStart, closetimeValue);
         }
       } else {
-        // bắt đầu trong khoảng 11:30-13:00
         if (compareTime(timeEnd, closelunchValue) != 1) {
           timeLeave = '00:00';
         } else if (compareTime(timeEnd, closetimeValue) != 1) {
@@ -181,12 +180,9 @@ export const FormLeave: React.FC = () => {
     const group_data = {
       user_id: usersID,
       date: format(leaveDate, 'dd-MM-yyyy').toString(),
-      // date_start: format(startDate, 'dd-MM-yyyy').toString(),
-      // date_end: format(endDate, 'dd-MM-yyyy').toString(),
       time_start: timeStart,
       time_end: timeEnd,
       note: note,
-      // day_number: calculateDayDifference(startDate, endDate),
       day_number: timeLeave,
       status: 0,
       owner: '',
@@ -227,25 +223,6 @@ export const FormLeave: React.FC = () => {
     <div className="form-leave form">
       <div className="form-content">
         <div className="row">
-          {/* <div className="col-6">
-            <div className="form-group">
-              <label>
-                Ngày bắt đầu
-                <img
-                  src={require('../../../../assets/icon-time.jpg')}
-                  alt=""
-                  className="fluid-image"
-                />
-              </label>
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => handleStartDateChange(date)}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-              />
-            </div>
-          </div> */}
           <div className="col-12">
             <div className="form-group">
               <label>
@@ -278,26 +255,6 @@ export const FormLeave: React.FC = () => {
               />
             </div>
           </div>
-          {/* <div className="col-6">
-            <div className="form-group">
-              <label>
-                Ngày kết thúc
-                <img
-                  src={require('../../../../assets/icon-time.jpg')}
-                  alt=""
-                  className="fluid-image"
-                />
-              </label>
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => handleEndDateChange(date)}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate}
-              />
-            </div>
-          </div> */}
           <div className="col-12">
             <div className="form-group form-group--small">
               <label>

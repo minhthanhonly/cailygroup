@@ -15,7 +15,7 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState(initialTime);
   const [inputValue, setInputValue] = useState('');
-  const [tempHours, setTempHours] = useState(8);
+  const [tempHours, setTempHours] = useState(8 || null);
   const [tempMinutes, setTempMinutes] = useState(0);
   const [tempInputValue, setTempInputValue] = useState('');
   const [confirmButtonClicked, setConfirmButtonClicked] = useState(false);
@@ -31,7 +31,7 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
       setTempInputValue(format(updatedTime, 'HH:mm'));
     }
   }, [defaultValue, selectedTime]);
-
+  // const padStart2Digits = (value: number) => value.toString().padStart(2, '0');
   const increaseHour = () => {
     setTempHours((prevHours) => prevHours + 1);
   };
@@ -80,13 +80,14 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
   const openModal = () => {
     console.log('Input focused!');
     setModalOpen(true);
-
-    if (inputValue) {
-      setTempHours(parseInt(inputValue.split(':')[0], 10));
-      setTempMinutes(parseInt(inputValue.split(':')[1], 10));
+    if (defaultValue) {
+      const hours = parseInt(defaultValue.split(':')[0], 10);
+      const minutes = parseInt(defaultValue.split(':')[1], 10);
+      setTempHours(hours);
+      setTempMinutes(minutes);
     } else {
-      setTempHours(8);
-      setTempMinutes(0);
+      setTempHours(7);
+      setTempMinutes(30);
     }
   };
 
@@ -100,7 +101,6 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    console.log('New inputValue:', value);
     setInputValue(value);
   };
 
@@ -111,7 +111,7 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
         onFocus={openModal}
         onChange={handleInputChange}
         onClick={openModal}
-        value={inputValue || tempInputValue || defaultValue || '08:00'}
+        value={inputValue || tempInputValue || defaultValue || '07:30'}
         readOnly
       />
 
@@ -127,7 +127,11 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
                     className="fluid-image"
                   />
                 </button>
-                <span>{tempHours}</span>
+                <input
+                  type="text"
+                  value={tempHours}
+                  // onChange={(e) => setTempHours(parseInt(e.target.value))}
+                />
                 <button className="minus" onClick={decreaseHour}>
                   <img
                     src={require('../../../../assets/icon-minus.png')}
@@ -144,7 +148,11 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
                     className="fluid-image"
                   />
                 </button>
-                <span>{tempMinutes}</span>
+                <input
+                  type="text"
+                  value={tempMinutes}
+                  // onChange={(e) => setTempMinutes(parseInt(e.target.value))}
+                />
                 <button className="minus" onClick={decreaseMinute}>
                   <img
                     src={require('../../../../assets/icon-minus.png')}
