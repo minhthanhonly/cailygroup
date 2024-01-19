@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from "../../api/axios";
 import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';
 import CTableBody from '../../components/Table/CTableBody';
@@ -7,6 +6,7 @@ import { Heading2 } from '../../components/Heading';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import {isValidGroupEdit, isValidGroup} from "../../components/Validate";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 interface GroupProps {
   id: string;
@@ -15,6 +15,7 @@ interface GroupProps {
   delete: React.ReactNode;
 }
 export const Group = () => {
+  const axiosPrivate = useAxiosPrivate();
   type FieldGroups = {
     id: string;
     group_name: string;
@@ -53,7 +54,7 @@ export const Group = () => {
   };
 
   useEffect(() => {
-    axios.get('groups/').then((response) => {
+    axiosPrivate.get('groups/').then((response) => {
       setListOfGroups(response.data);
       setIsTableUpdated(false); //đặt lại trạng thái khi dữ liệu thay đổi
     });
@@ -115,7 +116,7 @@ export const Group = () => {
       event.preventDefault();
       try {
         const payload = { id: groupId };
-        let response = await axios.delete('groups/delete/', {headers: {'Content-Type': 'application/json',},data: payload,});
+        let response = await axiosPrivate.delete('groups/delete/', {headers: {'Content-Type': 'application/json',},data: payload,});
         console.log('DELETE Response:', response.data);
         closeModaldelete();
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
@@ -132,7 +133,7 @@ export const Group = () => {
         if(validationErrors === true) {
           try {
             const dataUpdate = { id, group_name };
-            const response = await axios.put('groups/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } });
+            const response = await axiosPrivate.put('groups/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } });
             console.log('Update Response:', response.data);
             closeModal();
             setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
@@ -201,7 +202,7 @@ export const Group = () => {
             owner: 'admin',
           };
           setGroupName('');
-          const res = await axios.post("groups/add/", group_data);
+          const res = await axiosPrivate.post("groups/add/", group_data);
           console.log('Data inserted successfully:', res.data);
           setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
         }
