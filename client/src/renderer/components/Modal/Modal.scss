@@ -181,7 +181,7 @@
     left: 0;
     background-color: rgba(0, 0, 0, 0.2);
   }
-  button[disabled]{
+  button[disabled] {
     border-radius: #ccc;
     background-color: #ccc;
     cursor: not-allowed;
@@ -203,6 +203,7 @@
     }
     textarea {
       height: 12rem;
+      margin: 0;
     }
   }
 }

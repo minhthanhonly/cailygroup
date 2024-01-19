@@ -42,7 +42,7 @@ interface TimecardData {
   id_groupwaretimecard: number;
   timecard_time: string;
   timecard_timeover: string;
-  timecard_timeinterval: String;
+  timecard_timeinterval: string;
   timecard_comment: string;
   editor: string;
 }
@@ -62,6 +62,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isOpenModal, setOpenModal] = useState(false); //a
   const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(false);
   const [commentText, setCommentText] = useState('');
 
@@ -70,7 +71,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   );
   const openModal = (itemId: number, comment: string, isDayoff: boolean) => {
     setModalOpen(true);
-    setCommentText(comment);
+    setCommentText(comment || '');
     setCurrentItemId(itemId);
     setIsUpdatingDayoff(isDayoff);
   };
@@ -88,7 +89,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [timecardEnd, setTimecardEnd] = useState<string>();
   const [timecardTime, setTimecardTime] = useState<string>();
   const [timecardOvertime, setTimecardOvertime] = useState<string>();
+  const [timecardInterval, setTimecardInterval] = useState<string>();
   const [timecardNote, setTimecardNote] = useState<string>();
+  const [timecardDateEdit, setTimecardDateEdit] = useState<string | null>(null);
   const openModaldelete = (
     id: number,
     timecards_date: string,
@@ -96,7 +99,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     timecards_close: string,
     timecards_time: string,
     timecards_timeover: string,
+    timecard_timeinterval: string,
     timecards_comment: string,
+    isTimecards: boolean,
+    date: string,
   ) => {
     setTimecardID(id);
     setTimecardDate(timecards_date);
@@ -104,8 +110,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setTimecardEnd(timecards_close);
     setTimecardTime(timecards_time);
     setTimecardOvertime(timecards_timeover);
+    setTimecardInterval(timecard_timeinterval);
     setTimecardNote(timecards_comment);
+    setOpenModal(isTimecards);
     setDeleteModalOpen(true);
+    setTimecardDateEdit(date);
   };
   const closeModaldelete = () => {
     setDeleteModalOpen(false);
@@ -624,6 +633,48 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     }, 400);
     closeModaldelete();
   };
+  const handleNewTimeCard = async () => {
+    let day, month, year;
+    if (timecardDateEdit !== null) {
+      const dateParts = timecardDateEdit.split('-');
+      day = dateParts[0];
+      month = dateParts[1];
+      year = dateParts[2];
+    }
+    const dataTimeCard = {
+      timecard_year: year,
+      user_id: usersID,
+      timecard_month: month,
+      timecard_day: day,
+      timecard_date: timecardDateEdit,
+      timecard_temp: 0,
+      owner: users.realname,
+    };
+    const responseTimeCard = await axios.post('timecards/add', {
+      dataTimeCard,
+    });
+    console.log(responseTimeCard.data);
+    const dataTimeCardDetails = {
+      id_groupwaretimecard: responseTimeCard.data.id_timecard,
+      timecard_open: timecard_open_time,
+      timecard_close: timecardEnd,
+      timecard_time: timecardTime,
+      timecard_timeover: timecardOvertime,
+      timecard_timeinterval: timecardInterval,
+      timecard_comment: timecardNote,
+      editor: users.realname,
+    };
+    const responseTimeCardDetails = await axios.post('timecarddetails/addnew', {
+      dataTimeCardDetails,
+    });
+
+    console.log(responseTimeCardDetails.data);
+    fetchTimecardOpen();
+    setTimeout(() => {
+      calculateTotalTime();
+    }, 400);
+    closeModaldelete();
+  };
 
   const [isload, setIsLoad] = useState(false);
   useEffect(() => {
@@ -703,11 +754,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               <td>
                 {format(day, 'dd/MM')} ({weekdays[day.getDay()]})
               </td>
-              {/* {otherColumnData.map((column, colIndex) => (
-                <td key={colIndex}>
-                  {column.format ? column.format(day) : '...'}
-                </td>
-              ))} */}
               <td>
                 {isHoliday(day).isHoliday ? (
                   ''
@@ -897,7 +943,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 )}
               </td>
               <td>
-                {isDayoff(day).isDayoff ? (
+                {isHoliday(day).isHoliday ? null : isDayoff(day).isDayoff ? (
                   isDayoff(day).status == 0 ? (
                     <>
                       <span
@@ -924,12 +970,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       />
                     </span>
                   )
-                ) : (
-                  ''
-                )}
-                {timecardOpen.some(
-                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                ) ? (
+                ) : timecardOpen.some(
+                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                  ) ? (
                   <>
                     {timecardOpen
                       .filter(
@@ -952,7 +995,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                       item.timecard_close,
                                       item.timecard_time,
                                       item.timecard_timeover,
+                                      item.timecard_timeinterval,
                                       item.timecard_comment,
+                                      false,
+                                      '',
                                     );
                                   }}
                                 >
@@ -964,6 +1010,28 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                           ) : null}
                         </div>
                       ))}
+                  </>
+                ) : admin ? (
+                  <>
+                    <span
+                      className="btn btn--green btn--medium"
+                      onClick={(event) => {
+                        openModaldelete(
+                          0,
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '',
+                          true,
+                          format(day, 'dd-MM-yyyy'),
+                        );
+                      }}
+                    >
+                      Sửa giờ
+                    </span>
                   </>
                 ) : null}
               </td>
@@ -1017,7 +1085,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
             isOpen={isDeleteModalOpen}
             onRequestClose={closeModaldelete}
           >
-            <h2 className="mb15">Sửa thẻ giờ ngày: {timecardDate}</h2>
+            <h2 className="mb15">
+              Sửa thẻ giờ ngày: {timecardDate}
+              {timecardDateEdit}
+            </h2>
             <table className="table-modal">
               <tbody>
                 <tr>
@@ -1061,6 +1132,16 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   </td>
                 </tr>
                 <tr>
+                  <td>Giờ nghỉ trưa</td>
+                  <td>
+                    <input
+                      type="text"
+                      defaultValue={timecardInterval}
+                      onChange={(e) => setTimecardInterval(e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
                   <td>Ghi chú</td>
                   <td>
                     <textarea
@@ -1072,10 +1153,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               </tbody>
             </table>
             <div className="wrp-button">
+              <p>{isOpenModal ? 'a' : 'b'}</p>
               <button
                 className="btn btn--green"
                 onClick={(event) => {
-                  handleChangeTimecards(timecardID);
+                  isOpenModal
+                    ? handleNewTimeCard()
+                    : handleChangeTimecards(timecardID);
                 }}
               >
                 Đồng ý
