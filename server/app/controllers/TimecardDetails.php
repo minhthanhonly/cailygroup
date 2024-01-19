@@ -7,7 +7,7 @@
         }
 
         function add(){
-             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
                  return $this->model('TimecardDetailsModel')->postAdd();
             }
@@ -24,8 +24,6 @@
             if($is_jwt_valid == 1){
                return $this->model('TimecardDetailsModel')->postUpdate($timecard_now, $timecard_originalclose, $timecard_interval, $overtime, $timecardId);
             }
-            
-            
         }
         function updatecomment($comment = '',$id = ''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());

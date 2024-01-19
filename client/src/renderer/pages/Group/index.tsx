@@ -44,7 +44,7 @@ export const Group = () => {
   
   const fetchMembersByGroup = async($groupid: string) => {
     const groupid = {groupid:$groupid};
-    const res = await axios.get("users/groups/"+$groupid);
+    const res = await axiosPrivate.get("users/groups/"+$groupid);
     if(res.data.length > 0) {
       setListOfUsers(res.data);
       setIsDisabled(true);
