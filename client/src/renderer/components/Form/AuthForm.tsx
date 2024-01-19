@@ -41,12 +41,12 @@ function FormLogin(){
       const formData = {userid:userid, password:password}
       const res = await axios.post("login", formData);
       const res2 = await axios.get("users/detail/"+userid);
+
       if(res.data.success === 'error'){
         setError('Tên đăng nhập hoặc mật khẩu không đúng');
       } else {
         setMsg('Đăng nhập thành công. Đang chuyển hướng...');
         setTimeout(() => {
-          // console.log(res.data.info);
           localStorage.setItem('login', 'true');
           const isLoggedIn = localStorage.getItem('login');
           const roles = res2.data.authority_name;

@@ -5,15 +5,18 @@ import { CTable } from "../../components/Table/CTable";
 import { CTableHead } from "../../components/Table/CTableHead";
 import { useEffect, useState } from "react";
 import ButtonAdd from "../../components/Button/ButtonAdd";
-import axios from "../../api/axios";
+import axios from "../../api/axiosLocal";
 import ButtonEdit from "../../components/Button/ButtonEdit";
 import ButtonDelete from "../../components/Button/ButtonDelete";
 import Modaldelete from "../../components/Modal/Modaldelete";
 import { Pagination } from "../../components/Pagination";
 import { NavLink } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 function Members() {
+  const axiosPrivate = useAxiosPrivate();
   const [isTableUpdated, setIsTableUpdated] = useState(false);
+  const token = localStorage.getItem('token');
 
   /*
   * LẤY DANH SÁCH THÀNH VIÊN
@@ -33,10 +36,10 @@ function Members() {
 
     const getUsers = async () => {
       try {
-        const response = await axios.get('users', {
-          signal: controller.signal
-        });
-        console.log(response.data);
+        const response = await axiosPrivate.get('users', {
+          signal: controller.signal,
+
+        })
         isMounted && setListOfUsers(response.data);
       } catch(err) {
         console.log(err);

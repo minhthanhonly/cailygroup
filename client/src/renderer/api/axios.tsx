@@ -6,5 +6,10 @@ export default axios.create({
   baseURL: BASE_URL
 });
 
-axios.defaults.withCredentials = true;
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+export const axiosPrivate = axios.create({
+  baseURL: BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true
+});
+
+axiosPrivate.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
