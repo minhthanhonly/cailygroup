@@ -8,10 +8,13 @@ import React, {
 import axios from '../../api/axios';
 import './Dashboard.scss';
 import DashboardTime from './DashboardTime';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 function Dashboard() {
+  const axiosPrivate = useAxiosPrivate();
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
+  console.log(users);
   if (users) {
     useEffect(() => {
       setUsersID(users.id);
@@ -30,7 +33,7 @@ function Dashboard() {
 
   const loadStart = async () => {
     try {
-      const response = await axios.get('timecards/load/' + usersID);
+      const response = await axiosPrivate.get('timecards/load/' + usersID);
 
       if (response.data && response.data.timecard_close) {
         const timecardClose = response.data.timecard_close;
@@ -52,7 +55,7 @@ function Dashboard() {
   };
   const handleStart = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosPrivate.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
       let { datetime } = response.data;
@@ -77,7 +80,7 @@ function Dashboard() {
         timecard_temp: 0,
         owner: 'admin',
       };
-      const responseTimeCard = await axios.post('timecards/add', {
+      const responseTimeCard = await axiosPrivate.post('timecards/add', {
         dataTimeCard,
       });
       const dataTimeCardDetails = {
@@ -87,9 +90,12 @@ function Dashboard() {
         timecard_timeinterval: '1:30',
         timecard_comment: '',
       };
-      const responseTimeCardDetails = await axios.post('timecarddetails/add', {
-        dataTimeCardDetails,
-      });
+      const responseTimeCardDetails = await axiosPrivate.post(
+        'timecarddetails/add',
+        {
+          dataTimeCardDetails,
+        },
+      );
       loadStart();
       setCheckStart(true);
     } catch (error) {
@@ -105,8 +111,8 @@ function Dashboard() {
   };
   const handleEnd = async () => {
     try {
-      const res = await axios.get('timecards/load/' + usersID);
-      const response = await axios.get(
+      const res = await axiosPrivate.get('timecards/load/' + usersID);
+      const response = await axiosPrivate.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
       let { datetime } = response.data;
@@ -120,7 +126,9 @@ function Dashboard() {
         timecard_open: res.data.timecard_open,
         timecard_now: timecard_open_time,
       };
-      const re = await axios.post('timecarddetails/update', { dataTime });
+      const re = await axiosPrivate.post('timecarddetails/update', {
+        dataTime,
+      });
       console.log(re.data);
 
       loadStart();
