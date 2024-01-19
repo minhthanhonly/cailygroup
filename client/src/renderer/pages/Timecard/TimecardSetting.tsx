@@ -3,15 +3,19 @@ import CardTime from '../../components/Card/Card';
 import { Heading3 } from '../../components/Heading';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { Pagination } from '../../components/Pagination';
-import axios from "../../api/axios";
 import TimecardHolidays from "./TimecardHolidays";
 import { symlink } from 'fs';
+
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+
 
 import { toast } from "react-toastify";
 
 import './TimecardSetting.scss';
 
 export const TimecardSetting = () => {
+  const axiosPrivate = useAxiosPrivate();
+
   const [timeInputHours, setTimeInputHours] = useState<number>(0);
   const [timeInputMinutes, setTimeInputMinutes] = useState<number>(0);
   const [timeOutHours, setTimeOutHours] = useState<number>(0);
@@ -45,7 +49,7 @@ export const TimecardSetting = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('timecards/setting');
+        const response = await axiosPrivate.get('timecards/setting');
         const data = response.data;
 
         if (!Array.isArray(data)) {
@@ -113,7 +117,7 @@ export const TimecardSetting = () => {
   useEffect(() => {
     const fetchTimeValues = async () => {
       try {
-        const response = await axios.get('timecards/setting');
+        const response = await axiosPrivate.get('timecards/setting');
         const timeValues = response.data;
 
         // Giả sử cấu trúc của response là { openhour: '12', openminute: '30', closehour: '18', closeminute: '45' }
@@ -197,7 +201,7 @@ export const TimecardSetting = () => {
         const timeInputString = `${formattedHoursInput}:${formattedMinutesInput}`
         const dataUpdateArray = [{ id: 1, config_key: 'opentime', hoursMinutes: timeInputString },];
         // Thêm các đối tượng khác nếu cần
-        const response = await axios.post('timecards/getInput', dataUpdateArray);
+        const response = await axiosPrivate.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
           toast.success(`Chỉnh giờ vào là: ${timeInputString} thành công`);
@@ -231,7 +235,7 @@ export const TimecardSetting = () => {
         const dataUpdateArray = [{ id: 2, config_key: 'closetime', hoursMinutes: timeOutString },];
         // Thêm các đối tượng khác nếu cần
 
-        const response = await axios.post('timecards/getInput', dataUpdateArray);
+        const response = await axiosPrivate.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
           toast.success(`Chỉnh giờ kết thúc là: ${timeOutString} thành công`);
@@ -267,7 +271,7 @@ export const TimecardSetting = () => {
         const timeOutString = `${formattedLunchStartHouse}:${formattedLunchStartMinutes}`
         const dataUpdateArray = [{ id: 2, config_key: 'openlunch', hoursMinutes: timeOutString },];
         // Thêm các đối tượng khác nếu cần
-        const response = await axios.post('timecards/getInput', dataUpdateArray);
+        const response = await axiosPrivate.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
           toast.success(`Chỉnh giờ bắt đầu nghỉ trưa là: ${timeOutString} thành công`);
@@ -300,7 +304,7 @@ export const TimecardSetting = () => {
         const timeOutString = `${formattedLunchEndHouse}:${formattedLunchEndMinutes}`
         const dataUpdateArray = [{ id: 2, config_key: 'closelunch', hoursMinutes: timeOutString },];
         // Thêm các đối tượng khác nếu cần
-        const response = await axios.post('timecards/getInput', dataUpdateArray);
+        const response = await axiosPrivate.post('timecards/getInput', dataUpdateArray);
 
         if (response.status === 200) {
           toast.success(`Chỉnh giờ kết thúc nghỉ trưa là: ${timeOutString} thành công`);
