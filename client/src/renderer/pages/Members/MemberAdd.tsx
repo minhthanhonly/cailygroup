@@ -3,8 +3,10 @@ import { Heading2 } from "../../components/Heading";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { isValidUser } from "../../components/Validate";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 function MemberAdd() {
+  const axiosPrivate = useAxiosPrivate();
 	const navigate = useNavigate();
 
 	const [formValue, setFormValue] = useState({ userid: '', password: '', password_confirm: '', realname: '', authority: '', user_group: '' })
@@ -18,7 +20,7 @@ function MemberAdd() {
 		e.preventDefault();
 		if (validationErrors === true) {
 			const formData = { userid: formValue.userid, password: formValue.password, realname: formValue.realname, authority: formValue.authority, user_group: formValue.user_group }
-			const res = await axios.post("users/add", formData);
+			const res = await axiosPrivate.post("users/add", formData);
 
 			if (res.data.success) {
 				setMessage(res.data.success);

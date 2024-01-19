@@ -24,7 +24,6 @@ import { UserRole } from '../../../components/UserRole';
 export const Sidebar = () => {
   const naviget = useNavigate();
   const { auth } = useAuth();
-  console.log(auth);
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
 
@@ -35,6 +34,7 @@ export const Sidebar = () => {
   function logoutSubmit() {
     localStorage.setItem('login', 'false');
     localStorage.removeItem('users');
+    localStorage.removeItem('token');
     naviget('/');
   }
 

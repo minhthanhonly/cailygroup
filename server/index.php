@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
     define('__DIR_ROOT', __DIR__);
 
     if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'){
@@ -30,6 +32,7 @@
     require_once(__DIR__.'/app/App.php');
 
     require_once(__DIR__.'/core/Controller.php');
+    require_once(__DIR__.'/core/Model.php');
 
     // Load Request
     require_once(__DIR__.'/core/Request.php');

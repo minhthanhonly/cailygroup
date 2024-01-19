@@ -1,20 +1,36 @@
 <?php
     class Home extends Controller {
         public $model_home;
-        public $data;
 
         function __construct(){
             // $this->model_home = $this->model('HomeModel');
         }
 
         function index(){
-            $home = $this->model('HomeModel');
-            $dataHome = $home->getList();
+            
 
-            $this->data['home'] = $dataHome;
-            // Render view
-            $this->render('home/index', $this->data);
-            Session::data('username');
+            // $home = $this->model('HomeModel');
+            // $dataHome = $home->getList();
+
+            // $this->data['home'] = $dataHome;
+            // // Render view
+            $this->render('home/index');
+            // $check = Session::data('username', 'Phan Ho Tu');
+            
+            // echo '<pre>';
+            // print_r($sessionData);
+            // echo '</pre>';
+
+            // var_dump($check);
+
+            // $check = Session::data('username', [
+            //     'name' => 'Phan Tu',
+            //     'email' => 'phantu3041@gmail.com'
+            // ]);
+            
+
+
+            // var_dump($sessionData);
         }
 
         function detail($id=0){

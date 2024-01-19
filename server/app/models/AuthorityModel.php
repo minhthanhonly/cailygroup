@@ -1,5 +1,10 @@
 <?php
     class AuthorityModel{
+        function index(){
+            header("Location:" .__WEB_ROOT."/login");
+            exit();
+        }
+
         function getList(){
             global $conn;
 

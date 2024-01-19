@@ -16,7 +16,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 function Members() {
   const axiosPrivate = useAxiosPrivate();
   const [isTableUpdated, setIsTableUpdated] = useState(false);
-  const token = localStorage.getItem('token');
+  const [empty, setEmpty] = useState(false);
 
   /*
   * LẤY DANH SÁCH THÀNH VIÊN
@@ -38,11 +38,11 @@ function Members() {
       try {
         const response = await axiosPrivate.get('users', {
           signal: controller.signal,
-
-        })
+        });
         isMounted && setListOfUsers(response.data);
+        response.data.length ? setEmpty(false) : setEmpty(true);
       } catch(err) {
-        console.log(err);
+        console.error('Lỗi khi lấy dữ liệu:', err);
       }
     }
 
@@ -115,7 +115,7 @@ function Members() {
     setCurrentPage(page);
   };
 
-  const [message, setMessage] = useState('');
+
 
   return (
     <>
@@ -144,9 +144,8 @@ function Members() {
         </div> */}
       </div>
       <ButtonAdd path_add="/members/add" />
-      {(listOfUsers?.length)
-        ? (
-        <><CTable>
+      { (empty === true) ? <div className="box-bg --full mt30 mb20"><p className="bg bg-red">Không có thành viên nào để hiển thị</p></div> : '' }
+      <CTable>
             <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
             <tbody>
               {listOfUsers.map((data, index) => (
@@ -174,8 +173,7 @@ function Members() {
                 <button className='btn btn--green' onClick={() => handleDelete(isDeleteModalid)}>Đồng ý</button>
                 <button className='btn btn--orange' onClick={closeModal}>Hủy</button>
               </div>
-            </Modaldelete></>
-        ) :  <div className="box-bg --full mt30 mb20"><p className="bg bg-red">Không có thành viên nào để hiển thị</p></div>}
+            </Modaldelete>
     </>
   )
 };

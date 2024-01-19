@@ -40,7 +40,6 @@ function FormLogin(){
     if(userid !== "" && password !== ""){
       const formData = {userid:userid, password:password}
       const res = await axios.post("login", formData);
-      const res2 = await axios.get("users/detail/"+userid);
 
       if(res.data.success === 'error'){
         setError('Tên đăng nhập hoặc mật khẩu không đúng');
@@ -49,14 +48,14 @@ function FormLogin(){
         setTimeout(() => {
           localStorage.setItem('login', 'true');
           const isLoggedIn = localStorage.getItem('login');
-          const roles = res2.data.authority_name;
+          const roles =  res.data.info.authority_name;
           const users = {
-            "id": res2.data.id,
-            "userid": res2.data.userid,
-            "realname": res2.data.realname,
-            "roles": res2.data.authority_name,
-            "user_group": res2.data.group_name,
-            "user_group_id": res2.data.user_group,
+            "id":  res.data.info.id,
+            "userid":  res.data.info.userid,
+            "realname":  res.data.info.realname,
+            "roles":  res.data.info.authority_name,
+            "user_group":  res.data.info.group_name,
+            "user_group_id":  res.data.info.user_group,
           }
           localStorage.setItem('users', JSON.stringify(users));
           localStorage.setItem('token', res.data.info.token);

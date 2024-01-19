@@ -3,18 +3,34 @@
         static public function data($key, $value=''){
             $sessionKey = self::isInvalid();
             if(!empty($value)){
-                $_SESSION[$sessionKey][$key] = $value;
+                $_SESSION[$sessionKey][$key] = $value; //set session
                 return true;
             } else {
-                if(isset($$_SESSION[$sessionKey][$key])){
-                    return $_SESSION[$sessionKey][$key];
+                if(empty($key)){
+                    if(isset($_SESSION[$sessionKey])){
+                        return $_SESSION[$sessionKey]; //get all session
+                    }
+                } else {
+                    if(isset($_SESSION[$sessionKey][$key])){
+                        return $_SESSION[$sessionKey][$key]; //get session
+                    }
                 }
             }
         }
 
-        static public function showErrors($message){
-            $data = ['message' => $message];
-            App::$app->loadError('exception', $data);
+        static public function delete($key=''){
+            $sessionKey = self::isInvalid();
+            if(!empty($key)){
+                if(isset($_SESSION[$sessionKey][$key])){
+                    unset($_SESSION[$sessionKey][$key]);
+                    return true;
+                }
+                return false;
+            } else {
+                unset($_SESSION[$sessionKey]);
+                return true;
+            }
+            return false;
         }
 
         static function isInvalid(){
@@ -24,11 +40,7 @@
                 if(!empty($sessionConfig['session_key'])){
                     $sessionKey = $sessionConfig['session_key'];
                     return $sessionKey;
-                } else {
-                    // 
                 }
-            } else {
-                // self::showErrors('Thiếu cấu hình session. Vui lòng kiểm tra file: configs/session.php');
             }
         }
     }
