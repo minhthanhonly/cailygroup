@@ -1,13 +1,38 @@
 <?php
     class TimecardDetailsModel{
-        function postAdd($id_groupwaretimecard, $timecard_open, $timecard_originalopen, $timecard_timeinterval){
+        function postAdd(){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
-            $id_groupwaretimecard = $data['dataTimeCardDetails']['id_groupwaretimecard'];
-            $timecard_open = $data['dataTimeCardDetails']['timecard_open'];
-            $timecard_timeinterval = $data['dataTimeCardDetails']['timecard_timeinterval'];
+            $id_groupwaretimecard = isset($data['dataTimeCardDetails']['id_groupwaretimecard'])?$data['dataTimeCardDetails']['id_groupwaretimecard']:null;
+            $timecard_open = isset($data['dataTimeCardDetails']['timecard_open'])?$data['dataTimeCardDetails']['timecard_open']:null;
+            $timecard_timeinterval = isset($data['dataTimeCardDetails']['timecard_timeinterval'])?$data['dataTimeCardDetails']['timecard_timeinterval']:null;
 
             $sql = "INSERT INTO timecard_details(id_groupwaretimecard, timecard_open, timecard_originalopen, timecard_timeinterval, createdAt, updatedAt) VALUES ($id_groupwaretimecard, '$timecard_open', '$timecard_open', '$timecard_timeinterval', NOW(), NOW())";
+            $result = $conn->query($sql);
+
+            header('Content-Type: application/json');
+            if($result) {
+                echo json_encode(['success' => 'Thêm ngày nghỉ mới thành công']);
+                return;
+            } else {
+                echo json_encode(['success' => 'Please check the Dayoffs data!']);
+                return;
+            }
+            $conn->close();
+        }
+        function postAddNew(){
+            global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            $id_groupwaretimecard = isset($data['dataTimeCardDetails']['id_groupwaretimecard'])?$data['dataTimeCardDetails']['id_groupwaretimecard']:null;
+            $timecard_open = isset($data['dataTimeCardDetails']['timecard_open'])?$data['dataTimeCardDetails']['timecard_open']:null;
+            $timecard_close = isset($data['dataTimeCardDetails']['timecard_close'])?$data['dataTimeCardDetails']['timecard_close']:null;
+            $timecard_time = isset($data['dataTimeCardDetails']['timecard_time'])?$data['dataTimeCardDetails']['timecard_time']:null;
+            $timecard_timeover = isset($data['dataTimeCardDetails']['timecard_timeover'])?$data['dataTimeCardDetails']['timecard_timeover']:null;
+            $timecard_timeinterval = isset($data['dataTimeCardDetails']['timecard_timeinterval'])?$data['dataTimeCardDetails']['timecard_timeinterval']:null;
+            $timecard_comment = isset($data['dataTimeCardDetails']['timecard_comment'])?$data['dataTimeCardDetails']['timecard_comment']:null;
+            $editor = isset($data['dataTimeCardDetails']['editor'])?$data['dataTimeCardDetails']['editor']:null;
+
+            $sql = "INSERT INTO timecard_details(id_groupwaretimecard, timecard_open, timecard_close, timecard_time, timecard_timeover, timecard_timeinterval, timecard_comment, editor, createdAt, updatedAt) VALUES ($id_groupwaretimecard, '$timecard_open', '$timecard_close', '$timecard_time', '$timecard_timeover', '$timecard_timeinterval', '$timecard_comment', '$editor', NOW(), NOW())";
             $result = $conn->query($sql);
 
             header('Content-Type: application/json');

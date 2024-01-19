@@ -53,6 +53,7 @@
     $routes['timecards/list'] = 'timecards/list';
 
     $routes['timecarddetails/add'] = 'timecarddetails/add';
+    $routes['timecarddetails/addnew'] = 'timecarddetails/addnew';
     $routes['timecarddetails/update'] = 'timecarddetails/update';
     $routes['timecarddetails/updateall'] = 'timecarddetails/updateall';
     $routes['timecarddetails/updatecomment'] = 'timecarddetails/updatecomment';

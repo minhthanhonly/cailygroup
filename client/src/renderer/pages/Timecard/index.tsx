@@ -67,20 +67,13 @@ export const Timecard = () => {
   }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
   //-------------------------------------------------------------------------------------
 
-
-
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
 
-    const table = document.getElementById(
-      'timecards_table',
-    ) as HTMLTableElement;
+    const table = document.getElementById('timecards_table',) as HTMLTableElement;
 
-    if (!table) {
-      console.error('Không tìm thấy bảng.');
-      return;
-    }
+    if (!table) { console.error('Không tìm thấy bảng.'); return; }
 
     const tableWithRows = table as HTMLTableElement & {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
@@ -88,7 +81,6 @@ export const Timecard = () => {
     const month = selectedMonth;
     const year = selectedYear;
     const startRow = 4;
-
     const workbook = new ExcelJS.Workbook();
     const maxWorksheetNameLength = 100;
     const truncatedWorksheetName =
@@ -115,7 +107,6 @@ export const Timecard = () => {
     }
     // Thêm dữ liệu từ bảng vào ô A4:I4
     const rowsArray = Array.from(table.rows);
-
     const startRowToDelete = 5;
     const numberOfRowsToDelete = 4;
     worksheet.spliceRows(startRowToDelete, numberOfRowsToDelete);
@@ -124,11 +115,8 @@ export const Timecard = () => {
 
     for (let r = 1; r <= table.rows.length; r++) {
       for (let c = 1; c <= table.rows[r - 1].cells.length; c++) {
-        const cell = worksheet.getCell(
-          `${String.fromCharCode(64 + c)}${startRow + r - 1}`,
-        );
+        const cell = worksheet.getCell(`${String.fromCharCode(64 + c)}${startRow + r - 1}`,);
         const cellContent = table.rows[r - 1].cells[c - 1].textContent;
-
         const currentDate = new Date(
           numericSelectedYear,
           numericSelectedMonth - 1,
@@ -138,17 +126,10 @@ export const Timecard = () => {
         const dayOfWeek = currentDate.getDay();
         const isLastRow = r === table.rows.length;
         // Chuyển đổi selectedYear và selectedMonth sang kiểu số
-
         switch (dayOfWeek) {
           case 1: // Thứ 2
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,);
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -157,14 +138,8 @@ export const Timecard = () => {
             }
             break;
           case 2: // Thứ 3
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,);
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -173,14 +148,8 @@ export const Timecard = () => {
             }
             break;
           case 3: // Thứ 4
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,);
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -189,14 +158,8 @@ export const Timecard = () => {
             }
             break;
           case 4: // Thứ 5
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,);
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -205,14 +168,8 @@ export const Timecard = () => {
             }
             break;
           case 5: // Thứ 5
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
+            for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              const currentCell = worksheet.getCell(`${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,);
               currentCell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
@@ -277,15 +234,10 @@ export const Timecard = () => {
         return cell && cell.textContent ? cell.clientWidth / 8 : 20; // Nếu ô hoặc nội dung không tồn tại, sử dụng 20 làm giá trị mặc định
       }),
       );
-
       column.width = maxWidth; // Sử dụng giá trị maxWidth để đặt độ rộng của cột
     }
-
     // Combine the variables and truncate if necessary
-    const sheetName = `Timecard_${realname}_${month}_${year}`.slice(
-      0,
-      maxWorksheetNameLength,
-    );
+    const sheetName = `Timecard_${realname}_${month}_${year}`.slice(0, maxWorksheetNameLength,);
 
     // Save the workbook to a file
     const buffer = await workbook.xlsx.writeBuffer();
@@ -296,11 +248,7 @@ export const Timecard = () => {
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
 
-  const handleDateChange = (
-    month: string,
-    year: string,
-    daysInMonth: Date[],
-  ) => {
+  const handleDateChange = (month: string, year: string, daysInMonth: Date[],) => {
     setSelectedMonth(month);
     setSelectedYear(year);
     setDaysInMonth(daysInMonth);
@@ -336,19 +284,13 @@ export const Timecard = () => {
     const fetchData = async () => {
       try {
         const matchedUser = listOfUsers.find((user) => user.id === id);
-
         if (matchedUser) {
-          console.log('Tên người dùng tương ứng:', matchedUser.realname);
           setCurrentUser(matchedUser);
-
           if (datacheck === 1) {
             // Gọi hàm exportToExcel với await
             await exportToExcel();
           }
-
           // Bạn có thể thêm logic bổ sung ở đây nếu cần
-        } else {
-          console.log('Không tìm thấy người dùng tương ứng');
         }
       } catch (error) {
         console.error('Lỗi khi thực hiện các tác vụ không đồng bộ:', error);
@@ -360,33 +302,17 @@ export const Timecard = () => {
       await fetchData(); // Gọi hàm fetchData trong initializeComponent
       // Thêm bất kỳ logic khởi tạo nào bạn muốn thực hiện sau khi fetchData và exportToExcel đã hoàn thành
     };
-
     initializeComponent(); // Gọi hàm initializeComponent trong useEffect
-
   }, [listOfUsers]);
 
   return (
     <>
       <NavTimcard role="admin" />
-
-      <div
-        className="timecard-head-bar"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <MonthYearSelector
-          onChange={handleDateChange}
-          initialMonth={month}
-          initialYear={year}
+      <div className="timecard-head-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', }} >
+        <MonthYearSelector onChange={handleDateChange} initialMonth={month} initialYear={year}
         />
         <ButtonCenter>
-          <button
-            onClick={exportToExcel}
-            className="btn btn--medium btn--green"
-          >
+          <button onClick={exportToExcel} className="btn btn--medium btn--green" >
             Xuất Thẻ Giờ
           </button>
           <NavLink className="btn" to="/dayoffs/register">
@@ -404,12 +330,7 @@ export const Timecard = () => {
             <CTableTimeCardHead />
           </thead>
           <tbody>
-            <CTableTimeCardBody
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              daysInMonth={daysInMonth}
-              userID={user_id}
-            />
+            <CTableTimeCardBody selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} userID={user_id} />
           </tbody>
         </table>
       </div>

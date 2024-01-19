@@ -200,15 +200,17 @@ export const Dayoff = () => {
   }, [currentPage]);
   const handleShowMe = () => {
     setShowTable(true);
+    setCurrentPage(1);
   };
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const handleGroupChange = (groupId: string) => {
     setSelectedGroup(groupId);
-    // console.log(groupId);
+    setCurrentPage(1);
   };
   const handleShowAll = () => {
     setShowTable(false);
     handleGroupChange('all');
+    setCurrentPage(1);
   };
   const fetchData = useCallback(async () => {
     try {
