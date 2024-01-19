@@ -166,7 +166,7 @@ const TimecardHolidays = () => {
             if(validationErrors === true) {
                 try {
                     const dataUpdate = { id, name, days };
-                    const response = await axios.put('timecardsholidays/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } }, );
+                    const response = await axiosPrivate.put('timecardsholidays/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } }, );
                     console.log('Update Response:', response.data);
                     closeModal();
                     setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
