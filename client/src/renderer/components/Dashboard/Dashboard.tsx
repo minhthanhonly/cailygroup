@@ -256,7 +256,7 @@ function Dashboard() {
       const dataTime = {
         id: res.data.id_groupwaretimecard,
         timecard_open: res.data.timecard_open,
-        timecard_now: timecard_open_time,
+        timecard_now: timecard_close_time,
         timecard_time: timecard_time,
         timecard_timeover: timecard_timeover,
       };
