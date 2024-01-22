@@ -1,6 +1,6 @@
 import './SelectMonthYears.scss';
 import { useEffect, useState } from 'react';
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import axios from '../../api/axios';
 import { UserRole } from '../UserRole';
 
 interface SelectCustomProps {
@@ -13,20 +13,19 @@ interface SelectCustomNameProps {
 }
 
 export const SelectCustom: React.FC<SelectCustomProps> = ({
-  onGroupChange }) => {
+  onGroupChange,
+}) => {
   const [groupList, setGroupList] = useState<
     { id: string; group_name: string }[]
   >([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
-
-  const axiosPrivate = useAxiosPrivate();
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
   const isLeader = users.roles === UserRole.LEADER;
   useEffect(() => {
-    axiosPrivate
+    axios
       .get('groups/')
       .then((response) => {
         const responseData = response.data;
@@ -84,9 +83,8 @@ export const SelectCustomDayoff: React.FC<SelectCustomProps> = ({
     { id: string; group_name: string }[]
   >([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
-  const axiosPrivate = useAxiosPrivate();
   useEffect(() => {
-    axiosPrivate
+    axios
       .get('groups/')
       .then((response) => {
         const responseData = response.data;
