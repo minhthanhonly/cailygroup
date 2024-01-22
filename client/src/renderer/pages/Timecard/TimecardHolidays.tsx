@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Heading3 } from '../../components/Heading';
 import { Heading2 } from '../../components/Heading';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import axios from "../../api/axios";
 import { CTable } from '../../components/Table/CTable';
 import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
@@ -20,7 +20,6 @@ interface HolidayProps {
     delete: React.ReactNode;
 }
 const TimecardHolidays = () => {
-    const axiosPrivate = useAxiosPrivate();
     const Data = [
         ['Ngày 01 Tháng 01', 'Tết Dương Lịch'],
         ['Ngày 30 Tháng 04', 'Ngày giải phóng miền Nam, Thống nhất Đất nước'],
@@ -48,7 +47,7 @@ const TimecardHolidays = () => {
     const [days, setDays] = useState([new Date()]);
     
     useEffect(() => {
-        axiosPrivate
+        axios
           .get('timecardsholidays/')
           .then((response) => {
                 setListOfHolidays(response.data);
@@ -166,7 +165,7 @@ const TimecardHolidays = () => {
             if(validationErrors === true) {
                 try {
                     const dataUpdate = { id, name, days };
-                    const response = await axiosPrivate.put('timecardsholidays/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } }, );
+                    const response = await axios.put('timecardsholidays/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } }, );
                     console.log('Update Response:', response.data);
                     closeModal();
                     setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
@@ -181,7 +180,7 @@ const TimecardHolidays = () => {
             event.preventDefault();
             try {
                 const payload = { id: holidayId };
-                let response = await axiosPrivate.delete('timecardsholidays/delete/',{headers: {'Content-Type': 'application/json',},data: payload,},);
+                let response = await axios.delete('timecardsholidays/delete/',{headers: {'Content-Type': 'application/json',},data: payload,},);
                 console.log('DELETE Response:', response.data);
                 closeModaldelete();
                 setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
@@ -255,7 +254,7 @@ const TimecardHolidays = () => {
             };
             setName('');
             setDays([new Date()]);
-            axiosPrivate
+            axios
                 .post('timecardsholidays/add/', holiday_data)
                 .then((response) => {
                     // Xử lý thành công nếu cần
