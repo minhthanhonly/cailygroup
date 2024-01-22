@@ -1153,7 +1153,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               </tbody>
             </table>
             <div className="wrp-button">
-              <p>{isOpenModal ? 'a' : 'b'}</p>
               <button
                 className="btn btn--green"
                 onClick={(event) => {
