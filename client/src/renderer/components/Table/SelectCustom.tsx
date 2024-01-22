@@ -1,6 +1,6 @@
 import './SelectMonthYears.scss';
 import { useEffect, useState } from 'react';
-import axios from '../../api/axios';
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { UserRole } from '../UserRole';
 
 interface SelectCustomProps {
@@ -13,19 +13,20 @@ interface SelectCustomNameProps {
 }
 
 export const SelectCustom: React.FC<SelectCustomProps> = ({
-  onGroupChange,
-}) => {
+  onGroupChange }) => {
   const [groupList, setGroupList] = useState<
     { id: string; group_name: string }[]
   >([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
+
+  const axiosPrivate = useAxiosPrivate();
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
   const isLeader = users.roles === UserRole.LEADER;
   useEffect(() => {
-    axios
+    axiosPrivate
       .get('groups/')
       .then((response) => {
         const responseData = response.data;
