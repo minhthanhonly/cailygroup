@@ -6,10 +6,10 @@
             return $getBearerToken;
         }
         function index(){
-            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
-            if($is_jwt_valid == 1){
+           // $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+           // if($is_jwt_valid == 1){
                 $dataAuthority = $this->model('AuthorityModel')->getList();
-            }
+          //  }
         }
     }
 ?>
