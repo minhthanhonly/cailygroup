@@ -84,8 +84,9 @@ export const SelectCustomDayoff: React.FC<SelectCustomProps> = ({
     { id: string; group_name: string }[]
   >([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
+  const axiosPrivate = useAxiosPrivate();
   useEffect(() => {
-    axios
+    axiosPrivate
       .get('groups/')
       .then((response) => {
         const responseData = response.data;
