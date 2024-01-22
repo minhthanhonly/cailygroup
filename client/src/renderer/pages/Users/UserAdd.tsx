@@ -2,37 +2,27 @@ import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
-import { isValidUser } from "../../components/Validate";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
-function MemberAdd() {
-  const axiosPrivate = useAxiosPrivate();
+export const UserAdd = () => {
 	const navigate = useNavigate();
 
-	const [formValue, setFormValue] = useState({ userid: '', password: '', password_confirm: '', realname: '', authority: '', user_group: '' })
+	const [formValue, setFormValue] = useState({ userid: '', password: '', realname: '', authority: '', user_group: '' })
 	const [message, setMessage] = useState('');
 	const handleInput = (e) => {
 		setFormValue({ ...formValue, [e.target.name]: e.target.value })
 	}
 
 	const handleSubmit = async (e) => {
-		const validationErrors = isValidUser({ ...formValue });
 		e.preventDefault();
-		if (validationErrors === true) {
-			const formData = { userid: formValue.userid, password: formValue.password, realname: formValue.realname, authority: formValue.authority, user_group: formValue.user_group }
-			const res = await axiosPrivate.post("users/add", formData);
+		const formData = { userid: formValue.userid, password: formValue.password, realname: formValue.realname, authority: formValue.authority, user_group: formValue.user_group }
+		const res = await axios.post("users/add", formData);
 
-			if (res.data.success) {
-				setMessage(res.data.success);
-				setTimeout(() => {
-					navigate('/members');
-				}, 2000);
-			}
+		if (res.data.success) {
+			setMessage(res.data.success);
+			setTimeout(() => {
+				navigate('/users');
+			}, 2000);
 		}
-	}
-
-	const handleBack = () => {
-		navigate('/members');
 	}
 
 	/*
@@ -47,7 +37,7 @@ function MemberAdd() {
 	const [listOfAuthority, setListOfAuthority] = useState<FieldAuthority[] | []>([]);
 
 	useEffect(() => {
-		axios.get('authority').then((response) => {
+		axios.get('authority/').then((response) => {
 			setListOfAuthority(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
@@ -72,7 +62,7 @@ function MemberAdd() {
 	const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
 	useEffect(() => {
-		axios.get('groups').then((response) => {
+		axios.get('groups/').then((response) => {
 			setListOfGroups(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
@@ -121,25 +111,9 @@ function MemberAdd() {
 									</label>
 									<input
 										className="form-input"
-										type="password"
+										type="text"
 										name="password"
 										value={formValue.password} onChange={handleInput}
-									/>
-								</div>
-								<div className="form-group">
-									<label>
-										Mật khẩu (Xác nhận) *
-										<img
-											src={require('../../../../assets/icon-password.jpg')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<input
-										className="form-input"
-										type="password"
-										name="password_confirm"
-										value={formValue.password_confirm} onChange={handleInput} placeholder="Nhập lại mật khẩu"
 									/>
 								</div>
 								<div className="form-group">
@@ -196,7 +170,7 @@ function MemberAdd() {
 								</div>
 								<div className="wrp-button">
 									<button className="btn btn--green" type="submit">Xác nhận</button>
-									<button className="btn btn--orange" onClick={handleBack}>Hủy</button>
+									<button className="btn btn--orange">Hủy</button>
 								</div>
 							</form>
 						</div>
@@ -206,5 +180,3 @@ function MemberAdd() {
 		</>
 	)
 };
-
-export default MemberAdd;

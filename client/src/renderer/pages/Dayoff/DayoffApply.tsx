@@ -6,10 +6,8 @@ import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useCallback, useEffect, useState } from 'react';
 import axios from '../../api/axios';
 import { SelectCustom } from '../../components/Table/SelectCustom';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export const DayoffApply = () => {
-  const axiosPrivate = useAxiosPrivate();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   type FieldGroups = {
     id: any;

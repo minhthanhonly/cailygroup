@@ -9,11 +9,8 @@ import { format } from 'date-fns';
 import axios from '../../api/axios';
 import Modaldelete from '../Modal/Modaldelete';
 import { useNavigate } from 'react-router-dom';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export const FormLeave: React.FC = () => {
-  const axiosPrivate = useAxiosPrivate();
-
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [note, setNote] = useState('');

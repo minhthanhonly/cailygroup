@@ -1,17 +1,17 @@
-import { Heading2 } from '../../components/Heading';
-import { InputQuantity } from '../../components/InputQuantity';
-import { Search } from '../../components/Search';
-import { CTable } from '../../components/Table/CTable';
-import { CTableHead } from '../../components/Table/CTableHead';
-import { useEffect, useState } from 'react';
-import ButtonAdd from '../../components/Button/ButtonAdd';
-import ButtonEdit from '../../components/Button/ButtonEdit';
-import ButtonDelete from '../../components/Button/ButtonDelete';
-import Modaldelete from '../../components/Modal/Modaldelete';
-import { Pagination } from '../../components/Pagination';
-import { NavLink } from 'react-router-dom';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import axios from '../../api/axios';
+import { Heading2 } from "../../components/Heading";
+import { InputQuantity } from "../../components/InputQuantity";
+import { Search } from "../../components/Search";
+import { CTable } from "../../components/Table/CTable";
+import { CTableHead } from "../../components/Table/CTableHead";
+import { useEffect, useState } from "react";
+import ButtonAdd from "../../components/Button/ButtonAdd";
+import axios from "../../api/axiosLocal";
+import ButtonEdit from "../../components/Button/ButtonEdit";
+import ButtonDelete from "../../components/Button/ButtonDelete";
+import Modaldelete from "../../components/Modal/Modaldelete";
+import { Pagination } from "../../components/Pagination";
+import { NavLink } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 function Members() {
   const axiosPrivate = useAxiosPrivate();
@@ -19,15 +19,15 @@ function Members() {
   const [empty, setEmpty] = useState(false);
 
   /*
-   * LẤY DANH SÁCH THÀNH VIÊN
-   */
+  * LẤY DANH SÁCH THÀNH VIÊN
+  */
   type FieldUsers = {
-    id: number;
-    realname: string;
-    group_name: string;
-    authority_name: string;
-    userid: string;
-  };
+    id: number,
+    realname: string,
+    group_name: string,
+    authority_name: string,
+    userid: string,
+  }
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
 
   useEffect(() => {
@@ -36,49 +36,46 @@ function Members() {
 
     const getUsers = async () => {
       try {
-        const response = await axios.get('users', {
+        const response = await axiosPrivate.get('users', {
           signal: controller.signal,
         });
         isMounted && setListOfUsers(response.data);
         response.data.length ? setEmpty(false) : setEmpty(true);
-      } catch (err) {
+      } catch(err) {
         console.error('Lỗi khi lấy dữ liệu:', err);
       }
-    };
+    }
 
     getUsers();
 
     return () => {
       isMounted = false;
       controller.abort();
-    };
-  }, []);
+    }
+  }, [])
 
   /*
-   * LẤY TẤT CẢ NHÓM
-   */
+  * LẤY TẤT CẢ NHÓM
+  */
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   type FieldGroups = {
-    id: string;
-    group_name: string;
-  };
+    id: string,
+    group_name: string,
+  }
   useEffect(() => {
-    axios
-      .get('groups')
-      .then((response) => {
-        setListOfGroups(response.data);
-        setIsTableUpdated(false);
-      })
-      .catch((error) => console.error('Lỗi khi lấy dữ liệu:', error));
-  }, [isTableUpdated]);
+    axios.get('groups').then((response) => {
+      setListOfGroups(response.data);
+      setIsTableUpdated(false);
+    }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
+  }, [isTableUpdated])
 
   /*
-   * LẤY DANH SÁCH USER THEO NHÓM
-   */
+  * LẤY DANH SÁCH USER THEO NHÓM
+  */
   const [selectedGroup, setSelectedGroup] = useState('');
   const fetchMembersByGroup = async ($groupid: string) => {
     const groupid = { groupid: $groupid };
-    const res = await axios.get('users/groups/' + $groupid);
+    const res = await axios.get("users/groups/" + $groupid);
     setListOfUsers(res.data);
   };
   useEffect(() => {
@@ -88,20 +85,21 @@ function Members() {
   }, [selectedGroup]);
 
   /*
-   * XÓA USER
-   */
+  * XÓA USER
+  */
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDeleteModalid, setDeleteModalId] = useState(0);
   const handleDelete = async ($id: number) => {
-    const formData = { id: $id };
-    const res = await axios.post('users/delete', formData);
+
+    const formData = { id: $id }
+    const res = await axios.post("users/delete", formData);
     setIsTableUpdated(true);
     closeModal();
-  };
+  }
 
   const openModal = ($id: number) => {
     setModalOpen(true);
-    setDeleteModalId($id);
+    setDeleteModalId($id)
   };
 
   const closeModal = () => {
@@ -117,6 +115,8 @@ function Members() {
     setCurrentPage(page);
   };
 
+
+
   return (
     <>
       <Heading2 text="Thông tin thành viên" />
@@ -127,15 +127,10 @@ function Members() {
               <p>Nhóm:</p>
             </div>
             <div className="select__box--flex grid-row select-dropdown">
-              <select
-                value={selectedGroup}
-                onChange={(e) => setSelectedGroup(e.target.value)}
-              >
+              <select value={selectedGroup} onChange={(e) => setSelectedGroup(e.target.value)}>
                 <option value="-1">Tất cả</option>
                 {listOfGroups.map((value, index) => (
-                  <option value={value.id} key={index}>
-                    {value.group_name}
-                  </option>
+                  <option value={value.id} key={index}>{value.group_name}</option>
                 ))}
               </select>
             </div>
@@ -149,59 +144,38 @@ function Members() {
         </div> */}
       </div>
       <ButtonAdd path_add="/members/add" />
-      {empty === true ? (
-        <div className="box-bg --full mt30 mb20">
-          <p className="bg bg-red">Không có thành viên nào để hiển thị</p>
-        </div>
-      ) : (
-        ''
-      )}
+      { (empty === true) ? <div className="box-bg --full mt30 mb20"><p className="bg bg-red">Không có thành viên nào để hiển thị</p></div> : '' }
       <CTable>
-        <CTableHead
-          heads={['Họ và tên', 'Nhóm', 'Quyền truy cập', 'Hành động']}
-        />
-        <tbody>
-          {listOfUsers.map((data, index) => (
-            <tr key={index}>
-              <td>
-                <NavLink
-                  to={'/users/detail/' + data.userid}
-                  className="acount__name"
-                >
-                  {data.realname}
-                </NavLink>
-              </td>
-              <td>{data.group_name}</td>
-              <td>{data.authority_name}</td>
-              <td>
-                <ButtonEdit href={'/members/edit/' + data.id} />
-                <ButtonDelete onButtonClick={() => openModal(data.id)} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </CTable>
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      />
-      <Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
-        <h2>Bạn có chắc chắn muốn xóa không?</h2>
-        <div className="wrp-button">
-          <button
-            className="btn btn--green"
-            onClick={() => handleDelete(isDeleteModalid)}
-          >
-            Đồng ý
-          </button>
-          <button className="btn btn--orange" onClick={closeModal}>
-            Hủy
-          </button>
-        </div>
-      </Modaldelete>
+            <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
+            <tbody>
+              {listOfUsers.map((data, index) => (
+                <tr key={index}>
+                  <td>
+                    <NavLink to={"/users/detail/" + data.userid} className="acount__name">
+                      {data.realname}
+                    </NavLink>
+                  </td>
+                  <td>{data.group_name}</td>
+                  <td>{data.authority_name}</td>
+                  <td>
+                    <ButtonEdit href={"/members/edit/" + data.id} />
+                    <ButtonDelete onButtonClick={() => openModal(data.id)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </CTable><Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange} /><Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
+              <h2>Bạn có chắc chắn muốn xóa không?</h2>
+              <div className='wrp-button'>
+                <button className='btn btn--green' onClick={() => handleDelete(isDeleteModalid)}>Đồng ý</button>
+                <button className='btn btn--orange' onClick={closeModal}>Hủy</button>
+              </div>
+            </Modaldelete>
     </>
-  );
-}
+  )
+};
 
 export default Members;

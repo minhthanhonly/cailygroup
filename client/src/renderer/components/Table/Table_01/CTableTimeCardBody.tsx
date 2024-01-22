@@ -12,7 +12,6 @@ import Modal from '../../Modal/Modal';
 import { UserRole } from '../../../components/UserRole';
 import Modaldelete from '../../Modal/Modaldelete';
 import { vi } from 'date-fns/locale';
-import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 
 //sever
 type Holiday = {
@@ -53,8 +52,6 @@ interface CombinedProps extends SelectMY {
 }
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
-  const axiosPrivate = useAxiosPrivate();
-
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
 
   const selectedMonth = Props.selectedMonth;

@@ -8,10 +8,8 @@ import axios from '../../api/axios';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import './Dayoffs.scss';
 import { SelectCustomDayoff } from '../../components/Table/SelectCustom';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export const Dayoff = () => {
-  const axiosPrivate = useAxiosPrivate();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [showTable, setShowTable] = useState(true);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';
+import axios from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { Pagination } from '../../components/Pagination';
 import { SelectCustom } from '../../components/Table/SelectCustom';
@@ -8,9 +9,6 @@ import MonthYearSelector from '../../components/Table/SelectMonthYears';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
 import { UserRole } from '../../components/UserRole';
-
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import axios from '../../api/axios';
 
 interface FieldUsers {
   id: number;
@@ -29,7 +27,6 @@ interface TimecardParams {
 }
 
 export const TimecardList: React.FC = () => {
-  const axiosPrivate = useAxiosPrivate();
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [selectedGroupName, setSelectedGroupName] = useState<string | null>(
     null,

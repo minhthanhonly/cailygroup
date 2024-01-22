@@ -8,13 +8,10 @@ import React, {
 import axios from '../../api/axios';
 import './Dashboard.scss';
 import DashboardTime from './DashboardTime';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 function Dashboard() {
-  const axiosPrivate = useAxiosPrivate();
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  console.log(users);
   if (users) {
     useEffect(() => {
       setUsersID(users.id);
@@ -53,6 +50,10 @@ function Dashboard() {
       console.error('Error fetching timecards:', error);
     }
   };
+  const formatTimeDigit = (digit: number): string => {
+    return digit < 10 ? `0${digit}` : `${digit}`;
+  };
+
   const handleStart = async () => {
     try {
       const response = await axios.get(
@@ -102,10 +103,66 @@ function Dashboard() {
       );
     }
   };
-  const handleDelay = async () => {
-    try {
-    } catch (error) {}
+  function findConfigValue(configArray: any[], key: string) {
+    const configItem = configArray.find((item) => item.config_key === key);
+    return configItem ? configItem.config_value : null;
+  }
+  const calculateTime = (timestart: string, timeend: string): string => {
+    const normalizeTime = (time: string): string => {
+      return time.length === 4 ? `0${time}` : time;
+    };
+    const startTime = new Date(`2000-01-01T${normalizeTime(timestart)}`);
+    const endTime = new Date(`2000-01-01T${normalizeTime(timeend)}`);
+    const timeDiff: number = endTime.getTime() - startTime.getTime();
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
+    const formattedHours = formatTimeDigit(hours);
+    const formattedMinutes = formatTimeDigit(minutes);
+
+    return `${formattedHours}:${formattedMinutes}`;
   };
+  const compareTime = (time1: string, time2: string): number => {
+    const [hour1, minute1] = time1.split(':').map(Number);
+    const [hour2, minute2] = time2.split(':').map(Number);
+
+    if (hour1 > hour2) {
+      return 1;
+    } else if (hour1 < hour2) {
+      return 2;
+    } else {
+      // Nếu giờ bằng nhau, so sánh phút
+      if (minute1 > minute2) {
+        return 1;
+      } else if (minute1 < minute2) {
+        return 2;
+      } else {
+        // Nếu cả giờ và phút đều bằng nhau
+        return 0;
+      }
+    }
+  };
+  const addTimes = (time1: string, time2: string): string => {
+    const [hour1, minute1] = time1.split(':').map(Number);
+    const [hour2, minute2] = time2.split(':').map(Number);
+
+    let totalHours = hour1 + hour2;
+    let totalMinutes = minute1 + minute2;
+
+    // Xử lý nếu tổng phút vượt quá 60
+    if (totalMinutes >= 60) {
+      totalHours += Math.floor(totalMinutes / 60);
+      totalMinutes %= 60;
+    }
+
+    // Định dạng kết quả để đảm bảo có 2 chữ số
+    const formattedHours = totalHours < 10 ? `0${totalHours}` : `${totalHours}`;
+    const formattedMinutes =
+      totalMinutes < 10 ? `0${totalMinutes}` : `${totalMinutes}`;
+
+    return `${formattedHours}:${formattedMinutes}`;
+  };
+
   const handleEnd = async () => {
     try {
       const res = await axios.get('timecards/load/' + usersID);
@@ -115,17 +172,95 @@ function Dashboard() {
       let { datetime } = response.data;
       let currentHour = new Date(datetime).getHours();
       let currentMinutes = new Date(datetime).getMinutes();
-      let timecard_open_time = `${currentHour}:${String(
+      let timecard_close_time = `${currentHour}:${String(
         currentMinutes,
       ).padStart(2, '0')}`;
+      let timecard_time = '';
+      const responseConfig = await axios.post('config');
+      const configData = responseConfig.data;
+      const opentimeValue = findConfigValue(configData, 'opentime');
+      const closetimeValue = findConfigValue(configData, 'closetime');
+      const openlunchValue = findConfigValue(configData, 'openlunch');
+      const closelunchValue = findConfigValue(configData, 'closelunch');
+      let timecard_open_time = res.data.timecard_open;
+      if (compareTime(timecard_open_time, timecard_close_time) == 0) {
+        timecard_time = '00:00';
+      } else if (compareTime(timecard_open_time, opentimeValue) != 1) {
+        // bắt đầu trước 7:30
+        if (compareTime(timecard_close_time, opentimeValue) != 1) {
+          timecard_time = '00:00';
+        } else if (compareTime(timecard_close_time, openlunchValue) != 1) {
+          timecard_time = calculateTime(opentimeValue, timecard_close_time);
+        } else if (compareTime(timecard_close_time, closelunchValue) != 1) {
+          timecard_time = calculateTime(opentimeValue, openlunchValue);
+        } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+          timecard_time = addTimes(
+            calculateTime(opentimeValue, openlunchValue),
+            calculateTime(closelunchValue, timecard_close_time),
+          );
+        } else {
+          timecard_time = addTimes(
+            calculateTime(opentimeValue, openlunchValue),
+            calculateTime(closelunchValue, closetimeValue),
+          );
+        }
+      } else {
+        //bắt đầu sau 7:30
+        if (compareTime(timecard_open_time, openlunchValue) != 1) {
+          // bắt đầu trước 11:30
+          if (compareTime(timecard_close_time, openlunchValue) != 1) {
+            timecard_time = calculateTime(
+              timecard_open_time,
+              timecard_close_time,
+            );
+          } else if (compareTime(timecard_close_time, closelunchValue) != 1) {
+            timecard_time = calculateTime(timecard_open_time, openlunchValue);
+          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+            timecard_time = addTimes(
+              calculateTime(timecard_open_time, openlunchValue),
+              calculateTime(closelunchValue, timecard_close_time),
+            );
+          } else {
+            timecard_time = addTimes(
+              calculateTime(timecard_open_time, openlunchValue),
+              calculateTime(closelunchValue, closetimeValue),
+            );
+          }
+        } else if (compareTime(timecard_open_time, closelunchValue) == 1) {
+          // bắt đầu sau 13:00
+          if (compareTime(timecard_open_time, closetimeValue) == 1) {
+            timecard_time = '00:00';
+          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+            timecard_time = calculateTime(
+              timecard_open_time,
+              timecard_close_time,
+            );
+          } else {
+            timecard_time = calculateTime(timecard_open_time, closetimeValue);
+          }
+        } else {
+          // bắt đầu trong khoảng 11:30-13:00
+          if (compareTime(timecard_close_time, closelunchValue) != 1) {
+            timecard_time = '00:00';
+          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+            timecard_time = calculateTime(closelunchValue, timecard_close_time);
+          } else {
+            timecard_time = calculateTime(closelunchValue, closetimeValue);
+          }
+        }
+      }
+      let timecard_timeover = '00:00';
+      if (compareTime(timecard_close_time, closetimeValue) == 1) {
+        timecard_timeover = calculateTime(closetimeValue, timecard_close_time);
+      }
       const dataTime = {
         id: res.data.id_groupwaretimecard,
         timecard_open: res.data.timecard_open,
         timecard_now: timecard_open_time,
+        timecard_time: timecard_time,
+        timecard_timeover: timecard_timeover,
       };
-      const re = await axios.post('timecarddetails/update', {
-        dataTime,
-      });
+      const re = await axios.post('timecarddetails/update', { dataTime });
       console.log(re.data);
 
       loadStart();
