@@ -115,7 +115,7 @@ export const FormLeave: React.FC = () => {
   }
   const handleConfirmClick = async () => {
     let timeLeave = '';
-    const responseConfig = await axiosPrivate.post('config');
+    const responseConfig = await axios.post('config');
     const configData = responseConfig.data;
     const opentimeValue = findConfigValue(configData, 'opentime');
     const closetimeValue = findConfigValue(configData, 'closetime');
@@ -192,7 +192,7 @@ export const FormLeave: React.FC = () => {
     };
     if (note) {
       setNoteErr(false);
-      axiosPrivate
+      axios
         .post('dayoffs/add', { group_data })
         .then((response) => {
           console.log(response.data);

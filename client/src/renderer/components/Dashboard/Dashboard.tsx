@@ -33,7 +33,7 @@ function Dashboard() {
 
   const loadStart = async () => {
     try {
-      const response = await axiosPrivate.get('timecards/load/' + usersID);
+      const response = await axios.get('timecards/load/' + usersID);
 
       if (response.data && response.data.timecard_close) {
         const timecardClose = response.data.timecard_close;
@@ -55,7 +55,7 @@ function Dashboard() {
   };
   const handleStart = async () => {
     try {
-      const response = await axiosPrivate.get(
+      const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
       let { datetime } = response.data;
@@ -80,7 +80,7 @@ function Dashboard() {
         timecard_temp: 0,
         owner: 'admin',
       };
-      const responseTimeCard = await axiosPrivate.post('timecards/add', {
+      const responseTimeCard = await axios.post('timecards/add', {
         dataTimeCard,
       });
       const dataTimeCardDetails = {
@@ -90,12 +90,9 @@ function Dashboard() {
         timecard_timeinterval: '1:30',
         timecard_comment: '',
       };
-      const responseTimeCardDetails = await axiosPrivate.post(
-        'timecarddetails/add',
-        {
-          dataTimeCardDetails,
-        },
-      );
+      const responseTimeCardDetails = await axios.post('timecarddetails/add', {
+        dataTimeCardDetails,
+      });
       loadStart();
       setCheckStart(true);
     } catch (error) {
@@ -111,8 +108,8 @@ function Dashboard() {
   };
   const handleEnd = async () => {
     try {
-      const res = await axiosPrivate.get('timecards/load/' + usersID);
-      const response = await axiosPrivate.get(
+      const res = await axios.get('timecards/load/' + usersID);
+      const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
       let { datetime } = response.data;
@@ -126,7 +123,7 @@ function Dashboard() {
         timecard_open: res.data.timecard_open,
         timecard_now: timecard_open_time,
       };
-      const re = await axiosPrivate.post('timecarddetails/update', {
+      const re = await axios.post('timecarddetails/update', {
         dataTime,
       });
       console.log(re.data);
@@ -141,25 +138,6 @@ function Dashboard() {
       <div className="Dashboard-content">
         <DashboardTime />
         <h4>Thời gian làm việc hôm nay</h4>
-        {/* {checkEnd ? (
-          <div className="card-time">
-            <div className="card-time--hour">
-              <small>Giờ</small>
-              <input
-                value={endTime?.hours || '00:00'}
-                onChange={(e) => e.target.value}
-              />
-            </div>
-            :
-            <div className="card-time--minute">
-              <small>Phút</small>
-              <input
-                value={endTime?.minutes || '00:00'}
-                onChange={(e) => e.target.value}
-              />
-            </div>
-          </div>
-        ) : null} */}
         <div className="Dashboard-action">
           <div className="Dashboard-action--start">
             <p>Bắt đầu</p>

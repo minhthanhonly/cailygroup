@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { isValidUserEdit } from '../../components/Validate';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import axios from '../../api/axios';
 
 function MemberEdit() {
   const axiosPrivate = useAxiosPrivate();
@@ -27,7 +28,7 @@ function MemberEdit() {
   };
 
   const fetchUsersById = async function () {
-    const res = await axiosPrivate.get('users/edit/' + id);
+    const res = await axios.get('users/edit/' + id);
     setFormValue(res.data);
   };
 
@@ -61,7 +62,7 @@ function MemberEdit() {
         authority: formValue.authority,
         user_group: formValue.user_group,
       };
-      const res = await axiosPrivate.post('users/update', formData);
+      const res = await axios.post('users/update', formData);
 
       if (res.data.success) {
         setMessage(res.data.success);
@@ -86,7 +87,7 @@ function MemberEdit() {
   );
 
   useEffect(() => {
-    axiosPrivate
+    axios
       .get('authority')
       .then((response) => {
         setListOfAuthority(response.data);
@@ -114,7 +115,7 @@ function MemberEdit() {
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
   useEffect(() => {
-    axiosPrivate
+    axios
       .get('groups')
       .then((response) => {
         setListOfGroups(response.data);

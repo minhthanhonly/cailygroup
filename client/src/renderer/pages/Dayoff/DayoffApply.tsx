@@ -95,8 +95,8 @@ export const DayoffApply = () => {
   const fetchData = useCallback(async () => {
     try {
       const [groupsResponse, dayoffsResponse] = await Promise.all([
-        axiosPrivate.get('groups'),
-        axiosPrivate.get('dayoffs', {
+        axios.get('groups'),
+        axios.get('dayoffs', {
           params: {
             group: selectedGroup,
           },
@@ -147,7 +147,7 @@ export const DayoffApply = () => {
     if (event) {
       event.preventDefault();
       try {
-        const response = await axiosPrivate.post('dayoffs/update/' + dayoffId, {
+        const response = await axios.post('dayoffs/update/' + dayoffId, {
           data,
         });
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
@@ -163,7 +163,7 @@ export const DayoffApply = () => {
     if (event) {
       event.preventDefault();
       try {
-        let response = await axiosPrivate.post('dayoffs/refuse/' + dayoffId, {
+        let response = await axios.post('dayoffs/refuse/' + dayoffId, {
           data,
         });
         console.log(response.data);

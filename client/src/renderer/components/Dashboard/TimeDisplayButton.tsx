@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import CardTime from '../Card/Card';
 import { urlTimeApi } from '../../routes/server';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import axios from '../../api/axios';
 
 interface TimeDisplayButtonProps {
   initialImage: string;
@@ -20,7 +20,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
 
   const fetchCurrentTime = async () => {
     try {
-      const response = await axiosPrivate.get(urlTimeApi);
+      const response = await axios.get(urlTimeApi);
       const { datetime } = response.data;
       setCurrentTime(datetime);
     } catch (error) {
@@ -34,7 +34,7 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
 
   const handleClick = async () => {
     try {
-      const response = await axiosPrivate.get(urlTimeApi);
+      const response = await axios.get(urlTimeApi);
       const { datetime } = response.data;
       const hours = new Date(datetime).getHours();
       const minutes = new Date(datetime).getMinutes();

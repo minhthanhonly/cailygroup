@@ -10,6 +10,7 @@ import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
 import { UserRole } from '../../components/UserRole';
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import axios from '../../api/axios';
 
 interface FieldUsers {
   id: number;
@@ -28,7 +29,6 @@ interface TimecardParams {
 }
 
 export const TimecardList: React.FC = () => {
-
   const axiosPrivate = useAxiosPrivate();
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [selectedGroupName, setSelectedGroupName] = useState<string | null>(
@@ -64,7 +64,7 @@ export const TimecardList: React.FC = () => {
   };
 
   const fetchTimecards = async () => {
-    const res = await axiosPrivate.get('timecards/list/');
+    const res = await axios.get('timecards/list/');
     setListOfUsers(res.data);
     setSelectedDates({});
     const currentMonth = new Date().getMonth() + 1;
@@ -141,7 +141,7 @@ export const TimecardList: React.FC = () => {
   const isLeader = users.roles === UserRole.LEADER;
 
   const fetchTimecardsByGroup = async ($groupid: string) => {
-    const res = await axiosPrivate.get('timecards/groups/' + $groupid);
+    const res = await axios.get('timecards/groups/' + $groupid);
     setListOfUsers(res.data);
   };
 

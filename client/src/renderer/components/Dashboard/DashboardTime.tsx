@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { urlTimeApi } from '../../routes/server';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import axios from '../../api/axios';
 
 function DashboardTime() {
   const axiosPrivate = useAxiosPrivate();
@@ -10,7 +10,7 @@ function DashboardTime() {
   useEffect(() => {
     const fetchTime = async () => {
       try {
-        const response = await axiosPrivate.get(urlTimeApi);
+        const response = await axios.get(urlTimeApi);
         const data = response.data;
         // Create a Date object from the time string
         setCurrentTime(new Date(data.datetime));
