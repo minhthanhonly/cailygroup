@@ -13,9 +13,9 @@
             $owner = $data['group_data']['owner'];
             $createdAt = date('Y-m-d H:i:s');
             $sql = "INSERT INTO dayoffs (user_id, date, time_start, time_end, note, day_number, status, owner, createdAt) 
-                                VALUES ($user_id, '$date', '$time_start', '$time_end', '$note', $day_number, $status, '$owner', NOW())";
+                                VALUES ($user_id, '$date', '$time_start', '$time_end', '$note', '$day_number', $status, '$owner', NOW())";
+                                
             $result = $conn->query($sql);
-
             header('Content-Type: application/json');
             if($result) {
                 echo json_encode(['success' => 'Thêm ngày nghỉ mới thành công']);
