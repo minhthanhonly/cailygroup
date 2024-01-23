@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
-import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { isValidUser } from "../../components/Validate";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -47,7 +46,7 @@ function MemberAdd() {
 	const [listOfAuthority, setListOfAuthority] = useState<FieldAuthority[] | []>([]);
 
 	useEffect(() => {
-		axios.get('authority').then((response) => {
+		axiosPrivate.get('authority').then((response) => {
 			setListOfAuthority(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
@@ -72,7 +71,7 @@ function MemberAdd() {
 	const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
 
 	useEffect(() => {
-		axios.get('groups').then((response) => {
+		axiosPrivate.get('groups').then((response) => {
 			setListOfGroups(response.data);
 		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])

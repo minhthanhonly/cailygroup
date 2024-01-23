@@ -5,7 +5,6 @@ import { CTable } from "../../components/Table/CTable";
 import { CTableHead } from "../../components/Table/CTableHead";
 import { useEffect, useState } from "react";
 import ButtonAdd from "../../components/Button/ButtonAdd";
-import axios from "../../api/axiosLocal";
 import ButtonEdit from "../../components/Button/ButtonEdit";
 import ButtonDelete from "../../components/Button/ButtonDelete";
 import Modaldelete from "../../components/Modal/Modaldelete";
@@ -63,7 +62,7 @@ function Members() {
     group_name: string,
   }
   useEffect(() => {
-    axios.get('groups').then((response) => {
+    axiosPrivate.get('groups').then((response) => {
       setListOfGroups(response.data);
       setIsTableUpdated(false);
     }).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
@@ -75,7 +74,7 @@ function Members() {
   const [selectedGroup, setSelectedGroup] = useState('');
   const fetchMembersByGroup = async ($groupid: string) => {
     const groupid = { groupid: $groupid };
-    const res = await axios.get("users/groups/" + $groupid);
+    const res = await axiosPrivate.get("users/groups/" + $groupid);
     setListOfUsers(res.data);
   };
   useEffect(() => {
@@ -92,7 +91,7 @@ function Members() {
   const handleDelete = async ($id: number) => {
 
     const formData = { id: $id }
-    const res = await axios.post("users/delete", formData);
+    const res = await axiosPrivate.post("users/delete", formData);
     setIsTableUpdated(true);
     closeModal();
   }

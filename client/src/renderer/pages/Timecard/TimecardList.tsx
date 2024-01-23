@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CTable } from '../../components/Table/CTable';
 import { CTableHead } from '../../components/Table/CTableHead';
-import axios from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { Pagination } from '../../components/Pagination';
 import { SelectCustom } from '../../components/Table/SelectCustom';
@@ -9,6 +8,8 @@ import MonthYearSelector from '../../components/Table/SelectMonthYears';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
 import { UserRole } from '../../components/UserRole';
+
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 interface FieldUsers {
   id: number;
@@ -27,6 +28,8 @@ interface TimecardParams {
 }
 
 export const TimecardList: React.FC = () => {
+
+  const axiosPrivate = useAxiosPrivate();
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [selectedGroupName, setSelectedGroupName] = useState<string | null>(
     null,
@@ -61,7 +64,7 @@ export const TimecardList: React.FC = () => {
   };
 
   const fetchTimecards = async () => {
-    const res = await axios.get('timecards/list/');
+    const res = await axiosPrivate.get('timecards/list/');
     setListOfUsers(res.data);
     setSelectedDates({});
     const currentMonth = new Date().getMonth() + 1;
@@ -138,13 +141,14 @@ export const TimecardList: React.FC = () => {
   const isLeader = users.roles === UserRole.LEADER;
 
   const fetchTimecardsByGroup = async ($groupid: string) => {
-    const res = await axios.get('timecards/groups/' + $groupid);
+    const res = await axiosPrivate.get('timecards/groups/' + $groupid);
     setListOfUsers(res.data);
   };
 
   useEffect(() => {
     if (isLeader) {
-      fetchTimecardsByGroup(users.user_group_id);
+      // fetchTimecardsByGroup(users.user_group_id);
+      fetchTimecards();
     } else {
       fetchTimecards();
     }
@@ -164,11 +168,11 @@ export const TimecardList: React.FC = () => {
       )}
 
       {isLeader && (
-        <div className="select__box group ml0">
-          <div className="select__box--title">
-            <p>Nhóm: {users.user_group}</p>
-          </div>
-        </div>
+        <SelectCustom
+          onGroupChange={(groupId: string) => {
+            setSelectedGroupName(groupId);
+          }}
+        />
       )}
       <CTable>
         <CTableHead

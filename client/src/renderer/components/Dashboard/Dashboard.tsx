@@ -8,8 +8,10 @@ import React, {
 import axios from '../../api/axios';
 import './Dashboard.scss';
 import DashboardTime from './DashboardTime';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 function Dashboard() {
+  const axiosPrivate = useAxiosPrivate();
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   if (users) {
@@ -30,7 +32,7 @@ function Dashboard() {
 
   const loadStart = async () => {
     try {
-      const response = await axios.get('timecards/load/' + usersID);
+      const response = await axiosPrivate.get('timecards/load/' + usersID);
 
       if (response.data && response.data.timecard_close) {
         const timecardClose = response.data.timecard_close;
@@ -50,10 +52,6 @@ function Dashboard() {
       console.error('Error fetching timecards:', error);
     }
   };
-  const formatTimeDigit = (digit: number): string => {
-    return digit < 10 ? `0${digit}` : `${digit}`;
-  };
-
   const handleStart = async () => {
     try {
       const response = await axios.get(
@@ -81,7 +79,7 @@ function Dashboard() {
         timecard_temp: 0,
         owner: 'admin',
       };
-      const responseTimeCard = await axios.post('timecards/add', {
+      const responseTimeCard = await axiosPrivate.post('timecards/add', {
         dataTimeCard,
       });
       const dataTimeCardDetails = {
@@ -91,9 +89,12 @@ function Dashboard() {
         timecard_timeinterval: '1:30',
         timecard_comment: '',
       };
-      const responseTimeCardDetails = await axios.post('timecarddetails/add', {
-        dataTimeCardDetails,
-      });
+      const responseTimeCardDetails = await axiosPrivate.post(
+        'timecarddetails/add',
+        {
+          dataTimeCardDetails,
+        },
+      );
       loadStart();
       setCheckStart(true);
     } catch (error) {
@@ -102,6 +103,9 @@ function Dashboard() {
         error,
       );
     }
+  };
+  const formatTimeDigit = (digit: number): string => {
+    return digit < 10 ? `0${digit}` : `${digit}`;
   };
   function findConfigValue(configArray: any[], key: string) {
     const configItem = configArray.find((item) => item.config_key === key);
@@ -165,7 +169,7 @@ function Dashboard() {
 
   const handleEnd = async () => {
     try {
-      const res = await axios.get('timecards/load/' + usersID);
+      const res = await axiosPrivate.get('timecards/load/' + usersID);
       const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
@@ -176,7 +180,7 @@ function Dashboard() {
         currentMinutes,
       ).padStart(2, '0')}`;
       let timecard_time = '';
-      const responseConfig = await axios.post('config');
+      const responseConfig = await axiosPrivate.post('config');
       const configData = responseConfig.data;
       const opentimeValue = findConfigValue(configData, 'opentime');
       const closetimeValue = findConfigValue(configData, 'closetime');
@@ -258,9 +262,12 @@ function Dashboard() {
         timecard_open: res.data.timecard_open,
         timecard_now: timecard_close_time,
         timecard_time: timecard_time,
+        timecard_interval: calculateTime(openlunchValue, closelunchValue),
         timecard_timeover: timecard_timeover,
       };
-      const re = await axios.post('timecarddetails/update', { dataTime });
+      const re = await axiosPrivate.post('timecarddetails/update', {
+        dataTime,
+      });
       console.log(re.data);
 
       loadStart();

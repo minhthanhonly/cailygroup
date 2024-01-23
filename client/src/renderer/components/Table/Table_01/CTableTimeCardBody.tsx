@@ -12,6 +12,7 @@ import Modal from '../../Modal/Modal';
 import { UserRole } from '../../../components/UserRole';
 import Modaldelete from '../../Modal/Modaldelete';
 import { vi } from 'date-fns/locale';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 
 //sever
 type Holiday = {
@@ -52,6 +53,8 @@ interface CombinedProps extends SelectMY {
 }
 
 let CTableTimeCardBody = (Props: CombinedProps) => {
+  const axiosPrivate = useAxiosPrivate();
+
   const [daysInMonth, setDaysInMonth] = useState(Props.daysInMonth);
 
   const selectedMonth = Props.selectedMonth;
@@ -200,7 +203,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [timecardOpen, setTimecardOpen] = useState<TimecardData[]>([]);
   const fetchTimecardOpen = async () => {
     try {
-      const response = await axios.get('timecards/getall/' + usersID);
+      const response = await axiosPrivate.get('timecards/getall/' + usersID);
       if (response.data && Array.isArray(response.data)) {
         setTimecardOpen(response.data);
       } else {
@@ -297,12 +300,12 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_temp: 0,
         owner: '',
       };
-      const responseTimeCard = await axios.post('timecards/add', {
+      const responseTimeCard = await axiosPrivate.post('timecards/add', {
         dataTimeCard,
       });
 
       console.log(responseTimeCard.data);
-      const responseConfig = await axios.post('config');
+      const responseConfig = await axiosPrivate.post('config');
       const configData = responseConfig.data;
       const openlunchValue = findConfigValue(configData, 'openlunch');
       const closelunchValue = findConfigValue(configData, 'closelunch');
@@ -313,9 +316,12 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_originalopen: timecard_close_time,
         timecard_timeinterval: resut,
       };
-      const responseTimeCardDetails = await axios.post('timecarddetails/add', {
-        dataTimeCardDetails,
-      });
+      const responseTimeCardDetails = await axiosPrivate.post(
+        'timecarddetails/add',
+        {
+          dataTimeCardDetails,
+        },
+      );
 
       console.log(responseTimeCardDetails.data);
       fetchTimecardOpen();
@@ -351,7 +357,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         currentMinutes,
       ).padStart(2, '0')}`;
       let timecard_time = '';
-      const responseConfig = await axios.post('config');
+      const responseConfig = await axiosPrivate.post('config');
       const configData = responseConfig.data;
       const opentimeValue = findConfigValue(configData, 'opentime');
       const closetimeValue = findConfigValue(configData, 'closetime');
@@ -436,7 +442,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       };
 
       try {
-        const response = await axios.post('timecarddetails/update', {
+        const response = await axiosPrivate.post('timecarddetails/update', {
           dataTime,
         });
         console.log(response.data);
@@ -450,7 +456,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [holidays, setHolidays] = useState<Holiday[] | undefined>();
   const fetchHolidays = async () => {
     try {
-      const response = await axios.get('holidays');
+      const response = await axiosPrivate.get('holidays');
       if (response.data && Array.isArray(response.data)) {
         setHolidays(response.data);
       }
@@ -485,7 +491,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const fetchDayoffs = async () => {
     try {
       let $id = usersID;
-      const response = await axios.get('dayoffs/getalluser/' + usersID);
+      const response = await axiosPrivate.get('dayoffs/getalluser/' + usersID);
       setDayoffs(response.data);
     } catch (error) {
       console.error('Error fetching dayoffs:', error);
@@ -511,7 +517,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const updateDayoffs = async (id: number) => {
     try {
-      const response = await axios.post('dayoffs/update/' + id);
+      const response = await axiosPrivate.post('dayoffs/update/' + id);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -519,7 +525,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const deleteDayoffs = async (id: number) => {
     try {
-      const response = await axios.post('dayoffs/delete/' + id);
+      const response = await axiosPrivate.post('dayoffs/delete/' + id);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -590,10 +596,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   const handleUpdateComment = async (Id: number) => {
     try {
-      const response = await axios.post('timecarddetails/updatecomment', {
-        id: Id,
-        comment: commentText,
-      });
+      const response = await axiosPrivate.post(
+        'timecarddetails/updatecomment',
+        {
+          id: Id,
+          comment: commentText,
+        },
+      );
       console.log(response.data);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -606,7 +615,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const handleUpdateCommentDayoffs = async (id: number) => {
     try {
-      const response = await axios.post('dayoffs/updatecomment/' + id, {
+      const response = await axiosPrivate.post('dayoffs/updatecomment/' + id, {
         comment: commentText,
       });
       console.log(response.data);
@@ -617,7 +626,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     closeModal();
   };
   const handleChangeTimecards = async (id: number) => {
-    const response = await axios.post('timecarddetails/updateall', {
+    const response = await axiosPrivate.post('timecarddetails/updateall', {
       id: timecardID,
       timecard_open: timecard_open_time,
       timecard_close: timecardEnd,
@@ -650,7 +659,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       timecard_temp: 0,
       owner: users.realname,
     };
-    const responseTimeCard = await axios.post('timecards/add', {
+    const responseTimeCard = await axiosPrivate.post('timecards/add', {
       dataTimeCard,
     });
     console.log(responseTimeCard.data);
@@ -664,9 +673,12 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       timecard_comment: timecardNote,
       editor: users.realname,
     };
-    const responseTimeCardDetails = await axios.post('timecarddetails/addnew', {
-      dataTimeCardDetails,
-    });
+    const responseTimeCardDetails = await axiosPrivate.post(
+      'timecarddetails/addnew',
+      {
+        dataTimeCardDetails,
+      },
+    );
 
     console.log(responseTimeCardDetails.data);
     fetchTimecardOpen();
@@ -767,7 +779,16 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                           item.timecard_date === format(day, 'dd-MM-yyyy'),
                       )
                       .map((item, index) => (
-                        <div key={index}>{item.timecard_open}</div>
+                        <div
+                          className={
+                            compareTime(item.timecard_open, '7:30') == 1
+                              ? 'a'
+                              : 'b'
+                          }
+                          key={index}
+                        >
+                          {item.timecard_open}
+                        </div>
                       ))}
                   </>
                 ) : isToday(day) ? (
@@ -1153,6 +1174,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               </tbody>
             </table>
             <div className="wrp-button">
+              <p>{isOpenModal ? 'a' : 'b'}</p>
               <button
                 className="btn btn--green"
                 onClick={(event) => {

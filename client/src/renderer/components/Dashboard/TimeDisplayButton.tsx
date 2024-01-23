@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import CardTime from '../Card/Card';
 import { urlTimeApi } from '../../routes/server';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import axios from '../../api/axios';
 
 interface TimeDisplayButtonProps {
   initialImage: string;
@@ -10,6 +11,8 @@ interface TimeDisplayButtonProps {
 const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
   initialImage,
 }) => {
+  const axiosPrivate = useAxiosPrivate();
+
   const [currentTime, setCurrentTime] = useState(0);
   const [buttonImage, setButtonImage] = useState(initialImage);
   const [startHours, setStartHours] = useState(0);
@@ -47,7 +50,6 @@ const TimeDisplayButton: React.FC<TimeDisplayButtonProps> = ({
     // Example: Change the image when the button is clicked
     // setButtonImage(require('../../../../assets/icon-play.png'));
   };
-
 
   return (
     <>

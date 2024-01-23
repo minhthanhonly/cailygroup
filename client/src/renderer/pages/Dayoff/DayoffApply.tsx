@@ -6,8 +6,10 @@ import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useCallback, useEffect, useState } from 'react';
 import axios from '../../api/axios';
 import { SelectCustom } from '../../components/Table/SelectCustom';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export const DayoffApply = () => {
+  const axiosPrivate = useAxiosPrivate();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   type FieldGroups = {
     id: any;
@@ -93,8 +95,8 @@ export const DayoffApply = () => {
   const fetchData = useCallback(async () => {
     try {
       const [groupsResponse, dayoffsResponse] = await Promise.all([
-        axios.get('groups'),
-        axios.get('dayoffs', {
+        axiosPrivate.get('groups'),
+        axiosPrivate.get('dayoffs', {
           params: {
             group: selectedGroup,
           },
@@ -145,7 +147,7 @@ export const DayoffApply = () => {
     if (event) {
       event.preventDefault();
       try {
-        const response = await axios.post('dayoffs/update/' + dayoffId, {
+        const response = await axiosPrivate.post('dayoffs/update/' + dayoffId, {
           data,
         });
         fetchData(); // Tải lại dữ liệu sau khi cập nhật trạng thái
@@ -161,7 +163,7 @@ export const DayoffApply = () => {
     if (event) {
       event.preventDefault();
       try {
-        let response = await axios.post('dayoffs/refuse/' + dayoffId, {
+        let response = await axiosPrivate.post('dayoffs/refuse/' + dayoffId, {
           data,
         });
         console.log(response.data);

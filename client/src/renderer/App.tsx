@@ -4,7 +4,6 @@ import { Timecard } from './pages/Timecard';
 import { TimecardSetting } from './pages/Timecard/TimecardSetting';
 import { TimecardList } from './pages/Timecard/TimecardList';
 import { TimecardEdit } from './pages/Timecard/TimecardEdit';
-import { UserAdd } from './pages/Users/UserAdd';
 import UserEdit from './pages/Users/UserEdit';
 import { UserDetail } from './pages/Users/UserDetail';
 import { Dayoff } from './pages/Dayoff';
@@ -19,7 +18,6 @@ import FluidLayout from './layouts/FluidLayout/FluidLayout';
 import Members from './pages/Members';
 import MemberAdd from './pages/Members/MemberAdd';
 import MemberEdit from './pages/Members/MemberEdit';
-import MemberDetail from './pages/Members/MemberDetail';
 import RequireAuth from './components/RequireAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -48,13 +46,11 @@ export default function App() {
                 element={<Timecard />}
               />
               <Route path="holidays" element={<Timecard />} />
-              <Route path="users/add" element={<UserAdd />} />
               <Route path="users/edit/:id" element={<UserEdit />} />
               <Route path="users/detail/:userid" element={<UserDetail />} />
               <Route path="members" element={<Members />} />
               <Route path="members/add" element={<MemberAdd />} />
               <Route path="members/edit/:id" element={<MemberEdit />} />
-              <Route path="members/detail/:userid" element={<MemberDetail />} />
               <Route path="dayoffs" element={<Dayoff />} />
               <Route path="dayoffs/apply" element={<DayoffApply />} />
               <Route path="dayoffs/delete/:id" />

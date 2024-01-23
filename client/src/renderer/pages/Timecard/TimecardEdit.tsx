@@ -10,6 +10,7 @@ import MonthYearSelector from '../../components/Table/SelectMonthYears';
 
 import './Timecard.scss';
 import axios from '../../api/axios';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 interface FieldUsers {
   id: number;
@@ -21,6 +22,8 @@ interface FieldUsers {
 }
 
 export const TimecardEdit = () => {
+  const axiosPrivate = useAxiosPrivate();
+
   const [userID, setUserID] = useState();
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
@@ -32,7 +35,7 @@ export const TimecardEdit = () => {
   const [selectedGroupData, setSelectedGroupData] = useState<FieldUsers[]>([]);
 
   useEffect(() => {
-    axios
+    axiosPrivate
       .get('users/')
       .then((response) => {
         setListOfUsers(response.data);

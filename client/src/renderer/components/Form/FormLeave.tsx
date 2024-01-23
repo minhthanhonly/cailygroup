@@ -9,8 +9,11 @@ import { format } from 'date-fns';
 import axios from '../../api/axios';
 import Modaldelete from '../Modal/Modaldelete';
 import { useNavigate } from 'react-router-dom';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export const FormLeave: React.FC = () => {
+  const axiosPrivate = useAxiosPrivate();
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [note, setNote] = useState('');
@@ -112,7 +115,7 @@ export const FormLeave: React.FC = () => {
   }
   const handleConfirmClick = async () => {
     let timeLeave = '';
-    const responseConfig = await axios.post('config');
+    const responseConfig = await axiosPrivate.post('config');
     const configData = responseConfig.data;
     const opentimeValue = findConfigValue(configData, 'opentime');
     const closetimeValue = findConfigValue(configData, 'closetime');
@@ -189,7 +192,7 @@ export const FormLeave: React.FC = () => {
     };
     if (note) {
       setNoteErr(false);
-      axios
+      axiosPrivate
         .post('dayoffs/add', { group_data })
         .then((response) => {
           console.log(response.data);
