@@ -347,7 +347,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   ) => {
     if (event) {
       event.preventDefault();
-      const response = await axiosPrivate.get(
+      const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
       let { datetime } = response.data;
@@ -440,7 +440,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_time: timecard_time,
         timecard_timeover: timecard_timeover,
       };
-
       try {
         const response = await axiosPrivate.post('timecarddetails/update', {
           dataTime,
