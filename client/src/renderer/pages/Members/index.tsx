@@ -17,6 +17,8 @@ function Members() {
   const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [empty, setEmpty] = useState(false);
 
+
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   /*
   * LẤY DANH SÁCH THÀNH VIÊN
   */
@@ -40,7 +42,7 @@ function Members() {
         });
         isMounted && setListOfUsers(response.data);
         response.data.length ? setEmpty(false) : setEmpty(true);
-      } catch(err) {
+      } catch (err) {
         console.error('Lỗi khi lấy dữ liệu:', err);
       }
     }
@@ -107,12 +109,21 @@ function Members() {
 
   let DataTable: FieldUsers[] = [];
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Số mục muốn hiển thị trên mỗi trang
+
+
   // Tính tổng số trang
-  const totalPages = Math.ceil(DataTable.length / itemsPerPage);
+  const totalPages = Math.ceil(listOfUsers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const displayedUsers = listOfUsers.slice(startIndex, endIndex);
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
   };
+  const handleItemsPerPageChange = (value: number) => {
+    setItemsPerPage(value);
+    setCurrentPage(1); // Đặt lại trang hiện tại về 1 khi số lượng mục trên mỗi trang thay đổi
+  };
+
 
 
 
@@ -136,43 +147,40 @@ function Members() {
           </div>
         </div>
         <div className="box-group__item">
-          <InputQuantity total={listOfUsers.length} />
+          <InputQuantity total={listOfUsers.length} onItemsPerPageChange={handleItemsPerPageChange} />
         </div>
         {/* <div className="box-group__item">
           <Search />
         </div> */}
       </div>
       <ButtonAdd path_add="/members/add" />
-      { (empty === true) ? <div className="box-bg --full mt30 mb20"><p className="bg bg-red">Không có thành viên nào để hiển thị</p></div> : '' }
+      {(empty === true) ? <div className="box-bg --full mt30 mb20"><p className="bg bg-red">Không có thành viên nào để hiển thị</p></div> : ''}
       <CTable>
-            <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
-            <tbody>
-              {listOfUsers.map((data, index) => (
-                <tr key={index}>
-                  <td>
-                    <NavLink to={"/users/detail/" + data.userid} className="acount__name">
-                      {data.realname}
-                    </NavLink>
-                  </td>
-                  <td>{data.group_name}</td>
-                  <td>{data.authority_name}</td>
-                  <td>
-                    <ButtonEdit href={"/members/edit/" + data.id} />
-                    {(data.realname === "Admin") ? '' :  <ButtonDelete onButtonClick={() => openModal(data.id)} />}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </CTable><Pagination
-              totalPages={totalPages}
-              currentPage={currentPage}
-              onPageChange={handlePageChange} /><Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
-              <h2>Bạn có chắc chắn muốn xóa không?</h2>
-              <div className='wrp-button'>
-                <button className='btn btn--green' onClick={() => handleDelete(isDeleteModalid)}>Đồng ý</button>
-                <button className='btn btn--orange' onClick={closeModal}>Hủy</button>
-              </div>
-            </Modaldelete>
+        <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
+        <tbody>
+          {displayedUsers.map((data, index) => (
+            <tr key={index}>
+              <td>
+                <NavLink to={"/users/detail/" + data.userid} className="acount__name">
+                  {data.realname}
+                </NavLink>
+              </td>
+              <td>{data.group_name}</td>
+              <td>{data.authority_name}</td>
+              <td>
+                <ButtonEdit href={"/members/edit/" + data.id} />
+                {(data.realname === "Admin") ? '' : <ButtonDelete onButtonClick={() => openModal(data.id)} />}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </CTable><Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} /><Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
+        <h2>Bạn có chắc chắn muốn xóa không?</h2>
+        <div className='wrp-button'>
+          <button className='btn btn--green' onClick={() => handleDelete(isDeleteModalid)}>Đồng ý</button>
+          <button className='btn btn--orange' onClick={closeModal}>Hủy</button>
+        </div>
+      </Modaldelete>
     </>
   )
 };
