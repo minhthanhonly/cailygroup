@@ -11,6 +11,7 @@ export default function UserEdit() {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const {id} = useParams();
+  const [initialValue, setInitialValue] = useState('');
   const [formValue, setFormValue] = useState({userid: '', password: '', realname: '', authority: '', user_group: '' });
   const [passwordNew, setPasswordNew] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -19,11 +20,21 @@ export default function UserEdit() {
 		setFormValue({...formValue, [e.target.name]:e.target.value})
 	}
 
+  const fetchUsersById = async function () {
+    const res = await axiosPrivate.get('users/edit/' + id);
+    setFormValue(res.data);
+  };
+
   useEffect(() => {
-    axiosPrivate.get('users/edit/'+id).then(response => {
-      setFormValue(response.data);
-    })
-  }, [])
+    fetchUsersById();
+  }, []);
+
+  const handleCancel = () => {
+    fetchUsersById();
+    setInitialValue('');
+    setPasswordNew(initialValue);
+    setPasswordConfirm(initialValue);
+  };
 
   const handleSubmit = async(e) => {
 		e.preventDefault();
@@ -110,115 +121,113 @@ export default function UserEdit() {
 				<div className="form-content">
 					<div className="row">
 						<div className="col-6">
-							<form onSubmit={handleSubmit} method="POST">
-								<div className="form-group">
-									<label>
-										ID User *
-										<img
-											src={require('../../../../assets/icn-id.png')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<input
-										className="form-input"
-										type="text"
-										name="userid"
-										value={formValue.userid} onChange={handleInput}
-									/>
-								</div>
-								<div className="form-group">
-									<label>
-										Họ và tên *
-										<img
-											src={require('../../../../assets/icon-user.jpg')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<input
-										className="form-input"
-										type="text"
-										name="realname"
-										value={formValue.realname} onChange={handleInput}
-									/>
-								</div>
-								<div className="form-group">
-									<label>
-										Nhóm *
-										<img
-											src={require('../../../../assets/icn-group.png')}
-											alt=""
-											className="fluid-image"
-										/>
-									</label>
-									<div className="select__box group">
-										<select name="user_group" onChange={handleInput}>
-											<option value="-1">--------------------------- Chọn nhóm ---------------------------</option>
-											{DataGroups.map((value, index) => (
-												<option value={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
-											))}
-										</select>
-									</div>
-								</div>
-                <h3 className="hdglv3 left">Thay đổi mật khẩu</h3>
-                <div className="form-group">
-                  <label>
-                    Mật khẩu hiện tại
-                    <img
-                      src={require('../../../../assets/icon-password.jpg')}
-                      alt=""
-                      className="fluid-image"
-                    />
-                  </label>
-                  <input
-                    className="form-input"
-                    type="password"
-                    name="password"
-                    value={formValue.password}
+              <div className="form-group">
+                <label>
+                  ID User *
+                  <img
+                    src={require('../../../../assets/icn-id.png')}
+                    alt=""
+                    className="fluid-image"
                   />
-                </div>
-                <div className="form-group">
-                  <label>
-                    Mật khẩu mới
-                    <img
-                      src={require('../../../../assets/icon-password.jpg')}
-                      alt=""
-                      className="fluid-image"
-                    />
-                  </label>
-                  <input
-                    className="form-input"
-                    type="text"
-                    name="passwordNew"
-                    id="passwordNew"
-                    value={passwordNew}
-                    onChange={(event) => setPasswordNew(event.target.value)}
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="userid"
+                  value={formValue.userid} onChange={handleInput}
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  Họ và tên *
+                  <img
+                    src={require('../../../../assets/icon-user.jpg')}
+                    alt=""
+                    className="fluid-image"
                   />
-                </div>
-                <div className="form-group">
-                  <label>
-                    Mật khẩu (Xác nhận) *
-                    <img
-                      src={require('../../../../assets/icon-password.jpg')}
-                      alt=""
-                      className="fluid-image"
-                    />
-                  </label>
-                  <input
-                    className="form-input"
-                    type="text"
-                    name="password_confirm"
-                    value={passwordConfirm}
-                    onChange={(event) => setPasswordConfirm(event.target.value)}
-                    placeholder="Nhập lại mật khẩu"
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="realname"
+                  value={formValue.realname} onChange={handleInput}
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  Nhóm *
+                  <img
+                    src={require('../../../../assets/icn-group.png')}
+                    alt=""
+                    className="fluid-image"
                   />
+                </label>
+                <div className="select__box group">
+                  <select name="user_group" onChange={handleInput}>
+                    <option value="-1">--------------------------- Chọn nhóm ---------------------------</option>
+                    {DataGroups.map((value, index) => (
+                      <option value={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
+                    ))}
+                  </select>
                 </div>
-								<div className="wrp-button">
-									<button className="btn btn--green" type="submit">Xác nhận</button>
-									<button className="btn btn--orange">Hủy</button>
-								</div>
-							</form>
+              </div>
+              <h3 className="hdglv3 left">Thay đổi mật khẩu</h3>
+              <div className="form-group">
+                <label>
+                  Mật khẩu hiện tại
+                  <img
+                    src={require('../../../../assets/icon-password.jpg')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="password"
+                  name="password"
+                  value={formValue.password}
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  Mật khẩu mới
+                  <img
+                    src={require('../../../../assets/icon-password.jpg')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="passwordNew"
+                  id="passwordNew"
+                  value={passwordNew}
+                  onChange={(event) => setPasswordNew(event.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label>
+                  Mật khẩu (Xác nhận) *
+                  <img
+                    src={require('../../../../assets/icon-password.jpg')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </label>
+                <input
+                  className="form-input"
+                  type="text"
+                  name="password_confirm"
+                  value={passwordConfirm}
+                  onChange={(event) => setPasswordConfirm(event.target.value)}
+                  placeholder="Nhập lại mật khẩu"
+                />
+              </div>
+              <div className="wrp-button">
+                <button className="btn btn--green" type="submit" onClick={handleSubmit}>Xác nhận</button>
+                <button className="btn btn--orange" onClick={handleCancel}>Hủy</button>
+              </div>
 						</div>
 					</div>
 				</div>
