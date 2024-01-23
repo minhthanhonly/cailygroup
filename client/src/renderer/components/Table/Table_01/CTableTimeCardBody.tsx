@@ -347,7 +347,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   ) => {
     if (event) {
       event.preventDefault();
-      const response = await axios.get(
+      const response = await axiosPrivate.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
       let { datetime } = response.data;
@@ -1174,7 +1174,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               </tbody>
             </table>
             <div className="wrp-button">
-              <p>{isOpenModal ? 'a' : 'b'}</p>
               <button
                 className="btn btn--green"
                 onClick={(event) => {
