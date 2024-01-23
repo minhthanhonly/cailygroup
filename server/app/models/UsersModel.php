@@ -3,68 +3,21 @@
 		function getList(){
 			global $conn;
 
-			// echo $getAuthHeader;
-			// $getBearerToken = empty($this->getBearerToken());
+			// Thực hiện truy vấn SELECT
+			$sql = "SELECT users.*, groups.group_name, authority.authority_name FROM users 
+			JOIN groups ON users.user_group = groups.id
+			JOIN authority ON users.authority = authority.id";
+			$result = $conn->query($sql);
 
-			// function getAuthorizationHeader(){
-			// 	$headers = null;
-			// 	if (isset($_SERVER['Authorization'])) {
-			// 		$headers = trim($_SERVER["Authorization"]);
-			// 	}
-			// 	else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
-			// 		$headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
-			// 	} elseif (function_exists('apache_request_headers')) {
-			// 		$requestHeaders = apache_request_headers();
-			// 		// Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
-			// 		$requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
-			// 		//print_r($requestHeaders);
-			// 		if (isset($requestHeaders['Authorization'])) {
-			// 			$headers = trim($requestHeaders['Authorization']);
-			// 		}
-			// 	}
-			// 	return $headers;
-			// }
-			
-			// function getBearerToken() {
-			// 	$headers = getAuthorizationHeader();
-			// 	// HEADER: Get the access token from the header
-			// 	if (!empty($headers)) {
-			// 		if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
-			// 			return $matches[1];
-			// 		}
-			// 	}
-			// 	return null;
-			// }
-			
-
-			// echo getBearerToken();
-
-			// echo $getBearerToken;
-			
-			// if(!$getBearerToken){
-			// 	$jwt = getBearerToken();
-			// 	$is_jwt_valid = is_jwt_valid($jwt, $secret='Caily-Group@;+/*95');
-			// 	if($is_jwt_valid === TRUE){
-					// Thực hiện truy vấn SELECT
-					$sql = "SELECT users.*, groups.group_name, authority.authority_name FROM users 
-					JOIN groups ON users.user_group = groups.id
-					JOIN authority ON users.authority = authority.id";
-					$result = $conn->query($sql);
-	
-					// Kiểm tra và hiển thị kết quả
-					if ($result->num_rows > 0) {
-						// Duyệt qua từng dòng dữ liệu
-						while ($row = $result->fetch_assoc()) {
-							$data[] = $row;
-						}
-					} else {
-						$data = [];
-					}
-			// 	}
-			// } else {
-			// 	$data = [];
-			// 	echo 'TỪ CHỐI TRUY CẬP';
-			// }
+			// Kiểm tra và hiển thị kết quả
+			if ($result->num_rows > 0) {
+				// Duyệt qua từng dòng dữ liệu
+				while ($row = $result->fetch_assoc()) {
+					$data[] = $row;
+				}
+			} else {
+				$data = [];
+			}
 			
 			header('Content-Type: application/json');
 			echo json_encode($data);
@@ -95,7 +48,6 @@
 				echo "Không có dữ liệu";
 			}
 
-			header('Content-Type: application/json');
 			echo json_encode($data);
 			return;
 
@@ -122,7 +74,6 @@
 				
 				$result = $conn->query($sql);
 
-				header('Content-Type: application/json');
 				if($result) {
 					echo json_encode(['success' => 'Thêm thành viên mới thành công']);
 					return;
@@ -164,16 +115,16 @@
 				$id = $userPostData->id;
 				$userid = $userPostData->userid;
 				$password = $userPostData->password;
-				// $passwordNew = $userPostData->passwordNew;
+				$passwordNew = $userPostData->passwordNew;
 
-				if(!empty($passwordNew)) {
+				if(!empty($userPostData->passwordNew)) {
 					$passwordNew = password_hash($userPostData->passwordNew, PASSWORD_BCRYPT);
 				}
 				$realname = $userPostData->realname;
 				$authority = $userPostData->authority;
 				$user_group = $userPostData->user_group;
-			
-				// Cập nhật dữ liệu vào cơ sở dữ liệu
+				
+				//Cập nhật dữ liệu vào cơ sở dữ liệu
 				if(!empty($passwordNew)) {
 					$sql = "UPDATE users SET userid='$userid', password='$passwordNew', password_default='', realname='$realname', authority='$authority', user_group='$user_group', user_groupname='', user_email='', user_skype='', user_ruby='', user_postcode='',user_address='', user_addressruby='', user_phone='', user_mobile='', user_order='', edit_level='', edit_group='', edit_user='', owner='', editor='', createdAt='', updatedAt='' WHERE id='$id'";
 				} else {
@@ -182,7 +133,6 @@
 
 				$result = $conn->query($sql);
 
-				header('Content-Type: application/json');
 				if($result) {
 					echo json_encode(['success' => 'Cập nhật thành viên thành công']);
 					return;

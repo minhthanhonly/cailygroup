@@ -158,7 +158,7 @@ function Members() {
                   <td>{data.authority_name}</td>
                   <td>
                     <ButtonEdit href={"/members/edit/" + data.id} />
-                    <ButtonDelete onButtonClick={() => openModal(data.id)} />
+                    {(data.realname === "Admin") ? '' :  <ButtonDelete onButtonClick={() => openModal(data.id)} />}
                   </td>
                 </tr>
               ))}

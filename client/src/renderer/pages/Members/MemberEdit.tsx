@@ -1,26 +1,23 @@
 import { useEffect, useState } from 'react';
 import { Heading2 } from '../../components/Heading';
 import { useNavigate, useParams } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
 import { isValidUserEdit } from '../../components/Validate';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 function MemberEdit() {
   const axiosPrivate = useAxiosPrivate();
-  const { setAuth } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams();
   const [initialValue, setInitialValue] = useState('');
   const [formValue, setFormValue] = useState({
     userid: '',
     password: '',
-    passwordNew: '',
-    password_confirm: '',
     realname: '',
     authority: '',
     user_group: '',
   });
   const [passwordNew, setPasswordNew] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
   const [message, setMessage] = useState('');
   const handleInput = (e) => {
     setFormValue({ ...formValue, [e.target.name]: e.target.value });
@@ -37,30 +34,24 @@ function MemberEdit() {
 
   const handleCancel = () => {
     fetchUsersById();
+    setInitialValue('');
     setPasswordNew(initialValue);
+    setPasswordConfirm(initialValue);
   };
-
-  // useEffect(() => {
-  //   axios.get('users/edit/'+id).then(response => {
-  //     setFormValue(response.data);
-
-  //     console.log(formValue);
-  //   })
-  // }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = isValidUserEdit({ ...formValue });
-    if (validationErrors === true) {
+    // const validationErrors = isValidUserEdit({ ...formValue });
       const formData = {
         id: id,
         userid: formValue.userid,
         password: formValue.password,
-        passwordNew: formValue.passwordNew,
+        passwordNew: passwordNew,
         realname: formValue.realname,
         authority: formValue.authority,
         user_group: formValue.user_group,
       };
+
       const res = await axiosPrivate.post('users/update', formData);
 
       if (res.data.success) {
@@ -70,7 +61,6 @@ function MemberEdit() {
         }, 2000);
       }
     }
-  };
 
   /*
    *
@@ -264,10 +254,8 @@ function MemberEdit() {
                   type="text"
                   name="passwordNew"
                   id="passwordNew"
-                  defaultValue={passwordNew}
-                  onChange={(event) => {
-                    event.target.value;
-                  }}
+                  value={passwordNew}
+                  onChange={(event) => setPasswordNew(event.target.value)}
                 />
               </div>
               <div className="form-group">
@@ -283,8 +271,8 @@ function MemberEdit() {
                   className="form-input"
                   type="text"
                   name="password_confirm"
-                  defaultValue={formValue.password_confirm}
-                  onChange={handleInput}
+                  value={passwordConfirm}
+                  onChange={(event) => setPasswordConfirm(event.target.value)}
                   placeholder="Nhập lại mật khẩu"
                 />
               </div>

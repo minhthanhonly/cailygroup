@@ -63,9 +63,11 @@
                         $result = "ok";
                     } else {
                         $result = "error";
+                        $data = [];
                     }
                 } else {
                     $result = "error";
+                    $data = [];
                 }
                 
 				header('Content-Type: application/json');
