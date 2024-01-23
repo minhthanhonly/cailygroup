@@ -440,7 +440,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_time: timecard_time,
         timecard_timeover: timecard_timeover,
       };
-
       try {
         const response = await axiosPrivate.post('timecarddetails/update', {
           dataTime,
@@ -1174,7 +1173,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               </tbody>
             </table>
             <div className="wrp-button">
-              <p>{isOpenModal ? 'a' : 'b'}</p>
               <button
                 className="btn btn--green"
                 onClick={(event) => {
