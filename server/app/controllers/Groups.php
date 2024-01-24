@@ -17,8 +17,6 @@
                 if($is_jwt_valid == 1){
                     return $this->model('GroupsModel')->addGroups($group_name, $add_level, $owner, date('Y-m-d H:i:s'));
                 }
-                
-
             }
         }
         function update($id = '', $group_name = '') {

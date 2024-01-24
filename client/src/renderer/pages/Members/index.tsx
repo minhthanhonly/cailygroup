@@ -41,6 +41,7 @@ function Members() {
           signal: controller.signal,
         });
         isMounted && setListOfUsers(response.data);
+        setIsTableUpdated(false);
         response.data.length ? setEmpty(false) : setEmpty(true);
       } catch (err) {
         console.error('Lỗi khi lấy dữ liệu:', err);
@@ -53,7 +54,7 @@ function Members() {
       isMounted = false;
       controller.abort();
     }
-  }, [])
+  }, [isTableUpdated])
 
   /*
   * LẤY TẤT CẢ NHÓM
@@ -82,8 +83,9 @@ function Members() {
   useEffect(() => {
     if (selectedGroup) {
       fetchMembersByGroup(selectedGroup);
+      setIsTableUpdated(false);
     }
-  }, [selectedGroup]);
+  }, [selectedGroup, isTableUpdated]);
 
   /*
   * XÓA USER
@@ -91,7 +93,6 @@ function Members() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDeleteModalid, setDeleteModalId] = useState(0);
   const handleDelete = async ($id: number) => {
-
     const formData = { id: $id }
     const res = await axiosPrivate.post("users/delete", formData);
     setIsTableUpdated(true);
@@ -155,7 +156,7 @@ function Members() {
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
         <tbody>
-          {displayedUsers.map((data, index) => (
+          {listOfUsers.map((data, index) => (
             <tr key={index}>
               <td>
                 <NavLink to={"/users/detail/" + data.userid} className="acount__name">

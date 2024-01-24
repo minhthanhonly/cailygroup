@@ -53,7 +53,7 @@
             $tokenParts = explode('.', $jwt);
 
             if ($tokenParts[0] === '') {
-                $_SESSION['auth'] = 'Logout';
+                echo "<h1>"."Access is denied. Please log in!"."</h1>";
             } else {
                 $header = base64_decode($tokenParts[0]);
                 $payload = base64_decode($tokenParts[1]);
