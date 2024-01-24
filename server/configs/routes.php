@@ -6,9 +6,6 @@
     // Login
     $routes['login'] = 'login';
 
-    // Dashboard
-    $routes['dashboard'] = 'dashboard';
-
     // Group
     $routes['groups'] = 'groups';
     $routes['groups/add'] = 'groups/add';
@@ -21,7 +18,6 @@
     $routes['users/add'] = 'users/add';
     $routes['users/edit/.+-(\d+)'] = 'users/edit/$1';
     $routes['users/update'] = 'users/update';
-    $routes['users/editcomment'] = 'users/editcomment';
     $routes['users/delete'] = 'users/delete';
     $routes['users/groups/.+-(\d+)'] = 'users/groups/$1';
 
@@ -38,11 +34,9 @@
     $routes['dayoffs/getalluser/.+-(\d+)'] = 'dayoffs/getalluser/$1';
 
     // timecards
-    $routes['timecards'] = 'timecards';
     $routes['timecards/load/.+-(\d+)'] = 'timecards/load/$1';
     $routes['timecards/getall/.+-(\d+)'] = 'timecards/getall/$1';
     $routes['timecards/add'] = 'timecards/add';
-    $routes['timecards/update/.+-(\d+)'] = 'timecards/update/$1';
 
 
     //timecardSetting
