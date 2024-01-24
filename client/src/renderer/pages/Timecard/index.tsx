@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
 import CTableTimeCardBody from '../../components/Table/Table_01/CTableTimeCardBody';
 import MonthYearSelector from '../../components/Table/SelectMonthYears';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import ExcelJS from 'exceljs';
@@ -23,6 +23,7 @@ interface FieldUsers {
 
 export const Timecard = () => {
   const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
 
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
@@ -327,13 +328,18 @@ export const Timecard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+
       try {
+
         const matchedUser = listOfUsers.find((user) => user.id === id);
         if (matchedUser) {
           setCurrentUser(matchedUser);
           if (datacheck === 1) {
+
             // Gọi hàm exportToExcel với await
             await exportToExcel();
+            await navigate("/timecards/list");
+
           }
           // Bạn có thể thêm logic bổ sung ở đây nếu cần
         }
