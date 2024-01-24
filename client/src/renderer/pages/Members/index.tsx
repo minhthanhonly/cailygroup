@@ -124,8 +124,6 @@ function Members() {
     setCurrentPage(page);
   };
 
-  console.log("totalPages", totalPages);
-
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
     setCurrentPage(1);
