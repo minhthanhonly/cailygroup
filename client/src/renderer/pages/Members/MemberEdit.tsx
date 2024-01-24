@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Heading2 } from '../../components/Heading';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isValidUserEdit } from '../../components/Validate';
@@ -15,19 +15,29 @@ function MemberEdit() {
     userid: '',
     password: '',
     realname: '',
-    authority: '',
-    user_group: '',
   });
   const [passwordNew, setPasswordNew] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+
+  const [selectedValue, setSelectedValue] = useState({
+    authority: '',
+    user_group: '',
+  });
+
   const [message, setMessage] = useState('');
-  const handleInput = (e) => {
-    setFormValue({ ...formValue, [e.target.name]: e.target.value });
+
+  const handleInput = (event: any) => {
+    setFormValue({ ...formValue, [event.target.name]: event.target.value });
   };
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedValue({ ...selectedValue, [event.target.name]: event.target.value });
+  }
 
   const fetchUsersById = async function () {
     const res = await axiosPrivate.get('users/edit/' + id);
     setFormValue(res.data);
+    setSelectedValue({...selectedValue, authority: res.data.authority, user_group: res.data.user_group})
   };
 
   useEffect(() => {
@@ -41,7 +51,7 @@ function MemberEdit() {
     setPasswordConfirm(initialValue);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     const validationErrors = isValidUserEdit({ ...formValue }, passwordNew, passwordConfirm);
     if (validationErrors === true) {
@@ -51,8 +61,8 @@ function MemberEdit() {
         password: formValue.password,
         passwordNew: passwordNew,
         realname: formValue.realname,
-        authority: formValue.authority,
-        user_group: formValue.user_group,
+        authority: selectedValue.authority,
+        user_group: selectedValue.user_group,
       };
 
       const res = await axiosPrivate.post('users/update', formData);
@@ -183,7 +193,7 @@ function MemberEdit() {
                   />
                 </label>
                 <div className="select__box group">
-                  <select name="user_group" onChange={handleInput}>
+                  <select value={selectedValue.user_group} name="user_group" onChange={handleChange}>
                     <option value="-1">
                       --------------------------- Chọn nhóm
                       ---------------------------
@@ -192,7 +202,7 @@ function MemberEdit() {
                       <option
                         value={value.id}
                         key={index}
-                        selected={value.id == formValue.user_group}
+                        // selected={value.id == formValue.user_group}
                       >
                         {value.group_name}
                       </option>
@@ -209,8 +219,8 @@ function MemberEdit() {
                     className="fluid-image"
                   />
                 </label>
-                <div className="select__box group" onChange={handleInput}>
-                  <select name="authority">
+                <div className="select__box group">
+                  <select value={selectedValue.authority} name="authority" onChange={handleChange}>
                     <option value="-1">
                       -------------------- Chọn quyền truy cập
                       --------------------
@@ -219,7 +229,7 @@ function MemberEdit() {
                       <option
                         value={value.id}
                         key={index}
-                        selected={value.id == formValue.authority}
+                        // selected={value.id == formValue.authority}
                       >
                         {value.authority_name}
                       </option>
