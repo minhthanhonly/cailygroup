@@ -18,7 +18,6 @@ function MemberEdit() {
   });
   const [passwordNew, setPasswordNew] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-
   const [selectedValue, setSelectedValue] = useState({
     authority: '',
     user_group: '',
@@ -26,14 +25,23 @@ function MemberEdit() {
 
   const [message, setMessage] = useState('');
 
+  /*
+   * HANDLE INPUT
+  */
   const handleInput = (event: any) => {
     setFormValue({ ...formValue, [event.target.name]: event.target.value });
   };
 
+  /*
+   * HANDLE SELECT CHANGE
+  */
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue({ ...selectedValue, [event.target.name]: event.target.value });
   }
 
+  /*
+   * GET DATA USER BY ID
+  */
   const fetchUsersById = async function () {
     const res = await axiosPrivate.get('users/edit/' + id);
     setFormValue(res.data);
@@ -44,6 +52,10 @@ function MemberEdit() {
     fetchUsersById();
   }, []);
 
+
+  /*
+   * HANDLE BUTTON CANCEL
+  */
   const handleCancel = () => {
     fetchUsersById();
     setInitialValue('');
@@ -51,9 +63,12 @@ function MemberEdit() {
     setPasswordConfirm(initialValue);
   };
 
+  /*
+   * HANDLE BUTTON SUBMIT
+  */
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    const validationErrors = isValidUserEdit({ ...formValue }, passwordNew, passwordConfirm);
+    const validationErrors = isValidUserEdit({ ...formValue }, {...selectedValue}, passwordNew, passwordConfirm);
     if (validationErrors === true) {
       const formData = {
         id: id,
@@ -78,10 +93,8 @@ function MemberEdit() {
   }
 
   /*
-   *
    * GET DATA FROM AUTHORITY TABLE
-   *
-   */
+  */
   type FieldAuthority = {
     id: string;
     authority_name: string;
@@ -108,10 +121,8 @@ function MemberEdit() {
   }
 
   /*
-   *
    * GET DATA FROM GROUPS TABLE
-   *
-   */
+  */
   type FieldGroups = {
     id: string;
     group_name: string;

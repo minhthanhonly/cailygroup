@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
-import axios from "../../api/axios";
 import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { isValidUserEdit } from "../../components/Validate";
@@ -12,23 +11,49 @@ export default function UserEdit() {
   const navigate = useNavigate();
   const {id} = useParams();
   const [initialValue, setInitialValue] = useState('');
-  const [formValue, setFormValue] = useState({userid: '', password: '', realname: '', authority: '', user_group: '' });
+  const [formValue, setFormValue] = useState({
+    userid: '',
+    password: '',
+    realname: '',
+    authority: '',
+  });
   const [passwordNew, setPasswordNew] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [selectedValue, setSelectedValue] = useState({
+    user_group: '',
+  });
   const [message, setMessage] = useState('');
-  const handleInput = (e) => {
-		setFormValue({...formValue, [e.target.name]:e.target.value})
+
+  /*
+   * HANDLE INPUT
+  */
+  const handleInput = (event:any) => {
+		setFormValue({...formValue, [event.target.name]:event.target.value})
 	}
 
+  /*
+   * HANDLE SELECT CHANGE
+  */
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedValue({ ...selectedValue, [event.target.name]: event.target.value });
+  }
+
+  /*
+   * GET DATA USER BY ID
+  */
   const fetchUsersById = async function () {
     const res = await axiosPrivate.get('users/edit/' + id);
     setFormValue(res.data);
+    setSelectedValue({...selectedValue, user_group: res.data.user_group})
   };
 
   useEffect(() => {
     fetchUsersById();
   }, []);
 
+  /*
+   * HANDLE BUTTON CANCEL
+  */
   const handleCancel = () => {
     fetchUsersById();
     setInitialValue('');
@@ -36,9 +61,12 @@ export default function UserEdit() {
     setPasswordConfirm(initialValue);
   };
 
-  const handleSubmit = async(e) => {
+  /*
+   * HANDLE BUTTON SUBMIT
+  */
+  const handleSubmit = async(e: { preventDefault: () => void; }) => {
 		e.preventDefault();
-    const validationErrors = isValidUserEdit({ ...formValue }, passwordNew, passwordConfirm);
+    const validationErrors = isValidUserEdit({ ...formValue }, {...selectedValue}, passwordNew, passwordConfirm);
     if (validationErrors === true) {
       const formData = {
         id: id,
@@ -47,7 +75,7 @@ export default function UserEdit() {
         passwordNew:passwordNew,
         realname:formValue.realname,
         authority:formValue.authority,
-        user_group:formValue.user_group
+        user_group:selectedValue.user_group
       }
 
       const res = await axiosPrivate.post("users/update", formData);
@@ -75,9 +103,7 @@ export default function UserEdit() {
 	}
 
   /*
-  *
   * GET DATA FROM AUTHORITY TABLE
-  *
   */
 	type FieldAuthority = {
 		id: string,
@@ -100,9 +126,7 @@ export default function UserEdit() {
 	}
 
   /*
-  *
   * GET DATA FROM GROUPS TABLE
-  *
   */
 	type FieldGroups = {
 		id: string,
@@ -145,7 +169,7 @@ export default function UserEdit() {
                   className="form-input"
                   type="text"
                   name="userid"
-                  value={formValue.userid} onChange={handleInput}
+                  value={formValue.userid} readOnly
                 />
               </div>
               <div className="form-group">
@@ -174,10 +198,10 @@ export default function UserEdit() {
                   />
                 </label>
                 <div className="select__box group">
-                  <select name="user_group" onChange={handleInput}>
+                  <select value={selectedValue.user_group} name="user_group" onChange={handleChange}>
                     <option value="-1">--------------------------- Chọn nhóm ---------------------------</option>
                     {DataGroups.map((value, index) => (
-                      <option value={value.id} key={index} selected={value.id == formValue.user_group}>{value.group_name}</option>
+                      <option value={value.id} key={index}>{value.group_name}</option>
                     ))}
                   </select>
                 </div>
@@ -197,6 +221,7 @@ export default function UserEdit() {
                   type="password"
                   name="password"
                   value={formValue.password}
+                  readOnly
                 />
               </div>
               <div className="form-group">
