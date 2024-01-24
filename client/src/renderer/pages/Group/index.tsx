@@ -7,6 +7,7 @@ import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import {isValidGroupEdit, isValidGroup} from "../../components/Validate";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import MenuDropdown from '../../components/MenuDropdown';
 
 interface GroupProps {
   id: string;
@@ -41,6 +42,7 @@ export const Group = () => {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [selectedGroup, setSelectedGroup] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const fetchMembersByGroup = async($groupid: string) => {
     const groupid = {groupid:$groupid};
@@ -229,6 +231,7 @@ export const Group = () => {
         <CTableHead heads={['STT', 'Tên Nhóm', 'Sửa', 'Xóa']} />
         <CTableBody data={DataTable} path_edit="/group/edit" path_timecard=""/>
       </CTable>
+      <MenuDropdown/>
     </>
   );
 };
