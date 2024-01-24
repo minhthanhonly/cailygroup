@@ -84,7 +84,10 @@ function Members() {
     if (selectedGroup) {
       fetchMembersByGroup(selectedGroup);
       setIsTableUpdated(false);
+
     }
+
+    setCurrentPage(1);
   }, [selectedGroup, isTableUpdated]);
 
   /*
@@ -117,12 +120,16 @@ function Members() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const displayedUsers = listOfUsers.slice(startIndex, endIndex);
-  const handlePageChange = (page: any) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+
   const handleItemsPerPageChange = (value: number) => {
+    console.log('New itemsPerPage:', value);
     setItemsPerPage(value);
-    setCurrentPage(1); // Đặt lại trang hiện tại về 1 khi số lượng mục trên mỗi trang thay đổi
+    setCurrentPage(1);
+
   };
 
   return (
@@ -156,7 +163,7 @@ function Members() {
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
         <tbody>
-          {listOfUsers.map((data, index) => (
+          {displayedUsers.map((data, index) => (
             <tr key={index}>
               <td>
                 <NavLink to={"/users/detail/" + data.userid} className="acount__name">

@@ -8,14 +8,14 @@ type InputQuantityProps = {
 };
 
 export const InputQuantity = (props: InputQuantityProps) => {
-  const [inputValue, setInputValue] = useState('2');
+  const [inputValue, setInputValue] = useState('5');
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value;
 
     // Prevent entering '0'
     if (value === '0' || value === '00') {
-      value = '2';
+      value = '5';
     }
 
     setInputValue(value);
@@ -25,8 +25,8 @@ export const InputQuantity = (props: InputQuantityProps) => {
   const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
     // Reset to '1' when Backspace or Delete key is pressed
     if (event.key === 'Backspace' || event.key === 'Delete') {
-      setInputValue('2');
-      props.onItemsPerPageChange(2);
+      setInputValue('5');
+      props.onItemsPerPageChange(5);
       event.preventDefault();
     }
   };
