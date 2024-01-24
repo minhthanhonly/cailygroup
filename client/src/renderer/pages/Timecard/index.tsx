@@ -98,17 +98,25 @@ export const Timecard = () => {
 
     // Merge cells for the name and date
     worksheet.mergeCells(`A1:G3`);
-    worksheet.getCell(`A1`).value = ` ${realname || ''} \n ${month}/${year}`;
-    worksheet.getCell(`A1`).alignment = {
+    const cellA1 = worksheet.getCell(`A1`);
+    cellA1.value = ` ${realname || ''} \n ${month}/${year}`;
+    cellA1.alignment = {
       horizontal: 'center',
       vertical: 'middle',
     };
-    worksheet.getCell(`A1:G3`).border = {
+    cellA1.border = {
       top: { style: 'thin', color: { argb: 'FF000000' } },
       bottom: { style: 'thin', color: { argb: 'FF000000' } },
       left: { style: 'thin', color: { argb: 'FF000000' } },
       right: { style: 'thin', color: { argb: 'FF000000' } },
     };
+    cellA1.font = {
+      size: 15,
+      bold: true,
+    };
+
+
+
 
     for (let rowIndex = 5; rowIndex <= 8; rowIndex++) {
       const currentRow = worksheet.getRow(rowIndex);
@@ -243,7 +251,10 @@ export const Timecard = () => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'ffdddd' }, // Mã màu tùy chọn, ở đây là màu đỏ
+        fgColor: { argb: '00000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
+      };
+      cell.font = {
+        color: { argb: 'FFFFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
       };
     }
     const lastRowIndex = table.rows.length + 3;
@@ -258,7 +269,10 @@ export const Timecard = () => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'ffdddd' }, // Mã màu tùy chọn, ở đây là màu đỏ
+        fgColor: { argb: '00000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
+      };
+      cell.font = {
+        color: { argb: 'FFFFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
       };
     }
 
