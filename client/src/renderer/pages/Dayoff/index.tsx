@@ -179,7 +179,6 @@ export const Dayoff = () => {
     dayoffId: any,
     event: { preventDefault: () => void } | undefined,
   ) => {
-    console.log(dayoffId);
     if (event) {
       event.preventDefault();
       try {

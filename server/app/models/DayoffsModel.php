@@ -18,10 +18,10 @@
             $result = $conn->query($sql);
             header('Content-Type: application/json');
             if($result) {
-                echo json_encode(['success' => 'Thêm ngày nghỉ mới thành công']);
+                echo json_encode(['errCode' => 0, 'message' => 'Thêm ngày nghỉ thành công']);
                 return;
             } else {
-                echo json_encode(['success' => 'Please check the Dayoffs data!']);
+                echo json_encode(['errCode' => 1, 'message' => 'không thể thêm ngày nghỉ']);
                 return;
             }
             $conn->close();
@@ -50,17 +50,11 @@
                     $row['end_datetime'] = $row['end_datetime'];
                     $data[] = $row;
                 }
-
-                if (!empty($data)) {
-                    http_response_code(200);
-                    echo json_encode($data);
-                } else {
-                    http_response_code(200);
-                    echo json_encode($data = []);
-                }
+                http_response_code(200);
+                echo json_encode($data);
             } else {
                 http_response_code(500);
-                echo json_encode(["error" => "Internal Server Error"]);
+                echo json_encode(['errCode' => 1, 'message' => 'không thể tìm thấy ngày nghỉ của người dùng']);
             }
             $conn->close();
         }
@@ -68,16 +62,12 @@
             global $conn;
             $query = "SELECT * FROM dayoffs WHERE user_id = '$id'";
             $result = $conn->query($query);
-            if ($result) {
-                $dayoffs = array();
-                while ($row = $result->fetch_assoc()) {
-                    $dayoffs[] = $row;
-                }
-                $conn->close();
-                echo json_encode($dayoffs);
-            } else {
-                echo json_encode(array('error' => 'Error in query'));
+            $dayoffs = array();
+            while ($row = $result->fetch_assoc()) {
+                $dayoffs[] = $row;
             }
+            $conn->close();
+            echo json_encode($dayoffs);
         }
         function getDayoffsUser($id){
             global $conn;
@@ -100,16 +90,11 @@
                     $row['end_datetime'] = $row['end_datetime'];
                     $data[] = $row;
                 }
-                if (!empty($data)) {
-                    http_response_code(200);
-                    echo json_encode($data);
-                } else {
-                    http_response_code(200);
-                    echo json_encode(["error" => "No data found with the specified group"]);
-                }
+                http_response_code(200);
+                echo json_encode($data);
             } else {
                 http_response_code(500);
-                echo json_encode(["error" => "Internal Server Error"]);
+                echo json_encode(['errCode' => 1, 'message' => 'không thể tìm thấy ngày nghỉ của người dùng']);
             }
         }
         function deleteDayoffs($id){
@@ -119,14 +104,14 @@
                 $deleteQuery = "DELETE FROM dayoffs WHERE id = $id";
                 if (mysqli_query($conn, $deleteQuery)) {
                     http_response_code(200);
-                    echo json_encode(["message" => "Data deleted successfully"]);
+                echo json_encode(['errCode' => 0]);
                 } else {
                     http_response_code(500);
-                    echo json_encode(["error" => "Failed to delete data"]);
+                echo json_encode(['errCode' => 1, 'message' => 'không thể Xóa ngày nghỉ']);
                 }
             } else {
                 http_response_code(400);
-                echo json_encode(["error" => "Invalid data"]);
+                echo json_encode(['errCode' => 2, 'message' => 'không thể tìm thấy ngày nghỉ của người dùng']);
             }
             $conn->close();
         }
@@ -139,15 +124,15 @@
                 $stmt->bind_param("ii", $status, $id);
                 if ($stmt->execute()) {
                     http_response_code(200);
-                    echo json_encode(["success" => true]);
+                    echo json_encode(['errCode' => 0]);
                 } else {
                     http_response_code(500);
-                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                    echo json_encode(['errCode' => 1, "error" => $stmt->error]);
                 }
                 $stmt->close();
             } else {
                 http_response_code(400);
-                echo json_encode(["success" => false, "error" => "Invalid parameters"]);
+                echo json_encode(['errCode' => 2, 'message' => 'không thể tìm thấy ngày nghỉ của người dùng']);
             }
         }
         function refuseDayoffs($id){
@@ -164,12 +149,12 @@
                     echo json_encode(["success" => true]);
                 } else {
                     http_response_code(500);
-                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                    echo json_encode(['errCode' => 1, "error" => $stmt->error]);
                 }
                 $stmt->close();
             } else {
                 http_response_code(400);
-                echo json_encode(["success" => false, "error" => "Invalid parameters"]);
+                echo json_encode(['errCode' => 2, "message" => "Không thể hủy ngày nghỉ"]);
             }
         }
         function updateDayoffComment($id){
@@ -182,15 +167,15 @@
                 $stmt->bind_param("si", $comment, $id);
                 if ($stmt->execute()) {
                     http_response_code(200);
-                    echo json_encode(["success" => true]);
+                    echo json_encode(['errCode' => 0]);
                 } else {
                     http_response_code(500);
-                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                    echo json_encode(['errCode' => 1, "error" => $stmt->error]);
                 }
                 $stmt->close();
             } else {
                 http_response_code(400);
-                echo json_encode(["success" => false, "error" => "Invalid parameters"]);
+                echo json_encode(['errCode' => 1, "message" => "Không thể cập nhật comment"]);
             }
         }
     }

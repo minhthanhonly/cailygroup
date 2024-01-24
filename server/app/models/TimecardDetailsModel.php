@@ -12,10 +12,10 @@
 
             header('Content-Type: application/json');
             if($result) {
-                echo json_encode(['success' => 'Thêm ngày nghỉ mới thành công']);
+                echo json_encode(['message' => 'Thêm ngày nghỉ mới thành công']);
                 return;
             } else {
-                echo json_encode(['success' => 'Please check the Dayoffs data!']);
+                echo json_encode(['errCode' => 1, "message" => "Không thể thêm mới timecardDetails của người dùng"]);
                 return;
             }
             $conn->close();
@@ -40,7 +40,7 @@
                 echo json_encode(['success' => 'Thêm ngày nghỉ mới thành công']);
                 return;
             } else {
-                echo json_encode(['success' => 'Please check the Dayoffs data!']);
+                echo json_encode(['errCode' => 1, "message" => "Không thể thêm mới timecards"]);
                 return;
             }
             $conn->close();
@@ -64,7 +64,7 @@
                 echo json_encode(["success" => true]);
             } else {
                 http_response_code(500);
-                echo json_encode(["success" => false, "error" => $stmt->error]);
+                echo json_encode(['errCode' => 1, "error" => $stmt->error]);
             }
 
             $stmt->close();
@@ -74,25 +74,20 @@
             $data = json_decode(file_get_contents("php://input"), true);
             $id = isset($data["id"]) ? $data["id"] : null;
             $comment = isset($data["comment"]) ? $data["comment"] : null;
-            // if ($id !== null && $comment !== null) {
-                $sql = "UPDATE timecard_details SET timecard_comment = ? WHERE id_groupwaretimecard = ?";
-                $stmt = $conn->prepare($sql);
-                if (!$stmt) {
-                    throw new Exception("Prepare failed: " . $conn->error);
-                }
-                $stmt->bind_param("si", $comment, $id);
-                if ($stmt->execute()) {
-                    http_response_code(200);
-                    echo json_encode(["success" => true]);
-                } else {
-                    throw new Exception("Execute failed: " . $stmt->error);
-                }
+            $sql = "UPDATE timecard_details SET timecard_comment = ? WHERE id_groupwaretimecard = ?";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param("si", $comment, $id);
+            if ($stmt->execute()) {
+                http_response_code(200);
+                echo json_encode(["success" => true]);
+            } else {
+                throw new Exception("Execute failed: " . $stmt->error);
+            }
 
-                $stmt->close();
-            // } else {
-            //     http_response_code(400);
-            //     echo json_encode(["success" => false, "error" => "Invalid parameters"]);
-            // }
+            $stmt->close();
         }
         function updateAll(){
 			global $conn;

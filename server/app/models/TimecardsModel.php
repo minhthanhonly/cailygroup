@@ -8,21 +8,11 @@
                 INNER JOIN timecards tc ON td.id_groupwaretimecard = tc.id
                 WHERE tc.user_id = $id AND tc.timecard_date = '$todayDate'";
             $result = mysqli_query($conn, $sql);
-
-            if ($result) {
-                if (mysqli_num_rows($result) >= 0) {
-                    $row = mysqli_fetch_assoc($result);
-                    if ($row !== null) {
-                        echo json_encode($row);
-                    } else {
-                        echo json_encode(["result" => "No timecard data found for the given criteria"]);
-                    }
-                } else {
-                    echo json_encode(["result" => "No data found for the given criteria"]);
-                    return;
-                }
+            if (mysqli_num_rows($result) >= 0) {
+                $row = mysqli_fetch_assoc($result);
+                echo json_encode($row);
             } else {
-                echo json_encode(["result" => "Error in query: " . mysqli_error($conn)]);
+                echo json_encode(['errCode' => 1, "message" => "Không tìm thấy timecards của người dùng"]);
                 return;
             }
         }
@@ -34,11 +24,9 @@
                 $json_array["timecarddata"] = array();
 
                 while ($row = mysqli_fetch_array($allTimecards)) {
-                    // Lấy id và timecard_date từ bảng timecards
                     $timecardId = $row['id'];
                     $timecardDate = $row['timecard_date'];
 
-                    // Truy vấn tất cả các trường từ bảng timecard_details
                     $timecardDetailsQuery = "SELECT td.* 
                                             FROM timecard_details td
                                             WHERE td.id_groupwaretimecard = ?";
@@ -49,24 +37,16 @@
                         mysqli_stmt_execute($stmtDetails);
                         $result = mysqli_stmt_get_result($stmtDetails);
 
-                        // Lưu kết quả vào mảng
                         while ($rowDetails = mysqli_fetch_assoc($result)) {
-                            $rowDetails["timecard_date"] = $timecardDate; // Thêm trường timecard_date từ bảng timecards
+                            $rowDetails["timecard_date"] = $timecardDate; 
                             $json_array["timecarddata"][] = $rowDetails;
                         }
                     }
                 }
-
-                // Kiểm tra nếu có dữ liệu trong mảng
-                if (!empty($json_array["timecarddata"])) {
-                    echo json_encode($json_array["timecarddata"]);
-                    return;
-                } else {
-                    echo json_encode(["result" => "No timecard data found for the given criteria"]);
-                    return;
-                }
+                echo json_encode($json_array["timecarddata"]);
+                return;
             } else {
-                echo json_encode(["result" => "Please check the Data"]);
+                echo json_encode(['errCode' => 1, "message" => "Không tìm thấy timecards của người dùng"]);
                 return;
             }
         }
@@ -91,7 +71,7 @@
                 echo json_encode(["message" => "Thêm thành công", "id_timecard" => $newTimecardId]);
                 return;
             } else {
-                echo json_encode(['success' => 'Please check the Timecards data!']);
+                echo json_encode(['errCode' => 1, "message" => "Thêm không thành công"]);
                 return;
             }
             $conn->close();
