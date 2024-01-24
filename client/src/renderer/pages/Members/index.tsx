@@ -18,7 +18,7 @@ function Members() {
   const [empty, setEmpty] = useState(false);
 
 
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   /*
   * LẤY DANH SÁCH THÀNH VIÊN
   */
@@ -124,9 +124,7 @@ function Members() {
     setCurrentPage(page);
   };
 
-
   const handleItemsPerPageChange = (value: number) => {
-    console.log('New itemsPerPage:', value);
     setItemsPerPage(value);
     setCurrentPage(1);
 
@@ -163,23 +161,35 @@ function Members() {
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
         <tbody>
-          {displayedUsers.map((data, index) => (
-            <tr key={index}>
-              <td>
-                <NavLink to={"/users/detail/" + data.userid} className="acount__name">
-                  {data.realname}
-                </NavLink>
-              </td>
-              <td>{data.group_name}</td>
-              <td>{data.authority_name}</td>
-              <td>
-                <ButtonEdit href={"/members/edit/" + data.id} />
-                {(data.realname === "Admin") ? '' : <ButtonDelete onButtonClick={() => openModal(data.id)} />}
-              </td>
+
+          {displayedUsers.length > 0 ? (
+            displayedUsers.map((data, index) => (
+              <tr key={index}>
+                <td>
+                  <NavLink to={"/users/detail/" + data.userid} className="acount__name">
+                    {data.realname}
+                  </NavLink>
+                </td>
+                <td>{data.group_name}</td>
+                <td>{data.authority_name}</td>
+                <td>
+                  <ButtonEdit href={"/members/edit/" + data.id} />
+                  {(data.userid === "admin") ? '' : <ButtonDelete onButtonClick={() => openModal(data.id)} />}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={4}>Không có dữ liệu</td>
             </tr>
-          ))}
+          )}
         </tbody>
-      </CTable><Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} /><Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
+      </CTable>
+
+      {(totalPages !== 1) ? <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} /> : ''}
+
+
+      <Modaldelete isOpen={isModalOpen} onRequestClose={closeModal}>
         <h2>Bạn có chắc chắn muốn xóa không?</h2>
         <div className='wrp-button'>
           <button className='btn btn--green' onClick={() => handleDelete(isDeleteModalid)}>Đồng ý</button>

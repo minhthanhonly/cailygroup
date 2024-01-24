@@ -81,7 +81,11 @@ export const isValidUser = ({...paraUser}) => {
 }
 
 /* ============================= User Edit ==============================* */
-export const isValidUserEdit = ({...paraUser}, password: string, password_confirm: string) => {
+type selectedValue = {
+  authority: string,
+  user_group: string,
+}
+export const isValidUserEdit = ({...paraUser}, {...selectedValue}, password: string, password_confirm: string) => {
   if(isZenSpace(password)) {
     toast.error("Giá trị nhập vào "+ passwordName +" không hợp lệ.");
     return false;
@@ -97,14 +101,16 @@ export const isValidUserEdit = ({...paraUser}, password: string, password_confir
     return false;
   }
 
-  if(!paraUser.user_group || paraUser.user_group == '-1') {
+  if(!selectedValue.user_group || selectedValue.user_group == '-1') {
     toast.error(ERROR['choose'] + userGroupName + "!");
     return false;
   }
 
-  if(!paraUser.authority || paraUser.authority == '-1') {
-    toast.error(ERROR['choose'] + authorityName + "!");
-    return false;
+  if(selectedValue.authority){
+    if(!selectedValue.authority || selectedValue.authority == '-1') {
+      toast.error(ERROR['choose'] + authorityName + "!");
+      return false;
+    }
   }
 
   return true;

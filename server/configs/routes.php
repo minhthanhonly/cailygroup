@@ -18,7 +18,6 @@
     $routes['users/add'] = 'users/add';
     $routes['users/edit/.+-(\d+)'] = 'users/edit/$1';
     $routes['users/update'] = 'users/update';
-    $routes['users/editcomment'] = 'users/editcomment';
     $routes['users/delete'] = 'users/delete';
     $routes['users/groups/.+-(\d+)'] = 'users/groups/$1';
 

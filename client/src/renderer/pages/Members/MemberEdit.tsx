@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Heading2 } from '../../components/Heading';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isValidUserEdit } from '../../components/Validate';
@@ -15,25 +15,47 @@ function MemberEdit() {
     userid: '',
     password: '',
     realname: '',
-    authority: '',
-    user_group: '',
   });
   const [passwordNew, setPasswordNew] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [selectedValue, setSelectedValue] = useState({
+    authority: '',
+    user_group: '',
+  });
+
   const [message, setMessage] = useState('');
-  const handleInput = (e) => {
-    setFormValue({ ...formValue, [e.target.name]: e.target.value });
+
+  /*
+   * HANDLE INPUT
+  */
+  const handleInput = (event: any) => {
+    setFormValue({ ...formValue, [event.target.name]: event.target.value });
   };
 
+  /*
+   * HANDLE SELECT CHANGE
+  */
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedValue({ ...selectedValue, [event.target.name]: event.target.value });
+  }
+
+  /*
+   * GET DATA USER BY ID
+  */
   const fetchUsersById = async function () {
     const res = await axiosPrivate.get('users/edit/' + id);
     setFormValue(res.data);
+    setSelectedValue({...selectedValue, authority: res.data.authority, user_group: res.data.user_group})
   };
 
   useEffect(() => {
     fetchUsersById();
   }, []);
 
+
+  /*
+   * HANDLE BUTTON CANCEL
+  */
   const handleCancel = () => {
     fetchUsersById();
     setInitialValue('');
@@ -41,9 +63,12 @@ function MemberEdit() {
     setPasswordConfirm(initialValue);
   };
 
-  const handleSubmit = async (e) => {
+  /*
+   * HANDLE BUTTON SUBMIT
+  */
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
-    const validationErrors = isValidUserEdit({ ...formValue }, passwordNew, passwordConfirm);
+    const validationErrors = isValidUserEdit({ ...formValue }, {...selectedValue}, passwordNew, passwordConfirm);
     if (validationErrors === true) {
       const formData = {
         id: id,
@@ -51,8 +76,8 @@ function MemberEdit() {
         password: formValue.password,
         passwordNew: passwordNew,
         realname: formValue.realname,
-        authority: formValue.authority,
-        user_group: formValue.user_group,
+        authority: selectedValue.authority,
+        user_group: selectedValue.user_group,
       };
 
       const res = await axiosPrivate.post('users/update', formData);
@@ -61,18 +86,6 @@ function MemberEdit() {
       if (res.data.success) {
         setMessage(res.data.success);
         setTimeout(() => {
-          const isLoggedIn = localStorage.getItem('login');
-          const roles = res2.data.authority_name;
-          const users = {
-            "id": res2.data.id,
-            "userid": res2.data.userid,
-            "realname": res2.data.realname,
-            "roles": res2.data.authority_name,
-            "user_group": res2.data.group_name,
-            "user_group_id": res2.data.user_group,
-          }
-          localStorage.setItem('users', JSON.stringify(users));
-          setAuth({ isLoggedIn, roles, users });
           navigate('/members');
         }, 2000);
       }
@@ -80,10 +93,8 @@ function MemberEdit() {
   }
 
   /*
-   *
    * GET DATA FROM AUTHORITY TABLE
-   *
-   */
+  */
   type FieldAuthority = {
     id: string;
     authority_name: string;
@@ -110,10 +121,8 @@ function MemberEdit() {
   }
 
   /*
-   *
    * GET DATA FROM GROUPS TABLE
-   *
-   */
+  */
   type FieldGroups = {
     id: string;
     group_name: string;
@@ -195,7 +204,7 @@ function MemberEdit() {
                   />
                 </label>
                 <div className="select__box group">
-                  <select name="user_group" onChange={handleInput}>
+                  <select value={selectedValue.user_group} name="user_group" onChange={handleChange}>
                     <option value="-1">
                       --------------------------- Chọn nhóm
                       ---------------------------
@@ -204,7 +213,7 @@ function MemberEdit() {
                       <option
                         value={value.id}
                         key={index}
-                        selected={value.id == formValue.user_group}
+                        // selected={value.id == formValue.user_group}
                       >
                         {value.group_name}
                       </option>
@@ -221,8 +230,8 @@ function MemberEdit() {
                     className="fluid-image"
                   />
                 </label>
-                <div className="select__box group" onChange={handleInput}>
-                  <select name="authority">
+                <div className="select__box group">
+                  <select value={selectedValue.authority} name="authority" onChange={handleChange}>
                     <option value="-1">
                       -------------------- Chọn quyền truy cập
                       --------------------
@@ -231,7 +240,7 @@ function MemberEdit() {
                       <option
                         value={value.id}
                         key={index}
-                        selected={value.id == formValue.authority}
+                        // selected={value.id == formValue.authority}
                       >
                         {value.authority_name}
                       </option>

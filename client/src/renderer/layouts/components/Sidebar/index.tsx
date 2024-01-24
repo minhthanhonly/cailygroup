@@ -72,14 +72,6 @@ export const Sidebar = () => {
               Thẻ giờ
             </NavLink>
           </li>
-          {(isAdmin || isManager) ? <li className="nav-global__item">
-            <NavLink to="/members">
-              <span className="icn">
-                <FontAwesomeIcon icon={faUsers} />
-              </span>
-              Thành viên
-            </NavLink>
-          </li> : ''}
           <li className="nav-global__item">
             <NavLink to="/dayoffs">
               <span className="icn">
@@ -88,6 +80,14 @@ export const Sidebar = () => {
               Nghỉ phép
             </NavLink>
           </li>
+          {(isAdmin || isManager) ? <li className="nav-global__item">
+            <NavLink to="/members">
+              <span className="icn">
+                <FontAwesomeIcon icon={faUsers} />
+              </span>
+              Thành viên
+            </NavLink>
+          </li> : ''}
           {isAdmin && (
             <li className="nav-global__item">
               <NavLink to="/group">
