@@ -124,9 +124,6 @@ function Members() {
     setCurrentPage(1); // Đặt lại trang hiện tại về 1 khi số lượng mục trên mỗi trang thay đổi
   };
 
-
-
-
   return (
     <>
       <Heading2 text="Thông tin thành viên" />

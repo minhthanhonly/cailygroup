@@ -38,28 +38,39 @@ export default function UserEdit() {
 
   const handleSubmit = async(e) => {
 		e.preventDefault();
+    const validationErrors = isValidUserEdit({ ...formValue }, passwordNew, passwordConfirm);
+    if (validationErrors === true) {
+      const formData = {
+        id: id,
+        userid:formValue.userid,
+        password:formValue.password,
+        passwordNew:passwordNew,
+        realname:formValue.realname,
+        authority:formValue.authority,
+        user_group:formValue.user_group
+      }
 
-    const formData = {id: id, userid:formValue.userid, password:formValue.password, passwordNew:passwordNew, realname:formValue.realname, authority:formValue.authority, user_group:formValue.user_group}
-    const res = await axiosPrivate.post("users/update", formData);
-    const res2 = await axiosPrivate.get("users/detail/"+formValue.userid);
+      const res = await axiosPrivate.post("users/update", formData);
+      const res2 = await axiosPrivate.get("users/detail/"+formValue.userid);
 
-    if(res.data.success){
-      setMessage(res.data.success);
-      setTimeout(() => {
-        const isLoggedIn = localStorage.getItem('login');
-        const roles = res2.data.authority_name;
-        const users = {
-          "id": res2.data.id,
-          "userid": res2.data.userid,
-          "realname": res2.data.realname,
-          "roles": res2.data.authority_name,
-          "user_group": res2.data.group_name,
-          "user_group_id": res2.data.user_group,
-        }
-        localStorage.setItem('users', JSON.stringify(users));
-        setAuth({ isLoggedIn, roles, users });
-        navigate('/users/detail/'+formValue.userid);
-      }, 2000);
+      if(res.data.success){
+        setMessage(res.data.success);
+        setTimeout(() => {
+          const isLoggedIn = localStorage.getItem('login');
+          const roles = res2.data.authority_name;
+          const users = {
+            "id": res2.data.id,
+            "userid": res2.data.userid,
+            "realname": res2.data.realname,
+            "roles": res2.data.authority_name,
+            "user_group": res2.data.group_name,
+            "user_group_id": res2.data.user_group,
+          }
+          localStorage.setItem('users', JSON.stringify(users));
+          setAuth({ isLoggedIn, roles, users });
+          navigate('/users/detail/'+formValue.userid);
+        }, 2000);
+      }
     }
 	}
 
