@@ -80,16 +80,14 @@ export const isValidUser = ({...paraUser}) => {
   return true;
 }
 
-export const isValidUserEdit = ({...paraUser}) => {
-  if(!paraUser.userid) {
-    toast.error(ERROR['require'] + useridName + "!");
-    return false;
-  } else if(isZenSpace(paraUser.userid)) {
-    toast.error("Giá trị nhập vào "+ useridName +" không hợp lệ.");
+/* ============================= User Edit ==============================* */
+export const isValidUserEdit = ({...paraUser}, password: string, password_confirm: string) => {
+  if(isZenSpace(password)) {
+    toast.error("Giá trị nhập vào "+ passwordName +" không hợp lệ.");
     return false;
   }
 
-  if(paraUser.password_confirm != paraUser.passwordNew) {
+  if(password != password_confirm) {
     toast.error(passwordConfirmName + " không khớp.");
     return false;
   }
