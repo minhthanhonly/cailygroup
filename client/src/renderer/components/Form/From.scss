@@ -9,7 +9,10 @@
     align-items: center;
     height: 100vh;
     flex-wrap: wrap;
-    text-align: center;
+    background-image: url(../../../../assets/bg.jpg);
+    background-size: cover;
+    background-position: center;
+
     & .form-content {
       width: 54.5rem;
       padding: 4rem 10rem;
@@ -19,6 +22,7 @@
     }
     &--logo {
       width: 100%;
+      text-align: center;
       h3 {
         font-size: 2rem;
         margin: 2rem 0 5rem;
