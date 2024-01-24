@@ -231,7 +231,6 @@ export const Group = () => {
         <CTableHead heads={['STT', 'Tên Nhóm', 'Sửa', 'Xóa']} />
         <CTableBody data={DataTable} path_edit="/group/edit" path_timecard=""/>
       </CTable>
-      <MenuDropdown/>
     </>
   );
 };
