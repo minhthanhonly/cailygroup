@@ -1,10 +1,10 @@
 .list-page{
     display: flex;
     margin-top: 3rem;
-    position: absolute;
+    position: relative;
     justify-content: right;
     bottom: 3.2rem;
-    right: 6.8rem;
+    right: -0.8rem;
     flex-wrap: wrap;
     li{ 
         padding-top: 1rem;
@@ -36,6 +36,7 @@
            }
         }
         &:first-child{
+            margin-right: 0;
             a{
                 width: 7.2rem;
             } 
