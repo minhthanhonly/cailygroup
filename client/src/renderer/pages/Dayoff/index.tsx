@@ -9,6 +9,8 @@ import Modaldelete from '../../components/Modal/Modaldelete';
 import './Dayoffs.scss';
 import { SelectCustomDayoff } from '../../components/Table/SelectCustom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import React from 'react';
+import { format } from 'date-fns';
 
 export const Dayoff = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -30,13 +32,15 @@ export const Dayoff = () => {
     realname: string;
     group_name: string;
     day_number: string;
-    start_datetime: string;
-    end_datetime: string;
+    time_start: string;
+    time_end: string;
     note: string;
     owner: string;
     status: React.ReactNode;
   };
 
+  const [opentimeValue, setOpentimeValue] = useState();
+  const [closetimeValue, setClosetimeValue] = useState();
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [listOfGroupsDayoff, setListOfGroupsDayoff] = useState<
     FieldGroups[] | []
@@ -119,8 +123,31 @@ export const Dayoff = () => {
       realname: `${listOfGroups[i].realname}`,
       group_name: `${listOfGroups[i].group_name}`,
       day_number: `${listOfGroups[i].day_number}`,
-      start_datetime: `${listOfGroups[i].start_datetime}`,
-      end_datetime: `${listOfGroups[i].end_datetime}`,
+      date: (
+        <React.Fragment>
+          {listOfGroups[i].date.split(',').map((date, index, array) => {
+            const numberOfDays = array.length;
+            return (
+              <React.Fragment key={date}>
+                {index === 0
+                  ? numberOfDays === 1
+                    ? `${listOfGroups[i].time_start} đến ${
+                        listOfGroups[i].time_end
+                      } ngày ${date.trim()}`
+                    : `${
+                        listOfGroups[i].time_start
+                      } đến ${closetimeValue} Ngày: ${date.trim()}`
+                  : index === numberOfDays - 1
+                  ? `${opentimeValue} đến ${
+                      listOfGroups[i].time_end
+                    } Ngày: ${date.trim()}`
+                  : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
+                {index !== array.length - 1 && <br />}{' '}
+              </React.Fragment>
+            );
+          })}
+        </React.Fragment>
+      ),
       note: `${listOfGroups[i].note}`,
       status: dynamicAction,
     } as unknown as FieldGroups);
@@ -157,8 +184,8 @@ export const Dayoff = () => {
       realname: `${listOfGroupsDayoff[i].realname}`,
       group_name: `${listOfGroupsDayoff[i].group_name}`,
       day_number: `${listOfGroupsDayoff[i].day_number}`,
-      start_datetime: `${listOfGroupsDayoff[i].start_datetime}`,
-      end_datetime: `${listOfGroupsDayoff[i].end_datetime}`,
+      time_start: `${listOfGroupsDayoff[i].time_start}`,
+      time_end: `${listOfGroupsDayoff[i].time_end}`,
       note: `${listOfGroupsDayoff[i].note}`,
       status: dynamicAction,
     } as unknown as FieldGroups);
@@ -205,6 +232,10 @@ export const Dayoff = () => {
     setShowTable(true);
     setCurrentPage(1);
   };
+  function findConfigValue(configArray: any[], key: string) {
+    const configItem = configArray.find((item) => item.config_key === key);
+    return configItem ? configItem.config_value : null;
+  }
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const handleGroupChange = (groupId: string) => {
     setSelectedGroup(groupId);
@@ -252,7 +283,15 @@ export const Dayoff = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
+  useEffect(() => {
+    const getTimeConfig = async () => {
+      const responseConfig = await axiosPrivate.post('config');
+      const configData = responseConfig.data;
+      setOpentimeValue(findConfigValue(configData, 'opentime'));
+      setClosetimeValue(findConfigValue(configData, 'closetime'));
+    };
+    getTimeConfig();
+  });
   return (
     <>
       <NavDayoff role="admin" />
@@ -270,9 +309,8 @@ export const Dayoff = () => {
           heads={[
             'Họ và tên',
             'nhóm',
-            'Số giờ',
-            'Giờ bắt đầu',
-            'Giờ kết thúc',
+            'Số ngày nghỉ',
+            'Ngày nghỉ phép',
             'Ghi chú',
             'Hủy đăng ký nghỉ ',
           ]}

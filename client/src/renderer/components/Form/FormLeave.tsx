@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
 
 import './From.scss';
 import 'react-datepicker/dist/react-datepicker.css';
 import TimePickerButton from '../Modal/TimeSelect';
-import { urlControl } from '../../routes/server';
 import { format } from 'date-fns';
 import axios from '../../api/axios';
 import Modaldelete from '../Modal/Modaldelete';
 import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import DatePicker from 'react-multi-date-picker';
 
 export const FormLeave: React.FC = () => {
   const axiosPrivate = useAxiosPrivate();
-
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
   const [note, setNote] = useState('');
   const [timeStart, setTimeStart] = useState('07:30');
   const [timeEnd, setTimeEnd] = useState('17:00');
-  const [leaveDate, setLeaveDate] = useState(new Date());
+  const [leaveDate, setLeaveDate] = useState([new Date()]);
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [noteErr, setNoteErr] = useState(false);
@@ -34,21 +30,10 @@ export const FormLeave: React.FC = () => {
   const closeModaldelete = () => {
     setDeleteModalOpen(false);
   };
-  const handleStartDateChange = (date: Date | null) => {
+  const handleLeaveDateChange = (date: any) => {
     if (date !== null) {
-      setStartDate(date);
-    }
-  };
-
-  const handleEndDateChange = (date: Date | null) => {
-    if (date !== null) {
-      setEndDate(date);
-    }
-  };
-
-  const handleLeaveDateChange = (date: Date | null) => {
-    if (date !== null) {
-      setLeaveDate(date);
+      const dateObjects = date.map((dateString: any) => new Date(dateString));
+      setLeaveDate(dateObjects);
     }
   };
   const formatTimeDigit = (digit: number): string => {
@@ -63,28 +48,23 @@ export const FormLeave: React.FC = () => {
     const timeDiff: number = endTime.getTime() - startTime.getTime();
     const hours = Math.floor(timeDiff / (1000 * 60 * 60));
     const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-
     const formattedHours = formatTimeDigit(hours);
     const formattedMinutes = formatTimeDigit(minutes);
-
     return `${formattedHours}:${formattedMinutes}`;
   };
   const compareTime = (time1: string, time2: string): number => {
     const [hour1, minute1] = time1.split(':').map(Number);
     const [hour2, minute2] = time2.split(':').map(Number);
-
     if (hour1 > hour2) {
       return 1;
     } else if (hour1 < hour2) {
       return 2;
     } else {
-      // Nếu giờ bằng nhau, so sánh phút
       if (minute1 > minute2) {
         return 1;
       } else if (minute1 < minute2) {
         return 2;
       } else {
-        // Nếu cả giờ và phút đều bằng nhau
         return 0;
       }
     }
@@ -92,21 +72,15 @@ export const FormLeave: React.FC = () => {
   const addTimes = (time1: string, time2: string): string => {
     const [hour1, minute1] = time1.split(':').map(Number);
     const [hour2, minute2] = time2.split(':').map(Number);
-
     let totalHours = hour1 + hour2;
     let totalMinutes = minute1 + minute2;
-
-    // Xử lý nếu tổng phút vượt quá 60
     if (totalMinutes >= 60) {
       totalHours += Math.floor(totalMinutes / 60);
       totalMinutes %= 60;
     }
-
-    // Định dạng kết quả để đảm bảo có 2 chữ số
     const formattedHours = totalHours < 10 ? `0${totalHours}` : `${totalHours}`;
     const formattedMinutes =
       totalMinutes < 10 ? `0${totalMinutes}` : `${totalMinutes}`;
-
     return `${formattedHours}:${formattedMinutes}`;
   };
   function findConfigValue(configArray: any[], key: string) {
@@ -143,9 +117,7 @@ export const FormLeave: React.FC = () => {
         );
       }
     } else {
-      //bắt đầu sau 7:30
       if (compareTime(timeStart, openlunchValue) != 1) {
-        // bắt đầu trước 11:30
         if (compareTime(timeEnd, openlunchValue) != 1) {
           timeLeave = calculateTime(timeStart, timeEnd);
         } else if (compareTime(timeEnd, closelunchValue) != 1) {
@@ -162,7 +134,6 @@ export const FormLeave: React.FC = () => {
           );
         }
       } else if (compareTime(timeStart, closelunchValue) == 1) {
-        // bắt đầu sau 13:00
         if (compareTime(timeStart, closetimeValue) == 1) {
           timeLeave = '00:00';
         } else if (compareTime(timeEnd, closetimeValue) != 1) {
@@ -180,13 +151,16 @@ export const FormLeave: React.FC = () => {
         }
       }
     }
+    const formattedLeaveDate = leaveDate
+      .map((date) => format(date, 'dd-MM-yyyy'))
+      .join(', ');
     const group_data = {
       user_id: usersID,
-      date: format(leaveDate, 'dd-MM-yyyy').toString(),
+      date: formattedLeaveDate,
       time_start: timeStart,
       time_end: timeEnd,
       note: note,
-      day_number: timeLeave,
+      day_number: leaveDate.length,
       status: 0,
       owner: '',
     };
@@ -222,6 +196,11 @@ export const FormLeave: React.FC = () => {
     return diffDays;
   };
 
+  const [isChecked, setIsChecked] = useState(true);
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   return (
     <div className="form-leave form">
       <div className="form-content">
@@ -236,44 +215,62 @@ export const FormLeave: React.FC = () => {
                   className="fluid-image"
                 />
               </label>
-              <DatePicker
-                selected={leaveDate}
-                onChange={(date) => handleLeaveDateChange(date)}
-              />
-            </div>
-          </div>
-          <div className="col-12">
-            <div className="form-group form-group--small">
-              <label>
-                Giờ bắt đầu
-                <img
-                  src={require('../../../../assets/icon-time.jpg')}
-                  alt=""
-                  className="fluid-image"
+              <div>
+                <DatePicker
+                  onChange={(date) => handleLeaveDateChange(date)}
+                  multiple
+                  value={leaveDate}
+                  format="DD-MM-YYYY"
                 />
-              </label>
-              <TimePickerButton
-                defaultValue={timeStart}
-                onChange={(newValue) => setTimeStart(newValue)}
-              />
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
+                  />
+                  cả ngày
+                </label>
+              </div>
             </div>
           </div>
-          <div className="col-12">
-            <div className="form-group form-group--small">
-              <label>
-                Giờ kết thúc
-                <img
-                  src={require('../../../../assets/icon-time.jpg')}
-                  alt=""
-                  className="fluid-image"
-                />
-              </label>
-              <TimePickerButton
-                defaultValue={timeEnd}
-                onChange={(newValue) => setTimeEnd(newValue)}
-              />
-            </div>
-          </div>
+          {isChecked ? (
+            ''
+          ) : (
+            <>
+              <div className="col-12">
+                <div className="form-group form-group--small">
+                  <label>
+                    Giờ bắt đầu
+                    <img
+                      src={require('../../../../assets/icon-time.jpg')}
+                      alt=""
+                      className="fluid-image"
+                    />
+                  </label>
+                  <TimePickerButton
+                    defaultValue={timeStart}
+                    onChange={(newValue) => setTimeStart(newValue)}
+                  />
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="form-group form-group--small">
+                  <label>
+                    Giờ kết thúc
+                    <img
+                      src={require('../../../../assets/icon-time.jpg')}
+                      alt=""
+                      className="fluid-image"
+                    />
+                  </label>
+                  <TimePickerButton
+                    defaultValue={timeEnd}
+                    onChange={(newValue) => setTimeEnd(newValue)}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           <div className="col-12">
             <div className="form-group">
               <label>
@@ -316,7 +313,13 @@ export const FormLeave: React.FC = () => {
             <tbody>
               <tr>
                 <td>Ngày xin nghỉ</td>
-                <td>{format(leaveDate, 'dd-MM-yyyy').toString()}</td>
+                <td>
+                  {leaveDate.map((date, index) => (
+                    <span key={index}>
+                      {format(date, 'dd-MM-yyyy').toString()} ,
+                    </span>
+                  ))}
+                </td>
               </tr>
               <tr>
                 <td>Giờ bắt đầu</td>
