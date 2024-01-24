@@ -3,9 +3,11 @@ import { Heading2 } from '../../components/Heading';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isValidUserEdit } from '../../components/Validate';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import useAuth from '../../hooks/useAuth';
 
 function MemberEdit() {
   const axiosPrivate = useAxiosPrivate();
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams();
   const [initialValue, setInitialValue] = useState('');
@@ -41,7 +43,8 @@ function MemberEdit() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // const validationErrors = isValidUserEdit({ ...formValue });
+    const validationErrors = isValidUserEdit({ ...formValue }, passwordNew, passwordConfirm);
+    if (validationErrors === true) {
       const formData = {
         id: id,
         userid: formValue.userid,
@@ -53,14 +56,28 @@ function MemberEdit() {
       };
 
       const res = await axiosPrivate.post('users/update', formData);
+      const res2 = await axiosPrivate.get("users/detail/"+formValue.userid);
 
       if (res.data.success) {
         setMessage(res.data.success);
         setTimeout(() => {
+          const isLoggedIn = localStorage.getItem('login');
+          const roles = res2.data.authority_name;
+          const users = {
+            "id": res2.data.id,
+            "userid": res2.data.userid,
+            "realname": res2.data.realname,
+            "roles": res2.data.authority_name,
+            "user_group": res2.data.group_name,
+            "user_group_id": res2.data.user_group,
+          }
+          localStorage.setItem('users', JSON.stringify(users));
+          setAuth({ isLoggedIn, roles, users });
           navigate('/members');
         }, 2000);
       }
     }
+  }
 
   /*
    *
