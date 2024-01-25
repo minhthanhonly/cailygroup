@@ -1069,17 +1069,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                               </li>
                             ) : null}
                           </>
-                        ) : (
-                          <li className="list-menu__item">
-                            <span className="btn btn--red btn--green btn--small icon icon--edit">
-                              <img
-                                src={require('../../../../../assets/check.png')}
-                                alt="edit"
-                                className="fluid-image"
-                              />
-                            </span>
-                          </li>
-                        )
+                        ) : null
                       ) : null}
                       {isHoliday(day).isHoliday ||
                       isDayoff(day).isDayoff ? null : timecardOpen.some(
