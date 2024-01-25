@@ -7,7 +7,6 @@ import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import {isValidGroupEdit, isValidGroup} from "../../components/Validate";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import MenuDropdown from '../../components/MenuDropdown';
 
 interface GroupProps {
   id: string;
@@ -39,21 +38,7 @@ export const Group = () => {
   const [modalGroupNameid, setModalGroupNameId] = useState('');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleteModalid, setDeleteModalId] = useState('');
-  const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [selectedGroup, setSelectedGroup] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
-  const fetchMembersByGroup = async($groupid: string) => {
-    const groupid = {groupid:$groupid};
-    const res = await axiosPrivate.get("users/groups/"+$groupid);
-    if(res.data.length > 0) {
-      setListOfUsers(res.data);
-      setIsDisabled(true);
-    } else {
-      setIsDisabled(false);
-    }
-  };
+  const [checkGroup, setCheckGroup] = useState(false);
 
   useEffect(() => {
     axiosPrivate.get('groups/').then((response) => {
@@ -151,32 +136,19 @@ export const Group = () => {
             <img src={require('../../../../assets/icndelete.png')} alt="edit" className="fluid-image"/>
         </p>
       </button>
-      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
-        <h2>{isDisabled ? 'Bạn không thể xóa vì nhóm có thành viên đang hoạt động' : 'Bạn có chắc chắn muốn xóa không?'}</h2>
-        <div className='wrp-button'>
-        {!isDisabled &&
-         <button className='btn btn--green'  onClick={(event) => handleDelete(isDeleteModalid, event)} disabled={isDisabled}>Đồng ý</button>
-        }
-          <button className='btn btn--orange' onClick={closeModaldelete}>Quay lại</button>
-        </div>
-      </Modaldelete>
     </>
   );
 
-  const [minitialId, setMInitialId] = useState('');
-
-  const openModaldelete = (initialId: string) => {
-    setMInitialId(initialId);
-    setDeleteModalId(initialId);
+  const openModaldelete = async(groupid: string) => {
+    const res = await axiosPrivate.get("users/groups/"+groupid);
+    if(res.data.length > 0) {
+      setCheckGroup(true)
+    }
+    else{
+      setCheckGroup(false);
+    }
     setDeleteModalOpen(true);
   };
-
-  useEffect(() => {
-    if(isDeleteModalOpen  == true) {
-      fetchMembersByGroup(minitialId);
-    }
-  });
-
   const closeModaldelete = () => {
     setDeleteModalOpen(false);
   };
@@ -231,6 +203,15 @@ export const Group = () => {
         <CTableHead heads={['STT', 'Tên Nhóm', 'Sửa', 'Xóa']} />
         <CTableBody data={DataTable} path_edit="/group/edit" path_timecard=""/>
       </CTable>
+
+      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        {checkGroup?<h2>Bạn không thể xóa vì nhóm có thành viên đang hoạt động</h2>:<h2>Bạn có chắc chắn muốn xóa không?</h2>}
+        <div className='wrp-button'>
+        {!checkGroup ? <button className='btn btn--green'  onClick={(event) => handleDelete(isDeleteModalid, event)}>Đồng ý</button> : ''
+        }
+          <button className='btn btn--orange' onClick={closeModaldelete}>Quay lại</button>
+        </div>
+      </Modaldelete>
     </>
   );
 };

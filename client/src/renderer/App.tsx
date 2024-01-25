@@ -30,8 +30,8 @@ export default function App() {
           <Route path="/" element={<FluidLayout />}>
             <Route index element={<Login />} />
           </Route>
-          <Route path="/" element={<DefaultLayout />}>
-            <Route element={<RequireAuth />}>
+          <Route element={<RequireAuth />}>
+            <Route path="/" element={<DefaultLayout />}>
               <Route path="dashboard" element={<Home />} />
               <Route path="timecards" element={<Timecard />} />
               <Route path="timecards/add" element={<Timecard />} />
