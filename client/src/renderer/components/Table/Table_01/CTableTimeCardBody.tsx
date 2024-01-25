@@ -500,7 +500,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       let $id = usersID;
       const response = await axiosPrivate.get('dayoffs/getalluser/' + usersID);
       setDayoffs(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error('Error fetching dayoffs:', error);
     }
@@ -1062,7 +1061,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                   onClick={(event) =>
                                     updateDayoffs(isDayoff(day).id)
                                   }
-                                  className="btn--blue ml5"
+                                  className="btn--blue"
                                 >
                                   Duyệt nghỉ phép
                                 </a>
