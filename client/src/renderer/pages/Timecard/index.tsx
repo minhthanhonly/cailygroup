@@ -115,9 +115,6 @@ export const Timecard = () => {
       bold: true,
     };
 
-
-
-
     for (let rowIndex = 5; rowIndex <= 8; rowIndex++) {
       const currentRow = worksheet.getRow(rowIndex);
       currentRow.height = 0.5; // Đặt chiều cao mong muốn (đơn vị là pixels)
@@ -135,7 +132,10 @@ export const Timecard = () => {
         const cell = worksheet.getCell(
           `${String.fromCharCode(64 + c)}${startRow + r - 1}`,
         );
-        const cellContent = table.rows[r - 1].cells[c - 1].textContent;
+
+        // Ensure that cellContent is not null or undefined
+        const cellContent = table.rows[r - 1].cells[c - 1]?.textContent || '';
+
         const currentDate = new Date(
           numericSelectedYear,
           numericSelectedMonth - 1,
@@ -143,93 +143,57 @@ export const Timecard = () => {
         );
 
         const dayOfWeek = currentDate.getDay();
-        const isLastRow = r === table.rows.length;
-        // Chuyển đổi selectedYear và selectedMonth sang kiểu số
-        switch (dayOfWeek) {
-          case 1: // Thứ 2
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
-              currentCell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
-              };
-            }
-            break;
-          case 2: // Thứ 3
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
-              currentCell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
-              };
-            }
-            break;
-          case 3: // Thứ 4
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
-              currentCell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
-              };
-            }
-            break;
-          case 4: // Thứ 5
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
-              currentCell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
-              };
-            }
-            break;
-          case 5: // Thứ 5
-            for (
-              let colIndex = 1;
-              colIndex <= table.rows[r - 1].cells.length;
-              colIndex++
-            ) {
-              const currentCell = worksheet.getCell(
-                `${String.fromCharCode(64 + colIndex)}${startRow + r - 1}`,
-              );
-              currentCell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: 'e4eee7' }, // Màu xám nhạt cho Thứ 7
-              };
-            }
-            break;
 
-          default:
-            break;
+        // Set default fill color for each cell
+        let fillColor = { argb: 'FFFFFF' }; // White color
+
+        // Check if the current column is within B to G (2 to 7)
+        if (c >= 2 && c <= 7) {
+          fillColor = { argb: 'FFFFFF' }; // Set color to white for columns B to G
+        } else {
+          switch (dayOfWeek) {
+            case 0: // Chủ Nhật
+
+              fillColor = { argb: 'F4BFD4' };
+
+              // for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
+              //   console.log(" a", colIndex);
+
+              //   if (r + 3 === c) {
+              //     fillColor = { argb: 'F4BFD4' }; // Set your desired color
+              //   }
+              // }
+              // console.log("Chủ Nhật nằm ở hàng:", r + 3, "cột:", c);
+
+              break;
+            case 6: // Thứ 6
+              fillColor = { argb: 'e4eee7' }; // Màu xám nhạt cho các ngày từ Thứ 2 đến Thứ 6
+              break;
+
+            default:
+              break;
+          }
         }
+
+        // Apply fill color to the cell
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: fillColor,
+        };
+
+        // Check if the cell content is empty
+        if (!cellContent.trim()) {
+          fillColor = { argb: 'FFFFFF' }; // Set color for empty cells
+        }
+
+        // Apply fill color to the cell again for empty cells
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: fillColor,
+        };
+
         cell.value = cellContent;
         cell.border = {
           top: { style: 'thin', color: { argb: 'FF000000' } },
@@ -259,21 +223,37 @@ export const Timecard = () => {
     }
     const lastRowIndex = table.rows.length + 3;
     const rowIndex = lastRowIndex;
-    const startColumn = 1; // Cột E
+    const startColumn = 1; // Cột A
     const endColumn = 7; // Cột F
+    const custom_start = 4; // Cột E
+    const custom_end = 5; // Cột F
 
     for (let col = startColumn; col <= endColumn; col++) {
       const cell = worksheet.getCell(
         `${String.fromCharCode(64 + col)}${rowIndex}`,
       );
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: '00000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
-      };
-      cell.font = {
-        color: { argb: 'FFFFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
-      };
+      if (col === custom_start || col === custom_end) {
+        console.log("aaa");
+
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
+        };
+        cell.font = {
+          color: { argb: 'FF000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
+        };
+      }
+      else {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: '00000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
+        };
+        cell.font = {
+          color: { argb: 'FFFFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
+        };
+      }
     }
 
     const lastColumnIndex = table.rows[0].cells.length;
