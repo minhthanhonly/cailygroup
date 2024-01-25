@@ -165,10 +165,18 @@ export const FormLeave: React.FC = () => {
         calculateTime(opentimeValue, openlunchValue),
         calculateTime(closelunchValue, closetimeValue),
       );
-      if (compareTime(timeLeave, timeWork) == 0) {
-        dayLeave = leaveDate.length + ' ngày';
+      if (leaveDate.length > 1) {
+        if (compareTime(timeLeave, timeWork) == 0) {
+          dayLeave = leaveDate.length + ' ngày';
+        } else {
+          dayLeave = leaveDate.length - 1 + ' ngày ' + timeLeave + ' giờ';
+        }
       } else {
-        dayLeave = leaveDate.length - 1 + ' ngày ' + timeLeave + ' giờ';
+        if (compareTime(timeLeave, timeWork) == 0) {
+          dayLeave = leaveDate.length + ' ngày';
+        } else {
+          dayLeave = timeLeave + ' giờ';
+        }
       }
     }
     const formattedLeaveDate = leaveDate

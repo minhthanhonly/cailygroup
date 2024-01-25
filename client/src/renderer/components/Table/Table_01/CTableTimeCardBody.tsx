@@ -13,6 +13,7 @@ import { UserRole } from '../../../components/UserRole';
 import Modaldelete from '../../Modal/Modaldelete';
 import { vi } from 'date-fns/locale';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import MenuDropdown from '../../MenuDropdown';
 
 //sever
 type Holiday = {
@@ -62,12 +63,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const propsID = Props.userID;
   const [admin, setAdmin] = useState(false);
   const [admins, setAdmins] = useState(false);
-  const [menu, setMenu] = useState(false);
-  // const { auth } = useAuth();
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isOpenModal, setOpenModal] = useState(false); //a
+  const [isOpenModal, setOpenModal] = useState(false);
   const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(false);
   const [commentText, setCommentText] = useState('');
 
@@ -482,12 +481,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     day: Date,
   ): { isHoliday: boolean; id: number; name: string; days: string } => {
     const formattedDay = format(day, 'dd-MM-yyyy');
-
     const foundHoliday = holidays?.find((holiday) => {
       const holidayDays = holiday.days.split(', ');
       return holidayDays.includes(formattedDay);
     });
-
     return foundHoliday
       ? {
           isHoliday: true,
@@ -497,36 +494,43 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         }
       : { isHoliday: false, id: 0, name: '', days: '' };
   };
-
-  //get dayoffs for user
-
   const [dayoffs, setDayoffs] = useState<Dayoff[] | undefined>();
   const fetchDayoffs = async () => {
     try {
       let $id = usersID;
       const response = await axiosPrivate.get('dayoffs/getalluser/' + usersID);
       setDayoffs(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error('Error fetching dayoffs:', error);
     }
   };
   const isDayoff = (
     day: Date,
-  ): { isDayoff: boolean; id: number; note: string; status: number } => {
+  ): {
+    isDayoff: boolean;
+    id: number;
+    note: string;
+    status: number;
+    date: string;
+  } => {
     const formattedDay = format(day, 'dd-MM-yyyy');
-
     const foundDayoff = dayoffs?.find((dayoff) => {
-      return dayoff.date === formattedDay;
+      const dayoffDay = dayoff.date.split(', ');
+      return dayoffDay.includes(formattedDay);
     });
-
+    // const foundDayoff = dayoffs?.find((dayoff) => {
+    //   return dayoff.date === formattedDay;
+    // });
     return foundDayoff
       ? {
           isDayoff: true,
           id: foundDayoff.id,
           note: foundDayoff.note,
           status: foundDayoff.status,
+          date: foundDayoff.date,
         }
-      : { isDayoff: false, id: 0, note: '', status: 0 };
+      : { isDayoff: false, id: 0, note: '', status: 0, date: '' };
   };
   const updateDayoffs = async (id: number) => {
     try {
@@ -706,8 +710,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     }, 400);
     closeModaldelete();
   };
-  const openMenu = () => {
-    setMenu(true);
+  const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
+
+  const openMenu = (index: number) => {
+    setOpenMenuIndex(openMenuIndex === index ? null : index);
+  };
+  const closeMenu = () => {
+    setOpenMenuIndex(0);
   };
   const [isload, setIsLoad] = useState(false);
   useEffect(() => {
@@ -930,25 +939,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 {isHoliday(day).isHoliday ? (
                   isHoliday(day).name
                 ) : isDayoff(day).isDayoff ? (
-                  <>
-                    {isDayoff(day).note}
-                    {isDayoff(day).status ? (
-                      <a
-                        onClick={(event) => {
-                          openModal(isDayoff(day).id, isDayoff(day).note, true);
-                        }}
-                        className="btn btn--green btn--small icon icon--edit"
-                      >
-                        <img
-                          src={require('../../../../../assets/icnedit.png')}
-                          alt="edit"
-                          className="fluid-image"
-                        />
-                      </a>
-                    ) : (
-                      ''
-                    )}
-                  </>
+                  <>{isDayoff(day).note}</>
                 ) : (
                   <>
                     {timecardOpen.some(
@@ -962,36 +953,200 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                               item.timecard_date === format(day, 'dd-MM-yyyy'),
                           )
                           .map((item, index) => (
-                            <div key={index}>
-                              {item.timecard_comment}
-                              <a
-                                onClick={(event) => {
-                                  openModal(
-                                    item.id_groupwaretimecard,
-                                    item.timecard_comment,
-                                    false,
-                                  );
-                                }}
-                                className="btn btn--green btn--small icon icon--edit"
-                              >
-                                <img
-                                  src={require('../../../../../assets/icnedit.png')}
-                                  alt="edit"
-                                  className="fluid-image"
-                                />
-                              </a>
-                            </div>
+                            <div key={index}>{item.timecard_comment}</div>
                           ))}
                       </>
                     ) : null}
                   </>
                 )}
               </td>
-              <td>
-                <a onClick={openMenu}>[...]</a>
-                {/* {menu ? (
-                  ''
-                ) : isHoliday(day).isHoliday ? null : isDayoff(day).isDayoff ? (
+              <td className="box-menu">
+                <a
+                  className={
+                    openMenuIndex === rowIndex
+                      ? 'color-red box-menu__dropdown'
+                      : 'box-menu__dropdown'
+                  }
+                  onClick={() => openMenu(rowIndex)}
+                >
+                  [...]
+                </a>
+
+                {openMenuIndex === rowIndex && (
+                  <>
+                    <ul className="list-menu">
+                      {/* <a
+                          className="btn--green"
+                          onClick={(event) =>{
+                            isHoliday(day).isHoliday
+                              ? null
+                              : isDayoff(day).isDayoff ? openModal(
+                                  isDayoff(day).id,
+                                  isDayoff(day).note,
+                                  true,
+                                ) : 
+                          }}
+                        >
+                          Sửa giờ
+                        </a> */}
+                      {isHoliday(day).isHoliday ? null : isDayoff(day)
+                          .isDayoff ? (
+                        isDayoff(day).status ? (
+                          <li className="list-menu__item ">
+                            <a
+                              onClick={(event) => {
+                                openModal(
+                                  isDayoff(day).id,
+                                  isDayoff(day).note,
+                                  true,
+                                );
+                              }}
+                              className="btn--green"
+                            >
+                              Sửa note ngày nghỉ
+                            </a>
+                          </li>
+                        ) : (
+                          ''
+                        )
+                      ) : (
+                        <>
+                          {timecardOpen.some(
+                            (item) =>
+                              item.timecard_date === format(day, 'dd-MM-yyyy'),
+                          ) ? (
+                            <>
+                              {timecardOpen
+                                .filter(
+                                  (item) =>
+                                    item.timecard_date ===
+                                    format(day, 'dd-MM-yyyy'),
+                                )
+                                .map((item, index) => (
+                                  <li className="list-menu__item " key={index}>
+                                    <a
+                                      onClick={(event) => {
+                                        openModal(
+                                          item.id_groupwaretimecard,
+                                          item.timecard_comment,
+                                          false,
+                                        );
+                                      }}
+                                      className="btn--green"
+                                    >
+                                      Sửa ghi chú
+                                    </a>
+                                  </li>
+                                ))}
+                            </>
+                          ) : null}
+                        </>
+                      )}
+                      {isHoliday(day).isHoliday ? null : isDayoff(day)
+                          .isDayoff ? (
+                        isDayoff(day).status == 0 ? (
+                          <>
+                            <li className="list-menu__item">
+                              <a
+                                onClick={(event) =>
+                                  deleteDayoffs(isDayoff(day).id)
+                                }
+                                className="btn--red"
+                              >
+                                Hủy nghỉ phép
+                              </a>
+                            </li>
+                            {admin ? (
+                              <li className="list-menu__item">
+                                <a
+                                  onClick={(event) =>
+                                    updateDayoffs(isDayoff(day).id)
+                                  }
+                                  className="btn--blue ml5"
+                                >
+                                  Duyệt nghỉ phép
+                                </a>
+                              </li>
+                            ) : null}
+                          </>
+                        ) : (
+                          <li className="list-menu__item">
+                            <span className="btn btn--red btn--green btn--small icon icon--edit">
+                              <img
+                                src={require('../../../../../assets/check.png')}
+                                alt="edit"
+                                className="fluid-image"
+                              />
+                            </span>
+                          </li>
+                        )
+                      ) : null}
+                      {isHoliday(day).isHoliday ||
+                      isDayoff(day).isDayoff ? null : timecardOpen.some(
+                          (item) =>
+                            item.timecard_date === format(day, 'dd-MM-yyyy'),
+                        ) ? (
+                        <>
+                          {timecardOpen
+                            .filter(
+                              (item) =>
+                                item.timecard_date ===
+                                format(day, 'dd-MM-yyyy'),
+                            )
+                            .map((item, index) =>
+                              admins ? (
+                                <li key={index} className="list-menu__item">
+                                  {item.timecard_open !== null &&
+                                  item.timecard_open !== '' ? (
+                                    <a
+                                      className="btn--yellow"
+                                      onClick={(event) => {
+                                        openModaldelete(
+                                          item.id,
+                                          item.timecard_date,
+                                          item.timecard_open,
+                                          item.timecard_close,
+                                          item.timecard_comment,
+                                          false,
+                                          '',
+                                        );
+                                      }}
+                                    >
+                                      Sửa giờ
+                                    </a>
+                                  ) : null}
+                                </li>
+                              ) : null,
+                            )}
+                        </>
+                      ) : admins ? (
+                        <li className="list-menu__item">
+                          <a
+                            className="btn--yellow"
+                            onClick={(event) => {
+                              openModaldelete(
+                                0,
+                                '',
+                                '',
+                                '',
+                                '',
+                                true,
+                                format(day, 'dd-MM-yyyy'),
+                              );
+                            }}
+                          >
+                            Sửa giờ
+                          </a>
+                        </li>
+                      ) : null}
+                      <li className="list-menu__item">
+                        <a className="btn--green">Thông tin chi tiết</a>
+                      </li>
+                    </ul>
+                    <div className="box-menu--bg" onClick={closeMenu}></div>
+                  </>
+                )}
+                {/* {isHoliday(day).isHoliday ? null : isDayoff(day).isDayoff ? (
                   isDayoff(day).status == 0 ? (
                     <>
                       <span

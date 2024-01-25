@@ -101,3 +101,68 @@
 .bg-dayoffs {
   background-color: #ccc;
 }
+// box-menu
+
+.box-menu {
+  position: relative;
+  &--bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+  }
+  .list-menu {
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10rem;
+    box-shadow: 0 0 3rem rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    background-color: #fff;
+    box-sizing: border-box;
+    &:before {
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      content: '';
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      border-left: 15px solid #fff;
+    }
+    &__item {
+      display: flex;
+      flex-wrap: nowrap;
+      & + .list-menu__item {
+        margin-top: 1rem;
+      }
+      a {
+        width: 16rem;
+        padding: 1rem 1rem;
+        box-sizing: border-box;
+        font-size: 1.6rem;
+        color: var(--white);
+        display: block;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+  &__dropdown {
+    position: relative;
+    cursor: pointer;
+    z-index: 1;
+    &:hover,
+    &.color-red {
+      color: red;
+    }
+  }
+}
