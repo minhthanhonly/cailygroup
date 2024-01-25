@@ -7,22 +7,27 @@ import { useCallback, useEffect, useState } from 'react';
 import axios from '../../api/axios';
 import { SelectCustom } from '../../components/Table/SelectCustom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import React from 'react';
 
 export const DayoffApply = () => {
   const axiosPrivate = useAxiosPrivate();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   type FieldGroups = {
     id: any;
+    date: string;
     group_name: string;
     realname: string;
     day_number: string;
-    start_datetime: string;
-    end_datetime: string;
+    time_start: string;
+    time_end: string;
     note: string;
+    owner: string;
     yes: React.ReactNode;
     no: React.ReactNode;
     status: number;
   };
+  const [opentimeValue, setOpentimeValue] = useState();
+  const [closetimeValue, setClosetimeValue] = useState();
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const handleGroupChange = (groupId: string) => {
@@ -32,25 +37,33 @@ export const DayoffApply = () => {
 
   let DataTable: FieldGroups[] = [];
   listOfGroups.sort((a, b) => {
-    const groupNameComparison = (a as any).group_name.localeCompare(
-      (b as any).group_name,
-    );
+    const dateA = new Date(
+      (a as any).date.split(',')[0].trim().split('-').reverse().join('-'),
+    ).getTime();
+    const dateB = new Date(
+      (b as any).date.split(',')[0].trim().split('-').reverse().join('-'),
+    ).getTime();
 
-    if (groupNameComparison !== 0) {
-      // Nếu group_name khác nhau, sắp xếp theo group_name
-      return groupNameComparison;
-    } else {
-      // Nếu group_name giống nhau, sắp xếp theo date
-      const dateA = new Date(
-        (a as any).date.split('-').reverse().join('-'),
-      ).getTime();
-      const dateB = new Date(
-        (b as any).date.split('-').reverse().join('-'),
-      ).getTime();
-
+    if (dateA !== dateB) {
       return dateA - dateB;
+    } else {
+      const timeStartA = parseTime((a as any).time_start);
+      const timeStartB = parseTime((b as any).time_start);
+
+      if (timeStartA !== timeStartB) {
+        return timeStartA - timeStartB;
+      } else {
+        const groupNameComparison = (a as any).group_name.localeCompare(
+          (b as any).group_name,
+        );
+        return groupNameComparison;
+      }
     }
   });
+  function parseTime(timeString: string): number {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
 
   for (let i = 0; i < listOfGroups.length; i++) {
     let dynamicYes = (
@@ -83,8 +96,31 @@ export const DayoffApply = () => {
         realname: `${listOfGroups[i].realname}`,
         group_name: `${listOfGroups[i].group_name}`,
         day_number: `${listOfGroups[i].day_number}`,
-        start_datetime: `${listOfGroups[i].start_datetime}`,
-        end_datetime: `${listOfGroups[i].end_datetime}`,
+        date: (
+          <React.Fragment>
+            {listOfGroups[i].date.split(',').map((date, index, array) => {
+              const numberOfDays = array.length;
+              return (
+                <React.Fragment key={date}>
+                  {index === 0
+                    ? numberOfDays === 1
+                      ? `${listOfGroups[i].time_start} đến ${
+                          listOfGroups[i].time_end
+                        } ngày ${date.trim()}`
+                      : `${
+                          listOfGroups[i].time_start
+                        } đến ${closetimeValue} Ngày: ${date.trim()}`
+                    : index === numberOfDays - 1
+                    ? `${opentimeValue} đến ${
+                        listOfGroups[i].time_end
+                      } Ngày: ${date.trim()}`
+                    : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
+                  {index !== array.length - 1 && <br />}{' '}
+                </React.Fragment>
+              );
+            })}
+          </React.Fragment>
+        ),
         note: `${listOfGroups[i].note}`,
         yes: dynamicYes,
         no: dynamicNo,
@@ -173,6 +209,19 @@ export const DayoffApply = () => {
       }
     }
   };
+  function findConfigValue(configArray: any[], key: string) {
+    const configItem = configArray.find((item) => item.config_key === key);
+    return configItem ? configItem.config_value : null;
+  }
+  useEffect(() => {
+    const getTimeConfig = async () => {
+      const responseConfig = await axiosPrivate.post('config');
+      const configData = responseConfig.data;
+      setOpentimeValue(findConfigValue(configData, 'opentime'));
+      setClosetimeValue(findConfigValue(configData, 'closetime'));
+    };
+    getTimeConfig();
+  });
   return (
     <>
       <NavDayoff role="admin" />
@@ -184,9 +233,8 @@ export const DayoffApply = () => {
           heads={[
             'Họ Và Tên',
             'nhóm',
-            'Số giờ',
-            'Ngày Bắt Đầu',
-            'Ngày Kết Thúc',
+            'Số ngày nghỉ',
+            'Ngày nghỉ phép',
             'Ghi Chú',
             'Đồng Ý',
             'Từ Chối',

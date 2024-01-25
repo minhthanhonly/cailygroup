@@ -19,6 +19,21 @@ export const FormLeave: React.FC = () => {
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [noteErr, setNoteErr] = useState(false);
+
+  const [isChecked, setIsChecked] = useState(true);
+  const [opentimeValue, setOpentimeValue] = useState<string | undefined>(
+    undefined,
+  );
+
+  const [closetimeValue, setClosetimeValue] = useState<string | undefined>(
+    undefined,
+  );
+  const [openlunchValue, setOpenlunchValue] = useState<string | undefined>(
+    undefined,
+  );
+  const [closelunchValue, setCloselunchValue] = useState<string | undefined>(
+    undefined,
+  );
   const navigate = useNavigate();
   useEffect(() => {
     setUsersID(users.id);
@@ -89,66 +104,71 @@ export const FormLeave: React.FC = () => {
   }
   const handleConfirmClick = async () => {
     let timeLeave = '';
-    const responseConfig = await axiosPrivate.post('config');
-    const configData = responseConfig.data;
-    const opentimeValue = findConfigValue(configData, 'opentime');
-    const closetimeValue = findConfigValue(configData, 'closetime');
-    const openlunchValue = findConfigValue(configData, 'openlunch');
-    const closelunchValue = findConfigValue(configData, 'closelunch');
-    if (compareTime(timeStart, timeEnd) == 0) {
-      timeLeave = '00:00';
-    } else if (compareTime(timeStart, opentimeValue) != 1) {
-      // bắt đầu trước 7:30
-      if (compareTime(timeEnd, opentimeValue) != 1) {
+    let dayLeave = '';
+    if (opentimeValue && openlunchValue && closelunchValue && closetimeValue) {
+      if (compareTime(timeStart, timeEnd) == 0) {
         timeLeave = '00:00';
-      } else if (compareTime(timeEnd, openlunchValue) != 1) {
-        timeLeave = calculateTime(opentimeValue, timeEnd);
-      } else if (compareTime(timeEnd, closelunchValue) != 1) {
-        timeLeave = calculateTime(opentimeValue, openlunchValue);
-      } else if (compareTime(timeEnd, closetimeValue) != 1) {
-        timeLeave = addTimes(
-          calculateTime(opentimeValue, openlunchValue),
-          calculateTime(closelunchValue, timeEnd),
-        );
-      } else {
-        timeLeave = addTimes(
-          calculateTime(opentimeValue, openlunchValue),
-          calculateTime(closelunchValue, closetimeValue),
-        );
-      }
-    } else {
-      if (compareTime(timeStart, openlunchValue) != 1) {
-        if (compareTime(timeEnd, openlunchValue) != 1) {
-          timeLeave = calculateTime(timeStart, timeEnd);
+      } else if (compareTime(timeStart, opentimeValue) != 1) {
+        if (compareTime(timeEnd, opentimeValue) != 1) {
+          timeLeave = '00:00';
+        } else if (compareTime(timeEnd, openlunchValue) != 1) {
+          timeLeave = calculateTime(opentimeValue, timeEnd);
         } else if (compareTime(timeEnd, closelunchValue) != 1) {
-          timeLeave = calculateTime(timeStart, openlunchValue);
+          timeLeave = calculateTime(opentimeValue, openlunchValue);
         } else if (compareTime(timeEnd, closetimeValue) != 1) {
           timeLeave = addTimes(
-            calculateTime(timeStart, openlunchValue),
+            calculateTime(opentimeValue, openlunchValue),
             calculateTime(closelunchValue, timeEnd),
           );
         } else {
           timeLeave = addTimes(
-            calculateTime(timeStart, openlunchValue),
+            calculateTime(opentimeValue, openlunchValue),
             calculateTime(closelunchValue, closetimeValue),
           );
         }
-      } else if (compareTime(timeStart, closelunchValue) == 1) {
-        if (compareTime(timeStart, closetimeValue) == 1) {
-          timeLeave = '00:00';
-        } else if (compareTime(timeEnd, closetimeValue) != 1) {
-          timeLeave = calculateTime(timeStart, timeEnd);
-        } else {
-          timeLeave = calculateTime(timeStart, closetimeValue);
-        }
       } else {
-        if (compareTime(timeEnd, closelunchValue) != 1) {
-          timeLeave = '00:00';
-        } else if (compareTime(timeEnd, closetimeValue) != 1) {
-          timeLeave = calculateTime(closelunchValue, timeEnd);
+        if (compareTime(timeStart, openlunchValue) != 1) {
+          if (compareTime(timeEnd, openlunchValue) != 1) {
+            timeLeave = calculateTime(timeStart, timeEnd);
+          } else if (compareTime(timeEnd, closelunchValue) != 1) {
+            timeLeave = calculateTime(timeStart, openlunchValue);
+          } else if (compareTime(timeEnd, closetimeValue) != 1) {
+            timeLeave = addTimes(
+              calculateTime(timeStart, openlunchValue),
+              calculateTime(closelunchValue, timeEnd),
+            );
+          } else {
+            timeLeave = addTimes(
+              calculateTime(timeStart, openlunchValue),
+              calculateTime(closelunchValue, closetimeValue),
+            );
+          }
+        } else if (compareTime(timeStart, closelunchValue) == 1) {
+          if (compareTime(timeStart, closetimeValue) == 1) {
+            timeLeave = '00:00';
+          } else if (compareTime(timeEnd, closetimeValue) != 1) {
+            timeLeave = calculateTime(timeStart, timeEnd);
+          } else {
+            timeLeave = calculateTime(timeStart, closetimeValue);
+          }
         } else {
-          timeLeave = calculateTime(closelunchValue, closetimeValue);
+          if (compareTime(timeEnd, closelunchValue) != 1) {
+            timeLeave = '00:00';
+          } else if (compareTime(timeEnd, closetimeValue) != 1) {
+            timeLeave = calculateTime(closelunchValue, timeEnd);
+          } else {
+            timeLeave = calculateTime(closelunchValue, closetimeValue);
+          }
         }
+      }
+      let timeWork = addTimes(
+        calculateTime(opentimeValue, openlunchValue),
+        calculateTime(closelunchValue, closetimeValue),
+      );
+      if (compareTime(timeLeave, timeWork) == 0) {
+        dayLeave = leaveDate.length + ' ngày';
+      } else {
+        dayLeave = leaveDate.length - 1 + ' ngày ' + timeLeave + ' giờ';
       }
     }
     const formattedLeaveDate = leaveDate
@@ -160,7 +180,7 @@ export const FormLeave: React.FC = () => {
       time_start: timeStart,
       time_end: timeEnd,
       note: note,
-      day_number: leaveDate.length,
+      day_number: dayLeave,
       status: 0,
       owner: '',
     };
@@ -185,21 +205,31 @@ export const FormLeave: React.FC = () => {
     closeModaldelete();
   };
 
-  const calculateDayDifference = (start: Date, end: Date) => {
-    start.setHours(0, 0, 0, 0);
-    end.setHours(0, 0, 0, 0);
-    const oneDay = 24 * 60 * 60 * 1000;
-    const diffDays = Math.round(
-      Math.abs((start.getTime() - end.getTime()) / oneDay) + 1,
-    );
-
-    return diffDays;
-  };
-
-  const [isChecked, setIsChecked] = useState(true);
   const handleCheckboxChange = () => {
+    if (isChecked == true) {
+      if (
+        opentimeValue &&
+        openlunchValue &&
+        closelunchValue &&
+        closetimeValue
+      ) {
+        setTimeStart(opentimeValue);
+        setTimeEnd(closetimeValue);
+      }
+    }
     setIsChecked(!isChecked);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseConfig = await axiosPrivate.post('config');
+      const configData = responseConfig.data;
+      setOpentimeValue(findConfigValue(configData, 'opentime'));
+      setClosetimeValue(findConfigValue(configData, 'closetime'));
+      setOpenlunchValue(findConfigValue(configData, 'openlunch'));
+      setCloselunchValue(findConfigValue(configData, 'closelunch'));
+    };
+    fetchData();
+  });
 
   return (
     <div className="form-leave form">

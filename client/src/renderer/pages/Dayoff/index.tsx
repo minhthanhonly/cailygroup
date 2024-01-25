@@ -48,37 +48,57 @@ export const Dayoff = () => {
   let DataTable: FieldGroups[] = [];
   let DataTables: FieldGroups[] = [];
   listOfGroupsDayoff.sort((a, b) => {
-    const groupNameComparison = (a as any).group_name.localeCompare(
-      (b as any).group_name,
-    );
-    if (groupNameComparison !== 0) {
-      return groupNameComparison;
-    } else {
-      const dateA = new Date(
-        (a as any).date.split('-').reverse().join('-'),
-      ).getTime();
-      const dateB = new Date(
-        (b as any).date.split('-').reverse().join('-'),
-      ).getTime();
+    const dateA = new Date(
+      (a as any).date.split(',')[0].trim().split('-').reverse().join('-'),
+    ).getTime();
+    const dateB = new Date(
+      (b as any).date.split(',')[0].trim().split('-').reverse().join('-'),
+    ).getTime();
+
+    if (dateA !== dateB) {
       return dateA - dateB;
+    } else {
+      const timeStartA = parseTime((a as any).time_start);
+      const timeStartB = parseTime((b as any).time_start);
+
+      if (timeStartA !== timeStartB) {
+        return timeStartA - timeStartB;
+      } else {
+        const groupNameComparison = (a as any).group_name.localeCompare(
+          (b as any).group_name,
+        );
+        return groupNameComparison;
+      }
     }
   });
   listOfGroups.sort((a, b) => {
-    const groupNameComparison = (a as any).group_name.localeCompare(
-      (b as any).group_name,
-    );
-    if (groupNameComparison !== 0) {
-      return groupNameComparison;
-    } else {
-      const dateA = new Date(
-        (a as any).date.split('-').reverse().join('-'),
-      ).getTime();
-      const dateB = new Date(
-        (b as any).date.split('-').reverse().join('-'),
-      ).getTime();
+    const dateA = new Date(
+      (a as any).date.split(',')[0].trim().split('-').reverse().join('-'),
+    ).getTime();
+    const dateB = new Date(
+      (b as any).date.split(',')[0].trim().split('-').reverse().join('-'),
+    ).getTime();
+
+    if (dateA !== dateB) {
       return dateA - dateB;
+    } else {
+      const timeStartA = parseTime((a as any).time_start);
+      const timeStartB = parseTime((b as any).time_start);
+
+      if (timeStartA !== timeStartB) {
+        return timeStartA - timeStartB;
+      } else {
+        const groupNameComparison = (a as any).group_name.localeCompare(
+          (b as any).group_name,
+        );
+        return groupNameComparison;
+      }
     }
   });
+  function parseTime(timeString: string): number {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
   for (let i = 0; i < listOfGroups.length; i++) {
     let dynamicAction;
 
@@ -184,8 +204,31 @@ export const Dayoff = () => {
       realname: `${listOfGroupsDayoff[i].realname}`,
       group_name: `${listOfGroupsDayoff[i].group_name}`,
       day_number: `${listOfGroupsDayoff[i].day_number}`,
-      time_start: `${listOfGroupsDayoff[i].time_start}`,
-      time_end: `${listOfGroupsDayoff[i].time_end}`,
+      date: (
+        <React.Fragment>
+          {listOfGroupsDayoff[i].date.split(',').map((date, index, array) => {
+            const numberOfDays = array.length;
+            return (
+              <React.Fragment key={date}>
+                {index === 0
+                  ? numberOfDays === 1
+                    ? `${listOfGroupsDayoff[i].time_start} đến ${
+                        listOfGroupsDayoff[i].time_end
+                      } ngày ${date.trim()}`
+                    : `${
+                        listOfGroupsDayoff[i].time_start
+                      } đến ${closetimeValue} Ngày: ${date.trim()}`
+                  : index === numberOfDays - 1
+                  ? `${opentimeValue} đến ${
+                      listOfGroupsDayoff[i].time_end
+                    } Ngày: ${date.trim()}`
+                  : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
+                {index !== array.length - 1 && <br />}{' '}
+              </React.Fragment>
+            );
+          })}
+        </React.Fragment>
+      ),
       note: `${listOfGroupsDayoff[i].note}`,
       status: dynamicAction,
     } as unknown as FieldGroups);
@@ -199,9 +242,6 @@ export const Dayoff = () => {
     setCurrentPage(page);
   };
 
-  let data = {
-    id: users.id,
-  };
   const deleteStatus = async (
     dayoffId: any,
     event: { preventDefault: () => void } | undefined,
@@ -209,7 +249,6 @@ export const Dayoff = () => {
     if (event) {
       event.preventDefault();
       try {
-        const payload = { id: dayoffId };
         await axiosPrivate.delete('dayoffs/delete/' + dayoffId);
         const updatedList = await axiosPrivate.get(
           'dayoffs/getforuser/' + users.id,

@@ -44,8 +44,6 @@
                 $data = [];
 
                 while ($row = mysqli_fetch_assoc($allGroup)) {
-                    $row['start_datetime'] = $row['start_datetime'];
-                    $row['end_datetime'] = $row['end_datetime'];
                     $data[] = $row;
                 }
                 http_response_code(200);
