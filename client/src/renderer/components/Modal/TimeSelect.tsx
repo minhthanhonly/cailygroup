@@ -78,7 +78,6 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
   }, [tempHours, tempMinutes, selectedTime, closeModal, onChange]);
 
   const openModal = () => {
-    console.log('Input focused!');
     setModalOpen(true);
     if (defaultValue) {
       const hours = parseInt(defaultValue.split(':')[0], 10);
@@ -103,6 +102,7 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
     const value = event.target.value;
     setInputValue(value);
   };
+  const handleChange = () => {};
 
   return (
     <div>
@@ -127,11 +127,7 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
                     className="fluid-image"
                   />
                 </button>
-                <input
-                  type="text"
-                  value={tempHours}
-                  // onChange={(e) => setTempHours(parseInt(e.target.value))}
-                />
+                <span>{tempHours}</span>
                 <button className="minus" onClick={decreaseHour}>
                   <img
                     src={require('../../../../assets/icon-minus.png')}
@@ -148,11 +144,7 @@ const TimePickerButton: React.FC<TimeSelectProps> = ({
                     className="fluid-image"
                   />
                 </button>
-                <input
-                  type="text"
-                  value={tempMinutes}
-                  // onChange={(e) => setTempMinutes(parseInt(e.target.value))}
-                />
+                <span>{tempMinutes}</span>
                 <button className="minus" onClick={decreaseMinute}>
                   <img
                     src={require('../../../../assets/icon-minus.png')}
