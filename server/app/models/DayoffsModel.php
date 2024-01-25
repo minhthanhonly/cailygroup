@@ -31,8 +31,6 @@
             global $conn;
             $groupFilter = isset($_GET['group']) ? mysqli_real_escape_string($conn, $_GET['group']) : 'all';
             $query = "SELECT dayoffs.*, 
-                        CONCAT(dayoffs.time_start, ' - ' , dayoffs.date) AS start_datetime, 
-                        CONCAT(dayoffs.time_end, ' - ', dayoffs.date) AS end_datetime, 
                         users.realname,
                         groups.group_name, users.user_group
                 FROM dayoffs

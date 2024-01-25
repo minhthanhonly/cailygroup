@@ -61,6 +61,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const selectedYear = Props.selectedYear;
   const propsID = Props.userID;
   const [admin, setAdmin] = useState(false);
+  const [admins, setAdmins] = useState(false);
+  const [menu, setMenu] = useState(false);
   // const { auth } = useAuth();
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -90,9 +92,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [timecardDate, setTimecardDate] = useState<string>();
   const [timecard_open_time, settimecard_open_time] = useState<string>();
   const [timecardEnd, setTimecardEnd] = useState<string>();
-  const [timecardTime, setTimecardTime] = useState<string>();
-  const [timecardOvertime, setTimecardOvertime] = useState<string>();
-  const [timecardInterval, setTimecardInterval] = useState<string>();
   const [timecardNote, setTimecardNote] = useState<string>();
   const [timecardDateEdit, setTimecardDateEdit] = useState<string | null>(null);
   const openModaldelete = (
@@ -100,9 +99,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     timecards_date: string,
     timecards_open: string,
     timecards_close: string,
-    timecards_time: string,
-    timecards_timeover: string,
-    timecard_timeinterval: string,
     timecards_comment: string,
     isTimecards: boolean,
     date: string,
@@ -111,9 +107,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setTimecardDate(timecards_date);
     settimecard_open_time(timecards_open);
     setTimecardEnd(timecards_close);
-    setTimecardTime(timecards_time);
-    setTimecardOvertime(timecards_timeover);
-    setTimecardInterval(timecard_timeinterval);
     setTimecardNote(timecards_comment);
     setOpenModal(isTimecards);
     setDeleteModalOpen(true);
@@ -238,13 +231,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     } else if (hour1 < hour2) {
       return 2;
     } else {
-      // Nếu giờ bằng nhau, so sánh phút
       if (minute1 > minute2) {
         return 1;
       } else if (minute1 < minute2) {
         return 2;
       } else {
-        // Nếu cả giờ và phút đều bằng nhau
         return 0;
       }
     }
@@ -339,6 +330,113 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     const configItem = configArray.find((item) => item.config_key === key);
     return configItem ? configItem.config_value : null;
   }
+
+  const workingTime = async (
+    timecard_open_time: string,
+    timecard_close_time?: string,
+  ): Promise<{
+    timecard_time: string;
+    timecard_timeover: string;
+    timecard_close_time: string;
+    timecard_timeinterval: string;
+  }> => {
+    if (!timecard_close_time) {
+      const response = await axios.get(
+        'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
+      );
+      let { datetime } = response.data;
+      let currentHour = new Date(datetime).getHours();
+      let currentMinutes = new Date(datetime).getMinutes();
+      timecard_close_time = `${currentHour}:${String(currentMinutes).padStart(
+        2,
+        '0',
+      )}`;
+    }
+    let timecard_time = '';
+    const responseConfig = await axiosPrivate.post('config');
+    const configData = responseConfig.data;
+    const opentimeValue = findConfigValue(configData, 'opentime');
+    const closetimeValue = findConfigValue(configData, 'closetime');
+    const openlunchValue = findConfigValue(configData, 'openlunch');
+    const closelunchValue = findConfigValue(configData, 'closelunch');
+    const timecard_timeinterval = calculateTime(
+      openlunchValue,
+      closelunchValue,
+    );
+    if (compareTime(timecard_open_time, timecard_close_time) == 0) {
+      timecard_time = '00:00';
+    } else if (compareTime(timecard_open_time, opentimeValue) != 1) {
+      if (compareTime(timecard_close_time, opentimeValue) != 1) {
+        timecard_time = '00:00';
+      } else if (compareTime(timecard_close_time, openlunchValue) != 1) {
+        timecard_time = calculateTime(opentimeValue, timecard_close_time);
+      } else if (compareTime(timecard_close_time, closelunchValue) != 1) {
+        timecard_time = calculateTime(opentimeValue, openlunchValue);
+      } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+        timecard_time = addTimes(
+          calculateTime(opentimeValue, openlunchValue),
+          calculateTime(closelunchValue, timecard_close_time),
+        );
+      } else {
+        timecard_time = addTimes(
+          calculateTime(opentimeValue, openlunchValue),
+          calculateTime(closelunchValue, closetimeValue),
+        );
+      }
+    } else {
+      if (compareTime(timecard_open_time, openlunchValue) != 1) {
+        if (compareTime(timecard_close_time, openlunchValue) != 1) {
+          timecard_time = calculateTime(
+            timecard_open_time,
+            timecard_close_time,
+          );
+        } else if (compareTime(timecard_close_time, closelunchValue) != 1) {
+          timecard_time = calculateTime(timecard_open_time, openlunchValue);
+        } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+          timecard_time = addTimes(
+            calculateTime(timecard_open_time, openlunchValue),
+            calculateTime(closelunchValue, timecard_close_time),
+          );
+        } else {
+          timecard_time = addTimes(
+            calculateTime(timecard_open_time, openlunchValue),
+            calculateTime(closelunchValue, closetimeValue),
+          );
+        }
+      } else if (compareTime(timecard_open_time, closelunchValue) == 1) {
+        // bắt đầu sau 13:00
+        if (compareTime(timecard_open_time, closetimeValue) == 1) {
+          timecard_time = '00:00';
+        } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+          timecard_time = calculateTime(
+            timecard_open_time,
+            timecard_close_time,
+          );
+        } else {
+          timecard_time = calculateTime(timecard_open_time, closetimeValue);
+        }
+      } else {
+        // bắt đầu trong khoảng 11:30-13:00
+        if (compareTime(timecard_close_time, closelunchValue) != 1) {
+          timecard_time = '00:00';
+        } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
+          timecard_time = calculateTime(closelunchValue, timecard_close_time);
+        } else {
+          timecard_time = calculateTime(closelunchValue, closetimeValue);
+        }
+      }
+    }
+    let timecard_timeover = '00:00';
+    if (compareTime(timecard_close_time, closetimeValue) == 1) {
+      timecard_timeover = calculateTime(closetimeValue, timecard_close_time);
+    }
+    return {
+      timecard_time,
+      timecard_timeover,
+      timecard_close_time,
+      timecard_timeinterval,
+    };
+  };
   // nhấn nút kết thúc mỗi ngày
   const handleEndButtonClick = async (
     timecardID: any,
@@ -347,99 +445,15 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   ) => {
     if (event) {
       event.preventDefault();
-      const response = await axios.get(
-        'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
-      );
-      let { datetime } = response.data;
-      let currentHour = new Date(datetime).getHours();
-      let currentMinutes = new Date(datetime).getMinutes();
-      let timecard_close_time = `${currentHour}:${String(
-        currentMinutes,
-      ).padStart(2, '0')}`;
-      let timecard_time = '';
-      const responseConfig = await axiosPrivate.post('config');
-      const configData = responseConfig.data;
-      const opentimeValue = findConfigValue(configData, 'opentime');
-      const closetimeValue = findConfigValue(configData, 'closetime');
-      const openlunchValue = findConfigValue(configData, 'openlunch');
-      const closelunchValue = findConfigValue(configData, 'closelunch');
-      if (compareTime(timecard_open_time, timecard_close_time) == 0) {
-        timecard_time = '00:00';
-      } else if (compareTime(timecard_open_time, opentimeValue) != 1) {
-        // bắt đầu trước 7:30
-        if (compareTime(timecard_close_time, opentimeValue) != 1) {
-          timecard_time = '00:00';
-        } else if (compareTime(timecard_close_time, openlunchValue) != 1) {
-          timecard_time = calculateTime(opentimeValue, timecard_close_time);
-        } else if (compareTime(timecard_close_time, closelunchValue) != 1) {
-          timecard_time = calculateTime(opentimeValue, openlunchValue);
-        } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
-          timecard_time = addTimes(
-            calculateTime(opentimeValue, openlunchValue),
-            calculateTime(closelunchValue, timecard_close_time),
-          );
-        } else {
-          timecard_time = addTimes(
-            calculateTime(opentimeValue, openlunchValue),
-            calculateTime(closelunchValue, closetimeValue),
-          );
-        }
-      } else {
-        //bắt đầu sau 7:30
-        if (compareTime(timecard_open_time, openlunchValue) != 1) {
-          // bắt đầu trước 11:30
-          if (compareTime(timecard_close_time, openlunchValue) != 1) {
-            timecard_time = calculateTime(
-              timecard_open_time,
-              timecard_close_time,
-            );
-          } else if (compareTime(timecard_close_time, closelunchValue) != 1) {
-            timecard_time = calculateTime(timecard_open_time, openlunchValue);
-          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
-            timecard_time = addTimes(
-              calculateTime(timecard_open_time, openlunchValue),
-              calculateTime(closelunchValue, timecard_close_time),
-            );
-          } else {
-            timecard_time = addTimes(
-              calculateTime(timecard_open_time, openlunchValue),
-              calculateTime(closelunchValue, closetimeValue),
-            );
-          }
-        } else if (compareTime(timecard_open_time, closelunchValue) == 1) {
-          // bắt đầu sau 13:00
-          if (compareTime(timecard_open_time, closetimeValue) == 1) {
-            timecard_time = '00:00';
-          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
-            timecard_time = calculateTime(
-              timecard_open_time,
-              timecard_close_time,
-            );
-          } else {
-            timecard_time = calculateTime(timecard_open_time, closetimeValue);
-          }
-        } else {
-          // bắt đầu trong khoảng 11:30-13:00
-          if (compareTime(timecard_close_time, closelunchValue) != 1) {
-            timecard_time = '00:00';
-          } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
-            timecard_time = calculateTime(closelunchValue, timecard_close_time);
-          } else {
-            timecard_time = calculateTime(closelunchValue, closetimeValue);
-          }
-        }
-      }
-      let timecard_timeover = '00:00';
-      if (compareTime(timecard_close_time, closetimeValue) == 1) {
-        timecard_timeover = calculateTime(closetimeValue, timecard_close_time);
-      }
+      let time = await workingTime(timecard_open_time);
       const dataTime = {
         id: timecardID,
         timecard_open: timecard_open_time,
-        timecard_now: timecard_close_time,
-        timecard_time: timecard_time,
-        timecard_timeover: timecard_timeover,
+        timecard_now: time.timecard_close_time,
+        timecard_time: time.timecard_time,
+        timecard_timeover: time.timecard_timeover,
       };
+      console.log(dataTime);
       try {
         const response = await axiosPrivate.post('timecarddetails/update', {
           dataTime,
@@ -625,16 +639,19 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     closeModal();
   };
   const handleChangeTimecards = async (id: number) => {
-    const response = await axiosPrivate.post('timecarddetails/updateall', {
-      id: timecardID,
-      timecard_open: timecard_open_time,
-      timecard_close: timecardEnd,
-      timecard_time: timecardTime,
-      timecard_timeover: timecardOvertime,
-      timecard_comment: timecardNote,
-      editor: users.realname,
-    });
-    console.log(response.data);
+    if (timecard_open_time) {
+      let time = await workingTime(timecard_open_time, timecardEnd);
+      const response = await axiosPrivate.post('timecarddetails/updateall', {
+        id: timecardID,
+        timecard_open: timecard_open_time,
+        timecard_close: timecardEnd,
+        timecard_time: time.timecard_time,
+        timecard_timeover: time.timecard_timeover,
+        timecard_comment: timecardNote,
+        editor: users.realname,
+      });
+      console.log(response.data);
+    }
     fetchTimecardOpen();
     setTimeout(() => {
       calculateTotalTime();
@@ -662,31 +679,36 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       dataTimeCard,
     });
     console.log(responseTimeCard.data);
-    const dataTimeCardDetails = {
-      id_groupwaretimecard: responseTimeCard.data.id_timecard,
-      timecard_open: timecard_open_time,
-      timecard_close: timecardEnd,
-      timecard_time: timecardTime,
-      timecard_timeover: timecardOvertime,
-      timecard_timeinterval: timecardInterval,
-      timecard_comment: timecardNote,
-      editor: users.realname,
-    };
-    const responseTimeCardDetails = await axiosPrivate.post(
-      'timecarddetails/addnew',
-      {
-        dataTimeCardDetails,
-      },
-    );
+    if (timecard_open_time) {
+      let time = await workingTime(timecard_open_time, timecardEnd);
+      const dataTimeCardDetails = {
+        id_groupwaretimecard: responseTimeCard.data.id_timecard,
+        timecard_open: timecard_open_time,
+        timecard_close: timecardEnd,
+        timecard_time: time.timecard_time,
+        timecard_timeover: time.timecard_timeover,
+        timecard_timeinterval: time.timecard_timeinterval,
+        timecard_comment: timecardNote,
+        editor: users.realname,
+      };
+      const responseTimeCardDetails = await axiosPrivate.post(
+        'timecarddetails/addnew',
+        {
+          dataTimeCardDetails,
+        },
+      );
 
-    console.log(responseTimeCardDetails.data);
+      console.log(responseTimeCardDetails.data);
+    }
     fetchTimecardOpen();
     setTimeout(() => {
       calculateTotalTime();
     }, 400);
     closeModaldelete();
   };
-
+  const openMenu = () => {
+    setMenu(true);
+  };
   const [isload, setIsLoad] = useState(false);
   useEffect(() => {
     const isAdmin = users.roles === UserRole.ADMIN;
@@ -694,6 +716,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     const isLeader = users.roles === UserRole.LEADER;
     if (isAdmin || isManager || isLeader) {
       setAdmin(true);
+    }
+    if (isAdmin || isManager) {
+      setAdmins(true);
     }
   }, []);
   useEffect(() => {
@@ -745,14 +770,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
             ${isToday(day) ? 'today' : ''}
             ${(() => {
               const holidayInfo = isHoliday(day);
-              return holidayInfo.isHoliday && 'bg-purple';
+              return holidayInfo.isHoliday ? 'bg-purple' : '';
             })()}
             ${(() => {
               const dayoffInfo = isDayoff(day);
               return dayoffInfo.isDayoff
                 ? dayoffInfo.status == 0
                   ? 'bg-orange'
-                  : 'bg-red '
+                  : 'bg-dayoffs '
                 : '';
             })()}
           `}
@@ -766,7 +791,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 {format(day, 'dd/MM')} ({weekdays[day.getDay()]})
               </td>
               <td>
-                {isHoliday(day).isHoliday ? (
+                {isHoliday(day).isHoliday || isDayoff(day).isDayoff ? (
                   ''
                 ) : timecardOpen.some(
                     (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
@@ -781,8 +806,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         <div
                           className={
                             compareTime(item.timecard_open, '7:30') == 1
-                              ? 'a'
-                              : 'b'
+                              ? 'late'
+                              : ''
                           }
                           key={index}
                         >
@@ -963,7 +988,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 )}
               </td>
               <td>
-                {isHoliday(day).isHoliday ? null : isDayoff(day).isDayoff ? (
+                <a onClick={openMenu}>[...]</a>
+                {/* {menu ? (
+                  ''
+                ) : isHoliday(day).isHoliday ? null : isDayoff(day).isDayoff ? (
                   isDayoff(day).status == 0 ? (
                     <>
                       <span
@@ -1003,7 +1031,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         <div key={index}>
                           {item.timecard_open !== null &&
                           item.timecard_open !== '' ? (
-                            admin ? (
+                            admins ? (
                               <>
                                 <span
                                   className="btn btn--green btn--medium"
@@ -1013,9 +1041,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                       item.timecard_date,
                                       item.timecard_open,
                                       item.timecard_close,
-                                      item.timecard_time,
-                                      item.timecard_timeover,
-                                      item.timecard_timeinterval,
                                       item.timecard_comment,
                                       false,
                                       '',
@@ -1031,16 +1056,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         </div>
                       ))}
                   </>
-                ) : admin ? (
+                ) : admins ? (
                   <>
                     <span
                       className="btn btn--green btn--medium"
                       onClick={(event) => {
                         openModaldelete(
                           0,
-                          '',
-                          '',
-                          '',
                           '',
                           '',
                           '',
@@ -1053,7 +1075,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       Sửa giờ
                     </span>
                   </>
-                ) : null}
+                ) : null} */}
               </td>
             </>
           ) : null}
@@ -1128,36 +1150,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       type="text"
                       defaultValue={timecardEnd}
                       onChange={(e) => setTimecardEnd(e.target.value)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>Giờ làm việc</td>
-                  <td>
-                    <input
-                      type="text"
-                      defaultValue={timecardTime}
-                      onChange={(e) => setTimecardTime(e.target.value)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>Ngoài giờ</td>
-                  <td>
-                    <input
-                      type="text"
-                      defaultValue={timecardOvertime}
-                      onChange={(e) => setTimecardOvertime(e.target.value)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>Giờ nghỉ trưa</td>
-                  <td>
-                    <input
-                      type="text"
-                      defaultValue={timecardInterval}
-                      onChange={(e) => setTimecardInterval(e.target.value)}
                     />
                   </td>
                 </tr>
