@@ -82,7 +82,7 @@ export const DayoffApply = () => {
         <a
           className="btn btn--medium btn--orange"
           onClick={(event) => {
-            deleteStatus(listOfGroups[i].id, event);
+            refuseDayoffs(listOfGroups[i].id, event);
           }}
           href={listOfGroups[i].id}
         >
@@ -192,7 +192,7 @@ export const DayoffApply = () => {
       }
     }
   };
-  const deleteStatus = async (
+  const refuseDayoffs = async (
     dayoffId: any,
     event: { preventDefault: () => void } | undefined,
   ) => {

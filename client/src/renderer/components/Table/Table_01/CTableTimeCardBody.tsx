@@ -13,7 +13,6 @@ import { UserRole } from '../../../components/UserRole';
 import Modaldelete from '../../Modal/Modaldelete';
 import { vi } from 'date-fns/locale';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
-import MenuDropdown from '../../MenuDropdown';
 
 //sever
 type Holiday = {
@@ -34,6 +33,7 @@ interface Dayoff {
   time_end: string;
   note: string;
   status: number;
+  owner: string;
 }
 
 interface TimecardData {
@@ -67,17 +67,24 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isModalOpen, setModalOpen] = useState(false);
   const [isOpenModal, setOpenModal] = useState(false);
-  const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(false);
+  const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(0);
   const [commentText, setCommentText] = useState('');
+  const [name, setName] = useState('');
 
   const [currentItemId, setCurrentItemId] = useState<number | undefined>(
     undefined,
   );
-  const openModal = (itemId: number, comment: string, isDayoff: boolean) => {
+  const openModal = (
+    itemId: number,
+    comment: string,
+    isDayoff: number,
+    name: string,
+  ) => {
     setModalOpen(true);
     setCommentText(comment || '');
     setCurrentItemId(itemId);
     setIsUpdatingDayoff(isDayoff);
+    setName(name);
   };
 
   const closeModal = () => {
@@ -512,6 +519,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     note: string;
     status: number;
     date: string;
+    owner: string;
   } => {
     const formattedDay = format(day, 'dd-MM-yyyy');
     const foundDayoff = dayoffs?.find((dayoff) => {
@@ -528,8 +536,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           note: foundDayoff.note,
           status: foundDayoff.status,
           date: foundDayoff.date,
+          owner: foundDayoff.owner,
         }
-      : { isDayoff: false, id: 0, note: '', status: 0, date: '' };
+      : { isDayoff: false, id: 0, note: '', status: 0, date: '', owner: '' };
   };
   const updateDayoffs = async (id: number) => {
     try {
@@ -717,6 +726,25 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const closeMenu = () => {
     setOpenMenuIndex(0);
   };
+  const refuseDayoffs = async (
+    dayoffId: any,
+    event: { preventDefault: () => void } | undefined,
+  ) => {
+    if (event) {
+      event.preventDefault();
+      const data = { owner: users.realname };
+      try {
+        let response = await axiosPrivate.post('dayoffs/refuse/' + dayoffId, {
+          data,
+        });
+        console.log(response.data);
+        fetchDayoffs();
+        fetchTimecardOpen();
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái:', error);
+      }
+    }
+  };
   const [isload, setIsLoad] = useState(false);
   useEffect(() => {
     const isAdmin = users.roles === UserRole.ADMIN;
@@ -785,7 +813,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               return dayoffInfo.isDayoff
                 ? dayoffInfo.status == 0
                   ? 'bg-orange'
-                  : 'bg-dayoffs '
+                  : dayoffInfo.status == 1
+                  ? 'bg-dayoffs '
+                  : ''
                 : '';
             })()}
           `}
@@ -800,7 +830,20 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               </td>
               <td>
                 {isHoliday(day).isHoliday || isDayoff(day).isDayoff ? (
-                  ''
+                  isDayoff(day).isDayoff ? (
+                    isDayoff(day).status != 1 && isToday(day) ? (
+                      startClick ? (
+                        <button
+                          className="btn btn--medium"
+                          onClick={handleButtonClick}
+                        >
+                          Bắt đầu
+                        </button>
+                      ) : null
+                    ) : isDayoff(day).status == 2 ? null : (
+                      'Đã xin nghỉ'
+                    )
+                  ) : null
                 ) : timecardOpen.some(
                     (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
                   ) ? (
@@ -937,7 +980,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               <td>
                 {isHoliday(day).isHoliday ? (
                   isHoliday(day).name
-                ) : isDayoff(day).isDayoff ? (
+                ) : isDayoff(day).isDayoff && isDayoff(day).status != 2 ? (
                   <>{isDayoff(day).note}</>
                 ) : (
                   <>
@@ -974,20 +1017,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 {openMenuIndex === rowIndex && (
                   <>
                     <ul className="list-menu">
-                      {/* <a
-                          className="btn--green"
-                          onClick={(event) =>{
-                            isHoliday(day).isHoliday
-                              ? null
-                              : isDayoff(day).isDayoff ? openModal(
-                                  isDayoff(day).id,
-                                  isDayoff(day).note,
-                                  true,
-                                ) : 
-                          }}
-                        >
-                          Sửa giờ
-                        </a> */}
                       {isHoliday(day).isHoliday ? null : isDayoff(day)
                           .isDayoff ? (
                         isDayoff(day).status ? (
@@ -997,12 +1026,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                 openModal(
                                   isDayoff(day).id,
                                   isDayoff(day).note,
-                                  true,
+                                  1,
+                                  '',
                                 );
                               }}
                               className="btn--green"
                             >
-                              Sửa note ngày nghỉ
+                              Ghi chú nghỉ phép
                             </a>
                           </li>
                         ) : (
@@ -1028,7 +1058,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                         openModal(
                                           item.id_groupwaretimecard,
                                           item.timecard_comment,
-                                          false,
+                                          2,
+                                          '',
                                         );
                                       }}
                                       className="btn--green"
@@ -1046,14 +1077,25 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         isDayoff(day).status == 0 ? (
                           <>
                             <li className="list-menu__item">
-                              <a
-                                onClick={(event) =>
-                                  deleteDayoffs(isDayoff(day).id)
-                                }
-                                className="btn--red"
-                              >
-                                Hủy nghỉ phép
-                              </a>
+                              {propsID ? (
+                                <a
+                                  onClick={(event) =>
+                                    refuseDayoffs(isDayoff(day).id, event)
+                                  }
+                                  className="btn--red"
+                                >
+                                  Từ chối nghỉ phép
+                                </a>
+                              ) : (
+                                <a
+                                  onClick={(event) =>
+                                    deleteDayoffs(isDayoff(day).id)
+                                  }
+                                  className="btn--red"
+                                >
+                                  {propsID}Hủy nghỉ phép{users.id}
+                                </a>
+                              )}
                             </li>
                             {admin ? (
                               <li className="list-menu__item">
@@ -1128,98 +1170,55 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                           </a>
                         </li>
                       ) : null}
-                      <li className="list-menu__item">
-                        <a className="btn--green">Thông tin chi tiết</a>
-                      </li>
+                      {isDayoff(day).isDayoff && isDayoff(day).status == 1 ? (
+                        <>
+                          <li className="list-menu__item">
+                            <a
+                              className="btn--green"
+                              onClick={(event) => {
+                                openModal(
+                                  isDayoff(day).id,
+                                  '',
+                                  3,
+                                  isDayoff(day).owner,
+                                );
+                              }}
+                            >
+                              Thông tin chi tiết
+                            </a>
+                          </li>
+                        </>
+                      ) : timecardOpen.some(
+                          (item) =>
+                            item.timecard_date === format(day, 'dd-MM-yyyy'),
+                        ) ? (
+                        timecardOpen
+                          .filter(
+                            (item) =>
+                              item.timecard_date === format(day, 'dd-MM-yyyy'),
+                          )
+                          .map((item, index) => (
+                            <li className="list-menu__item">
+                              <a
+                                className="btn--green"
+                                onClick={(event) => {
+                                  openModal(
+                                    item.id_groupwaretimecard,
+                                    '',
+                                    4,
+                                    item.editor,
+                                  );
+                                }}
+                              >
+                                Thông tin chi tiết
+                              </a>
+                            </li>
+                          ))
+                      ) : null}
                     </ul>
                     <div className="box-menu--bg" onClick={closeMenu}></div>
                   </>
                 )}
-                {/* {isHoliday(day).isHoliday ? null : isDayoff(day).isDayoff ? (
-                  isDayoff(day).status == 0 ? (
-                    <>
-                      <span
-                        onClick={(event) => deleteDayoffs(isDayoff(day).id)}
-                        className="btn btn--red btn--medium"
-                      >
-                        Hủy
-                      </span>
-                      {admin ? (
-                        <span
-                          onClick={(event) => updateDayoffs(isDayoff(day).id)}
-                          className="btn btn--green btn--medium ml5"
-                        >
-                          Duyệt
-                        </span>
-                      ) : null}
-                    </>
-                  ) : (
-                    <span className="btn btn--red btn--green btn--small icon icon--edit">
-                      <img
-                        src={require('../../../../../assets/check.png')}
-                        alt="edit"
-                        className="fluid-image"
-                      />
-                    </span>
-                  )
-                ) : timecardOpen.some(
-                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                  ) ? (
-                  <>
-                    {timecardOpen
-                      .filter(
-                        (item) =>
-                          item.timecard_date === format(day, 'dd-MM-yyyy'),
-                      )
-                      .map((item, index) => (
-                        <div key={index}>
-                          {item.timecard_open !== null &&
-                          item.timecard_open !== '' ? (
-                            admins ? (
-                              <>
-                                <span
-                                  className="btn btn--green btn--medium"
-                                  onClick={(event) => {
-                                    openModaldelete(
-                                      item.id,
-                                      item.timecard_date,
-                                      item.timecard_open,
-                                      item.timecard_close,
-                                      item.timecard_comment,
-                                      false,
-                                      '',
-                                    );
-                                  }}
-                                >
-                                  Sửa giờ
-                                </span>
-                                <p>{item.editor}</p>
-                              </>
-                            ) : null
-                          ) : null}
-                        </div>
-                      ))}
-                  </>
-                ) : admins ? (
-                  <>
-                    <span
-                      className="btn btn--green btn--medium"
-                      onClick={(event) => {
-                        openModaldelete(
-                          0,
-                          '',
-                          '',
-                          '',
-                          '',
-                          true,
-                          format(day, 'dd-MM-yyyy'),
-                        );
-                      }}
-                    >
-                      Sửa giờ
-                    </span>
-                  </>
-                ) : null} */}
               </td>
             </>
           ) : null}
@@ -1240,9 +1239,19 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         <td></td>
         <td>
           <Modal isOpen={isModalOpen} onClose={closeModal}>
-            {
+            {isUpdatingDayoff == 3 ? (
               <>
-                <h3 className="hdglv3">Ghi Chú</h3>
+                <h3 className="hdglv3">Thông tin chi tiết</h3>
+                <p>Bạn đã được duyệt nghỉ phép bởi: {name}</p>
+              </>
+            ) : isUpdatingDayoff == 4 ? (
+              <>
+                <h3 className="hdglv3">Thông tin chi tiết</h3>
+                <p>Thẻ giờ đã được chỉnh sửa bởi: {name}</p>
+              </>
+            ) : (
+              <>
+                <h3 className="hdglv3">Sửa ghi Chú</h3>
                 <textarea
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
@@ -1251,7 +1260,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   <button
                     className="btn"
                     onClick={() => {
-                      if (isUpdatingDayoff) {
+                      if (isUpdatingDayoff == 1) {
                         handleUpdateCommentDayoffs(currentItemId || 0);
                       } else {
                         handleUpdateComment(currentItemId || 0);
@@ -1265,7 +1274,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   </button>
                 </div>
               </>
-            }
+            )}
           </Modal>
           <Modaldelete
             isOpen={isDeleteModalOpen}

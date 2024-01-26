@@ -153,7 +153,6 @@ export const Timecard = () => {
         } else {
           switch (dayOfWeek) {
             case 0: // Chủ Nhật
-
               fillColor = { argb: 'F4BFD4' };
 
               // for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
@@ -233,7 +232,7 @@ export const Timecard = () => {
         `${String.fromCharCode(64 + col)}${rowIndex}`,
       );
       if (col === custom_start || col === custom_end) {
-        console.log("aaa");
+        console.log('aaa');
 
         cell.fill = {
           type: 'pattern',
@@ -243,8 +242,7 @@ export const Timecard = () => {
         cell.font = {
           color: { argb: 'FF000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
         };
-      }
-      else {
+      } else {
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -322,18 +320,14 @@ export const Timecard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-
       try {
-
         const matchedUser = listOfUsers.find((user) => user.id === id);
         if (matchedUser) {
           setCurrentUser(matchedUser);
           if (datacheck === 1) {
-
             // Gọi hàm exportToExcel với await
             await exportToExcel();
-            await navigate("/timecards/list");
-
+            await navigate('/timecards/list');
           }
           // Bạn có thể thêm logic bổ sung ở đây nếu cần
         }
