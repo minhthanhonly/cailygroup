@@ -46,9 +46,8 @@ export const Timecard = () => {
   // lấy thông tin của người bên trong timecardlist list
   const matchedUser = listOfUsers.find((user) => user.id === id);
   const realname = matchedUser ? matchedUser.realname : '';
-  const matchedUser_month = month ? month : '';
-  const matchedUser_year = year ? year : '';
-  const datacheck_hi = datacheck ? datacheck : '';
+
+
 
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
@@ -71,6 +70,10 @@ export const Timecard = () => {
   }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
   //-------------------------------------------------------------------------------------
 
+
+
+
+
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
@@ -83,6 +86,10 @@ export const Timecard = () => {
       console.error('Không tìm thấy bảng.');
       return;
     }
+
+    // const rowIndexToDelete = 41; // Đổi giá trị này thành chỉ số dòng bạn muốn xoá
+    // table.deleteRow(rowIndexToDelete);
+
 
     const tableWithRows = table as HTMLTableElement & {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
@@ -246,17 +253,27 @@ export const Timecard = () => {
         color: { argb: 'FFFFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
       };
     }
+
+
+
     const lastRowIndex = table.rows.length + 3;
-    const rowIndex = lastRowIndex;
     const startColumn = 1; // Cột A
-    const endColumn = 7; // Cột F
+    const endColumn = 1; // Cột F
     const custom_start = 4; // Cột E
     const custom_end = 5; // Cột F
+
+    // Thêm một dòng mới
+
+
+    // Dùng rowIndex của dòng mới thêm vào
+    const rowIndex = lastRowIndex;
 
     for (let col = startColumn; col <= endColumn; col++) {
       const cell = worksheet.getCell(
         `${String.fromCharCode(64 + col)}${rowIndex}`,
       );
+
+      // Kiểm tra nếu cột là custom_start hoặc custom_end
       if (col === custom_start || col === custom_end) {
         cell.fill = {
           type: 'pattern',
@@ -298,6 +315,35 @@ export const Timecard = () => {
       0,
       maxWorksheetNameLength,
     );
+
+
+    for (let r = startRowToDelete; r <= lastRowIndex; r++) {
+      const cellContent = worksheet.getCell(`D${r}`).value;
+      worksheet.getCell(`B${r}`).value = cellContent;
+      const cellContentE = worksheet.getCell(`E${r}`).value;
+      worksheet.getCell(`D${r}`).value = cellContentE;
+      if (r === lastRowIndex) {
+        worksheet.getCell(`E${r}`).value = null;
+      }
+
+    }
+
+    // Thêm văn bản vào cột 3 của dòng cuối cùng
+    const textToAdd = 'Ngoài giờ';
+    worksheet.getCell(`C${lastRowIndex}`).value = textToAdd;
+
+    // Thiết lập màu nền đen và chữ màu trắng cho ô C ở dòng cuối cùng
+    const cellC = worksheet.getCell(`C${lastRowIndex}`);
+    cellC.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
+    };
+    cellC.font = {
+      color: { argb: 'FFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
+    };
+
+
 
     // Save the workbook to a file
     const buffer = await workbook.xlsx.writeBuffer();
