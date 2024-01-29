@@ -1,12 +1,11 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "1.0.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "cailygroup",
+  "version": "1.1.0",
+  "description": "A time cards apps",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "minhthanhonly",
+    "url": "https://github.com/minhthanhonly/cailygroup"
   },
   "main": "./dist/main/main.js",
   "scripts": {

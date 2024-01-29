@@ -9,19 +9,14 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
-class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
+log.transports.file.level = 'info';
+autoUpdater.logger = log;
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -110,12 +105,55 @@ const createWindow = async () => {
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
-  new AppUpdater();
+  // new AppUpdater();
 };
 
 /**
  * Add event listeners...
  */
+
+const checkForUpdates = async () => {
+  autoUpdater.checkForUpdates();
+
+  autoUpdater.on('update-available', async () => {
+    const response = await dialog.showMessageBox(mainWindow!, {
+      type: 'info',
+      title: 'Found Updates',
+      message: 'Found updates, do you want update now?',
+      buttons: ['Sure', 'Later'],
+    });
+
+    if (response.response === 0) {
+      autoUpdater.downloadUpdate();
+      await dialog.showMessageBox(mainWindow!, {
+        type: 'info',
+        title: 'Update Downloading',
+        message:
+          'Update is being downloaded, you will be notified when it is ready to install',
+        buttons: [],
+      });
+    }
+  });
+
+  autoUpdater.on('update-downloaded', async () => {
+    const response = await dialog.showMessageBox(mainWindow!, {
+      type: 'info',
+      buttons: ['Restart', 'Later'],
+      title: 'Application Update',
+      message: 'Update',
+      detail:
+        'A new version has been downloaded. Restart the application to apply the updates.',
+    });
+
+    if (response.response === 0) {
+      setImmediate(() => autoUpdater.quitAndInstall());
+    }
+  });
+
+  autoUpdater.on('error', (error) => {
+    log.error('Error checking for updates:', error);
+  });
+};
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
@@ -129,6 +167,7 @@ app
   .whenReady()
   .then(() => {
     createWindow();
+    checkForUpdates();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.

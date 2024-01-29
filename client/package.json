@@ -1,5 +1,5 @@
 {
-  "description": "A foundation for scalable desktop apps",
+  "description": "A time cards apps",
   "keywords": [
     "electron",
     "boilerplate",
@@ -11,27 +11,16 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
-  "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
-  },
+  "homepage": "https://github.com/minhthanhonly/cailygroup",
   "repository": {
     "type": "git",
     "url": "https://github.com/minhthanhonly/cailygroup"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Caily App Maintainers",
+    "url": "https://github.com/minhthanhonly/cailygroup"
   },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "main": "./src/main/main.ts",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -196,8 +185,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "Caily app",
-    "appId": "2024.CailyGroup",
+    "productName": "CailyApp",
+    "appId": "com.CailyApp.code.Code",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
@@ -235,6 +224,9 @@
       ]
     },
     "win": {
+      "publish": [
+        "github"
+      ],
       "target": [
         "nsis"
       ]
@@ -255,6 +247,8 @@
     ],
     "publish": {
       "provider": "github",
+      "owner": "minhthanhonly",
+      "repo": "cailygroup",
       "releaseType": "release"
     }
   },
