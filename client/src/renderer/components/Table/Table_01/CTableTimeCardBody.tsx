@@ -1089,7 +1089,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                   }
                                   className="btn--red"
                                 >
-                                  {propsID}Hủy nghỉ phép{users.id}
+                                  Hủy nghỉ phép
                                 </a>
                               )}
                             </li>
