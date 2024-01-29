@@ -595,11 +595,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           const [hourss, minutess] = timeStrings.split(':');
           const totalMinutesForRow =
             parseInt(hourss, 10) * 60 + parseInt(minutess, 10);
-
-          // Làm tròn về phía dưới đến 30 phút gần nhất
           const roundedMinutes = Math.floor(totalMinutesForRow / 30) * 30;
-
-          // Nếu số phút là 30, chuyển thành 0 và thêm 1 giờ
           if (roundedMinutes === 30 && totalMinutesForRow >= 60) {
             overMinutes += 60;
           } else {
@@ -1198,7 +1194,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                               item.timecard_date === format(day, 'dd-MM-yyyy'),
                           )
                           .map((item, index) => (
-                            <li className="list-menu__item">
+                            <li className="list-menu__item" key={index}>
                               <a
                                 className="btn--green"
                                 onClick={(event) => {

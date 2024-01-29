@@ -126,55 +126,59 @@ export const Timecard = () => {
     worksheet.spliceRows(startRowToDelete, numberOfRowsToDelete);
     const numericSelectedYear = parseInt(selectedYear, 10);
     const numericSelectedMonth = parseInt(selectedMonth, 10);
-
+    let tempSunAddresses = [];
+    let tempSatAddresses = [];
     for (let r = 1; r <= table.rows.length; r++) {
       for (let c = 1; c <= table.rows[r - 1].cells.length; c++) {
         const cell = worksheet.getCell(
           `${String.fromCharCode(64 + c)}${startRow + r - 1}`,
         );
-
-        // Ensure that cellContent is not null or undefined
-        const cellContent = table.rows[r - 1].cells[c - 1]?.textContent || '';
-
-        const currentDate = new Date(
-          numericSelectedYear,
-          numericSelectedMonth - 1,
-          parseInt(cellContent || '0', 10),
-        );
-
-        const dayOfWeek = currentDate.getDay();
-
-        // Set default fill color for each cell
         let fillColor = { argb: 'FFFFFF' }; // White color
+        const cellContent = table.rows[r - 1].cells[c - 1]?.textContent || '';
+        const parsedCellContent = parseInt(cellContent, 10);
+        if (
+          !isNaN(parsedCellContent) &&
+          parsedCellContent >= 1 &&
+          parsedCellContent <= 31
+        ) {
+          const currentDate = new Date(
+            numericSelectedYear,
+            numericSelectedMonth - 1,
+            parsedCellContent,
+          );
+          const dayOfWeek = currentDate.getDay();
+          if (c >= 2 && c <= 7) {
+            fillColor = { argb: 'FFFFFF' }; // Set color to white for columns B to G
+          } else {
+            switch (dayOfWeek) {
+              case 0: // Chủ Nhật
+                fillColor = { argb: 'F4BFD4' };
+                let a = cell.address;
+                const column = a.charAt(0);
+                const row = parseInt(a.substring(1), 10);
+                for (let i = 1; i < 7; i++) {
+                  tempSunAddresses.push(
+                    `${String.fromCharCode(column.charCodeAt(0) + i)}${row}`,
+                  );
+                }
+                break;
+              case 6: // Thứ 7
+                fillColor = { argb: 'e4eee7' };
+                let b = cell.address;
+                const columnb = b.charAt(0);
+                const rowb = parseInt(b.substring(1), 10);
+                for (let i = 1; i < 7; i++) {
+                  tempSatAddresses.push(
+                    `${String.fromCharCode(columnb.charCodeAt(0) + i)}${rowb}`,
+                  );
+                }
+                break;
 
-        // Check if the current column is within B to G (2 to 7)
-        if (c >= 2 && c <= 7) {
-          fillColor = { argb: 'FFFFFF' }; // Set color to white for columns B to G
-        } else {
-          switch (dayOfWeek) {
-            case 0: // Chủ Nhật
-              fillColor = { argb: 'F4BFD4' };
-
-              // for (let colIndex = 1; colIndex <= table.rows[r - 1].cells.length; colIndex++) {
-              //   console.log(" a", colIndex);
-
-              //   if (r + 3 === c) {
-              //     fillColor = { argb: 'F4BFD4' }; // Set your desired color
-              //   }
-              // }
-              // console.log("Chủ Nhật nằm ở hàng:", r + 3, "cột:", c);
-
-              break;
-            case 6: // Thứ 6
-              fillColor = { argb: 'e4eee7' }; // Màu xám nhạt cho các ngày từ Thứ 2 đến Thứ 6
-              break;
-
-            default:
-              break;
+              default:
+                break;
+            }
           }
         }
-
-        // Apply fill color to the cell
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -201,6 +205,28 @@ export const Timecard = () => {
           right: { style: 'thin', color: { argb: 'FF000000' } },
         };
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      }
+    }
+
+    for (let r = 1; r <= table.rows.length; r++) {
+      for (let c = 1; c <= table.rows[r - 1].cells.length; c++) {
+        const cell = worksheet.getCell(
+          `${String.fromCharCode(64 + c)}${startRow + r - 1}`,
+        );
+        if (tempSunAddresses.some((address) => address === cell.address)) {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'F4BFD4' },
+          };
+        }
+        if (tempSatAddresses.some((address) => address === cell.address)) {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'e4eee7' },
+          };
+        }
       }
     }
     const rowIndexHead = 4;
@@ -232,8 +258,6 @@ export const Timecard = () => {
         `${String.fromCharCode(64 + col)}${rowIndex}`,
       );
       if (col === custom_start || col === custom_end) {
-        console.log('aaa');
-
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',

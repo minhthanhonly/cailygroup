@@ -28,7 +28,6 @@ interface TimecardParams {
 }
 
 export const TimecardList: React.FC = () => {
-
   const axiosPrivate = useAxiosPrivate();
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [selectedGroupName, setSelectedGroupName] = useState<string | null>(
@@ -113,7 +112,32 @@ export const TimecardList: React.FC = () => {
     selectedIndex: number,
   ) => {
     const { month, year, daysInMonth } = selectedDates[selectedIndex] || {};
-    redirectToTimecards(dataId, month, year, daysInMonth, 1);
+    console.log(dataId, selectedIndex, daysInMonth);
+    const ngayHienTai = new Date();
+    const thangHienTai = ngayHienTai.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
+
+    // Tạo mảng với 5 phần tử
+    const mangNgayTrongThang = Array(5)
+      .fill(null)
+      .map((_, index) => {
+        // Tính toán ngày cho mỗi phần tử trong mảng
+        const ngayTrongThang = new Date(
+          ngayHienTai.getFullYear(),
+          thangHienTai - 1,
+          index + 1,
+        );
+
+        // Trả về đối tượng chứa thông tin ngày và các thông tin khác nếu cần
+        return {
+          ngay: ngayTrongThang.toISOString().split('T')[0],
+          // Các thông tin khác có thể thêm vào đây
+        };
+      });
+
+    // In ra kết quả
+    console.log(mangNgayTrongThang);
+    // const { month, year, daysInMonth } = selectedDates[selectedIndex] || {};
+    // redirectToTimecards(dataId, month, year, daysInMonth, 1);
   };
 
   const redirectToTimecards = (
@@ -153,8 +177,6 @@ export const TimecardList: React.FC = () => {
       fetchTimecards();
     }
   }, [MonthYearSelectorDefaultMonth, MonthYearSelectorDefaultYear]);
-
-
 
   return (
     <>
