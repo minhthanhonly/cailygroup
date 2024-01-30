@@ -123,6 +123,7 @@ export const TimecardList: React.FC = () => {
     redirectToTimecards(dataId, month, year, daysInMonth, 0);
   };
 
+  const [checkClick, setCheckClick] = useState(false);
   const [clickMonth, setClickMonth] = useState('');
   const [clickYear, setClickYear] = useState('');
   const [clickName, setClickName] = useState('');
@@ -135,19 +136,21 @@ export const TimecardList: React.FC = () => {
     years: string,
     daysInMonth: Date[],
   ) => {
-    console.log(months);
-    await Promise.all([
-      setClickName(realname),
-      setClickMonth(months),
-      setClickYear(years),
-      setClickdaysInMonth(daysInMonth),
-      setClickID(userId),
-    ]);
-    console.log(realname);
-    setTimeout(function () {
-      exportToExcel();
-    }, 500);
+    setClickName(realname);
+    setClickMonth(months);
+    setClickYear(years);
+    setClickdaysInMonth(daysInMonth);
+    setClickID(userId);
+    setCheckClick(true);
   };
+  useEffect(() => {
+    if (checkClick) {
+      setTimeout(() => {
+        // exportToExcel();
+      }, 500);
+    }
+    setCheckClick(false);
+  }, [checkClick]);
   const exportToExcel = async () => {
     const table = document.getElementById(
       'timecards_table',
