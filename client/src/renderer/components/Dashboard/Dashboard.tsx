@@ -9,6 +9,7 @@ import axios from '../../api/axios';
 import './Dashboard.scss';
 import DashboardTime from './DashboardTime';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { format } from 'date-fns';
 
 function Dashboard() {
   const axiosPrivate = useAxiosPrivate();
@@ -27,26 +28,41 @@ function Dashboard() {
     { hours: string; minutes: string } | undefined
   >(undefined);
   const [checkStart, setCheckStart] = useState(false);
-  const [checkPause, setCheckPause] = useState(false);
   const [checkEnd, setCheckEnd] = useState(false);
+  const [checkDayoff, setCheckDayoff] = useState(false);
 
   const loadStart = async () => {
     try {
-      const response = await axiosPrivate.get('timecards/load/' + usersID);
-
-      if (response.data && response.data.timecard_close) {
-        const timecardClose = response.data.timecard_close;
-        const [hours, minutes] = timecardClose.split(':');
-        setEndTime({ hours, minutes });
-        setCheckEnd(true);
+      const res = await axiosPrivate.get('dayoffs/getforuser/' + usersID);
+      function isLeaveDateInConsData(leaveDate: string) {
+        return res.data.some(
+          (item: { date: string; status: number }) =>
+            item.date === leaveDate && item.status == 1,
+        );
       }
-      if (response.data && response.data.timecard_open) {
-        const timecardOpen = response.data.timecard_open;
-        const [hours, minutes] = timecardOpen.split(':');
-        setStartTime({ hours, minutes });
-        setCheckStart(true);
+      const today = new Date();
+      const formattedDate = today.toLocaleDateString('en-US');
+      const dateObject = new Date(formattedDate);
+      const formattedString = format(dateObject, 'dd-MM-yyyy');
+      if (!isLeaveDateInConsData(formattedString)) {
+        const response = await axiosPrivate.get('timecards/load/' + usersID);
+        if (response.data && response.data.timecard_close) {
+          const timecardClose = response.data.timecard_close;
+          const [hours, minutes] = timecardClose.split(':');
+          setEndTime({ hours, minutes });
+          setCheckEnd(true);
+        }
+        if (response.data && response.data.timecard_open) {
+          const timecardOpen = response.data.timecard_open;
+          const [hours, minutes] = timecardOpen.split(':');
+          setStartTime({ hours, minutes });
+          setCheckStart(true);
+        } else {
+          console.log('No timecard data found.');
+        }
+        setCheckDayoff(true);
       } else {
-        console.log('No timecard data found.');
+        setCheckDayoff(false);
       }
     } catch (error) {
       console.error('Error fetching timecards:', error);
@@ -280,71 +296,78 @@ function Dashboard() {
       <div className="Dashboard-content">
         <DashboardTime />
         <h4>Thời gian làm việc hôm nay</h4>
-        <div className="Dashboard-action">
-          <div className="Dashboard-action--start">
-            <p>Bắt đầu</p>
-            {checkStart ? (
-              <div className="card-time">
-                <div className="card-time--hour">
-                  <small>Giờ</small>
-                  <input
-                    value={startTime?.hours || '00:00'}
-                    onChange={(e) => e.target.value}
-                  />
+        {!checkDayoff ? (
+          <h3 className="center">Hôm nay đã được duyệt nghỉ phép</h3>
+        ) : (
+          <div className="Dashboard-action">
+            <div className="Dashboard-action--start">
+              <p>Bắt đầu</p>
+              {checkStart ? (
+                <div className="card-time">
+                  <div className="card-time--hour">
+                    <small>Giờ</small>
+                    <input
+                      value={startTime?.hours || '00:00'}
+                      onChange={(e) => e.target.value}
+                    />
+                  </div>
+                  :
+                  <div className="card-time--minute">
+                    <small>Phút</small>
+                    <input
+                      value={startTime?.minutes || '00:00'}
+                      onChange={(e) => e.target.value}
+                    />
+                  </div>
                 </div>
-                :
-                <div className="card-time--minute">
-                  <small>Phút</small>
-                  <input
-                    value={startTime?.minutes || '00:00'}
-                    onChange={(e) => e.target.value}
+              ) : (
+                <button
+                  className="Dashboard-action--circle"
+                  onClick={handleStart}
+                >
+                  <img
+                    src={require('../../../../assets/icon-play.png')}
+                    alt=""
+                    className="fluid-image"
                   />
+                </button>
+              )}
+            </div>
+            <div className="Dashboard-action--end">
+              <p>Kết thúc</p>
+              {checkEnd ? (
+                <div className="card-time">
+                  <div className="card-time--hour">
+                    <small>Giờ</small>
+                    <input
+                      value={endTime?.hours || '00:00'}
+                      onChange={(e) => e.target.value}
+                    />
+                  </div>
+                  :
+                  <div className="card-time--minute">
+                    <small>Phút</small>
+                    <input
+                      value={endTime?.minutes || '00:00'}
+                      onChange={(e) => e.target.value}
+                    />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <button
-                className="Dashboard-action--circle"
-                onClick={handleStart}
-              >
-                <img
-                  src={require('../../../../assets/icon-play.png')}
-                  alt=""
-                  className="fluid-image"
-                />
-              </button>
-            )}
+              ) : (
+                <button
+                  className="Dashboard-action--circle"
+                  onClick={handleEnd}
+                >
+                  <img
+                    src={require('../../../../assets/icon-check.png')}
+                    alt=""
+                    className="fluid-image"
+                  />
+                </button>
+              )}
+            </div>
           </div>
-          <div className="Dashboard-action--end">
-            <p>Kết thúc</p>
-            {checkEnd ? (
-              <div className="card-time">
-                <div className="card-time--hour">
-                  <small>Giờ</small>
-                  <input
-                    value={endTime?.hours || '00:00'}
-                    onChange={(e) => e.target.value}
-                  />
-                </div>
-                :
-                <div className="card-time--minute">
-                  <small>Phút</small>
-                  <input
-                    value={endTime?.minutes || '00:00'}
-                    onChange={(e) => e.target.value}
-                  />
-                </div>
-              </div>
-            ) : (
-              <button className="Dashboard-action--circle" onClick={handleEnd}>
-                <img
-                  src={require('../../../../assets/icon-check.png')}
-                  alt=""
-                  className="fluid-image"
-                />
-              </button>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

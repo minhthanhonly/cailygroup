@@ -96,6 +96,7 @@
         function deleteDayoffs($id){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
+            $owner = isset($data['data']['owner'])?$data['data']['owner']:null;
             if (isset($id)) {
                 $deleteQuery = "DELETE FROM dayoffs WHERE id = $id";
                 if (mysqli_query($conn, $deleteQuery)) {
@@ -113,11 +114,13 @@
         }
         function updateDayoffs($id){
             global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            $owner = $data['data']['owner'];
             if (isset($id)) {
                 $status = 1;
-                $sql = "UPDATE dayoffs SET status = ? WHERE id = ?";
+                $sql = "UPDATE dayoffs SET status = ?, owner=? WHERE id = ?";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ii", $status, $id);
+                $stmt->bind_param("isi", $status, $owner, $id);
                 if ($stmt->execute()) {
                     http_response_code(200);
                     echo json_encode(['errCode' => 0]);
