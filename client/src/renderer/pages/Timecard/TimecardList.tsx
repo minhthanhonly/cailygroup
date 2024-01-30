@@ -123,10 +123,8 @@ export const TimecardList: React.FC = () => {
     redirectToTimecards(dataId, month, year, daysInMonth, 0);
   };
 
-  const exportToExcel = async (userId: number, realname: string) => {
-    console.log('userId', userId);
-    console.log('realname', realname);
 
+  const exportToExcel = async (userId: number, realname: string, months: string, years: string, daysInMonth: Date[]) => {
     const table = document.getElementById(
       'timecards_table',
     ) as HTMLTableElement;
@@ -147,6 +145,17 @@ export const TimecardList: React.FC = () => {
     const truncatedWorksheetName =
       `Timecard_${realname}_${month}_${year}`.slice(0, maxWorksheetNameLength);
     const worksheet = workbook.addWorksheet(truncatedWorksheetName);
+
+
+
+    console.log("userId", userId);
+    console.log("realname", realname);
+    console.log("month", months);
+    console.log("year", years);
+    console.log("daysInMonth", daysInMonth);
+
+
+
 
     // Merge cells for the name and date
     worksheet.mergeCells(`A1:G3`);
@@ -537,7 +546,7 @@ export const TimecardList: React.FC = () => {
               <td>
                 <button
                   className="btn btn--medium btn--green"
-                  onClick={() => exportToExcel(data.id, data.realname)}
+                  onClick={() => exportToExcel(data.id, data.realname, selectedMonth, selectedYear, daysInMonth)}
                 >
                   Xuất Thẻ Giờ
                 </button>
