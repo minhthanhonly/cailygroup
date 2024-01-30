@@ -85,6 +85,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setCurrentItemId(itemId);
     setIsUpdatingDayoff(isDayoff);
     setName(name);
+    setOpenMenuIndex(0);
   };
 
   const closeModal = () => {
@@ -98,6 +99,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [timecardDate, setTimecardDate] = useState<string>();
   const [timecard_open_time, settimecard_open_time] = useState<string>();
   const [timecardEnd, setTimecardEnd] = useState<string>();
+  const [validateTimeStart, setValidateTimeStart] = useState(0);
+  const [validateErr, setValidateErr] = useState(0);
   const [timecardNote, setTimecardNote] = useState<string>();
   const [timecardDateEdit, setTimecardDateEdit] = useState<string | null>(null);
   const openModaldelete = (
@@ -117,6 +120,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setOpenModal(isTimecards);
     setDeleteModalOpen(true);
     setTimecardDateEdit(date);
+    setOpenMenuIndex(0);
   };
   const closeModaldelete = () => {
     setDeleteModalOpen(false);
@@ -459,7 +463,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_time: time.timecard_time,
         timecard_timeover: time.timecard_timeover,
       };
-      console.log(dataTime);
       try {
         const response = await axiosPrivate.post('timecarddetails/update', {
           dataTime,
@@ -646,25 +649,49 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     fetchDayoffs();
     closeModal();
   };
+  const isValidTimeFormat = (input: string) => {
+    const timeRegex = /^(0?[0-9]|1[0-9]|2[0-4]):[0-5][0-9]$/;
+    return timeRegex.test(input);
+  };
   const handleChangeTimecards = async (id: number) => {
-    if (timecard_open_time) {
-      let time = await workingTime(timecard_open_time, timecardEnd);
-      const response = await axiosPrivate.post('timecarddetails/updateall', {
-        id: timecardID,
-        timecard_open: timecard_open_time,
-        timecard_close: timecardEnd,
-        timecard_time: time.timecard_time,
-        timecard_timeover: time.timecard_timeover,
-        timecard_comment: timecardNote,
-        editor: users.realname,
-      });
-      console.log(response.data);
+    let err = 0;
+    setValidateErr(0);
+    if (timecard_open_time && timecardEnd) {
+      if (
+        isValidTimeFormat(timecardEnd) &&
+        isValidTimeFormat(timecard_open_time)
+      ) {
+        err = 0;
+        setValidateErr(0);
+      } else {
+        if (!isValidTimeFormat(timecard_open_time)) {
+          err = 1;
+          setValidateErr(1);
+        }
+        if (!isValidTimeFormat(timecardEnd)) {
+          err = 2;
+          setValidateErr(2);
+        }
+      }
+      if (err == 0) {
+        let time = await workingTime(timecard_open_time, timecardEnd);
+        const response = await axiosPrivate.post('timecarddetails/updateall', {
+          id: timecardID,
+          timecard_open: timecard_open_time,
+          timecard_close: timecardEnd,
+          timecard_time: time.timecard_time,
+          timecard_timeover: time.timecard_timeover,
+          timecard_comment: timecardNote,
+          editor: users.realname,
+        });
+        console.log(response.data);
+        fetchTimecardOpen();
+        setTimeout(() => {
+          calculateTotalTime();
+        }, 400);
+        closeModaldelete();
+      }
     }
-    fetchTimecardOpen();
-    setTimeout(() => {
-      calculateTotalTime();
-    }, 400);
-    closeModaldelete();
   };
   const handleNewTimeCard = async () => {
     let day, month, year;
@@ -876,9 +903,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 )}
               </td>
               <td>
-                {timecardOpen.some(
-                  (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
-                ) ? (
+                {isHoliday(day).isHoliday ||
+                isDayoff(day).isDayoff ? null : timecardOpen.some(
+                    (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
+                  ) ? (
                   <>
                     {timecardOpen
                       .filter(
@@ -999,17 +1027,18 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                 )}
               </td>
               <td className="box-menu">
-                <a
-                  className={
-                    openMenuIndex === rowIndex
-                      ? 'color-red box-menu__dropdown'
-                      : 'box-menu__dropdown'
-                  }
-                  onClick={() => openMenu(rowIndex)}
-                >
-                  [...]
-                </a>
-
+                {isHoliday(day).isHoliday ? null : (
+                  <a
+                    className={
+                      openMenuIndex === rowIndex
+                        ? 'color-red box-menu__dropdown'
+                        : 'box-menu__dropdown'
+                    }
+                    onClick={() => openMenu(rowIndex)}
+                  >
+                    [...]
+                  </a>
+                )}
                 {openMenuIndex === rowIndex && (
                   <>
                     <ul className="list-menu">
@@ -1221,7 +1250,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         </tr>
       ))}
 
-      <tr>
+      <tr className="table--01__trLast">
         <td> Tổng số giờ</td>
         <td></td>
         <td></td>
@@ -1290,6 +1319,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       defaultValue={timecard_open_time}
                       onChange={(e) => settimecard_open_time(e.target.value)}
                     />
+                    {validateErr == 1 ? (
+                      <p className="text-error">
+                        * Nhập sai định dạng(ví dụ: 7:03 hoặc 07:03)
+                      </p>
+                    ) : null}
                   </td>
                 </tr>
                 <tr>
@@ -1300,6 +1334,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                       defaultValue={timecardEnd}
                       onChange={(e) => setTimecardEnd(e.target.value)}
                     />
+                    {validateErr == 2 ? (
+                      <p className="text-error">
+                        * Nhập sai định dạng(ví dụ: 7:03 hoặc 07:03)
+                      </p>
+                    ) : null}
                   </td>
                 </tr>
                 <tr>

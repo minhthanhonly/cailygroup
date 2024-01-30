@@ -4,7 +4,6 @@ import './From.scss';
 import 'react-datepicker/dist/react-datepicker.css';
 import TimePickerButton from '../Modal/TimeSelect';
 import { format } from 'date-fns';
-import axios from '../../api/axios';
 import Modaldelete from '../Modal/Modaldelete';
 import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
@@ -18,7 +17,7 @@ export const FormLeave: React.FC = () => {
   const [leaveDate, setLeaveDate] = useState([new Date()]);
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  const [noteErr, setNoteErr] = useState(false);
+  const [noteErr, setNoteErr] = useState(0);
 
   const [isChecked, setIsChecked] = useState(true);
   const [opentimeValue, setOpentimeValue] = useState<string | undefined>(
@@ -192,8 +191,27 @@ export const FormLeave: React.FC = () => {
       status: 0,
       owner: '',
     };
+    let cons = await axiosPrivate.get('dayoffs/getforuser/' + users.id);
+    const leaveDatesArray = formattedLeaveDate.split(', ');
+    function isLeaveDateInConsData(leaveDate: string) {
+      return cons.data.some(
+        (item: { date: string }) => item.date === leaveDate,
+      );
+    }
+    let error = 0;
     if (note) {
-      setNoteErr(false);
+      setNoteErr(0);
+      leaveDatesArray.forEach((leaveDate) => {
+        if (isLeaveDateInConsData(leaveDate)) {
+          setNoteErr(2);
+          error = 2;
+        }
+      });
+    } else {
+      setNoteErr(1);
+      error = 1;
+    }
+    if (error == 0) {
       axiosPrivate
         .post('dayoffs/add', { group_data })
         .then((response) => {
@@ -207,8 +225,6 @@ export const FormLeave: React.FC = () => {
             console.error('Server error message:', error.response.data);
           }
         });
-    } else {
-      setNoteErr(true);
     }
     closeModaldelete();
   };
@@ -260,6 +276,9 @@ export const FormLeave: React.FC = () => {
                   value={leaveDate}
                   format="DD-MM-YYYY"
                 />
+                {noteErr == 2 ? (
+                  <p className="text-error">* Xin nghỉ phép có ngày trùng!</p>
+                ) : null}
                 <label className="checkbox">
                   <input
                     type="checkbox"
@@ -325,7 +344,7 @@ export const FormLeave: React.FC = () => {
                   value={note}
                   onChange={(event) => setNote(event.target.value)}
                 />
-                {noteErr ? (
+                {noteErr == 1 ? (
                   <p className="text-error">* Phải nhập lý do nghỉ!</p>
                 ) : null}
               </div>
