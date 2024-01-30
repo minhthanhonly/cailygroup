@@ -246,7 +246,7 @@ export const Timecard = () => {
       maxWorksheetNameLength,
     );
 
-    for (let r = startRowToDelete; r <= lastRowIndex; r++) {
+    for (let r = lastRowIndex; r <= lastRowIndex; r++) {
       const cellContent = worksheet.getCell(`D${r}`).value;
       worksheet.getCell(`B${r}`).value = cellContent;
       const cellContentE = worksheet.getCell(`E${r}`).value;
@@ -271,25 +271,25 @@ export const Timecard = () => {
       color: { argb: 'FFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
     };
 
-    // for (let r = 9; r < lastRowIndex; r++) {
-    //   const cellB = worksheet.getCell(`B${r}`);
-    //   const cellC = worksheet.getCell(`C${r}`);
+    for (let r = 9; r < lastRowIndex; r++) {
+      const cellB = worksheet.getCell(`B${r}`);
+      const cellC = worksheet.getCell(`C${r}`);
 
-    //   // Function to remove words starting with 'Bắt đầu' or ending with 'Kết thúc'
-    //   const removeWords = (cell: ExcelJS.Cell) => {
-    //     const content = cell.value;
-    //     if (typeof content === 'string' || typeof content === 'number') {
-    //       const updatedContent = content
-    //         .toString()
-    //         .replace(/Bắt đầu|Kết thúc/g, '');
-    //       cell.value = updatedContent;
-    //     }
-    //   };
-    //   // Remove words for cells in column B
-    //   removeWords(cellB);
-    //   // Remove words for cells in column C
-    //   removeWords(cellC);
-    // }
+      // Function to remove words starting with 'Bắt đầu' or ending with 'Kết thúc'
+      const removeWords = (cell: ExcelJS.Cell) => {
+        const content = cell.value;
+        if (typeof content === 'string' || typeof content === 'number') {
+          const updatedContent = content
+            .toString()
+            .replace(/Bắt đầu|Kết thúc/g, '');
+          cell.value = updatedContent;
+        }
+      };
+      // Remove words for cells in column B
+      removeWords(cellB);
+      // Remove words for cells in column C
+      removeWords(cellC);
+    }
 
     // Save the workbook to a file
     const buffer = await workbook.xlsx.writeBuffer();

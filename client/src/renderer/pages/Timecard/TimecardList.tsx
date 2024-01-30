@@ -367,26 +367,26 @@ export const TimecardList: React.FC = () => {
       maxWorksheetNameLength,
     );
 
-    // for (let r = startRowToDelete; r <= lastRowIndex; r++) {
-    //   const cellContent = worksheet.getCell(`D${r}`).value;
-    //   worksheet.getCell(`B${r}`).value = cellContent;
-    //   const cellContentE = worksheet.getCell(`E${r}`).value;
-    //   worksheet.getCell(`D${r}`).value = cellContentE;
-    //   if (r === lastRowIndex) {
-    //     worksheet.getCell(`E${r}`).value = null;
-    //   }
-    // }
-    // const textToAdd = 'Ngoài giờ';
-    // worksheet.getCell(`C${lastRowIndex}`).value = textToAdd;
-    // const cellC = worksheet.getCell(`C${lastRowIndex}`);
-    // cellC.fill = {
-    //   type: 'pattern',
-    //   pattern: 'solid',
-    //   fgColor: { argb: '000000' },
-    // };
-    // cellC.font = {
-    //   color: { argb: 'FFFFFF' },
-    // };
+    for (let r = lastRowIndex; r <= lastRowIndex; r++) {
+      const cellContent = worksheet.getCell(`D${r}`).value;
+      worksheet.getCell(`B${r}`).value = cellContent;
+      const cellContentE = worksheet.getCell(`E${r}`).value;
+      worksheet.getCell(`D${r}`).value = cellContentE;
+      if (r === lastRowIndex) {
+        worksheet.getCell(`E${r}`).value = null;
+      }
+    }
+    const textToAdd = 'Ngoài giờ';
+    worksheet.getCell(`C${lastRowIndex}`).value = textToAdd;
+    const cellC = worksheet.getCell(`C${lastRowIndex}`);
+    cellC.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '000000' },
+    };
+    cellC.font = {
+      color: { argb: 'FFFFFF' },
+    };
     for (let r = 9; r < lastRowIndex; r++) {
       const cellB = worksheet.getCell(`B${r}`);
       const cellC = worksheet.getCell(`C${r}`);
