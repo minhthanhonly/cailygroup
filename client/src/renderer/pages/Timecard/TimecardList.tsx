@@ -136,30 +136,20 @@ export const TimecardList: React.FC = () => {
     years: string,
     daysInMonth: Date[],
   ) => {
-    console.log(months);
-    await Promise.all([
-      setClickName(realname),
-      setClickMonth(months),
-      setClickYear(years),
-      setClickdaysInMonth(daysInMonth),
-      setClickID(userId),
-      setCheckClick(true),
-    ]);
-    console.log('Selected Month:', months);
-    console.log('Selected Year:', years);
-    console.log('Days in Month:', daysInMonth);
-    console.log(realname);
-    setTimeout(function () {
-      exportToExcel(realname);
-    }, 500);
+    setClickName(realname);
+    setClickMonth(months);
+    setClickYear(years);
+    setClickdaysInMonth(daysInMonth);
+    setClickID(userId);
+    setCheckClick(true);
   };
   useEffect(() => {
     if (checkClick) {
       setTimeout(() => {
-        // exportToExcel();
-      }, 500);
+        exportToExcel(clickName);
+        setCheckClick(false);
+      }, 1000);
     }
-    setCheckClick(false);
   }, [checkClick]);
   const exportToExcel = async (realname: string) => {
     const table = document.getElementById(
@@ -510,14 +500,17 @@ export const TimecardList: React.FC = () => {
               <td>
                 <button
                   className="btn btn--medium btn--green"
+                  style={checkClick ? { cursor: 'not-allowed' } : undefined}
                   onClick={() =>
-                    handleClick(
-                      data.id,
-                      data.realname,
-                      selectedMonth,
-                      selectedYear,
-                      daysInMonth,
-                    )
+                    checkClick
+                      ? null
+                      : handleClick(
+                          data.id,
+                          data.realname,
+                          selectedMonth,
+                          selectedYear,
+                          daysInMonth,
+                        )
                   }
                 >
                   Xuất Thẻ Giờ
@@ -534,8 +527,7 @@ export const TimecardList: React.FC = () => {
         onPageChange={handlePageChange}
       />
 
-      <div className="table-container table--01">
-        {/* style={{ display: 'none' }} */}
+      <div className="table-container table--01" style={{ display: 'none' }}>
         <table id="timecards_table" className="table table__custom">
           <thead id="timecards_table_head">
             <CTableTimeCardHead />
