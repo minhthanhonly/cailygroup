@@ -63,7 +63,7 @@ export const Group = () => {
                 <div className="row">
                   <div className="col-12">
                     <div className="form-group">
-                      <label>Sửa Tên nhóm
+                      <label>Sửa tên nhóm
                         <img src={require('../../../../assets/icn-group.png')} alt="" className="fluid-image"/>
                       </label>
                       <input
@@ -181,14 +181,14 @@ export const Group = () => {
           setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
         }
         catch(error){console.error('Lỗi khi thêm dữ liệu:', error);}
-    } 
+    }
   };
 
   return (
     <>
       <Heading2 text="Quản lý nhóm" />
       <div className="form-group form-addgroup">
-        <label>Nhập Tên Nhóm:</label>
+        <label>Tên Nhóm:</label>
         <img src={require('../../../../assets/icn-group.png')} alt="" className="fluid-image form-addgroup__image"/>
         <input
           value={groupName}

@@ -16,7 +16,7 @@ export const Dayoff = () => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [showTable, setShowTable] = useState(true);
   const [id, setID] = useState<string>();
-  const [isChecked, setIsChecked] = useState(true);
+  const [isChecked, setIsChecked] = useState(false);
   const openModaldelete = (ids: string) => {
     setID(ids);
     setDeleteModalOpen(true);
@@ -99,6 +99,8 @@ export const Dayoff = () => {
     return hours * 60 + minutes;
   }
   const currentDate = new Date();
+  const yesterday = new Date(currentDate);
+  yesterday.setDate(currentDate.getDate() - 1);
   for (let i = 0; i < listOfGroups.length; i++) {
     let dynamicAction;
     let isDateInPast = false;
@@ -109,8 +111,7 @@ export const Dayoff = () => {
         const formattedDate = `${month}-${day}-${year}`;
 
         const groupDate = new Date(formattedDate.replace(/\s/g, ''));
-
-        if (!isNaN(groupDate.getTime()) && groupDate < currentDate) {
+        if (!isNaN(groupDate.getTime()) && groupDate < yesterday) {
           isDateInPast = true;
           break;
         }
@@ -134,25 +135,16 @@ export const Dayoff = () => {
     } else if (listOfGroups[i].status === '2') {
       dynamicAction = (
         <div className="center">
-          <p className="icon icon--check">
-            <img
-              src={require('../../../../assets/minus-button.png')}
-              alt="edit"
-              className="fluid-image"
-            />
-          </p>
-          {listOfGroups[i].owner}
+          <p className="clr-red">Không được duyệt bởi: </p>
+          <p className="clr-blue">{listOfGroups[i].owner}</p>
         </div>
       );
     } else {
       dynamicAction = (
-        <p className="icon icon--check">
-          <img
-            src={require('../../../../assets/check.png')}
-            alt="edit"
-            className="fluid-image"
-          />
-        </p>
+        <>
+          <p className="center clr-green">Đã được duyệt bởi:</p>
+          <p className="clr-blue">{listOfGroups[i].owner}</p>
+        </>
       );
     }
     isChecked
@@ -249,26 +241,13 @@ export const Dayoff = () => {
     } else if (listOfGroupsDayoff[i].status === '2') {
       dynamicAction = (
         <div className="center">
-          <p className="icon icon--check">
-            <img
-              src={require('../../../../assets/minus-button.png')}
-              alt="edit"
-              className="fluid-image"
-            />
-          </p>
-          {listOfGroupsDayoff[i].owner}
+          <p className="clr-red">Không được duyệt</p>
+          <p className="clr-blue">{listOfGroupsDayoff[i].owner}</p>
         </div>
       );
     } else {
-      dynamicAction = (
-        <p className="icon icon--check">
-          <img
-            src={require('../../../../assets/check.png')}
-            alt="edit"
-            className="fluid-image"
-          />
-        </p>
-      );
+      dynamicAction = <p className="center clr-green">Đã được duyệt bởi</p>;
+      <p className="clr-blue">{listOfGroupsDayoff[i].owner}</p>;
     }
     isChecked
       ? DataTables.push({
@@ -358,7 +337,8 @@ export const Dayoff = () => {
     if (event) {
       event.preventDefault();
       try {
-        await axiosPrivate.delete('dayoffs/delete/' + dayoffId);
+        let a = await axiosPrivate.delete('dayoffs/delete/' + dayoffId);
+        console.log(a.data);
         const updatedList = await axiosPrivate.get(
           'dayoffs/getforuser/' + users.id,
         );
@@ -462,7 +442,7 @@ export const Dayoff = () => {
           checked={isChecked}
           onChange={handleCheckboxChange}
         />{' '}
-        hiển thị những ngày nghỉ trước đây
+        Hiển thị những ngày nghỉ trước đây
       </label>
       {showTable ? null : (
         <div className="left select-ml0 mt20">
@@ -473,11 +453,11 @@ export const Dayoff = () => {
         <CTableHead
           heads={[
             'Họ và tên',
-            'nhóm',
+            'Nhóm',
             'Số ngày nghỉ',
             'Ngày nghỉ phép',
             'Ghi chú',
-            'Hủy đăng ký nghỉ ',
+            'Trạng thái',
           ]}
         />
         {showTable ? (

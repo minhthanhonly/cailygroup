@@ -10,6 +10,7 @@ interface MonthYearSelectorProps {
   ) => void;
   initialMonth?: string;
   initialYear?: string;
+  isDefaultSelected?: boolean; // Thêm prop này
 }
 
 const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({
@@ -19,6 +20,7 @@ const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({
 }) => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
+  const [isDefaultSelected, setIsDefaultSelected] = useState(true);
 
   const months = Array.from({ length: 12 }, (_, index) =>
     (index + 1).toString(),
@@ -29,13 +31,28 @@ const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({
     (_, index) => new Date().getFullYear() - index,
   );
   // console.log(selectedMonth);
-  useEffect(() => {
-    const currentMonth = initialMonth || new Date().getMonth() + 1;
-    const currentYear = initialYear || new Date().getFullYear();
 
-    setSelectedMonth(currentMonth.toString());
-    setSelectedYear(currentYear.toString());
-  }, [initialMonth, initialYear]);
+
+  useEffect(() => {
+    if (isDefaultSelected) {
+      const currentMonth = initialMonth || new Date().getMonth() + 1;
+      const currentYear = initialYear || new Date().getFullYear();
+
+      setSelectedMonth(currentMonth.toString());
+      setSelectedYear(currentYear.toString());
+      const daysInMonth = getDaysInMonth(currentYear.toString(), currentMonth.toString());
+      onChange(currentMonth.toString(), currentYear.toString(), daysInMonth);
+    }
+  }, [isDefaultSelected, initialMonth, initialYear]);
+
+
+  // useEffect(() => {
+  //   const currentMonth = initialMonth || new Date().getMonth() + 1;
+  //   const currentYear = initialYear || new Date().getFullYear();
+
+  //   setSelectedMonth(currentMonth.toString());
+  //   setSelectedYear(currentYear.toString());
+  // }, [initialMonth, initialYear]);
 
   const handleMonthChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;

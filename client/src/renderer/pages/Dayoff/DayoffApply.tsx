@@ -45,7 +45,8 @@ export const DayoffApply = () => {
     ).getTime();
 
     if (dateA !== dateB) {
-      return dateA - dateB;
+      // Sắp xếp giảm dần theo ngày tháng năm
+      return dateB - dateA;
     } else {
       const timeStartA = parseTime((a as any).time_start);
       const timeStartB = parseTime((b as any).time_start);
@@ -64,8 +65,26 @@ export const DayoffApply = () => {
     const [hours, minutes] = timeString.split(':').map(Number);
     return hours * 60 + minutes;
   }
-
+  const currentDate = new Date();
+  const threeMonthsAgo = new Date(currentDate);
+  threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
   for (let i = 0; i < listOfGroups.length; i++) {
+    let isDateInPast = false;
+    const dates = listOfGroups[i].date.split(',').map((date) => date.trim());
+
+    for (const date of dates) {
+      if (/^\d{2}-\d{2}-\d{4}$/.test(date)) {
+        const [day, month, year] = date.split('-');
+        const formattedDate = `${month}-${day}-${year}`;
+        const groupDate = new Date(formattedDate.replace(/\s/g, ''));
+        if (!isNaN(groupDate.getTime()) && groupDate < threeMonthsAgo) {
+          isDateInPast = true;
+          break;
+        }
+      } else {
+        console.log(`${date} không phải là ngày hợp lệ.`);
+      }
+    }
     let dynamicYes = (
       <a
         className="btn btn--medium btn--green"
@@ -91,41 +110,41 @@ export const DayoffApply = () => {
       ) : (
         'đã từ chối'
       );
-    if (listOfGroups[i].status != 1) {
-      DataTable.push({
-        realname: `${listOfGroups[i].realname}`,
-        group_name: `${listOfGroups[i].group_name}`,
-        day_number: `${listOfGroups[i].day_number}`,
-        date: (
-          <React.Fragment>
-            {listOfGroups[i].date.split(',').map((date, index, array) => {
-              const numberOfDays = array.length;
-              return (
-                <React.Fragment key={date}>
-                  {index === 0
-                    ? numberOfDays === 1
-                      ? `${listOfGroups[i].time_start} đến ${
+    isDateInPast
+      ? null
+      : DataTable.push({
+          realname: `${listOfGroups[i].realname}`,
+          group_name: `${listOfGroups[i].group_name}`,
+          day_number: `${listOfGroups[i].day_number}`,
+          date: (
+            <React.Fragment>
+              {listOfGroups[i].date.split(',').map((date, index, array) => {
+                const numberOfDays = array.length;
+                return (
+                  <React.Fragment key={date}>
+                    {index === 0
+                      ? numberOfDays === 1
+                        ? `${listOfGroups[i].time_start} đến ${
+                            listOfGroups[i].time_end
+                          } ngày ${date.trim()}`
+                        : `${
+                            listOfGroups[i].time_start
+                          } đến ${closetimeValue} Ngày: ${date.trim()}`
+                      : index === numberOfDays - 1
+                      ? `${opentimeValue} đến ${
                           listOfGroups[i].time_end
-                        } ngày ${date.trim()}`
-                      : `${
-                          listOfGroups[i].time_start
-                        } đến ${closetimeValue} Ngày: ${date.trim()}`
-                    : index === numberOfDays - 1
-                    ? `${opentimeValue} đến ${
-                        listOfGroups[i].time_end
-                      } Ngày: ${date.trim()}`
-                    : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
-                  {index !== array.length - 1 && <br />}{' '}
-                </React.Fragment>
-              );
-            })}
-          </React.Fragment>
-        ),
-        note: `${listOfGroups[i].note}`,
-        yes: dynamicYes,
-        no: dynamicNo,
-      } as unknown as FieldGroups);
-    }
+                        } Ngày: ${date.trim()}`
+                      : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
+                    {index !== array.length - 1 && <br />}{' '}
+                  </React.Fragment>
+                );
+              })}
+            </React.Fragment>
+          ),
+          note: `${listOfGroups[i].note}`,
+          yes: dynamicYes,
+          no: dynamicNo,
+        } as unknown as FieldGroups);
   }
 
   const fetchData = useCallback(async () => {
