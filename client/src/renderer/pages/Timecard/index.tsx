@@ -10,11 +10,8 @@ import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import './Timecard.scss';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 4546ec10851275d167a61d514372d96012ff19e5
 
 interface FieldUsers {
   id: number;
@@ -68,16 +65,7 @@ export const Timecard = () => {
 
     if (!table) { console.error('Không tìm thấy bảng.'); return; }
 
-<<<<<<< HEAD
     const tableWithRows = table as HTMLTableElement & { rows: HTMLCollectionOf<HTMLTableRowElement>; };
-=======
-    // const rowIndexToDelete = 41; // Đổi giá trị này thành chỉ số dòng bạn muốn xoá
-    // table.deleteRow(rowIndexToDelete);
-
-    const tableWithRows = table as HTMLTableElement & {
-      rows: HTMLCollectionOf<HTMLTableRowElement>;
-    };
->>>>>>> 4546ec10851275d167a61d514372d96012ff19e5
     const month = selectedMonth;
     const year = selectedYear;
     const startRow = 4;
@@ -213,14 +201,7 @@ export const Timecard = () => {
     const custom_start = 4; // Cột E
     const custom_end = 5; // Cột F
 
-<<<<<<< HEAD
     const rowIndex = lastRowIndex; // Dùng rowIndex của dòng mới thêm vào
-=======
-    // Thêm một dòng mới
-
-    // Dùng rowIndex của dòng mới thêm vào
-    const rowIndex = lastRowIndex;
->>>>>>> 4546ec10851275d167a61d514372d96012ff19e5
 
     for (let col = startColumn; col <= endColumn; col++) {
       const cell = worksheet.getCell(`${String.fromCharCode(64 + col)}${rowIndex}`,);
