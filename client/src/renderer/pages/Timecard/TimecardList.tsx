@@ -11,8 +11,7 @@ import { UserRole } from '../../components/UserRole';
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
-
-import { Timecard } from "./index";
+import { Timecard } from './index';
 import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
 import CTableTimeCardBody from '../../components/Table/Table_01/CTableTimeCardBody';
 
@@ -40,7 +39,6 @@ export const TimecardList: React.FC = () => {
   );
   const [filteredUsers, setFilteredUsers] = useState<FieldUsers[] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
-
 
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
@@ -87,7 +85,7 @@ export const TimecardList: React.FC = () => {
     setMonthYearSelectorDefaultMonth(currentMonth.toString());
     setMonthYearSelectorDefaultYear(currentYear.toString());
 
-    res.data.forEach((users: { realname: any; id: any; }) => {
+    res.data.forEach((users: { realname: any; id: any }) => {
       console.log(`ID of ${users.realname}: ${users.id}`);
     });
   };
