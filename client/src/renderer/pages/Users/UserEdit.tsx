@@ -10,33 +10,25 @@ export default function UserEdit() {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const {id} = useParams();
-  const [initialValue, setInitialValue] = useState('');
   const [formValue, setFormValue] = useState({
     userid: '',
     password: '',
     realname: '',
     authority: '',
   });
+  const [apiData, setApiData] = useState({
+    realname: '',
+  });
   const [passwordNew, setPasswordNew] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [selectedValue, setSelectedValue] = useState({
     user_group: '',
   });
+  const [apiDataSelect, setApiDataSelect] = useState({
+    user_group: '',
+  });
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [message, setMessage] = useState('');
-
-  /*
-   * HANDLE INPUT
-  */
-  const handleInput = (event:any) => {
-		setFormValue({...formValue, [event.target.name]:event.target.value})
-	}
-
-  /*
-   * HANDLE SELECT CHANGE
-  */
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedValue({ ...selectedValue, [event.target.name]: event.target.value });
-  }
 
   /*
    * GET DATA USER BY ID
@@ -44,6 +36,8 @@ export default function UserEdit() {
   const fetchUsersById = async function () {
     const res = await axiosPrivate.get('users/edit/' + id);
     setFormValue(res.data);
+    setApiData(res.data);
+    setApiDataSelect(res.data);
     setSelectedValue({...selectedValue, user_group: res.data.user_group})
   };
 
@@ -52,13 +46,36 @@ export default function UserEdit() {
   }, []);
 
   /*
+   * HANDLE INPUT
+  */
+  const handleInput = (event:any) => {
+		setFormValue({...formValue, [event.target.name]:event.target.value})
+    const newValue = event.target.value;
+    const isInputDifferentFromApi = apiData.realname !== newValue;
+    (isInputDifferentFromApi === true) ? setIsDisabled(false) : setIsDisabled(true);
+	}
+
+  /*
+   * HANDLE SELECT CHANGE
+  */
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedValue({ ...selectedValue, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    switch (name) {
+      case "user_group":
+        (apiDataSelect.user_group === value) ? setIsDisabled(true) :  setIsDisabled(false);
+        break;
+      default:
+        setIsDisabled(false)
+        break;
+    }
+  }
+
+  /*
    * HANDLE BUTTON CANCEL
   */
   const handleCancel = () => {
-    fetchUsersById();
-    setInitialValue('');
-    setPasswordNew(initialValue);
-    setPasswordConfirm(initialValue);
+    navigate('/users/detail/'+formValue.userid);
   };
 
   /*
@@ -261,7 +278,7 @@ export default function UserEdit() {
                 />
               </div>
               <div className="wrp-button">
-                <button className="btn btn--green" type="submit" onClick={handleSubmit}>Xác nhận</button>
+                <button className="btn btn--green" type="submit" onClick={handleSubmit} disabled={isDisabled}>Xác nhận</button>
                 <button className="btn btn--orange" onClick={handleCancel}>Hủy</button>
               </div>
 						</div>
