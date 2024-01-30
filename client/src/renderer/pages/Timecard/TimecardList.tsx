@@ -123,8 +123,32 @@ export const TimecardList: React.FC = () => {
     redirectToTimecards(dataId, month, year, daysInMonth, 0);
   };
 
-
-  const exportToExcel = async (userId: number, realname: string, months: string, years: string, daysInMonth: Date[]) => {
+  const [clickMonth, setClickMonth] = useState('');
+  const [clickYear, setClickYear] = useState('');
+  const [clickName, setClickName] = useState('');
+  const [clickdaysInMonth, setClickdaysInMonth] = useState<Date[]>([]);
+  const [clickID, setClickID] = useState<number | undefined>(undefined);
+  const handleClick = async (
+    userId: number,
+    realname: string,
+    months: string,
+    years: string,
+    daysInMonth: Date[],
+  ) => {
+    console.log(months);
+    await Promise.all([
+      setClickName(realname),
+      setClickMonth(months),
+      setClickYear(years),
+      setClickdaysInMonth(daysInMonth),
+      setClickID(userId),
+    ]);
+    console.log(realname);
+    setTimeout(function () {
+      exportToExcel();
+    }, 500);
+  };
+  const exportToExcel = async () => {
     const table = document.getElementById(
       'timecards_table',
     ) as HTMLTableElement;
@@ -143,24 +167,11 @@ export const TimecardList: React.FC = () => {
     const workbook = new ExcelJS.Workbook();
     const maxWorksheetNameLength = 100;
     const truncatedWorksheetName =
-      `Timecard_${realname}_${month}_${year}`.slice(0, maxWorksheetNameLength);
+      `Timecard_${clickName}_${month}_${year}`.slice(0, maxWorksheetNameLength);
     const worksheet = workbook.addWorksheet(truncatedWorksheetName);
-
-
-
-    console.log("userId", userId);
-    console.log("realname", realname);
-    console.log("month", months);
-    console.log("year", years);
-    console.log("daysInMonth", daysInMonth);
-
-
-
-
-    // Merge cells for the name and date
     worksheet.mergeCells(`A1:G3`);
     const cellA1 = worksheet.getCell(`A1`);
-    cellA1.value = ` ${realname || ''} \n ${month}/${year}`;
+    cellA1.value = ` ${clickName || ''} \n ${month}/${year}`;
     cellA1.alignment = {
       horizontal: 'center',
       vertical: 'middle',
@@ -180,7 +191,6 @@ export const TimecardList: React.FC = () => {
       const currentRow = worksheet.getRow(rowIndex);
       currentRow.height = 0.5; // Đặt chiều cao mong muốn (đơn vị là pixels)
     }
-    // Thêm dữ liệu từ bảng vào ô A4:I4
     const rowsArray = Array.from(table.rows);
     const startRowToDelete = 5;
     const numberOfRowsToDelete = 4;
@@ -245,13 +255,9 @@ export const TimecardList: React.FC = () => {
           pattern: 'solid',
           fgColor: fillColor,
         };
-
-        // Check if the cell content is empty
         if (!cellContent.trim()) {
-          fillColor = { argb: 'FFFFFF' }; // Set color for empty cells
+          fillColor = { argb: 'FFFFFF' };
         }
-
-        // Apply fill color to the cell again for empty cells
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -301,10 +307,10 @@ export const TimecardList: React.FC = () => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: '00000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
+        fgColor: { argb: '00000000' },
       };
       cell.font = {
-        color: { argb: 'FFFFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
+        color: { argb: 'FFFFFFFF' },
       };
     }
 
@@ -313,56 +319,47 @@ export const TimecardList: React.FC = () => {
     const endColumn = 1; // Cột F
     const custom_start = 4; // Cột E
     const custom_end = 5; // Cột F
-
-    // Thêm một dòng mới
-
-    // Dùng rowIndex của dòng mới thêm vào
     const rowIndex = lastRowIndex;
 
     for (let col = startColumn; col <= endColumn; col++) {
       const cell = worksheet.getCell(
         `${String.fromCharCode(64 + col)}${rowIndex}`,
       );
-
-      // Kiểm tra nếu cột là custom_start hoặc custom_end
       if (col === custom_start || col === custom_end) {
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: { argb: 'FFFFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
+          fgColor: { argb: 'FFFFFFFF' },
         };
         cell.font = {
-          color: { argb: 'FF000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
+          color: { argb: 'FF000000' },
         };
       } else {
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: { argb: '00000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
+          fgColor: { argb: '00000000' },
         };
         cell.font = {
-          color: { argb: 'FFFFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
+          color: { argb: 'FFFFFFFF' },
         };
       }
     }
-
     const lastColumnIndex = table.rows[0].cells.length;
     worksheet.spliceColumns(lastColumnIndex, 1);
 
     for (let c = 1; c <= table.rows[0].cells.length - 1; c++) {
       const column = worksheet.getColumn(c);
-      // Kiểm tra xem ô và nội dung có tồn tại không
       const maxWidth = Math.max(
         20,
         ...rowsArray.map((row) => {
           const cell = row.cells[c - 1];
-          return cell && cell.textContent ? cell.clientWidth / 8 : 20; // Nếu ô hoặc nội dung không tồn tại, sử dụng 20 làm giá trị mặc định
+          return cell && cell.textContent ? cell.clientWidth / 8 : 20;
         }),
       );
-      column.width = maxWidth; // Sử dụng giá trị maxWidth để đặt độ rộng của cột
+      column.width = maxWidth;
     }
-    // Combine the variables and truncate if necessary
-    const sheetName = `Timecard_${realname}_${month}_${year}`.slice(
+    const sheetName = `Timecard_${clickName}_${month}_${year}`.slice(
       0,
       maxWorksheetNameLength,
     );
@@ -376,27 +373,20 @@ export const TimecardList: React.FC = () => {
         worksheet.getCell(`E${r}`).value = null;
       }
     }
-
-    // Thêm văn bản vào cột 3 của dòng cuối cùng
     const textToAdd = 'Ngoài giờ';
     worksheet.getCell(`C${lastRowIndex}`).value = textToAdd;
-
-    // Thiết lập màu nền đen và chữ màu trắng cho ô C ở dòng cuối cùng
     const cellC = worksheet.getCell(`C${lastRowIndex}`);
     cellC.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: '000000' }, // Màu đen (ARGB: Alpha, Red, Green, Blue)
+      fgColor: { argb: '000000' },
     };
     cellC.font = {
-      color: { argb: 'FFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
+      color: { argb: 'FFFFFF' },
     };
-
     for (let r = 9; r < lastRowIndex; r++) {
       const cellB = worksheet.getCell(`B${r}`);
       const cellC = worksheet.getCell(`C${r}`);
-
-      // Function to remove words starting with 'Bắt đầu' or ending with 'Kết thúc'
       const removeWords = (cell: ExcelJS.Cell) => {
         const content = cell.value;
         if (typeof content === 'string' || typeof content === 'number') {
@@ -406,51 +396,12 @@ export const TimecardList: React.FC = () => {
           cell.value = updatedContent;
         }
       };
-
-      // Remove words for cells in column B
       removeWords(cellB);
-
-      // Remove words for cells in column C
       removeWords(cellC);
     }
-
-    // Save the workbook to a file
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer]), `${sheetName}.xlsx`);
   };
-
-  // const handleButtonClickExportData = (
-  //   dataId: number,
-  //   selectedIndex: number,
-  // ) => {
-  //   const { month, year, daysInMonth } = selectedDates[selectedIndex] || {};
-  //   console.log(dataId, selectedIndex, daysInMonth);
-  //   const ngayHienTai = new Date();
-  //   const thangHienTai = ngayHienTai.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
-
-  //   // Tạo mảng với 5 phần tử
-  //   const mangNgayTrongThang = Array(31)
-  //     .fill(null)
-  //     .map((_, index) => {
-  //       // Tính toán ngày cho mỗi phần tử trong mảng
-  //       const ngayTrongThang = new Date(
-  //         ngayHienTai.getFullYear(),
-  //         thangHienTai - 1,
-  //         index + 1,
-  //       );
-
-  //       // Trả về đối tượng chứa thông tin ngày và các thông tin khác nếu cần
-  //       return {
-  //         ngay: ngayTrongThang.toISOString().split('T')[0],
-  //         // Các thông tin khác có thể thêm vào đây
-  //       };
-  //     });
-
-  //   // In ra kết quả
-  //   console.log(mangNgayTrongThang);
-  //   // const { month, year, daysInMonth } = selectedDates[selectedIndex] || {};
-  //   // redirectToTimecards(dataId, month, year, daysInMonth, 1);
-  // };
 
   const redirectToTimecards = (
     dataId: number,
@@ -546,7 +497,15 @@ export const TimecardList: React.FC = () => {
               <td>
                 <button
                   className="btn btn--medium btn--green"
-                  onClick={() => exportToExcel(data.id, data.realname, selectedMonth, selectedYear, daysInMonth)}
+                  onClick={() =>
+                    handleClick(
+                      data.id,
+                      data.realname,
+                      selectedMonth,
+                      selectedYear,
+                      daysInMonth,
+                    )
+                  }
                 >
                   Xuất Thẻ Giờ
                 </button>
@@ -570,10 +529,10 @@ export const TimecardList: React.FC = () => {
           </thead>
           <tbody>
             <CTableTimeCardBody
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              daysInMonth={daysInMonth}
-              userID={user_id}
+              selectedMonth={clickMonth}
+              selectedYear={clickYear}
+              daysInMonth={clickdaysInMonth}
+              userID={clickID}
             />
           </tbody>
         </table>
