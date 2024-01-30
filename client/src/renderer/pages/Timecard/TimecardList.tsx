@@ -13,8 +13,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
-
-import { Timecard } from "./index";
+import { Timecard } from './index';
 import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
 import CTableTimeCardBody from '../../components/Table/Table_01/CTableTimeCardBody';
 
@@ -42,7 +41,6 @@ export const TimecardList: React.FC = () => {
   );
   const [filteredUsers, setFilteredUsers] = useState<FieldUsers[] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
-
 
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
@@ -88,8 +86,6 @@ export const TimecardList: React.FC = () => {
     const currentYear = new Date().getFullYear();
     setMonthYearSelectorDefaultMonth(currentMonth.toString());
     setMonthYearSelectorDefaultYear(currentYear.toString());
-
-
   };
   useEffect(() => {
     if (selectedGroupName !== null) {
@@ -137,7 +133,6 @@ export const TimecardList: React.FC = () => {
       console.error('Không tìm thấy bảng.');
       return;
     }
-
 
     const tableWithRows = table as HTMLTableElement & {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
@@ -313,8 +308,6 @@ export const TimecardList: React.FC = () => {
       };
     }
 
-
-
     const lastRowIndex = table.rows.length + 3;
     const startColumn = 1; // Cột A
     const endColumn = 1; // Cột F
@@ -322,7 +315,6 @@ export const TimecardList: React.FC = () => {
     const custom_end = 5; // Cột F
 
     // Thêm một dòng mới
-
 
     // Dùng rowIndex của dòng mới thêm vào
     const rowIndex = lastRowIndex;
@@ -375,7 +367,6 @@ export const TimecardList: React.FC = () => {
       maxWorksheetNameLength,
     );
 
-
     for (let r = startRowToDelete; r <= lastRowIndex; r++) {
       const cellContent = worksheet.getCell(`D${r}`).value;
       worksheet.getCell(`B${r}`).value = cellContent;
@@ -384,7 +375,6 @@ export const TimecardList: React.FC = () => {
       if (r === lastRowIndex) {
         worksheet.getCell(`E${r}`).value = null;
       }
-
     }
 
     // Thêm văn bản vào cột 3 của dòng cuối cùng
@@ -402,7 +392,6 @@ export const TimecardList: React.FC = () => {
       color: { argb: 'FFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
     };
 
-
     for (let r = 9; r < lastRowIndex; r++) {
       const cellB = worksheet.getCell(`B${r}`);
       const cellC = worksheet.getCell(`C${r}`);
@@ -411,7 +400,9 @@ export const TimecardList: React.FC = () => {
       const removeWords = (cell: ExcelJS.Cell) => {
         const content = cell.value;
         if (typeof content === 'string' || typeof content === 'number') {
-          const updatedContent = content.toString().replace(/Bắt đầu|Kết thúc/g, '');
+          const updatedContent = content
+            .toString()
+            .replace(/Bắt đầu|Kết thúc/g, '');
           cell.value = updatedContent;
         }
       };
