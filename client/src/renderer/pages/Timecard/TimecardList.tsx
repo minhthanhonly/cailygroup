@@ -143,12 +143,15 @@ export const TimecardList: React.FC = () => {
       setClickdaysInMonth(daysInMonth),
       setClickID(userId),
     ]);
+    console.log("Selected Month:", months);
+    console.log("Selected Year:", years);
+    console.log("Days in Month:", daysInMonth);
     console.log(realname);
     setTimeout(function () {
-      exportToExcel();
+      exportToExcel(realname);
     }, 500);
   };
-  const exportToExcel = async () => {
+  const exportToExcel = async (realname: string) => {
     const table = document.getElementById(
       'timecards_table',
     ) as HTMLTableElement;
@@ -359,7 +362,7 @@ export const TimecardList: React.FC = () => {
       );
       column.width = maxWidth;
     }
-    const sheetName = `Timecard_${clickName}_${month}_${year}`.slice(
+    const sheetName = `Timecard_${realname}_${month}_${year}`.slice(
       0,
       maxWorksheetNameLength,
     );
