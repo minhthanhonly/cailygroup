@@ -462,7 +462,7 @@ export const Dayoff = () => {
           checked={isChecked}
           onChange={handleCheckboxChange}
         />{' '}
-        hiển thị những ngày nghỉ trước đây
+        Hiển thị những ngày nghỉ trước đây
       </label>
       {showTable ? null : (
         <div className="left select-ml0 mt20">
@@ -473,7 +473,7 @@ export const Dayoff = () => {
         <CTableHead
           heads={[
             'Họ và tên',
-            'nhóm',
+            'Nhóm',
             'Số ngày nghỉ',
             'Ngày nghỉ phép',
             'Ghi chú',
