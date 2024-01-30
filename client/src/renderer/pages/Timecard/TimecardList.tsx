@@ -136,12 +136,22 @@ export const TimecardList: React.FC = () => {
     years: string,
     daysInMonth: Date[],
   ) => {
-    setClickName(realname);
-    setClickMonth(months);
-    setClickYear(years);
-    setClickdaysInMonth(daysInMonth);
-    setClickID(userId);
-    setCheckClick(true);
+    console.log(months);
+    await Promise.all([
+      setClickName(realname),
+      setClickMonth(months),
+      setClickYear(years),
+      setClickdaysInMonth(daysInMonth),
+      setClickID(userId),
+      setCheckClick(true),
+    ]);
+    console.log('Selected Month:', months);
+    console.log('Selected Year:', years);
+    console.log('Days in Month:', daysInMonth);
+    console.log(realname);
+    setTimeout(function () {
+      exportToExcel(realname);
+    }, 500);
   };
   useEffect(() => {
     if (checkClick) {
@@ -151,7 +161,7 @@ export const TimecardList: React.FC = () => {
     }
     setCheckClick(false);
   }, [checkClick]);
-  const exportToExcel = async () => {
+  const exportToExcel = async (realname: string) => {
     const table = document.getElementById(
       'timecards_table',
     ) as HTMLTableElement;
@@ -362,7 +372,7 @@ export const TimecardList: React.FC = () => {
       );
       column.width = maxWidth;
     }
-    const sheetName = `Timecard_${clickName}_${month}_${year}`.slice(
+    const sheetName = `Timecard_${realname}_${month}_${year}`.slice(
       0,
       maxWorksheetNameLength,
     );
