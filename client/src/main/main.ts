@@ -17,6 +17,7 @@ import { resolveHtmlPath } from './util';
 
 log.transports.file.level = 'info';
 autoUpdater.logger = log;
+autoUpdater.autoDownload = false;
 
 let mainWindow: BrowserWindow | null = null;
 
