@@ -9,8 +9,8 @@ import './GlobalStyles.scss';
 // export default GlobalStyles;
 
 type GlobalStylesProps = {
-  children?: any;
+	children?: any;
 };
 export const GlobalStyles = (prop: GlobalStylesProps) => {
-  return prop.children;
+	return prop.children;
 };

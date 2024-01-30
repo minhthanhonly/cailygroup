@@ -17,6 +17,7 @@ import { resolveHtmlPath } from './util';
 
 log.transports.file.level = 'info';
 autoUpdater.logger = log;
+autoUpdater.autoDownload = false;
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -79,6 +80,9 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
+  // Lấy phiên bản ứng dụng
+  const appVersion = app.getVersion();
+
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
@@ -92,6 +96,12 @@ const createWindow = async () => {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+  });
+
+  // Gán phiên bản vào phần tử HTML
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow?.webContents.executeJavaScript(`localStorage.setItem('app-version', '${appVersion}');`);
+    mainWindow?.webContents.executeJavaScript(`document.getElementById('app-version').innerHTML = 'Phiên bản: ${appVersion}';`);
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);

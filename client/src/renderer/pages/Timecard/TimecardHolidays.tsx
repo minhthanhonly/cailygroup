@@ -39,9 +39,7 @@ const TimecardHolidays = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(Data.length / itemsPerPage);
-  const [listOfHolidays, setListOfHolidays] = useState<FieldHolidays[] | []>(
-    [],
-  );
+  const [listOfHolidays, setListOfHolidays] = useState<FieldHolidays[] | []>([],);
   const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleteModalid, setDeleteModalId] = useState('');
@@ -67,15 +65,7 @@ const TimecardHolidays = () => {
     }
   };
 
-  let dynamicUpdate = ({
-    id,
-    name,
-    days,
-  }: {
-    id: string;
-    name: string;
-    days: string;
-  }) => (
+  let dynamicUpdate = ({id,name,days,}: {id: string;name: string;days: string;}) => (
     <>
       <button onClick={() => openModal(id, name, days)}>
         <p className="icon icon--check">
@@ -170,11 +160,7 @@ const TimecardHolidays = () => {
     });
     return dateObjects.filter((date) => date !== null);
   };
-  const openModal = (
-    initialNameId: string,
-    initialName: string,
-    initialDays: string,
-  ) => {
+  const openModal = (initialNameId: string,initialName: string,initialDays: string,) => {
     setModalId(initialNameId);
     setModalName(initialName);
     // Tách các ngày thành mảng sử dụng dấu phẩy và loại bỏ khoảng trắng xung quanh mỗi ngày

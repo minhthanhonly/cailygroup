@@ -2577,3 +2577,13 @@ textarea {
     margin-top: 4rem;
   }
 }
+
+// App Version
+#app-version {
+  position: absolute;
+  bottom: 1rem;
+  right: 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  z-index: 9999;
+}
