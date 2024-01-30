@@ -11,6 +11,11 @@ import { UserRole } from '../../components/UserRole';
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
+
+import { Timecard } from "./index";
+import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
+import CTableTimeCardBody from '../../components/Table/Table_01/CTableTimeCardBody';
+
 interface FieldUsers {
   id: number;
   realname: string;
@@ -36,6 +41,12 @@ export const TimecardList: React.FC = () => {
   const [filteredUsers, setFilteredUsers] = useState<FieldUsers[] | []>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
+
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
+  const [user_id, setUser_id] = useState<number>();
+
   const navigate = useNavigate();
 
   // Lưu giá trị biến state trong Link
@@ -53,11 +64,16 @@ export const TimecardList: React.FC = () => {
     month: string,
     year: string,
     daysInMonth: Date[],
+    userId: number | undefined,
     index: number,
   ) => {
+    console.log(`Selected ID: ${userId}`); // Log ID của người được chọn
+    setSelectedMonth(month);
+    setSelectedYear(year);
+    setDaysInMonth(daysInMonth);
     setSelectedDates((prevState) => ({
       ...prevState,
-      [index]: { month, year, daysInMonth },
+      [userId || index]: { month, year, daysInMonth },
     }));
     // Handle date change logic if needed
   };
@@ -70,6 +86,10 @@ export const TimecardList: React.FC = () => {
     const currentYear = new Date().getFullYear();
     setMonthYearSelectorDefaultMonth(currentMonth.toString());
     setMonthYearSelectorDefaultYear(currentYear.toString());
+
+    res.data.forEach((users: { realname: any; id: any; }) => {
+      console.log(`ID of ${users.realname}: ${users.id}`);
+    });
   };
   useEffect(() => {
     if (selectedGroupName !== null) {
@@ -117,7 +137,7 @@ export const TimecardList: React.FC = () => {
     const thangHienTai = ngayHienTai.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
 
     // Tạo mảng với 5 phần tử
-    const mangNgayTrongThang = Array(5)
+    const mangNgayTrongThang = Array(31)
       .fill(null)
       .map((_, index) => {
         // Tính toán ngày cho mỗi phần tử trong mảng
@@ -218,7 +238,7 @@ export const TimecardList: React.FC = () => {
               <td>
                 <MonthYearSelector
                   onChange={(month, year, daysInMonth) =>
-                    handleDateChange(month, year, daysInMonth, index)
+                    handleDateChange(month, year, daysInMonth, data.id, index)
                   }
                 />
               </td>
@@ -249,6 +269,22 @@ export const TimecardList: React.FC = () => {
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
+
+      {/* <div className="table-container table--01">
+        <table id="timecards_table" className="table table__custom">
+          <thead id="timecards_table_head">
+            <CTableTimeCardHead />
+          </thead>
+          <tbody>
+            <CTableTimeCardBody
+              selectedMonth={selectedMonth}
+              selectedYear={selectedYear}
+              daysInMonth={daysInMonth}
+              userID={user_id}
+            />
+          </tbody>
+        </table>
+      </div> */}
     </>
   );
 };

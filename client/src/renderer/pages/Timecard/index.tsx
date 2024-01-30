@@ -11,6 +11,9 @@ import axios from '../../api/axios';
 import { saveAs } from 'file-saver';
 import './Timecard.scss';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { log } from 'console';
+
+
 
 interface FieldUsers {
   id: number;
@@ -69,9 +72,6 @@ export const Timecard = () => {
     }
   }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
   //-------------------------------------------------------------------------------------
-
-
-
 
 
   const exportToExcel = async () => {
@@ -344,6 +344,25 @@ export const Timecard = () => {
     };
 
 
+    for (let r = 9; r < lastRowIndex; r++) {
+      const cellB = worksheet.getCell(`B${r}`);
+      const cellC = worksheet.getCell(`C${r}`);
+
+      // Function to remove words starting with 'Bắt đầu' or ending with 'Kết thúc'
+      const removeWords = (cell: ExcelJS.Cell) => {
+        const content = cell.value;
+        if (typeof content === 'string' || typeof content === 'number') {
+          const updatedContent = content.toString().replace(/Bắt đầu|Kết thúc/g, '');
+          cell.value = updatedContent;
+        }
+      };
+
+      // Remove words for cells in column B
+      removeWords(cellB);
+
+      // Remove words for cells in column C
+      removeWords(cellC);
+    }
 
     // Save the workbook to a file
     const buffer = await workbook.xlsx.writeBuffer();
