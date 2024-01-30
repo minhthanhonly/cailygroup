@@ -4,13 +4,11 @@ import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
 import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useCallback, useEffect, useState } from 'react';
-import axios from '../../api/axios';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import './Dayoffs.scss';
 import { SelectCustomDayoff } from '../../components/Table/SelectCustom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import React from 'react';
-import { format } from 'date-fns';
 
 export const Dayoff = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -18,6 +16,7 @@ export const Dayoff = () => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [showTable, setShowTable] = useState(true);
   const [id, setID] = useState<string>();
+  const [isChecked, setIsChecked] = useState(true);
   const openModaldelete = (ids: string) => {
     setID(ids);
     setDeleteModalOpen(true);
@@ -99,9 +98,26 @@ export const Dayoff = () => {
     const [hours, minutes] = timeString.split(':').map(Number);
     return hours * 60 + minutes;
   }
+  const currentDate = new Date();
   for (let i = 0; i < listOfGroups.length; i++) {
     let dynamicAction;
+    let isDateInPast = false;
+    const dates = listOfGroups[i].date.split(',').map((date) => date.trim());
+    for (const date of dates) {
+      if (/^\d{2}-\d{2}-\d{4}$/.test(date)) {
+        const [day, month, year] = date.split('-');
+        const formattedDate = `${month}-${day}-${year}`;
 
+        const groupDate = new Date(formattedDate.replace(/\s/g, ''));
+
+        if (!isNaN(groupDate.getTime()) && groupDate < currentDate) {
+          isDateInPast = true;
+          break;
+        }
+      } else {
+        console.log(`${date} không phải là ngày hợp lệ.`);
+      }
+    }
     if (listOfGroups[i].status === '0') {
       dynamicAction = (
         <>
@@ -139,41 +155,95 @@ export const Dayoff = () => {
         </p>
       );
     }
-    DataTable.push({
-      realname: `${listOfGroups[i].realname}`,
-      group_name: `${listOfGroups[i].group_name}`,
-      day_number: `${listOfGroups[i].day_number}`,
-      date: (
-        <React.Fragment>
-          {listOfGroups[i].date.split(',').map((date, index, array) => {
-            const numberOfDays = array.length;
-            return (
-              <React.Fragment key={date}>
-                {index === 0
-                  ? numberOfDays === 1
-                    ? `${listOfGroups[i].time_start} đến ${
-                        listOfGroups[i].time_end
-                      } ngày ${date.trim()}`
-                    : `${
-                        listOfGroups[i].time_start
-                      } đến ${closetimeValue} Ngày: ${date.trim()}`
-                  : index === numberOfDays - 1
-                  ? `${opentimeValue} đến ${
-                      listOfGroups[i].time_end
-                    } Ngày: ${date.trim()}`
-                  : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
-                {index !== array.length - 1 && <br />}{' '}
-              </React.Fragment>
-            );
-          })}
-        </React.Fragment>
-      ),
-      note: `${listOfGroups[i].note}`,
-      status: dynamicAction,
-    } as unknown as FieldGroups);
+    isChecked
+      ? DataTable.push({
+          realname: `${listOfGroups[i].realname}`,
+          group_name: `${listOfGroups[i].group_name}`,
+          day_number: `${listOfGroups[i].day_number}`,
+          date: (
+            <React.Fragment>
+              {listOfGroups[i].date.split(',').map((date, index, array) => {
+                const numberOfDays = array.length;
+                return (
+                  <React.Fragment key={date}>
+                    {index === 0
+                      ? numberOfDays === 1
+                        ? `${listOfGroups[i].time_start} đến ${
+                            listOfGroups[i].time_end
+                          } ngày ${date.trim()}`
+                        : `${
+                            listOfGroups[i].time_start
+                          } đến ${closetimeValue} Ngày: ${date.trim()}`
+                      : index === numberOfDays - 1
+                      ? `${opentimeValue} đến ${
+                          listOfGroups[i].time_end
+                        } Ngày: ${date.trim()}`
+                      : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
+                    {index !== array.length - 1 && <br />}{' '}
+                  </React.Fragment>
+                );
+              })}
+            </React.Fragment>
+          ),
+          note: `${listOfGroups[i].note}`,
+          status: dynamicAction,
+        } as unknown as FieldGroups)
+      : isDateInPast
+      ? null
+      : DataTable.push({
+          realname: `${listOfGroups[i].realname}`,
+          group_name: `${listOfGroups[i].group_name}`,
+          day_number: `${listOfGroups[i].day_number}`,
+          date: (
+            <React.Fragment>
+              {listOfGroups[i].date.split(',').map((date, index, array) => {
+                const numberOfDays = array.length;
+                return (
+                  <React.Fragment key={date}>
+                    {index === 0
+                      ? numberOfDays === 1
+                        ? `${listOfGroups[i].time_start} đến ${
+                            listOfGroups[i].time_end
+                          } ngày ${date.trim()}`
+                        : `${
+                            listOfGroups[i].time_start
+                          } đến ${closetimeValue} Ngày: ${date.trim()}`
+                      : index === numberOfDays - 1
+                      ? `${opentimeValue} đến ${
+                          listOfGroups[i].time_end
+                        } Ngày: ${date.trim()}`
+                      : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
+                    {index !== array.length - 1 && <br />}{' '}
+                  </React.Fragment>
+                );
+              })}
+            </React.Fragment>
+          ),
+          note: `${listOfGroups[i].note}`,
+          status: dynamicAction,
+        } as unknown as FieldGroups);
   }
   for (let i = 0; i < listOfGroupsDayoff.length; i++) {
     let dynamicAction;
+    let isDateInPast = false;
+    const dates = listOfGroupsDayoff[i].date
+      .split(',')
+      .map((date) => date.trim());
+    for (const date of dates) {
+      if (/^\d{2}-\d{2}-\d{4}$/.test(date)) {
+        const [day, month, year] = date.split('-');
+        const formattedDate = `${month}-${day}-${year}`;
+
+        const groupDate = new Date(formattedDate.replace(/\s/g, ''));
+
+        if (!isNaN(groupDate.getTime()) && groupDate < currentDate) {
+          isDateInPast = true;
+          break;
+        }
+      } else {
+        console.log(`${date} không phải là ngày hợp lệ.`);
+      }
+    }
     if (listOfGroupsDayoff[i].status === '0') {
       dynamicAction = <div className="center">chưa xác nhận</div>;
     } else if (listOfGroupsDayoff[i].status === '2') {
@@ -200,38 +270,77 @@ export const Dayoff = () => {
         </p>
       );
     }
-    DataTables.push({
-      realname: `${listOfGroupsDayoff[i].realname}`,
-      group_name: `${listOfGroupsDayoff[i].group_name}`,
-      day_number: `${listOfGroupsDayoff[i].day_number}`,
-      date: (
-        <React.Fragment>
-          {listOfGroupsDayoff[i].date.split(',').map((date, index, array) => {
-            const numberOfDays = array.length;
-            return (
-              <React.Fragment key={date}>
-                {index === 0
-                  ? numberOfDays === 1
-                    ? `${listOfGroupsDayoff[i].time_start} đến ${
-                        listOfGroupsDayoff[i].time_end
-                      } ngày ${date.trim()}`
-                    : `${
-                        listOfGroupsDayoff[i].time_start
-                      } đến ${closetimeValue} Ngày: ${date.trim()}`
-                  : index === numberOfDays - 1
-                  ? `${opentimeValue} đến ${
-                      listOfGroupsDayoff[i].time_end
-                    } Ngày: ${date.trim()}`
-                  : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
-                {index !== array.length - 1 && <br />}{' '}
-              </React.Fragment>
-            );
-          })}
-        </React.Fragment>
-      ),
-      note: `${listOfGroupsDayoff[i].note}`,
-      status: dynamicAction,
-    } as unknown as FieldGroups);
+    isChecked
+      ? DataTables.push({
+          realname: `${listOfGroupsDayoff[i].realname}`,
+          group_name: `${listOfGroupsDayoff[i].group_name}`,
+          day_number: `${listOfGroupsDayoff[i].day_number}`,
+          date: (
+            <React.Fragment>
+              {listOfGroupsDayoff[i].date
+                .split(',')
+                .map((date, index, array) => {
+                  const numberOfDays = array.length;
+                  return (
+                    <React.Fragment key={date}>
+                      {index === 0
+                        ? numberOfDays === 1
+                          ? `${listOfGroupsDayoff[i].time_start} đến ${
+                              listOfGroupsDayoff[i].time_end
+                            } ngày ${date.trim()}`
+                          : `${
+                              listOfGroupsDayoff[i].time_start
+                            } đến ${closetimeValue} Ngày: ${date.trim()}`
+                        : index === numberOfDays - 1
+                        ? `${opentimeValue} đến ${
+                            listOfGroupsDayoff[i].time_end
+                          } Ngày: ${date.trim()}`
+                        : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
+                      {index !== array.length - 1 && <br />}{' '}
+                    </React.Fragment>
+                  );
+                })}
+            </React.Fragment>
+          ),
+          note: `${listOfGroupsDayoff[i].note}`,
+          status: dynamicAction,
+        } as unknown as FieldGroups)
+      : isDateInPast
+      ? null
+      : DataTables.push({
+          realname: `${listOfGroupsDayoff[i].realname}`,
+          group_name: `${listOfGroupsDayoff[i].group_name}`,
+          day_number: `${listOfGroupsDayoff[i].day_number}`,
+          date: (
+            <React.Fragment>
+              {listOfGroupsDayoff[i].date
+                .split(',')
+                .map((date, index, array) => {
+                  const numberOfDays = array.length;
+                  return (
+                    <React.Fragment key={date}>
+                      {index === 0
+                        ? numberOfDays === 1
+                          ? `${listOfGroupsDayoff[i].time_start} đến ${
+                              listOfGroupsDayoff[i].time_end
+                            } ngày ${date.trim()}`
+                          : `${
+                              listOfGroupsDayoff[i].time_start
+                            } đến ${closetimeValue} Ngày: ${date.trim()}`
+                        : index === numberOfDays - 1
+                        ? `${opentimeValue} đến ${
+                            listOfGroupsDayoff[i].time_end
+                          } Ngày: ${date.trim()}`
+                        : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
+                      {index !== array.length - 1 && <br />}{' '}
+                    </React.Fragment>
+                  );
+                })}
+            </React.Fragment>
+          ),
+          note: `${listOfGroupsDayoff[i].note}`,
+          status: dynamicAction,
+        } as unknown as FieldGroups);
   }
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -275,6 +384,11 @@ export const Dayoff = () => {
     const configItem = configArray.find((item) => item.config_key === key);
     return configItem ? configItem.config_value : null;
   }
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+    fetchData();
+  };
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const handleGroupChange = (groupId: string) => {
     setSelectedGroup(groupId);
@@ -335,9 +449,21 @@ export const Dayoff = () => {
     <>
       <NavDayoff role="admin" />
       <ul className="dayoffs-menu">
-        <li onClick={handleShowMe}>Của tôi</li>
-        <li onClick={handleShowAll}>Của mọi người</li>
+        <li className={showTable ? 'active' : ''} onClick={handleShowMe}>
+          Của tôi
+        </li>
+        <li className={showTable ? '' : 'active'} onClick={handleShowAll}>
+          Của mọi người
+        </li>
       </ul>
+      <label className="checkbox">
+        <input
+          type="checkbox"
+          checked={isChecked}
+          onChange={handleCheckboxChange}
+        />{' '}
+        hiển thị những ngày nghỉ trước đây
+      </label>
       {showTable ? null : (
         <div className="left select-ml0 mt20">
           <SelectCustomDayoff onGroupChange={handleGroupChange} />
