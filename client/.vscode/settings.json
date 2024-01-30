@@ -1,18 +1,16 @@
 {
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "files.associations": {
-    ".eslintrc": "jsonc",
+    // ".eslintrc": "jsonc",
     ".prettierrc": "jsonc",
-    ".eslintignore": "ignore"
+    // ".eslintignore": "ignore"
   },
 
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "html",
-    "typescriptreact"
-  ],
+  // "eslint.validate": [
+  //   "javascript",
+  //   "javascriptreact",
+  //   "html",
+  //   "typescriptreact"
+  // ],
 
   "javascript.validate.enable": false,
   "javascript.format.enable": false,
@@ -20,7 +18,7 @@
 
   "search.exclude": {
     ".git": true,
-    ".eslintcache": true,
+    // ".eslintcache": true,
     ".erb/dll": true,
     "release/{build,app/dist}": true,
     "node_modules": true,
