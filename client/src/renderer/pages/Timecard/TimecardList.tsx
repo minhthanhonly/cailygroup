@@ -554,6 +554,7 @@ export const TimecardList: React.FC = () => {
       />
 
       <div className="table-container table--01">
+        {/* style={{ display: 'none' }} */}
         <table id="timecards_table" className="table table__custom">
           <thead id="timecards_table_head">
             <CTableTimeCardHead />

@@ -7,13 +7,9 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
 import { ButtonCenter } from '../../components/Button/ButtonCenter';
 import ExcelJS from 'exceljs';
-import axios from '../../api/axios';
 import { saveAs } from 'file-saver';
 import './Timecard.scss';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { log } from 'console';
-
-
 
 interface FieldUsers {
   id: number;
@@ -50,8 +46,6 @@ export const Timecard = () => {
   const matchedUser = listOfUsers.find((user) => user.id === id);
   const realname = matchedUser ? matchedUser.realname : '';
 
-
-
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
     const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
@@ -73,7 +67,6 @@ export const Timecard = () => {
   }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
   //-------------------------------------------------------------------------------------
 
-
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((user) => user.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
@@ -89,7 +82,6 @@ export const Timecard = () => {
 
     // const rowIndexToDelete = 41; // Đổi giá trị này thành chỉ số dòng bạn muốn xoá
     // table.deleteRow(rowIndexToDelete);
-
 
     const tableWithRows = table as HTMLTableElement & {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
@@ -254,8 +246,6 @@ export const Timecard = () => {
       };
     }
 
-
-
     const lastRowIndex = table.rows.length + 3;
     const startColumn = 1; // Cột A
     const endColumn = 1; // Cột F
@@ -263,7 +253,6 @@ export const Timecard = () => {
     const custom_end = 5; // Cột F
 
     // Thêm một dòng mới
-
 
     // Dùng rowIndex của dòng mới thêm vào
     const rowIndex = lastRowIndex;
@@ -316,7 +305,6 @@ export const Timecard = () => {
       maxWorksheetNameLength,
     );
 
-
     for (let r = startRowToDelete; r <= lastRowIndex; r++) {
       const cellContent = worksheet.getCell(`D${r}`).value;
       worksheet.getCell(`B${r}`).value = cellContent;
@@ -325,7 +313,6 @@ export const Timecard = () => {
       if (r === lastRowIndex) {
         worksheet.getCell(`E${r}`).value = null;
       }
-
     }
 
     // Thêm văn bản vào cột 3 của dòng cuối cùng
@@ -343,7 +330,6 @@ export const Timecard = () => {
       color: { argb: 'FFFFFF' }, // Màu trắng (ARGB: Alpha, Red, Green, Blue)
     };
 
-
     for (let r = 9; r < lastRowIndex; r++) {
       const cellB = worksheet.getCell(`B${r}`);
       const cellC = worksheet.getCell(`C${r}`);
@@ -352,7 +338,9 @@ export const Timecard = () => {
       const removeWords = (cell: ExcelJS.Cell) => {
         const content = cell.value;
         if (typeof content === 'string' || typeof content === 'number') {
-          const updatedContent = content.toString().replace(/Bắt đầu|Kết thúc/g, '');
+          const updatedContent = content
+            .toString()
+            .replace(/Bắt đầu|Kết thúc/g, '');
           cell.value = updatedContent;
         }
       };
