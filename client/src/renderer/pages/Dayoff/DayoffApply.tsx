@@ -85,17 +85,18 @@ export const DayoffApply = () => {
         console.log(`${date} không phải là ngày hợp lệ.`);
       }
     }
-    let dynamicYes = (
-      <a
-        className="btn btn--medium btn--green"
-        onClick={(event) => {
-          updateStatus(listOfGroups[i].id, event);
-        }}
-        href={listOfGroups[i].id}
-      >
-        Đồng ý
-      </a>
-    );
+    let dynamicYes =
+      listOfGroups[i].status != 1 ? (
+        <a
+          className="btn btn--medium btn--green"
+          onClick={(event) => {
+            updateStatus(listOfGroups[i].id, event);
+          }}
+          href={listOfGroups[i].id}
+        >
+          Đồng ý
+        </a>
+      ) : null;
     let dynamicNo =
       listOfGroups[i].status == 0 ? (
         <a
@@ -107,8 +108,10 @@ export const DayoffApply = () => {
         >
           Từ chối
         </a>
+      ) : listOfGroups[i].status == 2 ? (
+        <p className="clr-red">Đã từ chối</p>
       ) : (
-        'đã từ chối'
+        <p className="clr-green">Đã xác nhận</p>
       );
     isDateInPast
       ? null
