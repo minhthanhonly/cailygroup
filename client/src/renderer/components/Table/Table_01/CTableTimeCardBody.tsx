@@ -921,7 +921,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                   }
                                   key={index}
                                 >
-                                  a
                                   {item.id_groupwaretimecard ? (
                                     item.timecard_open
                                   ) : startClick ? (

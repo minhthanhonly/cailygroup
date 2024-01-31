@@ -70,6 +70,7 @@ function Dashboard() {
   };
   const handleStart = async () => {
     try {
+      // await axiosPrivate.post('timecards/delete/' + idTimecards)
       const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );

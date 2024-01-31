@@ -228,7 +228,7 @@ export const Dayoff = () => {
 
         const groupDate = new Date(formattedDate.replace(/\s/g, ''));
 
-        if (!isNaN(groupDate.getTime()) && groupDate < currentDate) {
+        if (!isNaN(groupDate.getTime()) && groupDate < yesterday) {
           isDateInPast = true;
           break;
         }
@@ -246,8 +246,12 @@ export const Dayoff = () => {
         </div>
       );
     } else {
-      dynamicAction = <p className="center clr-green">Đã được duyệt bởi</p>;
-      <p className="clr-blue">{listOfGroupsDayoff[i].owner}</p>;
+      dynamicAction = (
+        <>
+          <p className="center clr-green">Đã được duyệt bởi</p>
+          <p className="clr-blue">{listOfGroupsDayoff[i].owner}</p>
+        </>
+      );
     }
     isChecked
       ? DataTables.push({
