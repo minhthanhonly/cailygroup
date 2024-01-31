@@ -47,6 +47,7 @@ interface TimecardData {
   timecard_timeinterval: string;
   timecard_comment: string;
   editor: string;
+  timecard_temp: string;
 }
 // Định nghĩa props có kiểu là sự kết hợp của cả hai interfaces DatabaseFile
 interface CombinedProps extends SelectMY {
@@ -232,7 +233,14 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
     return `${formattedHours}:${formattedMinutes}`;
   };
-  const compareTime = (time1: string, time2: string): number => {
+  const compareTime = (
+    time1: string | null | undefined,
+    time2: string | null | undefined,
+  ): number => {
+    if (time1 == null || time2 == null || time1 === '' || time2 === '') {
+      return -1;
+    }
+
     const [hour1, minute1] = time1.split(':').map(Number);
     const [hour2, minute2] = time2.split(':').map(Number);
 
@@ -250,6 +258,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       }
     }
   };
+
   const addTimes = (time1: string, time2: string): string => {
     const [hour1, minute1] = time1.split(':').map(Number);
     const [hour2, minute2] = time2.split(':').map(Number);
@@ -273,9 +282,12 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
   // Hàm xử lý khi click vào nút bắt đầu
   const [startClick, setStartClick] = useState(true);
-  const handleButtonClick = async () => {
+  const handleButtonClick = async (idTimecards?: number, comment?: string) => {
     setStartClick(false);
     try {
+      idTimecards
+        ? await axiosPrivate.post('timecards/delete/' + idTimecards)
+        : null;
       const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
@@ -298,7 +310,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_month: currentMonth,
         timecard_day: currentDate,
         timecard_date: `${currentDate}-${currentMonth}-${currentYear}`,
-        timecard_temp: 0,
+        timecard_temp: '',
         owner: '',
       };
       const responseTimeCard = await axiosPrivate.post('timecards/add', {
@@ -316,6 +328,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_open: timecard_close_time,
         timecard_originalopen: timecard_close_time,
         timecard_timeinterval: resut,
+        timecard_comment: idTimecards ? comment : '',
       };
       const responseTimeCardDetails = await axiosPrivate.post(
         'timecarddetails/add',
@@ -325,6 +338,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       );
 
       console.log(responseTimeCardDetails.data);
+
       fetchTimecardOpen();
       setTimeout(() => {
         calculateTotalTime();
@@ -373,6 +387,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       openlunchValue,
       closelunchValue,
     );
+
     if (compareTime(timecard_open_time, timecard_close_time) == 0) {
       timecard_time = '00:00';
     } else if (compareTime(timecard_open_time, opentimeValue) != 1) {
@@ -448,11 +463,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     };
   };
   // nhấn nút kết thúc mỗi ngày
+  const [endClick, setEndClick] = useState(true);
   const handleEndButtonClick = async (
     timecardID: any,
     timecard_open_time: string,
     event: { preventDefault: () => void } | undefined,
   ) => {
+    setEndClick(false);
     if (event) {
       event.preventDefault();
       let time = await workingTime(timecard_open_time);
@@ -649,6 +666,34 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     fetchDayoffs();
     closeModal();
   };
+  const handleNewComment = async () => {
+    console.log(commentText, currentItemId, isUpdatingDayoff, name);
+    const dataTimeCard = {
+      user_id: usersID !== undefined ? parseInt(usersID, 10) : 0,
+      timecard_date: name,
+      timecard_temp: commentText,
+      owner: users.realname,
+    };
+    console.log(dataTimeCard);
+    const responseTimeCard = await axiosPrivate.post('timecards/add', {
+      dataTimeCard,
+    });
+    console.log(responseTimeCard.data);
+    fetchTimecardOpen();
+    closeModal();
+  };
+  const handleUpdateNewComment = async () => {
+    console.log(commentText, currentItemId);
+    const response = await axiosPrivate.post(
+      'timecards/updatecomment/' + currentItemId,
+      {
+        comment: commentText,
+      },
+    );
+    console.log(response.data);
+    fetchTimecardOpen();
+    closeModal();
+  };
   const isValidTimeFormat = (input: string) => {
     const timeRegex = /^(0?[0-9]|1[0-9]|2[0-4]):[0-5][0-9]$/;
     return timeRegex.test(input);
@@ -707,7 +752,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       timecard_month: month,
       timecard_day: day,
       timecard_date: timecardDateEdit,
-      timecard_temp: 0,
+      timecard_temp: '',
       owner: users.realname,
     };
     const responseTimeCard = await axiosPrivate.post('timecards/add', {
@@ -856,12 +901,56 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   isDayoff(day).isDayoff ? (
                     isDayoff(day).status != 1 && isToday(day) ? (
                       startClick ? (
-                        <button
-                          className="btn btn--medium"
-                          onClick={handleButtonClick}
-                        >
-                          Bắt đầu
-                        </button>
+                        timecardOpen.some(
+                          (item) =>
+                            item.timecard_date === format(day, 'dd-MM-yyyy'),
+                        ) ? (
+                          <>
+                            {timecardOpen
+                              .filter(
+                                (item) =>
+                                  item.timecard_date ===
+                                  format(day, 'dd-MM-yyyy'),
+                              )
+                              .map((item, index) => (
+                                <div
+                                  className={
+                                    compareTime(item.timecard_open, '7:30') == 1
+                                      ? 'late'
+                                      : ''
+                                  }
+                                  key={index}
+                                >
+                                  a
+                                  {item.id_groupwaretimecard ? (
+                                    item.timecard_open
+                                  ) : startClick ? (
+                                    <button
+                                      className="btn btn--medium"
+                                      onClick={(event) => {
+                                        handleButtonClick();
+                                      }}
+                                    >
+                                      Bắt đầu
+                                    </button>
+                                  ) : null}
+                                </div>
+                              ))}
+                          </>
+                        ) : isToday(day) ? (
+                          startClick ? (
+                            <button
+                              className="btn btn--medium"
+                              onClick={(event) => {
+                                handleButtonClick();
+                              }}
+                            >
+                              Bắt đầu
+                            </button>
+                          ) : null
+                        ) : (
+                          ''
+                        )
                       ) : null
                     ) : isDayoff(day).status == 2 ? null : (
                       'Đã xin nghỉ'
@@ -893,18 +982,18 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   startClick ? (
                     <button
                       className="btn btn--medium"
-                      onClick={handleButtonClick}
+                      onClick={(event) => {
+                        handleButtonClick();
+                      }}
                     >
                       Bắt đầu
                     </button>
                   ) : null
-                ) : (
-                  ''
-                )}
+                ) : null}
               </td>
               <td>
-                {isHoliday(day).isHoliday ||
-                isDayoff(day).isDayoff ? null : timecardOpen.some(
+                {isHoliday(day).isHoliday ? null : isDayoff(day).isDayoff &&
+                  isDayoff(day).status == 1 ? null : timecardOpen.some(
                     (item) => item.timecard_date === format(day, 'dd-MM-yyyy'),
                   ) ? (
                   <>
@@ -919,18 +1008,20 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                           item.timecard_close !== '' ? (
                             item.timecard_close
                           ) : isToday(day) ? (
-                            <button
-                              className="btn btn--medium"
-                              onClick={(event) =>
-                                handleEndButtonClick(
-                                  item.id_groupwaretimecard,
-                                  item.timecard_open,
-                                  event,
-                                )
-                              }
-                            >
-                              Kết thúc
-                            </button>
+                            !endClick ? null : (
+                              <button
+                                className="btn btn--medium"
+                                onClick={(event) =>
+                                  handleEndButtonClick(
+                                    item.id_groupwaretimecard,
+                                    item.timecard_open,
+                                    event,
+                                  )
+                                }
+                              >
+                                Kết thúc
+                              </button>
+                            )
                           ) : null}
                         </div>
                       ))}
@@ -1019,7 +1110,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                               item.timecard_date === format(day, 'dd-MM-yyyy'),
                           )
                           .map((item, index) => (
-                            <div key={index}>{item.timecard_comment}</div>
+                            <div key={index}>
+                              {item.id_groupwaretimecard
+                                ? item.timecard_comment
+                                : item.timecard_temp}
+                            </div>
                           ))}
                       </>
                     ) : null}
@@ -1043,26 +1138,22 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                   <>
                     <ul className="list-menu">
                       {isHoliday(day).isHoliday ? null : isDayoff(day)
-                          .isDayoff ? (
-                        isDayoff(day).status ? (
-                          <li className="list-menu__item ">
-                            <a
-                              onClick={(event) => {
-                                openModal(
-                                  isDayoff(day).id,
-                                  isDayoff(day).note,
-                                  1,
-                                  '',
-                                );
-                              }}
-                              className="btn--green"
-                            >
-                              Ghi chú nghỉ phép
-                            </a>
-                          </li>
-                        ) : (
-                          ''
-                        )
+                          .isDayoff && isDayoff(day).status != 2 ? (
+                        <li className="list-menu__item ">
+                          <a
+                            onClick={(event) => {
+                              openModal(
+                                isDayoff(day).id,
+                                isDayoff(day).note,
+                                1,
+                                '',
+                              );
+                            }}
+                            className="btn--yellow"
+                          >
+                            Ghi chú nghỉ phép
+                          </a>
+                        </li>
                       ) : (
                         <>
                           {timecardOpen.some(
@@ -1081,9 +1172,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                     <a
                                       onClick={(event) => {
                                         openModal(
-                                          item.id_groupwaretimecard,
-                                          item.timecard_comment,
-                                          2,
+                                          item.id_groupwaretimecard
+                                            ? item.id_groupwaretimecard
+                                            : item.id,
+                                          item.id_groupwaretimecard
+                                            ? item.timecard_comment
+                                            : item.timecard_temp,
+                                          item.id_groupwaretimecard ? 2 : 5,
                                           '',
                                         );
                                       }}
@@ -1094,7 +1189,23 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                   </li>
                                 ))}
                             </>
-                          ) : null}
+                          ) : (
+                            <li className="list-menu__item ">
+                              <a
+                                onClick={(event) => {
+                                  openModal(
+                                    0,
+                                    '',
+                                    6,
+                                    format(day, 'dd-MM-yyyy'),
+                                  );
+                                }}
+                                className="btn--green"
+                              >
+                                Ghi chú
+                              </a>
+                            </li>
+                          )}
                         </>
                       )}
                       {isHoliday(day).isHoliday ? null : isDayoff(day)
@@ -1138,7 +1249,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         ) : null
                       ) : null}
                       {isHoliday(day).isHoliday ||
-                      isDayoff(day).isDayoff ? null : timecardOpen.some(
+                      (isDayoff(day).isDayoff &&
+                        isDayoff(day).status == 1) ? null : timecardOpen.some(
                           (item) =>
                             item.timecard_date === format(day, 'dd-MM-yyyy'),
                         ) ? (
@@ -1287,6 +1399,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                     onClick={() => {
                       if (isUpdatingDayoff == 1) {
                         handleUpdateCommentDayoffs(currentItemId || 0);
+                      } else if (isUpdatingDayoff == 5) {
+                        handleUpdateNewComment();
+                      } else if (isUpdatingDayoff == 6) {
+                        handleNewComment();
                       } else {
                         handleUpdateComment(currentItemId || 0);
                       }

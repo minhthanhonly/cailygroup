@@ -23,6 +23,18 @@
                 return $this->model('TimecardsModel')->postAdd($user_id, $timecard_year, $timecard_month, $timecard_day, $timecard_date, $owner, $timecard_temp);
             }
         }
+        function updatecomment($id=''){
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('TimecardsModel')->updateComment($id);
+            }
+        }
+        function delete($id=''){
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('TimecardsModel')->deleteTimecards($id);
+            }
+        }
 
         function list(){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());

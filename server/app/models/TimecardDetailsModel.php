@@ -3,11 +3,12 @@
         function postAdd(){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
-            $id_groupwaretimecard = isset($data['dataTimeCardDetails']['id_groupwaretimecard'])?$data['dataTimeCardDetails']['id_groupwaretimecard']:null;
-            $timecard_open = isset($data['dataTimeCardDetails']['timecard_open'])?$data['dataTimeCardDetails']['timecard_open']:null;
-            $timecard_timeinterval = isset($data['dataTimeCardDetails']['timecard_timeinterval'])?$data['dataTimeCardDetails']['timecard_timeinterval']:null;
+            $id_groupwaretimecard = isset($data['dataTimeCardDetails']['id_groupwaretimecard'])?$data['dataTimeCardDetails']['id_groupwaretimecard']:'null';
+            $timecard_open = isset($data['dataTimeCardDetails']['timecard_open'])?$data['dataTimeCardDetails']['timecard_open']:'null';
+            $timecard_timeinterval = isset($data['dataTimeCardDetails']['timecard_timeinterval'])?$data['dataTimeCardDetails']['timecard_timeinterval']:'null';
+            $timecard_comment = isset($data['dataTimeCardDetails']['timecard_comment'])?$data['dataTimeCardDetails']['timecard_comment']:'null';
 
-            $sql = "INSERT INTO timecard_details(id_groupwaretimecard, timecard_open, timecard_originalopen, timecard_timeinterval, createdAt, updatedAt) VALUES ($id_groupwaretimecard, '$timecard_open', '$timecard_open', '$timecard_timeinterval', NOW(), NOW())";
+            $sql = "INSERT INTO timecard_details(id_groupwaretimecard, timecard_open, timecard_originalopen, timecard_timeinterval, timecard_comment, createdAt, updatedAt) VALUES ($id_groupwaretimecard, '$timecard_open', '$timecard_open', '$timecard_timeinterval', '$timecard_comment', NOW(), NOW())";
             $result = $conn->query($sql);
 
             header('Content-Type: application/json');
@@ -23,14 +24,14 @@
         function postAddNew(){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
-            $id_groupwaretimecard = isset($data['dataTimeCardDetails']['id_groupwaretimecard'])?$data['dataTimeCardDetails']['id_groupwaretimecard']:null;
-            $timecard_open = isset($data['dataTimeCardDetails']['timecard_open'])?$data['dataTimeCardDetails']['timecard_open']:null;
-            $timecard_close = isset($data['dataTimeCardDetails']['timecard_close'])?$data['dataTimeCardDetails']['timecard_close']:null;
-            $timecard_time = isset($data['dataTimeCardDetails']['timecard_time'])?$data['dataTimeCardDetails']['timecard_time']:null;
-            $timecard_timeover = isset($data['dataTimeCardDetails']['timecard_timeover'])?$data['dataTimeCardDetails']['timecard_timeover']:null;
-            $timecard_timeinterval = isset($data['dataTimeCardDetails']['timecard_timeinterval'])?$data['dataTimeCardDetails']['timecard_timeinterval']:null;
-            $timecard_comment = isset($data['dataTimeCardDetails']['timecard_comment'])?$data['dataTimeCardDetails']['timecard_comment']:null;
-            $editor = isset($data['dataTimeCardDetails']['editor'])?$data['dataTimeCardDetails']['editor']:null;
+            $id_groupwaretimecard = isset($data['dataTimeCardDetails']['id_groupwaretimecard'])?$data['dataTimeCardDetails']['id_groupwaretimecard']:'null';
+            $timecard_open = isset($data['dataTimeCardDetails']['timecard_open'])?$data['dataTimeCardDetails']['timecard_open']:'null';
+            $timecard_close = isset($data['dataTimeCardDetails']['timecard_close'])?$data['dataTimeCardDetails']['timecard_close']:'null';
+            $timecard_time = isset($data['dataTimeCardDetails']['timecard_time'])?$data['dataTimeCardDetails']['timecard_time']:'null';
+            $timecard_timeover = isset($data['dataTimeCardDetails']['timecard_timeover'])?$data['dataTimeCardDetails']['timecard_timeover']:'null';
+            $timecard_timeinterval = isset($data['dataTimeCardDetails']['timecard_timeinterval'])?$data['dataTimeCardDetails']['timecard_timeinterval']:'null';
+            $timecard_comment = isset($data['dataTimeCardDetails']['timecard_comment'])?$data['dataTimeCardDetails']['timecard_comment']:'null';
+            $editor = isset($data['dataTimeCardDetails']['editor'])?$data['dataTimeCardDetails']['editor']:'null';
 
             $sql = "INSERT INTO timecard_details(id_groupwaretimecard, timecard_open, timecard_close, timecard_time, timecard_timeover, timecard_timeinterval, timecard_comment, editor, createdAt, updatedAt) VALUES ($id_groupwaretimecard, '$timecard_open', '$timecard_close', '$timecard_time', '$timecard_timeover', '$timecard_timeinterval', '$timecard_comment', '$editor', NOW(), NOW())";
             $result = $conn->query($sql);
@@ -48,11 +49,11 @@
 		function postUpdate($timecard_now, $timecard_originalclose, $timecard_interval, $overtime, $timecardId){
 			global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
-            $timecardId = isset($data["dataTime"]["id"]) ? $data["dataTime"]["id"] : null;
-            $timecard_open = isset($data["dataTime"]["timecard_open"]) ? $data["dataTime"]["timecard_open"] : null;
-            $timecard_now = isset($data["dataTime"]["timecard_now"]) ? $data["dataTime"]["timecard_now"] : null;
-            $timecard_time = isset($data["dataTime"]["timecard_time"]) ? $data["dataTime"]["timecard_time"] : null;
-            $timecard_timeover = isset($data["dataTime"]["timecard_timeover"]) ? $data["dataTime"]["timecard_timeover"] : null;
+            $timecardId = isset($data["dataTime"]["id"]) ? $data["dataTime"]["id"] : 'null';
+            $timecard_open = isset($data["dataTime"]["timecard_open"]) ? $data["dataTime"]["timecard_open"] : 'null';
+            $timecard_now = isset($data["dataTime"]["timecard_now"]) ? $data["dataTime"]["timecard_now"] : 'null';
+            $timecard_time = isset($data["dataTime"]["timecard_time"]) ? $data["dataTime"]["timecard_time"] : 'null';
+            $timecard_timeover = isset($data["dataTime"]["timecard_timeover"]) ? $data["dataTime"]["timecard_timeover"] : 'null';
             
             
             $sql = "UPDATE timecard_details SET timecard_close = ?, timecard_originalclose = ?, timecard_time= ?, timecard_timeover = ? WHERE id_groupwaretimecard = ?";
@@ -72,8 +73,8 @@
         function updateComment($comment,$id){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
-            $id = isset($data["id"]) ? $data["id"] : null;
-            $comment = isset($data["comment"]) ? $data["comment"] : null;
+            $id = isset($data["id"]) ? $data["id"] : 'null';
+            $comment = isset($data["comment"]) ? $data["comment"] : 'null';
             $sql = "UPDATE timecard_details SET timecard_comment = ? WHERE id_groupwaretimecard = ?";
             $stmt = $conn->prepare($sql);
             if (!$stmt) {

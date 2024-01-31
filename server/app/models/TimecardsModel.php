@@ -19,13 +19,15 @@
 
         function getTimecards($id){
             global $conn;
-            $allTimecards = mysqli_query($conn, "SELECT * FROM timecards  WHERE user_id = $id");
+            $allTimecards = mysqli_query($conn, "SELECT id, timecard_date, timecard_temp FROM timecards  WHERE user_id = $id");
+            
             if (mysqli_num_rows($allTimecards) > 0) {
                 $json_array["timecarddata"] = array();
 
-                while ($row = mysqli_fetch_array($allTimecards)) {
+                while ($row = mysqli_fetch_assoc($allTimecards)) {
                     $timecardId = $row['id'];
                     $timecardDate = $row['timecard_date'];
+                    $timecardTemp = $row['timecard_temp'];
 
                     $timecardDetailsQuery = "SELECT td.* 
                                             FROM timecard_details td
@@ -37,9 +39,17 @@
                         mysqli_stmt_execute($stmtDetails);
                         $result = mysqli_stmt_get_result($stmtDetails);
 
-                        while ($rowDetails = mysqli_fetch_assoc($result)) {
-                            $rowDetails["timecard_date"] = $timecardDate; 
-                            $json_array["timecarddata"][] = $rowDetails;
+                        if (mysqli_num_rows($result) > 0) {
+                            // Có thông tin trong bảng timecard_details
+                            while ($rowDetails = mysqli_fetch_assoc($result)) {
+                                $rowDetails["timecard_date"] = $timecardDate; 
+                                $rowDetails["timecard_temp"] = $timecardTemp; 
+                                $json_array["timecarddata"][] = $rowDetails;
+                            }
+                        } else {
+                            // Không có thông tin trong bảng timecard_details
+                            $row["id"] = intval($row["id"]);
+                            $json_array["timecarddata"][] = $row;
                         }
                     }
                 }
@@ -50,18 +60,19 @@
                 return;
             }
         }
+
         function postAdd($user_id, $timecard_year, $timecard_month, $timecard_day, $timecard_date, $owner, $timecard_temp){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
-            $user_id = $data['dataTimeCard']['user_id'];
-            $timecard_year = $data['dataTimeCard']['timecard_year'];
-            $timecard_month = $data['dataTimeCard']['timecard_month'];
-            $timecard_day = $data['dataTimeCard']['timecard_day'];
-            $timecard_date = $data['dataTimeCard']['timecard_date'];
-            $owner = $data['dataTimeCard']['owner'];
-            $timecard_temp = $data['dataTimeCard']['timecard_temp'];
+            $user_id = isset($data['dataTimeCard']['user_id'])?$data['dataTimeCard']['user_id']:'NULL';
+            $timecard_year = isset($data['dataTimeCard']['timecard_year'])?$data['dataTimeCard']['timecard_year']:'NULL';
+            $timecard_month = isset($data['dataTimeCard']['timecard_month'])?$data['dataTimeCard']['timecard_month']:'NULL';
+            $timecard_day = isset($data['dataTimeCard']['timecard_day'])?$data['dataTimeCard']['timecard_day']:'NULL';
+            $timecard_date = isset($data['dataTimeCard']['timecard_date'])?$data['dataTimeCard']['timecard_date']:'NULL';
+            $owner = isset($data['dataTimeCard']['owner'])?$data['dataTimeCard']['owner']:'NULL';
+            $timecard_temp = isset($data['dataTimeCard']['timecard_temp'])?$data['dataTimeCard']['timecard_temp']:'NULL';
             $sql = "INSERT INTO timecards (user_id, timecard_year, timecard_month, timecard_day, timecard_date, owner, timecard_temp, createdAt) 
-                                VALUES ($user_id, $timecard_year, $timecard_month, $timecard_day, '$timecard_date', '$owner', $timecard_temp, NOW())";
+                                VALUES ($user_id, $timecard_year, $timecard_month, $timecard_day, '$timecard_date', '$owner', '$timecard_temp', NOW())";
             $result = $conn->query($sql);
 
             header('Content-Type: application/json');
@@ -73,6 +84,45 @@
             } else {
                 echo json_encode(['errCode' => 1, "message" => "Thêm không thành công"]);
                 return;
+            }
+            $conn->close();
+        }
+        function updateComment($id){
+            global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            $comment = $data['comment'];
+            if (isset($id)) {
+                $sql = "UPDATE timecards SET timecard_temp = ? WHERE id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $comment, $id);
+                if ($stmt->execute()) {
+                    http_response_code(200);
+                    echo json_encode(['errCode' => 0]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['errCode' => 1, "error" => $stmt->error]);
+                }
+                $stmt->close();
+            } else {
+                http_response_code(400);
+                echo json_encode(['errCode' => 1, "message" => "Không thể cập nhật comment"]);
+            }
+        }
+        function deleteTimecards($id){
+            global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            if (isset($id)) {
+                $deleteQuery = "DELETE FROM timecards WHERE id = $id";
+                if (mysqli_query($conn, $deleteQuery)) {
+                    http_response_code(200);
+                echo json_encode(['errCode' => 0]);
+                } else {
+                    http_response_code(500);
+                echo json_encode(['errCode' => 1, 'message' => 'không thể Xóa ngày nghỉ']);
+                }
+            } else {
+                http_response_code(400);
+                echo json_encode(['errCode' => 2, 'message' => 'không thể tìm thấy ngày nghỉ của người dùng']);
             }
             $conn->close();
         }

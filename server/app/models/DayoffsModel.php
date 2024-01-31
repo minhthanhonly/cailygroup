@@ -96,7 +96,6 @@
         function deleteDayoffs($id){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
-            $owner = isset($data['data']['owner'])?$data['data']['owner']:null;
             if (isset($id)) {
                 $deleteQuery = "DELETE FROM dayoffs WHERE id = $id";
                 if (mysqli_query($conn, $deleteQuery)) {
