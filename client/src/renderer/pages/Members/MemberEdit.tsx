@@ -10,10 +10,12 @@ function MemberEdit() {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [initialValue, setInitialValue] = useState('');
   const [formValue, setFormValue] = useState({
     userid: '',
     password: '',
+    realname: '',
+  });
+  const [apiData, setApiData] = useState({
     realname: '',
   });
   const [passwordNew, setPasswordNew] = useState('');
@@ -22,22 +24,12 @@ function MemberEdit() {
     authority: '',
     user_group: '',
   });
-
+  const [apiDataSelect, setApiDataSelect] = useState({
+    authority: '',
+    user_group: '',
+  });
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [message, setMessage] = useState('');
-
-  /*
-   * HANDLE INPUT
-  */
-  const handleInput = (event: any) => {
-    setFormValue({ ...formValue, [event.target.name]: event.target.value });
-  };
-
-  /*
-   * HANDLE SELECT CHANGE
-  */
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedValue({ ...selectedValue, [event.target.name]: event.target.value });
-  }
 
   /*
    * GET DATA USER BY ID
@@ -45,6 +37,8 @@ function MemberEdit() {
   const fetchUsersById = async function () {
     const res = await axiosPrivate.get('users/edit/' + id);
     setFormValue(res.data);
+    setApiData(res.data);
+    setApiDataSelect(res.data);
     setSelectedValue({...selectedValue, authority: res.data.authority, user_group: res.data.user_group})
   };
 
@@ -52,15 +46,40 @@ function MemberEdit() {
     fetchUsersById();
   }, []);
 
+  /*
+   * HANDLE INPUT
+  */
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormValue({...formValue, [event.target.name]:event.target.value});
+    const newValue = event.target.value;
+    const isInputDifferentFromApi = apiData.realname !== newValue;
+    (isInputDifferentFromApi === true) ? setIsDisabled(false) : setIsDisabled(true);
+  };
+
+  /*
+   * HANDLE SELECT CHANGE
+  */
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedValue({ ...selectedValue, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    switch (name) {
+      case "authority":
+        (apiDataSelect.authority === value) ? setIsDisabled(true) :  setIsDisabled(false);
+        break;
+      case "user_group":
+        (apiDataSelect.user_group === value) ? setIsDisabled(true) :  setIsDisabled(false);
+        break;
+      default:
+        setIsDisabled(false)
+        break;
+    }
+  }
 
   /*
    * HANDLE BUTTON CANCEL
   */
   const handleCancel = () => {
-    fetchUsersById();
-    setInitialValue('');
-    setPasswordNew(initialValue);
-    setPasswordConfirm(initialValue);
+    navigate('/members');
   };
 
   /*
@@ -213,7 +232,6 @@ function MemberEdit() {
                       <option
                         value={value.id}
                         key={index}
-                        // selected={value.id == formValue.user_group}
                       >
                         {value.group_name}
                       </option>
@@ -240,7 +258,6 @@ function MemberEdit() {
                       <option
                         value={value.id}
                         key={index}
-                        // selected={value.id == formValue.authority}
                       >
                         {value.authority_name}
                       </option>
@@ -307,6 +324,7 @@ function MemberEdit() {
                   className="btn btn--green"
                   type="submit"
                   onClick={handleSubmit}
+                  disabled={isDisabled}
                 >
                   Xác nhận
                 </button>

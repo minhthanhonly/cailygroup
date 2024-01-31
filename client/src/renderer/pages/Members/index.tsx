@@ -32,28 +32,17 @@ function Members() {
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
 
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
     const getUsers = async () => {
       try {
-        const response = await axiosPrivate.get('users', {
-          signal: controller.signal,
-        });
-        isMounted && setListOfUsers(response.data);
+        const response = await axiosPrivate.get('users');
+        setListOfUsers(response.data);
         setIsTableUpdated(false);
         response.data.length ? setEmpty(false) : setEmpty(true);
       } catch (err) {
         console.error('Lỗi khi lấy dữ liệu:', err);
       }
     }
-
     getUsers();
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    }
   }, [isTableUpdated])
 
   /*
@@ -114,7 +103,6 @@ function Members() {
   let DataTable: FieldUsers[] = [];
   const [currentPage, setCurrentPage] = useState(1);
 
-
   // Tính tổng số trang
   const totalPages = Math.ceil(listOfUsers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -161,7 +149,6 @@ function Members() {
       <CTable>
         <CTableHead heads={["Họ và tên", "Nhóm", "Quyền truy cập", "Hành động"]} />
         <tbody>
-
           {displayedUsers.length > 0 ? (
             displayedUsers.map((data, index) => (
               <tr key={index}>
