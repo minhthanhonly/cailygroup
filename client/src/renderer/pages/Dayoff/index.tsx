@@ -55,7 +55,8 @@ export const Dayoff = () => {
     ).getTime();
 
     if (dateA !== dateB) {
-      return dateA - dateB;
+      // Sắp xếp giảm dần theo ngày tháng năm
+      return dateB - dateA;
     } else {
       const timeStartA = parseTime((a as any).time_start);
       const timeStartB = parseTime((b as any).time_start);
@@ -79,7 +80,8 @@ export const Dayoff = () => {
     ).getTime();
 
     if (dateA !== dateB) {
-      return dateA - dateB;
+      // Sắp xếp giảm dần theo ngày tháng năm
+      return dateB - dateA;
     } else {
       const timeStartA = parseTime((a as any).time_start);
       const timeStartB = parseTime((b as any).time_start);

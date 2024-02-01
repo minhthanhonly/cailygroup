@@ -233,6 +233,9 @@ export const FormLeave: React.FC = () => {
         setNoteErr(4);
         error = 4;
       }
+    } else if (!note && formattedLeaveDate.length == 0) {
+      setNoteErr(5);
+      error = 5;
     } else {
       setNoteErr(1);
       error = 1;
@@ -305,7 +308,7 @@ export const FormLeave: React.FC = () => {
                 {noteErr == 2 ? (
                   <p className="text-error">* Xin nghỉ phép có ngày trùng!</p>
                 ) : null}
-                {noteErr == 3 ? (
+                {noteErr == 3 || noteErr == 5 ? (
                   <p className="text-error">* Không được để trống!</p>
                 ) : null}
                 {noteErr == 4 ? (
@@ -378,7 +381,7 @@ export const FormLeave: React.FC = () => {
                   value={note}
                   onChange={(event) => setNote(event.target.value)}
                 />
-                {noteErr == 1 ? (
+                {noteErr == 1 || noteErr == 5 ? (
                   <p className="text-error">* Phải nhập lý do nghỉ!</p>
                 ) : null}
               </div>
