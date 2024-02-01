@@ -31,6 +31,7 @@ const userGroupName = "Nhóm";
 const authorityName = "Quyền truy cập";
 
 type paraUser = {
+  olduserid: string,
   userid: string,
   password: string,
   password_confirm: string,
@@ -40,7 +41,20 @@ type paraUser = {
   user_group: string,
 }
 
-export const isValidUser = ({...paraUser}) => {
+export const isValidUser = ({...paraUser}, olduserid: string) => {
+  if(!paraUser.userid) {
+    toast.error(ERROR['require'] + useridName + "!");
+    return false;
+  } else if(isZenSpace(paraUser.userid)) {
+    toast.error("Giá trị nhập vào "+ useridName +" không hợp lệ.");
+    return false;
+  }
+
+  if(olduserid) {
+    toast.error(useridName + " đã tồn tại!");
+    return false;
+  }
+
   if(!paraUser.userid) {
     toast.error(ERROR['require'] + useridName + "!");
     return false;

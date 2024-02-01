@@ -16,9 +16,8 @@ function Members() {
   const axiosPrivate = useAxiosPrivate();
   const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [empty, setEmpty] = useState(false);
-
-
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
   /*
   * LẤY DANH SÁCH THÀNH VIÊN
   */

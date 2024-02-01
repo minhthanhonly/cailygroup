@@ -10,17 +10,36 @@ function MemberAdd() {
 
 	const [formValue, setFormValue] = useState({ userid: '', password: '', password_confirm: '', realname: '', authority: '', user_group: '' })
 	const [message, setMessage] = useState('');
+
+  type FieldUsers = {
+    userid: string,
+  }
+  const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
+  let DataUsers: FieldUsers[] = [];
+	for (let i = 0; i < listOfUsers.length; i++) {
+		DataUsers.push({
+			userid: `${listOfUsers[i].userid}`
+		});
+	}
+
 	const handleInput = (e) => {
 		setFormValue({ ...formValue, [e.target.name]: e.target.value })
 	}
 
 	const handleSubmit = async (e) => {
-		const validationErrors = isValidUser({ ...formValue });
+    let oldUserid = "";
+    DataUsers.map((data, index) => {
+      if(data.userid === formValue.userid){
+        oldUserid = data.userid;
+        return oldUserid;
+      }
+    })
+
+		const validationErrors = isValidUser({ ...formValue }, oldUserid);
 		e.preventDefault();
 		if (validationErrors === true) {
 			const formData = { userid: formValue.userid, password: formValue.password, realname: formValue.realname, authority: formValue.authority, user_group: formValue.user_group }
 			const res = await axiosPrivate.post("users/add", formData);
-
 			if (res.data.success) {
 				setMessage(res.data.success);
 				setTimeout(() => {
@@ -48,7 +67,11 @@ function MemberAdd() {
 	useEffect(() => {
 		axiosPrivate.get('authority').then((response) => {
 			setListOfAuthority(response.data);
-		}).catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
+		})
+    axiosPrivate.get('users').then((response) => {
+			setListOfUsers(response.data);
+		})
+    .catch(error => console.error('Lỗi khi lấy dữ liệu:', error))
 	}, [])
 
 	let DataAuthority: FieldAuthority[] = [];
