@@ -101,8 +101,20 @@ function MemberEdit() {
 
       const res = await axiosPrivate.post('users/update', formData);
       const res2 = await axiosPrivate.get("users/detail/"+formValue.userid);
+      const getUserIdStore = JSON.parse(localStorage.getItem('users') || '{}').userid;
 
       if (res.data.success) {
+        if(getUserIdStore === formValue.userid){
+          const users = {
+            "id": res2.data.id,
+            "userid": res2.data.userid,
+            "realname": res2.data.realname,
+            "roles": res2.data.authority_name,
+            "user_group": res2.data.group_name,
+            "user_group_id": res2.data.user_group,
+          }
+          localStorage.setItem('users', JSON.stringify(users));
+        }
         setMessage(res.data.success);
         setTimeout(() => {
           navigate('/members');
