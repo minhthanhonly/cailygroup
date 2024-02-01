@@ -78,7 +78,6 @@
                     WHERE users.id = $id";
 
             $allGroup = mysqli_query($conn, $query);
-            if ($allGroup) {
                 $data = [];
 
                 while ($row = mysqli_fetch_assoc($allGroup)) {
@@ -88,10 +87,6 @@
                 }
                 http_response_code(200);
                 echo json_encode($data);
-            } else {
-                http_response_code(500);
-                echo json_encode(['errCode' => 1, 'message' => 'không thể tìm thấy ngày nghỉ của người dùng']);
-            }
         }
         function deleteDayoffs($id){
             global $conn;

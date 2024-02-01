@@ -35,10 +35,12 @@ function Dashboard() {
     try {
       const res = await axiosPrivate.get('dayoffs/getforuser/' + usersID);
       function isLeaveDateInConsData(leaveDate: string) {
-        return res.data.some(
-          (item: { date: string; status: number }) =>
-            item.date === leaveDate && item.status == 1,
-        );
+        return leaveDate
+          ? res.data.some(
+              (item: { date: string; status: number }) =>
+                item.date === leaveDate && item.status == 1,
+            )
+          : '';
       }
       const today = new Date();
       const formattedDate = today.toLocaleDateString('en-US');
@@ -65,7 +67,7 @@ function Dashboard() {
         setCheckDayoff(false);
       }
     } catch (error) {
-      console.error('Error fetching timecards:', error);
+      // console.log('Không có ngày nghỉ');
     }
   };
   const handleStart = async () => {

@@ -973,7 +973,18 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                           }
                           key={index}
                         >
-                          {item.timecard_open}
+                          {item.id_groupwaretimecard ? (
+                            item.timecard_open
+                          ) : isToday(day) && startClick ? (
+                            <button
+                              className="btn btn--medium"
+                              onClick={(event) => {
+                                handleButtonClick(item.id, item.timecard_temp);
+                              }}
+                            >
+                              Bắt đầu
+                            </button>
+                          ) : null}
                         </div>
                       ))}
                   </>
