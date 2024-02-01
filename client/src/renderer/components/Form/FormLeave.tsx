@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import './From.scss';
 import 'react-datepicker/dist/react-datepicker.css';
 import TimePickerButton from '../Modal/TimeSelect';
-import { format } from 'date-fns';
+import { isBefore, format, parse } from 'date-fns';
 import Modaldelete from '../Modal/Modaldelete';
 import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
@@ -199,6 +199,24 @@ export const FormLeave: React.FC = () => {
       );
     }
     let error = 0;
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const isAnyDateBeforeToday = leaveDate.some((date) => {
+      const parsedDate = parse(date, 'dd-MM-yyyy', new Date());
+      parsedDate.setHours(0, 0, 0, 0);
+
+      console.log('parsedDate:', parsedDate);
+      console.log('currentDate:', currentDate);
+
+      return isBefore(parsedDate, currentDate);
+    });
+
+    if (isAnyDateBeforeToday) {
+      console.log('Có ngày bé hơn ngày hiện tại.');
+    } else {
+      console.log('Không có ngày nào bé hơn ngày hiện tại.');
+    }
     if (note) {
       setNoteErr(0);
       leaveDatesArray.forEach((leaveDate) => {
@@ -207,6 +225,14 @@ export const FormLeave: React.FC = () => {
           error = 2;
         }
       });
+      if (formattedLeaveDate.length == 0) {
+        setNoteErr(3);
+        error = 3;
+      }
+      if (isAnyDateBeforeToday) {
+        setNoteErr(4);
+        error = 4;
+      }
     } else {
       setNoteErr(1);
       error = 1;
@@ -278,6 +304,14 @@ export const FormLeave: React.FC = () => {
                 />
                 {noteErr == 2 ? (
                   <p className="text-error">* Xin nghỉ phép có ngày trùng!</p>
+                ) : null}
+                {noteErr == 3 ? (
+                  <p className="text-error">* Không được để trống!</p>
+                ) : null}
+                {noteErr == 4 ? (
+                  <p className="text-error">
+                    * Không được xin nghỉ ngày trong quá khứ!
+                  </p>
                 ) : null}
                 <label className="checkbox">
                   <input
