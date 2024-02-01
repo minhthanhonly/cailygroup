@@ -59,10 +59,7 @@ function Dashboard() {
           const [hours, minutes] = timecardOpen.split(':');
           setStartTime({ hours, minutes });
           setCheckStart(true);
-        } else {
-          console.log('No timecard data found.');
         }
-        setCheckDayoff(true);
       } else {
         setCheckDayoff(false);
       }
@@ -72,7 +69,10 @@ function Dashboard() {
   };
   const handleStart = async () => {
     try {
-      // await axiosPrivate.post('timecards/delete/' + idTimecards)
+      const res = await axiosPrivate.get('timecards/loaduser/' + usersID);
+      res.data
+        ? await axiosPrivate.post('timecards/delete/' + res.data.id)
+        : '';
       const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
@@ -95,7 +95,7 @@ function Dashboard() {
         timecard_month: currentMonth,
         timecard_day: currentDate,
         timecard_date: `${currentDate}-${currentMonth}-${currentYear}`,
-        timecard_temp: 0,
+        timecard_temp: '',
         owner: 'admin',
       };
       const responseTimeCard = await axiosPrivate.post('timecards/add', {
@@ -106,7 +106,7 @@ function Dashboard() {
         timecard_open: timecard_open_time,
         timecard_originalopen: timecard_open_time,
         timecard_timeinterval: '1:30',
-        timecard_comment: '',
+        timecard_comment: res.data.timecard_temp,
       };
       const responseTimeCardDetails = await axiosPrivate.post(
         'timecarddetails/add',
@@ -299,7 +299,7 @@ function Dashboard() {
       <div className="Dashboard-content">
         <DashboardTime />
         <h4>Thời gian làm việc hôm nay</h4>
-        {!checkDayoff ? (
+        {checkDayoff ? (
           <h3 className="center">Hôm nay đã được duyệt nghỉ phép</h3>
         ) : (
           <div className="Dashboard-action">

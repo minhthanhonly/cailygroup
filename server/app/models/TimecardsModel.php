@@ -3,10 +3,25 @@
         function getTimecardUser($id) {
             global $conn;
             $todayDate = date("d-m-Y");
-            $sql = "SELECT td.timecard_open, td.timecard_close, td.	id_groupwaretimecard
+            $sql = "SELECT td.timecard_open, td.timecard_close, td.id_groupwaretimecard
                 FROM timecard_details td
                 INNER JOIN timecards tc ON td.id_groupwaretimecard = tc.id
                 WHERE tc.user_id = $id AND tc.timecard_date = '$todayDate'";
+            $result = mysqli_query($conn, $sql);
+            if (mysqli_num_rows($result) >= 0) {
+                $row = mysqli_fetch_assoc($result);
+                echo json_encode($row);
+            } else {
+                echo json_encode(['errCode' => 1, "message" => "Không tìm thấy timecards của người dùng"]);
+                return;
+            }
+        }
+        function getTimecardToday($id) {
+            global $conn;
+            $todayDate = date("d-m-Y");
+            $sql = "SELECT id, timecard_temp
+                FROM timecards
+                WHERE user_id = $id AND timecard_date = '$todayDate'";
             $result = mysqli_query($conn, $sql);
             if (mysqli_num_rows($result) >= 0) {
                 $row = mysqli_fetch_assoc($result);
