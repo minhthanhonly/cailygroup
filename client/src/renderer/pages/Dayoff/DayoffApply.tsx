@@ -31,6 +31,7 @@ export const DayoffApply = () => {
   const [listOfGroups, setListOfGroups] = useState<FieldGroups[] | []>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const handleGroupChange = (groupId: string) => {
+    setCurrentPage(1);
     setSelectedGroup(groupId);
     fetchData();
   };
