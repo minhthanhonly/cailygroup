@@ -101,9 +101,11 @@ export const FormLeave: React.FC = () => {
     const configItem = configArray.find((item) => item.config_key === key);
     return configItem ? configItem.config_value : null;
   }
+
   const handleConfirmClick = async () => {
     let timeLeave = '';
     let dayLeave = '';
+    let error = 0;
     if (opentimeValue && openlunchValue && closelunchValue && closetimeValue) {
       if (compareTime(timeStart, timeEnd) == 0) {
         timeLeave = '00:00';
@@ -198,24 +200,15 @@ export const FormLeave: React.FC = () => {
         (item: { date: string }) => item.date === leaveDate,
       );
     }
-    let error = 0;
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-
-    const isAnyDateBeforeToday = leaveDate.some((date) => {
-      const parsedDate = parse(date, 'dd-MM-yyyy', new Date());
-      parsedDate.setHours(0, 0, 0, 0);
-
-      console.log('parsedDate:', parsedDate);
-      console.log('currentDate:', currentDate);
-
-      return isBefore(parsedDate, currentDate);
-    });
-
-    if (isAnyDateBeforeToday) {
-      console.log('Có ngày bé hơn ngày hiện tại.');
-    } else {
-      console.log('Không có ngày nào bé hơn ngày hiện tại.');
+    type LeaveDateItem = Date;
+    function checkLeaveDate(leaveDateArray: LeaveDateItem[]) {
+      const currentDate = new Date();
+      for (const leaveDateTime of leaveDateArray) {
+        if (leaveDateTime < currentDate) {
+          setNoteErr(4);
+          error = 4;
+        }
+      }
     }
     if (note) {
       setNoteErr(0);
@@ -229,10 +222,7 @@ export const FormLeave: React.FC = () => {
         setNoteErr(3);
         error = 3;
       }
-      if (isAnyDateBeforeToday) {
-        setNoteErr(4);
-        error = 4;
-      }
+      checkLeaveDate(leaveDate);
     } else if (!note && formattedLeaveDate.length == 0) {
       setNoteErr(5);
       error = 5;
