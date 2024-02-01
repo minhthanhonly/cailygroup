@@ -389,7 +389,15 @@ export const FormLeave: React.FC = () => {
           >
             Xác nhận
           </button>
-          <button className="btn btn--orange">Hủy</button>
+          <button
+            className="btn btn--orange"
+            onClick={(event) => {
+              setLeaveDate([new Date()]);
+              setNote('');
+            }}
+          >
+            Hủy
+          </button>
         </div>
       </div>
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
