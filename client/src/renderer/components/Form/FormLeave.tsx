@@ -203,8 +203,10 @@ export const FormLeave: React.FC = () => {
     type LeaveDateItem = Date;
     function checkLeaveDate(leaveDateArray: LeaveDateItem[]) {
       const currentDate = new Date();
+      const yesterday = new Date(currentDate);
+      yesterday.setDate(currentDate.getDate() - 1);
       for (const leaveDateTime of leaveDateArray) {
-        if (leaveDateTime < currentDate) {
+        if (leaveDateTime < yesterday) {
           setNoteErr(4);
           error = 4;
         }
