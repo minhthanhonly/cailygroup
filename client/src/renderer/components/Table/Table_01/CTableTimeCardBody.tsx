@@ -67,7 +67,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isOpenModal, setOpenModal] = useState(false);
+  const [isOpenModal, setOpenModal] = useState<number>();
   const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(0);
   const [commentText, setCommentText] = useState('');
   const [name, setName] = useState('');
@@ -103,14 +103,16 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [validateErr, setValidateErr] = useState(0);
   const [timecardNote, setTimecardNote] = useState<string>();
   const [timecardDateEdit, setTimecardDateEdit] = useState<string | null>(null);
+  const [timecardCheck, setTimecardCheck] = useState<number>(0);
   const openModaldelete = (
     id: number,
     timecards_date: string,
     timecards_open: string,
     timecards_close: string,
     timecards_comment: string,
-    isTimecards: boolean,
+    isTimecards: number,
     date: string,
+    checkonly?: number,
   ) => {
     setTimecardID(id);
     setTimecardDate(timecards_date);
@@ -121,6 +123,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setDeleteModalOpen(true);
     setTimecardDateEdit(date);
     setOpenMenuIndex(0);
+    setTimecardCheck(checkonly);
   };
   const closeModaldelete = () => {
     setDeleteModalOpen(false);
@@ -698,7 +701,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     return timeRegex.test(input);
   };
   const handleChangeTimecards = async (id: number) => {
-    let err = 0;
+    console.log(timecardID);
+    let err = 1;
     setValidateErr(0);
     if (timecard_open_time && timecardEnd) {
       if (
@@ -747,6 +751,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     }
   };
   const handleNewTimeCard = async () => {
+    timecardCheck == 1
+      ? await axiosPrivate.post('timecards/delete/' + timecardID)
+      : null;
     let err = 0;
     setValidateErr(0);
     let day, month, year;
@@ -785,6 +792,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           timecard_temp: '',
           owner: users.realname,
         };
+        console.log(dataTimeCard);
         const responseTimeCard = await axiosPrivate.post('timecards/add', {
           dataTimeCard,
         });
@@ -823,6 +831,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       }
     }
   };
+  const handleTimeCard = async () => {};
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
 
   const openMenu = (index: number) => {
@@ -1311,18 +1320,29 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                     <a
                                       className="btn--yellow"
                                       onClick={(event) => {
-                                        openModaldelete(
-                                          item.id,
-                                          item.timecard_date,
-                                          item.timecard_open,
-                                          item.timecard_close,
-                                          item.timecard_comment,
-                                          false,
-                                          '',
-                                        );
+                                        item.id_groupwaretimecard
+                                          ? openModaldelete(
+                                              item.id_groupwaretimecard,
+                                              item.timecard_date,
+                                              item.timecard_open,
+                                              item.timecard_close,
+                                              item.timecard_comment,
+                                              1,
+                                              '',
+                                            )
+                                          : openModaldelete(
+                                              item.id,
+                                              item.timecard_date,
+                                              item.timecard_open,
+                                              item.timecard_close,
+                                              item.timecard_temp,
+                                              2,
+                                              format(day, 'dd-MM-yyyy'),
+                                              1,
+                                            );
                                       }}
                                     >
-                                      Sửa giờ
+                                      Sửa thẻ giờ
                                     </a>
                                   ) : null}
                                 </li>
@@ -1340,7 +1360,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                 '',
                                 '',
                                 '',
-                                true,
+                                2,
                                 format(day, 'dd-MM-yyyy'),
                               );
                             }}
@@ -1519,7 +1539,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               <button
                 className="btn btn--green"
                 onClick={(event) => {
-                  isOpenModal
+                  isOpenModal == 2
                     ? handleNewTimeCard()
                     : handleChangeTimecards(timecardID);
                 }}
