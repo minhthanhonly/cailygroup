@@ -47,11 +47,13 @@ export const Timecard = () => {
 
 
   const [user_id, setUser_id] = useState<number>();
+
   const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
 
   // Check if id is defined
   useEffect(() => {
     if (datacheck === 0) {
+
       const fetchData = async () => {
         try {
           const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
@@ -81,8 +83,9 @@ export const Timecard = () => {
 
 
   const exportToExcel = async () => {
+
     const matchedUser = listOfUsers.find((users) => users.id === id);
-    const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
+    const realname = matchedUser ? matchedUser.realname : loggedInUserId.realname;
 
     const table = document.getElementById(
       'timecards_table',
@@ -105,7 +108,7 @@ export const Timecard = () => {
     // Merge cells for the name and date
     worksheet.mergeCells(`A1:G3`);
     const cellA1 = worksheet.getCell(`A1`);
-    cellA1.value = ` ${realname || ''} \n ${month}/${year}`;
+    cellA1.value = ` ${realName || ''} \n ${month}/${year}`;
     cellA1.alignment = { horizontal: 'center', vertical: 'middle' };
     cellA1.border = {
       top: { style: 'thin', color: { argb: 'FF000000' } },
