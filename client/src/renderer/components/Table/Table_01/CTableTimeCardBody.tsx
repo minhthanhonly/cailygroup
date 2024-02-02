@@ -541,14 +541,22 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     date: string;
     owner: string;
   } => {
+    // if (!dayoffs) {
+    //   fetchDayoffs();
+    //   return {
+    //     isDayoff: false,
+    //     id: 0,
+    //     note: '',
+    //     status: 0,
+    //     date: '',
+    //     owner: '',
+    //   };
+    // }
     const formattedDay = format(day, 'dd-MM-yyyy');
     const foundDayoff = dayoffs?.find((dayoff) => {
       const dayoffDay = dayoff.date.split(', ');
       return dayoffDay.includes(formattedDay);
     });
-    // const foundDayoff = dayoffs?.find((dayoff) => {
-    //   return dayoff.date === formattedDay;
-    // });
     return foundDayoff
       ? {
           isDayoff: true,
