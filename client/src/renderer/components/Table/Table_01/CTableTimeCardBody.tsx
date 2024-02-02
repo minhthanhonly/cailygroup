@@ -67,7 +67,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [usersID, setUsersID] = useState();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isOpenModal, setOpenModal] = useState(false);
+  const [isOpenModal, setOpenModal] = useState<number>();
   const [isUpdatingDayoff, setIsUpdatingDayoff] = useState(0);
   const [commentText, setCommentText] = useState('');
   const [name, setName] = useState('');
@@ -100,18 +100,19 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [timecardDate, setTimecardDate] = useState<string>();
   const [timecard_open_time, settimecard_open_time] = useState<string>();
   const [timecardEnd, setTimecardEnd] = useState<string>();
-  const [validateTimeStart, setValidateTimeStart] = useState(0);
   const [validateErr, setValidateErr] = useState(0);
   const [timecardNote, setTimecardNote] = useState<string>();
   const [timecardDateEdit, setTimecardDateEdit] = useState<string | null>(null);
+  const [timecardCheck, setTimecardCheck] = useState<number>(0);
   const openModaldelete = (
     id: number,
     timecards_date: string,
     timecards_open: string,
     timecards_close: string,
     timecards_comment: string,
-    isTimecards: boolean,
+    isTimecards: number,
     date: string,
+    checkonly?: number,
   ) => {
     setTimecardID(id);
     setTimecardDate(timecards_date);
@@ -122,9 +123,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setDeleteModalOpen(true);
     setTimecardDateEdit(date);
     setOpenMenuIndex(0);
+    setTimecardCheck(checkonly);
   };
   const closeModaldelete = () => {
     setDeleteModalOpen(false);
+    setValidateErr(0);
   };
   useEffect(() => {
     if (!selectedMonth || !selectedYear) {
@@ -668,7 +671,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     closeModal();
   };
   const handleNewComment = async () => {
-    console.log(commentText, currentItemId, isUpdatingDayoff, name);
     const dataTimeCard = {
       user_id: usersID !== undefined ? parseInt(usersID, 10) : 0,
       timecard_date: name,
@@ -684,7 +686,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     closeModal();
   };
   const handleUpdateNewComment = async () => {
-    console.log(commentText, currentItemId);
     const response = await axiosPrivate.post(
       'timecards/updatecomment/' + currentItemId,
       {
@@ -700,15 +701,18 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     return timeRegex.test(input);
   };
   const handleChangeTimecards = async (id: number) => {
-    let err = 0;
+    console.log(timecardID);
+    let err = 1;
     setValidateErr(0);
     if (timecard_open_time && timecardEnd) {
       if (
         isValidTimeFormat(timecardEnd) &&
         isValidTimeFormat(timecard_open_time)
       ) {
-        err = 0;
-        setValidateErr(0);
+        if (compareTime(timecard_open_time, timecardEnd) != 2) {
+          err = 3;
+          setValidateErr(3);
+        }
       } else {
         if (!isValidTimeFormat(timecard_open_time)) {
           err = 1;
@@ -747,53 +751,87 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     }
   };
   const handleNewTimeCard = async () => {
+    timecardCheck == 1
+      ? await axiosPrivate.post('timecards/delete/' + timecardID)
+      : null;
+    let err = 0;
+    setValidateErr(0);
     let day, month, year;
-    if (timecardDateEdit !== null) {
-      const dateParts = timecardDateEdit.split('-');
-      day = dateParts[0];
-      month = dateParts[1];
-      year = dateParts[2];
-    }
-    const dataTimeCard = {
-      timecard_year: year,
-      user_id: usersID,
-      timecard_month: month,
-      timecard_day: day,
-      timecard_date: timecardDateEdit,
-      timecard_temp: '',
-      owner: users.realname,
-    };
-    const responseTimeCard = await axiosPrivate.post('timecards/add', {
-      dataTimeCard,
-    });
-    console.log(responseTimeCard.data);
-    if (timecard_open_time) {
-      let time = await workingTime(timecard_open_time, timecardEnd);
-      const dataTimeCardDetails = {
-        id_groupwaretimecard: responseTimeCard.data.id_timecard,
-        timecard_open: timecard_open_time,
-        timecard_close: timecardEnd,
-        timecard_time: time.timecard_time,
-        timecard_timeover: time.timecard_timeover,
-        timecard_timeinterval: time.timecard_timeinterval,
-        timecard_comment: timecardNote,
-        editor: users.realname,
-      };
-      const responseTimeCardDetails = await axiosPrivate.post(
-        'timecarddetails/addnew',
-        {
-          dataTimeCardDetails,
-        },
-      );
+    if (timecard_open_time && timecardEnd) {
+      if (
+        isValidTimeFormat(timecardEnd) &&
+        isValidTimeFormat(timecard_open_time)
+      ) {
+        if (compareTime(timecard_open_time, timecardEnd) != 2) {
+          err = 3;
+          setValidateErr(3);
+        }
+      } else {
+        if (!isValidTimeFormat(timecard_open_time)) {
+          err = 1;
+          setValidateErr(1);
+        }
+        if (!isValidTimeFormat(timecardEnd)) {
+          err = 2;
+          setValidateErr(2);
+        }
+      }
+      if (err == 0) {
+        if (timecardDateEdit !== null) {
+          const dateParts = timecardDateEdit.split('-');
+          day = dateParts[0];
+          month = dateParts[1];
+          year = dateParts[2];
+        }
+        const dataTimeCard = {
+          timecard_year: year,
+          user_id: usersID,
+          timecard_month: month,
+          timecard_day: day,
+          timecard_date: timecardDateEdit,
+          timecard_temp: '',
+          owner: users.realname,
+        };
+        console.log(dataTimeCard);
+        const responseTimeCard = await axiosPrivate.post('timecards/add', {
+          dataTimeCard,
+        });
+        console.log(responseTimeCard.data);
+        let time = await workingTime(timecard_open_time, timecardEnd);
+        const dataTimeCardDetails = {
+          id_groupwaretimecard: responseTimeCard.data.id_timecard,
+          timecard_open: timecard_open_time,
+          timecard_close: timecardEnd,
+          timecard_time: time.timecard_time,
+          timecard_timeover: time.timecard_timeover,
+          timecard_timeinterval: time.timecard_timeinterval,
+          timecard_comment: timecardNote,
+          editor: users.realname,
+        };
+        const responseTimeCardDetails = await axiosPrivate.post(
+          'timecarddetails/addnew',
+          {
+            dataTimeCardDetails,
+          },
+        );
 
-      console.log(responseTimeCardDetails.data);
+        console.log(responseTimeCardDetails.data);
+        fetchTimecardOpen();
+        setTimeout(() => {
+          calculateTotalTime();
+        }, 400);
+        closeModaldelete();
+      }
+    } else {
+      if (!timecard_open_time) {
+        setValidateErr(1);
+      }
+      if (!timecardEnd) {
+        setValidateErr(2);
+      }
     }
-    fetchTimecardOpen();
-    setTimeout(() => {
-      calculateTotalTime();
-    }, 400);
-    closeModaldelete();
   };
+  const handleTimeCard = async () => {};
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
 
   const openMenu = (index: number) => {
@@ -1282,18 +1320,29 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                     <a
                                       className="btn--yellow"
                                       onClick={(event) => {
-                                        openModaldelete(
-                                          item.id,
-                                          item.timecard_date,
-                                          item.timecard_open,
-                                          item.timecard_close,
-                                          item.timecard_comment,
-                                          false,
-                                          '',
-                                        );
+                                        item.id_groupwaretimecard
+                                          ? openModaldelete(
+                                              item.id_groupwaretimecard,
+                                              item.timecard_date,
+                                              item.timecard_open,
+                                              item.timecard_close,
+                                              item.timecard_comment,
+                                              1,
+                                              '',
+                                            )
+                                          : openModaldelete(
+                                              item.id,
+                                              item.timecard_date,
+                                              item.timecard_open,
+                                              item.timecard_close,
+                                              item.timecard_temp,
+                                              2,
+                                              format(day, 'dd-MM-yyyy'),
+                                              1,
+                                            );
                                       }}
                                     >
-                                      Sửa giờ
+                                      Sửa thẻ giờ
                                     </a>
                                   ) : null}
                                 </li>
@@ -1311,7 +1360,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                                 '',
                                 '',
                                 '',
-                                true,
+                                2,
                                 format(day, 'dd-MM-yyyy'),
                               );
                             }}
@@ -1468,6 +1517,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                         * Nhập sai định dạng(ví dụ: 7:03 hoặc 07:03)
                       </p>
                     ) : null}
+                    {validateErr == 3 ? (
+                      <p className="text-error">
+                        * Thời gian kết thúc phải lớn hơn thời gian bắt đầu
+                      </p>
+                    ) : null}
                   </td>
                 </tr>
                 <tr>
@@ -1485,7 +1539,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
               <button
                 className="btn btn--green"
                 onClick={(event) => {
-                  isOpenModal
+                  isOpenModal == 2
                     ? handleNewTimeCard()
                     : handleChangeTimecards(timecardID);
                 }}
