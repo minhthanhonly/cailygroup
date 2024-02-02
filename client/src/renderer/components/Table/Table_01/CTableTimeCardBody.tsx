@@ -737,6 +737,13 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         }, 400);
         closeModaldelete();
       }
+    } else {
+      if (!timecard_open_time) {
+        setValidateErr(1);
+      }
+      if (!timecardEnd) {
+        setValidateErr(2);
+      }
     }
   };
   const handleNewTimeCard = async () => {
