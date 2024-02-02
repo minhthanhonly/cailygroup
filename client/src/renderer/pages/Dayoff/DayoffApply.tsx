@@ -97,7 +97,9 @@ export const DayoffApply = () => {
         >
           Đồng ý
         </a>
-      ) : null;
+      ) : (
+        <p className="clr-green">Đã xác nhận</p>
+      );
     let dynamicNo =
       listOfGroups[i].status == 0 ? (
         <a
@@ -112,7 +114,15 @@ export const DayoffApply = () => {
       ) : listOfGroups[i].status == 2 ? (
         <p className="clr-red">Đã từ chối</p>
       ) : (
-        <p className="clr-green">Đã xác nhận</p>
+        <a
+          className="btn btn--medium btn--orange"
+          onClick={(event) => {
+            refuseDayoffs(listOfGroups[i].id, event);
+          }}
+          href={listOfGroups[i].id}
+        >
+          Từ chối
+        </a>
       );
     isDateInPast
       ? null
