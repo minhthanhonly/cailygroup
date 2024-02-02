@@ -24,10 +24,14 @@ interface FieldUsers {
 
 export const Timecard = () => {
   const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
+
 
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
+
+
+  const [realName, setRealName] = useState('');
+
   const location = useLocation();
   const { id, month, year, daysInMonth: stateDaysInMonth = [], datacheck, } = (location.state as {
     id: number;
@@ -37,26 +41,54 @@ export const Timecard = () => {
     datacheck: number;
   }) || {};
 
+
+
   const [user_id, setUser_id] = useState<number>();
   const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
-  const matchedUser = listOfUsers.find((users) => users.id === id);
-  const realname = matchedUser ? matchedUser.realname : '';
+  // const matchedUser = listOfUsers.find((users) => users.id === id);
+
+  // Check if id is defined
+  useEffect(() => {
+    if (datacheck === 0) {
+      // Find the user with the matching id in listOfUsers
+      const matchedUser = listOfUsers.find((users) => users.id === id);
+
+      // Check if the user is found and get the realname
+      const newRealName = matchedUser ? matchedUser.realname : '';
+
+      // Update the realName state
+      setRealName(newRealName);
+    } else {
+      // Use loggedInUserId.realname directly if datacheck is not 0
+      const newRealName = loggedInUserId.realname;
+
+      // Update the realName state
+      setRealName(newRealName);
+    }
+  }, [id, datacheck, listOfUsers, loggedInUserId]);
 
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
+    // Fetch data or perform actions that update the state
+    const fetchData = async () => {
+      try {
+        const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
+        if (loggedInUserId) {
+          const response = await axiosPrivate.get('timecards/list');
+          setListOfUsers(response.data);
+          const loggedInUser = response.data.find((user: { id: number }) => user.id === loggedInUserId.id);
+          setCurrentUser(loggedInUser);
+        } else {
+          console.error('Không tìm thấy giá trị loggedInUserId trong localStorage');
+        }
+      } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu:', error);
+      }
+    };
 
+    fetchData(); // Call the function inside useEffect
 
-    if (loggedInUserId) {
-      axiosPrivate.get('timecards/list').then((response) => {
-        setListOfUsers(response.data);
-        const loggedInUser = response.data.find((users: { id: number }) => users.id === loggedInUserId.id,);
-        setCurrentUser(loggedInUser);
-      }).catch((error) => console.error('Lỗi khi lấy dữ liệu:', error));
-    } else {
-      console.error('Không tìm thấy giá trị loggedInUserId trong localStorage');
-    }
-  }, []); // Thêm dependency để đảm bảo hook chỉ chạy một lần
-  //-------------------------------------------------------------------------------------
+  }, []); // Empty dependency array to run the effect only once-------------------
 
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((users) => users.id === id);
@@ -344,7 +376,7 @@ export const Timecard = () => {
           <NavLink className="btn" to="/dayoffs/register"> Đăng ký nghỉ phép </NavLink>
         </ButtonCenter>
       </div>
-      {realname ? (<h3 className="timecard-title">Thẻ giờ của: {realname}</h3>) : null}
+      {realName ? (<h3 className="timecard-title">Thẻ giờ của: {realName}</h3>) : null}
 
       <div className="table-container table--01">
         <table id="timecards_table" className="table table__custom">
