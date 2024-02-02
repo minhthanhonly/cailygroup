@@ -42,13 +42,12 @@ export const Timecard = () => {
   }) || {};
 
   const [user_id, setUser_id] = useState<number>();
-  const matchedUser = listOfUsers.find((user) => user.id === id);
+  const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
+  const matchedUser = listOfUsers.find((users) => users.id === id);
   const realname = matchedUser ? matchedUser.realname : '';
 
   //------------------------------phần lấy user-------------------------------------------------------
   useEffect(() => {
-    const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
-
     if (loggedInUserId) {
       axiosPrivate
         .get('timecards/list')
@@ -67,7 +66,7 @@ export const Timecard = () => {
   //-------------------------------------------------------------------------------------
 
   const exportToExcel = async () => {
-    const matchedUser = listOfUsers.find((user) => user.id === id);
+    const matchedUser = listOfUsers.find((users) => users.id === id);
     const realname = matchedUser ? matchedUser.realname : currentUser?.realname;
 
     const table = document.getElementById(
@@ -79,9 +78,6 @@ export const Timecard = () => {
       return;
     }
 
-    const tableWithRows = table as HTMLTableElement & {
-      rows: HTMLCollectionOf<HTMLTableRowElement>;
-    };
     const month = selectedMonth;
     const year = selectedYear;
     const startRow = 4;
@@ -374,32 +370,6 @@ export const Timecard = () => {
       updateMonthAndYear(currentMonth, currentYear);
     }
   }, [id]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const matchedUser = listOfUsers.find((user) => user.id === id);
-        if (matchedUser) {
-          setCurrentUser(matchedUser);
-          if (datacheck === 1) {
-            // Gọi hàm exportToExcel với await
-            await exportToExcel();
-            await navigate('/timecards/list');
-          }
-          // Bạn có thể thêm logic bổ sung ở đây nếu cần
-        }
-      } catch (error) {
-        console.error('Lỗi khi thực hiện các tác vụ không đồng bộ:', error);
-      }
-    };
-
-    const initializeComponent = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Đợi 500 milliseconds
-      await fetchData(); // Gọi hàm fetchData trong initializeComponent
-      // Thêm bất kỳ logic khởi tạo nào bạn muốn thực hiện sau khi fetchData và exportToExcel đã hoàn thành
-    };
-    initializeComponent(); // Gọi hàm initializeComponent trong useEffect
-  }, [listOfUsers]);
 
   return (
     <>

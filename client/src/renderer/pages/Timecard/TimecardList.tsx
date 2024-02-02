@@ -67,7 +67,6 @@ export const TimecardList: React.FC = () => {
     userId: number | undefined,
     index: number,
   ) => {
-    console.log(`Selected ID: ${userId}`); // Log ID của người được chọn
     setSelectedMonth(month);
     setSelectedYear(year);
     setDaysInMonth(daysInMonth);
