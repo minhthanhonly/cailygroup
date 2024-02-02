@@ -59,8 +59,14 @@
             $query = "SELECT * FROM dayoffs WHERE user_id = '$id'";
             $result = $conn->query($query);
             $dayoffs = array();
-            while ($row = $result->fetch_assoc()) {
-                $dayoffs[] = $row;
+
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $dayoffs[] = $row;
+                }
+            }
+            else{
+                $dayoffs = [];
             }
             $conn->close();
             echo json_encode($dayoffs);
@@ -76,7 +82,6 @@
                     JOIN users ON dayoffs.user_id = users.id
                     JOIN groups ON users.user_group = groups.id
                     WHERE users.id = $id";
-
             $allGroup = mysqli_query($conn, $query);
                 $data = [];
 

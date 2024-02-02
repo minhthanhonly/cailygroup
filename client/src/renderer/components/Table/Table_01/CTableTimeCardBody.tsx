@@ -135,6 +135,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     } else {
       updateDaysInMonth(selectedMonth, selectedYear);
     }
+    setTimeout(() => {
+      calculateTotalTime();
+    }, 400);
   }, [selectedMonth, selectedYear]);
 
   const updateDaysInMonth = (month: string, year: string) => {
@@ -524,9 +527,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [dayoffs, setDayoffs] = useState<Dayoff[] | undefined>();
   const fetchDayoffs = async () => {
     try {
-      let $id = usersID;
-      const response = await axiosPrivate.get('dayoffs/getalluser/' + usersID);
-      setDayoffs(response.data);
+      let id;
+      usersID ? (id = usersID) : (id = users.id);
+      const response = await axiosPrivate.get('dayoffs/getalluser/' + id);
+      response.data ? setDayoffs(response.data) : setDayoffs([]);
     } catch (error) {
       console.error('Error fetching dayoffs:', error);
     }
@@ -541,17 +545,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     date: string;
     owner: string;
   } => {
-    // if (!dayoffs) {
-    //   fetchDayoffs();
-    //   return {
-    //     isDayoff: false,
-    //     id: 0,
-    //     note: '',
-    //     status: 0,
-    //     date: '',
-    //     owner: '',
-    //   };
-    // }
     const formattedDay = format(day, 'dd-MM-yyyy');
     const foundDayoff = dayoffs?.find((dayoff) => {
       const dayoffDay = dayoff.date.split(', ');
@@ -832,6 +825,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     if (isAdmin || isManager) {
       setAdmins(true);
     }
+    setUsersID(users.id);
   }, []);
   useEffect(() => {
     if (propsID) {
@@ -846,26 +840,20 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   useEffect(() => {
     if (isload) {
       const fetchData = async () => {
-        await Promise.all([
-          fetchHolidays(),
-          fetchDayoffs(),
-          fetchTimecardOpen(),
-        ]);
+        await Promise.all([fetchHolidays(), fetchDayoffs()]);
+        await fetchTimecardOpen();
         setTimeout(() => {
           calculateTotalTime();
-        }, 200);
+        }, 400);
       };
       fetchData();
     } else {
       const fetchData = async () => {
-        await Promise.all([
-          fetchHolidays(),
-          fetchDayoffs(),
-          fetchTimecardOpen(),
-        ]);
+        await Promise.all([fetchHolidays(), fetchDayoffs()]);
+        await fetchTimecardOpen();
         setTimeout(() => {
           calculateTotalTime();
-        }, 200);
+        }, 400);
       };
       fetchData();
     }
