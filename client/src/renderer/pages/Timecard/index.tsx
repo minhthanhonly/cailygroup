@@ -23,7 +23,6 @@ interface FieldUsers {
 export const Timecard = () => {
   const axiosPrivate = useAxiosPrivate();
 
-
   const [listOfUsers, setListOfUsers] = useState<FieldUsers[] | []>([]);
   const [currentUser, setCurrentUser] = useState<FieldUsers | null>(null);
 
@@ -54,45 +53,33 @@ export const Timecard = () => {
   // Check if id is defined
   useEffect(() => {
     if (datacheck === 0) {
-      // Find the user with the matching id in listOfUsers
+      const fetchData = async () => {
+        try {
+          const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
+          if (loggedInUserId) {
+            const response = await axiosPrivate.get('timecards/list');
+            setListOfUsers(response.data);
+            const loggedInUser = response.data.find((user: { id: number }) => user.id === loggedInUserId.id);
+            setCurrentUser(loggedInUser);
+          } else {
+            console.error('Không tìm thấy giá trị loggedInUserId trong localStorage');
+          }
+        } catch (error) {
+          console.error('Lỗi khi lấy dữ liệu:', error);
+        }
+      };
+
+      fetchData(); // Call the function inside useEffect
+
       const matchedUser = listOfUsers.find((users) => users.id === id);
-
-      // Check if the user is found and get the realname
       const newRealName = matchedUser ? matchedUser.realname : '';
-
-      // Update the realName state
       setRealName(newRealName);
     } else {
-      // Use loggedInUserId.realname directly if datacheck is not 0
-      const newRealName = loggedInUserId.realname;
 
-      // Update the realName state
-      setRealName(newRealName);
     }
   }, [id, datacheck, listOfUsers, loggedInUserId]);
 
-  //------------------------------phần lấy user-------------------------------------------------------
-  useEffect(() => {
-    // Fetch data or perform actions that update the state
-    const fetchData = async () => {
-      try {
-        const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
-        if (loggedInUserId) {
-          const response = await axiosPrivate.get('timecards/list');
-          setListOfUsers(response.data);
-          const loggedInUser = response.data.find((user: { id: number }) => user.id === loggedInUserId.id);
-          setCurrentUser(loggedInUser);
-        } else {
-          console.error('Không tìm thấy giá trị loggedInUserId trong localStorage');
-        }
-      } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu:', error);
-      }
-    };
 
-    fetchData(); // Call the function inside useEffect
-
-  }, []); // Empty dependency array to run the effect only once-------------------
 
   const exportToExcel = async () => {
     const matchedUser = listOfUsers.find((users) => users.id === id);
