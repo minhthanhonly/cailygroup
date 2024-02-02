@@ -104,6 +104,7 @@ export const Group = () => {
       try {
         const payload = { id: groupId };
         let response = await axiosPrivate.delete('groups/delete/', {headers: {'Content-Type': 'application/json',},data: payload,});
+        console.log(response);
         console.log('DELETE Response:', response.data);
         closeModaldelete();
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
@@ -131,7 +132,7 @@ export const Group = () => {
 
   let dynamicDelete = (id:string) => (
     <>
-      <button onClick={(event) => { openModaldelete(id); }}>
+      <button onClick={(event) => {openModaldelete(id); }}>
         <p className="icon icon--check">
             <img src={require('../../../../assets/icndelete.png')} alt="edit" className="fluid-image"/>
         </p>
@@ -147,6 +148,7 @@ export const Group = () => {
     else{
       setCheckGroup(false);
     }
+    setDeleteModalId(groupid);
     setDeleteModalOpen(true);
   };
   const closeModaldelete = () => {
@@ -200,10 +202,9 @@ export const Group = () => {
         <button className="btn" onClick={handleSubmint}>Thêm</button>
       </div>
       <CTable>
-        <CTableHead heads={['STT', 'Tên Nhóm', 'Sửa', 'Xóa']} />
+        <CTableHead heads={['STT','Tên Nhóm', 'Sửa', 'Xóa']} />
         <CTableBody data={DataTable} path_edit="/group/edit" path_timecard=""/>
       </CTable>
-
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
         {checkGroup?<h2>Bạn không thể xóa vì nhóm có thành viên đang hoạt động</h2>:<h2>Bạn có chắc chắn muốn xóa không?</h2>}
         <div className='wrp-button'>
