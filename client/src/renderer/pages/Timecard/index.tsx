@@ -48,7 +48,6 @@ export const Timecard = () => {
 
   const [user_id, setUser_id] = useState<number>();
   const loggedInUserId = JSON.parse(localStorage.getItem('users') || '{}');
-  // const matchedUser = listOfUsers.find((users) => users.id === id);
 
   // Check if id is defined
   useEffect(() => {
@@ -59,7 +58,7 @@ export const Timecard = () => {
           if (loggedInUserId) {
             const response = await axiosPrivate.get('timecards/list');
             setListOfUsers(response.data);
-            const loggedInUser = response.data.find((user: { id: number }) => user.id === loggedInUserId.id);
+            const loggedInUser = response.data.find((users: { id: number }) => users.id === loggedInUserId.id);
             setCurrentUser(loggedInUser);
           } else {
             console.error('Không tìm thấy giá trị loggedInUserId trong localStorage');
