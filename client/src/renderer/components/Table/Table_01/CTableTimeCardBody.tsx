@@ -100,7 +100,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [timecardDate, setTimecardDate] = useState<string>();
   const [timecard_open_time, settimecard_open_time] = useState<string>();
   const [timecardEnd, setTimecardEnd] = useState<string>();
-  const [validateTimeStart, setValidateTimeStart] = useState(0);
   const [validateErr, setValidateErr] = useState(0);
   const [timecardNote, setTimecardNote] = useState<string>();
   const [timecardDateEdit, setTimecardDateEdit] = useState<string | null>(null);
@@ -125,6 +124,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const closeModaldelete = () => {
     setDeleteModalOpen(false);
+    setValidateErr(0);
   };
   useEffect(() => {
     if (!selectedMonth || !selectedYear) {
@@ -668,7 +668,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     closeModal();
   };
   const handleNewComment = async () => {
-    console.log(commentText, currentItemId, isUpdatingDayoff, name);
     const dataTimeCard = {
       user_id: usersID !== undefined ? parseInt(usersID, 10) : 0,
       timecard_date: name,
@@ -684,7 +683,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     closeModal();
   };
   const handleUpdateNewComment = async () => {
-    console.log(commentText, currentItemId);
     const response = await axiosPrivate.post(
       'timecards/updatecomment/' + currentItemId,
       {
@@ -707,8 +705,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         isValidTimeFormat(timecardEnd) &&
         isValidTimeFormat(timecard_open_time)
       ) {
-        err = 0;
-        setValidateErr(0);
+        if (compareTime(timecard_open_time, timecardEnd) != 2) {
+          err = 3;
+          setValidateErr(3);
+        }
       } else {
         if (!isValidTimeFormat(timecard_open_time)) {
           err = 1;
@@ -747,52 +747,81 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     }
   };
   const handleNewTimeCard = async () => {
+    let err = 0;
+    setValidateErr(0);
     let day, month, year;
-    if (timecardDateEdit !== null) {
-      const dateParts = timecardDateEdit.split('-');
-      day = dateParts[0];
-      month = dateParts[1];
-      year = dateParts[2];
-    }
-    const dataTimeCard = {
-      timecard_year: year,
-      user_id: usersID,
-      timecard_month: month,
-      timecard_day: day,
-      timecard_date: timecardDateEdit,
-      timecard_temp: '',
-      owner: users.realname,
-    };
-    const responseTimeCard = await axiosPrivate.post('timecards/add', {
-      dataTimeCard,
-    });
-    console.log(responseTimeCard.data);
-    if (timecard_open_time) {
-      let time = await workingTime(timecard_open_time, timecardEnd);
-      const dataTimeCardDetails = {
-        id_groupwaretimecard: responseTimeCard.data.id_timecard,
-        timecard_open: timecard_open_time,
-        timecard_close: timecardEnd,
-        timecard_time: time.timecard_time,
-        timecard_timeover: time.timecard_timeover,
-        timecard_timeinterval: time.timecard_timeinterval,
-        timecard_comment: timecardNote,
-        editor: users.realname,
-      };
-      const responseTimeCardDetails = await axiosPrivate.post(
-        'timecarddetails/addnew',
-        {
-          dataTimeCardDetails,
-        },
-      );
+    if (timecard_open_time && timecardEnd) {
+      if (
+        isValidTimeFormat(timecardEnd) &&
+        isValidTimeFormat(timecard_open_time)
+      ) {
+        if (compareTime(timecard_open_time, timecardEnd) != 2) {
+          err = 3;
+          setValidateErr(3);
+        }
+      } else {
+        if (!isValidTimeFormat(timecard_open_time)) {
+          err = 1;
+          setValidateErr(1);
+        }
+        if (!isValidTimeFormat(timecardEnd)) {
+          err = 2;
+          setValidateErr(2);
+        }
+      }
+      if (err == 0) {
+        if (timecardDateEdit !== null) {
+          const dateParts = timecardDateEdit.split('-');
+          day = dateParts[0];
+          month = dateParts[1];
+          year = dateParts[2];
+        }
+        const dataTimeCard = {
+          timecard_year: year,
+          user_id: usersID,
+          timecard_month: month,
+          timecard_day: day,
+          timecard_date: timecardDateEdit,
+          timecard_temp: '',
+          owner: users.realname,
+        };
+        const responseTimeCard = await axiosPrivate.post('timecards/add', {
+          dataTimeCard,
+        });
+        console.log(responseTimeCard.data);
+        let time = await workingTime(timecard_open_time, timecardEnd);
+        const dataTimeCardDetails = {
+          id_groupwaretimecard: responseTimeCard.data.id_timecard,
+          timecard_open: timecard_open_time,
+          timecard_close: timecardEnd,
+          timecard_time: time.timecard_time,
+          timecard_timeover: time.timecard_timeover,
+          timecard_timeinterval: time.timecard_timeinterval,
+          timecard_comment: timecardNote,
+          editor: users.realname,
+        };
+        const responseTimeCardDetails = await axiosPrivate.post(
+          'timecarddetails/addnew',
+          {
+            dataTimeCardDetails,
+          },
+        );
 
-      console.log(responseTimeCardDetails.data);
+        console.log(responseTimeCardDetails.data);
+        fetchTimecardOpen();
+        setTimeout(() => {
+          calculateTotalTime();
+        }, 400);
+        closeModaldelete();
+      }
+    } else {
+      if (!timecard_open_time) {
+        setValidateErr(1);
+      }
+      if (!timecardEnd) {
+        setValidateErr(2);
+      }
     }
-    fetchTimecardOpen();
-    setTimeout(() => {
-      calculateTotalTime();
-    }, 400);
-    closeModaldelete();
   };
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
 
@@ -1466,6 +1495,11 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
                     {validateErr == 2 ? (
                       <p className="text-error">
                         * Nhập sai định dạng(ví dụ: 7:03 hoặc 07:03)
+                      </p>
+                    ) : null}
+                    {validateErr == 3 ? (
+                      <p className="text-error">
+                        * Thời gian kết thúc phải lớn hơn thời gian bắt đầu
                       </p>
                     ) : null}
                   </td>
