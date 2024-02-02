@@ -111,7 +111,6 @@ export const TimecardSetting = () => {
     };
 
     fetchData();
-    console.log('chuyển đổi thành công');
   }, []);
 
   useEffect(() => {
