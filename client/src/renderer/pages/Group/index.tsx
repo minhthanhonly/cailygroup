@@ -159,7 +159,7 @@ export const Group = () => {
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
     DataTable.push({
-      id: `${listOfGroups[i].id}`,
+      // id: `${listOfGroups[i].id}`,
       group_name: `${listOfGroups[i].group_name}`,
       update: dynamicUpdate({
         id: listOfGroups[i].id,
@@ -203,7 +203,7 @@ export const Group = () => {
         <button className="btn" onClick={handleSubmint}>Thêm</button>
       </div>
       <CTable>
-        <CTableHead heads={['STT','Tên Nhóm', 'Sửa', 'Xóa']} />
+        <CTableHead heads={['Tên Nhóm', 'Sửa', 'Xóa']} />
         <CTableBody data={DataTable} path_edit="/group/edit" path_timecard=""/>
       </CTable>
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
