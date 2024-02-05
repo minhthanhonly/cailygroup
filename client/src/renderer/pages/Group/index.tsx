@@ -41,10 +41,6 @@ export const Group = () => {
   const [isDeleteModalid, setDeleteModalId] = useState('');
   const [checkGroup, setCheckGroup] = useState(false);
 
-
- // mới thêm
-  const [isGroupNameExists, setIsGroupNameExists] = useState(false);
-
   useEffect(() => {
     axiosPrivate.get('groups/').then((response) => {
       setListOfGroups(response.data);
