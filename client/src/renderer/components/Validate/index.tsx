@@ -132,7 +132,7 @@ export const isValidUserEdit = ({...paraUser}, {...selectedValue}, password: str
 
 /* =======================================================================* */
 
-const groupName = "tên nhóm";
+const groupName = "Tên nhóm";
 type paraGroup = {
   group_name: string;
 }
@@ -149,7 +149,7 @@ export const isValidGroup = ({...paraGroup}) => {
   if(!paraGroup.group_name) {
     toast.error(ERROR['require'] + groupName +  "!");
     return false;
-  }
+  } 
   return true;
 }
 
