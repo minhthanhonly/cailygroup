@@ -159,7 +159,6 @@ export const Group = () => {
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
     DataTable.push({
-      // id: `${listOfGroups[i].id}`,
       group_name: `${listOfGroups[i].group_name}`,
       update: dynamicUpdate({
         id: listOfGroups[i].id,
