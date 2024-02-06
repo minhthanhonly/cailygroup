@@ -69,10 +69,12 @@ function Dashboard() {
   };
   const handleStart = async () => {
     try {
+      let comment = '';
       const res = await axiosPrivate.get('timecards/loaduser/' + usersID);
-      res.data
-        ? await axiosPrivate.post('timecards/delete/' + res.data.id)
-        : '';
+      if (res.data) {
+        await axiosPrivate.post('timecards/delete/' + res.data.id);
+        comment = res.data.timecard_temp;
+      }
       const response = await axios.get(
         'http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh',
       );
@@ -106,7 +108,7 @@ function Dashboard() {
         timecard_open: timecard_open_time,
         timecard_originalopen: timecard_open_time,
         timecard_timeinterval: '1:30',
-        timecard_comment: res.data.timecard_temp,
+        timecard_comment: comment,
       };
       const responseTimeCardDetails = await axiosPrivate.post(
         'timecarddetails/add',
@@ -114,6 +116,7 @@ function Dashboard() {
           dataTimeCardDetails,
         },
       );
+      responseTimeCardDetails.data;
       loadStart();
       setCheckStart(true);
     } catch (error) {
