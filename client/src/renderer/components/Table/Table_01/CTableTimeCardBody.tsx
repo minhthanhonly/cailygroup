@@ -701,8 +701,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     return timeRegex.test(input);
   };
   const handleChangeTimecards = async (id: number) => {
-    console.log(timecardID);
-    let err = 1;
+    let err = 0;
     setValidateErr(0);
     if (timecard_open_time && timecardEnd) {
       if (
