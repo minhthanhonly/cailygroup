@@ -7,6 +7,7 @@ import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import {isValidGroupEdit, isValidGroup} from "../../components/Validate";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { toast } from "react-toastify";
 
 interface GroupProps {
   id: string;
@@ -158,7 +159,6 @@ export const Group = () => {
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
     DataTable.push({
-      id: `${listOfGroups[i].id}`,
       group_name: `${listOfGroups[i].group_name}`,
       update: dynamicUpdate({
         id: listOfGroups[i].id,
@@ -171,18 +171,24 @@ export const Group = () => {
     const group_name = groupName;
     const validationErrors = isValidGroup({group_name});
     if (validationErrors === true) {
-        try{
-          const group_data = {
-            group_name: groupName,
-            add_level: 1,
-            owner: 'admin',
-          };
-          setGroupName('');
-          const res = await axiosPrivate.post("groups/add/", group_data);
-          console.log('Data inserted successfully:', res.data);
-          setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-        }
-        catch(error){console.error('Lỗi khi thêm dữ liệu:', error);}
+      const isGroupExist = listOfGroups.some((group) => group.group_name.toLowerCase() === group_name.toLowerCase());
+        if (isGroupExist !== true) {
+          try{
+            const group_data = {
+              group_name: groupName,
+              add_level: 1,
+              owner: 'admin',
+            };
+            setGroupName('');
+            const res = await axiosPrivate.post("groups/add/", group_data);
+            console.log('Data inserted successfully:', res.data);
+            setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+          }
+          catch(error){console.error('Lỗi khi thêm dữ liệu:', error);}
+      } 
+      else{
+        toast.error("Nhóm " + groupName + " đã tồn tại !");
+      }
     }
   };
 
@@ -192,17 +198,11 @@ export const Group = () => {
       <div className="form-group form-addgroup">
         <label>Tên Nhóm:</label>
         <img src={require('../../../../assets/icn-group.png')} alt="" className="fluid-image form-addgroup__image"/>
-        <input
-          value={groupName}
-          onChange={(event) => setGroupName(event.target.value)}
-          className="form-input"
-          type="text"
-          placeholder="Tên nhóm muốn thêm"
-        />
+        <input value={groupName} onChange={(event) => setGroupName(event.target.value)}  className="form-input"  type="text"  placeholder="Tên nhóm muốn thêm" />
         <button className="btn" onClick={handleSubmint}>Thêm</button>
       </div>
       <CTable>
-        <CTableHead heads={['STT','Tên Nhóm', 'Sửa', 'Xóa']} />
+        <CTableHead heads={['Tên Nhóm', 'Sửa', 'Xóa']} />
         <CTableBody data={DataTable} path_edit="/group/edit" path_timecard=""/>
       </CTable>
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
