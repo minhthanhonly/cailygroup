@@ -733,7 +733,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           timecard_comment: timecardNote,
           editor: users.realname,
         });
-        console.log(response.data);
+        console.log(response, response.data);
         fetchTimecardOpen();
         setTimeout(() => {
           calculateTotalTime();

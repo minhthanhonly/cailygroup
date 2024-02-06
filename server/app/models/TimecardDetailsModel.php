@@ -100,9 +100,8 @@
             $timecard_timeover = $data['timecard_timeover'];
             $timecard_comment = $data['timecard_comment'];
             $editor = $data['editor'];
-            
 
-            $sql = "UPDATE timecard_details SET timecard_open = ?, timecard_close = ?, timecard_time = ?, timecard_timeover = ?, timecard_comment = ?, editor= ?, updatedAt = NOW()  WHERE id = $id";
+            $sql = "UPDATE timecard_details SET timecard_open = ?, timecard_close = ?, timecard_time = ?, timecard_timeover = ?, timecard_comment = ?, editor= ?, updatedAt = NOW()  WHERE id_groupwaretimecard = $id";
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
