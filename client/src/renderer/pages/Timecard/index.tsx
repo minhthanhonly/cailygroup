@@ -108,7 +108,7 @@ export const Timecard = () => {
     // Merge cells for the name and date
     worksheet.mergeCells(`A1:G3`);
     const cellA1 = worksheet.getCell(`A1`);
-    cellA1.value = ` ${realName || ''} \n ${month}/${year}`;
+    cellA1.value = ` ${realname || ''} \n ${month}/${year}`;
     cellA1.alignment = { horizontal: 'center', vertical: 'middle' };
     cellA1.border = {
       top: { style: 'thin', color: { argb: 'FF000000' } },
