@@ -54,11 +54,12 @@
             $timecard_now = isset($data["dataTime"]["timecard_now"]) ? $data["dataTime"]["timecard_now"] : 'null';
             $timecard_time = isset($data["dataTime"]["timecard_time"]) ? $data["dataTime"]["timecard_time"] : 'null';
             $timecard_timeover = isset($data["dataTime"]["timecard_timeover"]) ? $data["dataTime"]["timecard_timeover"] : 'null';
+            $timecard_timeinterval = isset($data["dataTime"]["timecard_timeinterval"]) ? $data["dataTime"]["timecard_timeinterval"] : 'null';
             
             
-            $sql = "UPDATE timecard_details SET timecard_close = ?, timecard_originalclose = ?, timecard_time= ?, timecard_timeover = ? WHERE id_groupwaretimecard = ?";
+            $sql = "UPDATE timecard_details SET timecard_close = ?, timecard_originalclose = ?, timecard_time= ?, timecard_timeover = ?, timecard_timeinterval = ? WHERE id_groupwaretimecard = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssi", $timecard_now, $timecard_now, $timecard_time, $timecard_timeover, $timecardId);
+            $stmt->bind_param("sssssi", $timecard_now, $timecard_now, $timecard_time, $timecard_timeover, $timecard_timeinterval, $timecardId);
 
             if ($stmt->execute()) {
                 http_response_code(200);
@@ -100,13 +101,14 @@
             $timecard_timeover = $data['timecard_timeover'];
             $timecard_comment = $data['timecard_comment'];
             $editor = $data['editor'];
+            $timecard_timeinterval = isset($data["timecard_timeinterval"]) ? $data["timecard_timeinterval"] : 'null';
 
-            $sql = "UPDATE timecard_details SET timecard_open = ?, timecard_close = ?, timecard_time = ?, timecard_timeover = ?, timecard_comment = ?, editor= ?, updatedAt = NOW()  WHERE id_groupwaretimecard = $id";
+            $sql = "UPDATE timecard_details SET timecard_open = ?, timecard_close = ?, timecard_time = ?, timecard_timeover = ?, timecard_comment = ?, editor= ?, timecard_timeinterval = ?, updatedAt = NOW()  WHERE id_groupwaretimecard = $id";
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
             }
-            $stmt->bind_param("ssssss", $timecard_open, $timecard_close, $timecard_time, $timecard_timeover ,$timecard_comment, $editor);
+            $stmt->bind_param("sssssss", $timecard_open, $timecard_close, $timecard_time, $timecard_timeover ,$timecard_comment, $editor, $timecard_timeinterval);
             if ($stmt->execute()) {
                 http_response_code(200);
                 echo json_encode(["success" => true]);

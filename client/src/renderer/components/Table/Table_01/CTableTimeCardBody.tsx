@@ -389,10 +389,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     const closetimeValue = findConfigValue(configData, 'closetime');
     const openlunchValue = findConfigValue(configData, 'openlunch');
     const closelunchValue = findConfigValue(configData, 'closelunch');
-    const timecard_timeinterval = calculateTime(
-      openlunchValue,
-      closelunchValue,
-    );
+    let timecard_timeinterval = calculateTime(openlunchValue, closelunchValue);
+    let timecard_timeover = '00:00';
 
     if (compareTime(timecard_open_time, timecard_close_time) == 0) {
       timecard_time = '00:00';
@@ -438,6 +436,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         // bắt đầu sau 13:00
         if (compareTime(timecard_open_time, closetimeValue) == 1) {
           timecard_time = '00:00';
+          timecard_timeover = calculateTime(
+            timecard_open_time,
+            timecard_close_time,
+          );
         } else if (compareTime(timecard_close_time, closetimeValue) != 1) {
           timecard_time = calculateTime(
             timecard_open_time,
@@ -457,9 +459,15 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         }
       }
     }
-    let timecard_timeover = '00:00';
-    if (compareTime(timecard_close_time, closetimeValue) == 1) {
+    if (
+      compareTime(timecard_close_time, closetimeValue) == 1 &&
+      compareTime(
+        calculateTime(closetimeValue, timecard_close_time),
+        '00:30',
+      ) == 1
+    ) {
       timecard_timeover = calculateTime(closetimeValue, timecard_close_time);
+      timecard_timeinterval = '0:00';
     }
     return {
       timecard_time,
@@ -485,7 +493,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_now: time.timecard_close_time,
         timecard_time: time.timecard_time,
         timecard_timeover: time.timecard_timeover,
+        timecard_timeinterval: time.timecard_timeinterval,
       };
+      console.log(dataTime);
       try {
         const response = await axiosPrivate.post('timecarddetails/update', {
           dataTime,
@@ -591,9 +601,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
 
     timeDivs.forEach((div) => {
       if (div instanceof HTMLElement) {
-        const timeString = div.innerText.trim();
+        let timeString = div.innerText.trim();
         if (timeString && /^\d+:\d+$/.test(timeString)) {
-          const [hours, minutes] = timeString.split(':');
+          let [hours, minutes] = timeString.split(':');
           totalHours += parseInt(hours, 10);
           totalMinutes += parseInt(minutes, 10);
         }
@@ -609,31 +619,26 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     setTotalTime({ hours: formattedHours, minutes: formattedMinutes });
 
     const timeOver = document.querySelectorAll('.timecard_overtime');
-    const timeOvers = document.querySelectorAll('.timecard_overtime');
-    let overMinutes = 0;
+    let totalHour = 0;
+    let totalMinute = 0;
 
     timeOver.forEach((div) => {
       if (div instanceof HTMLElement) {
-        const timeStrings = div.innerText.trim();
-        if (timeStrings && /^\d+:\d+$/.test(timeStrings)) {
-          const [hourss, minutess] = timeStrings.split(':');
-          const totalMinutesForRow =
-            parseInt(hourss, 10) * 60 + parseInt(minutess, 10);
-          const roundedMinutes = Math.floor(totalMinutesForRow / 30) * 30;
-          if (roundedMinutes === 30 && totalMinutesForRow >= 60) {
-            overMinutes += 60;
-          } else {
-            overMinutes += roundedMinutes;
-          }
+        let timeString = div.innerText.trim();
+        if (timeString && /^\d+:\d+$/.test(timeString)) {
+          let [hours, minutes] = timeString.split(':');
+          totalHour += parseInt(hours, 10);
+          totalMinute += parseInt(minutes, 10);
         }
       }
     });
 
-    overMinutes = Math.floor(overMinutes / 30) * 30;
-    const overHours = Math.floor(overMinutes / 60);
-    overMinutes %= 60;
-    const formattedOverHours = overHours.toString().padStart(2, '0');
-    const formattedOverMinutes = overMinutes.toString().padStart(2, '0');
+    if (totalMinute >= 60) {
+      totalHour += Math.floor(totalMinute / 60);
+      totalMinute %= 60;
+    }
+    const formattedOverHours = totalHour.toString().padStart(2, '0');
+    const formattedOverMinutes = totalMinute.toString().padStart(2, '0');
     setOverTime({ hours: formattedOverHours, minutes: formattedOverMinutes });
   };
   const currentMonth = new Date().getMonth() + 1;
@@ -730,6 +735,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           timecard_close: timecardEnd,
           timecard_time: time.timecard_time,
           timecard_timeover: time.timecard_timeover,
+          timecard_timeinterval: time.timecard_timeinterval,
           timecard_comment: timecardNote,
           editor: users.realname,
         });
@@ -830,7 +836,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       }
     }
   };
-  const handleTimeCard = async () => {};
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
 
   const openMenu = (index: number) => {
