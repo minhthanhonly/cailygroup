@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Card.scss';
-import { urlControl } from '../../routes/server';
-import axios from 'axios';
+// import { urlControl } from '../../routes/server';
+// import axios from 'axios';
 
 interface TimeProps {
   defaultHours?: number;
@@ -22,7 +22,6 @@ const CardTime: React.FC<TimeProps> = ({ defaultHours = 0, defaultMinutes = 0, o
   const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let newHours = e.target.value.slice(0, 2);
     newHours = Math.min(Math.max(parseInt(newHours, 10) || 0, 0), 23).toString();
-    console.log('New Hours:', newHours);
     setEditedHours(newHours);
 
     onChange && onChange(parseInt(newHours, 10) || 0, parseInt(editedMinutes, 10) || 0);
@@ -31,7 +30,6 @@ const CardTime: React.FC<TimeProps> = ({ defaultHours = 0, defaultMinutes = 0, o
   const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let newMinutes = e.target.value.slice(0, 2);
     newMinutes = Math.min(Math.max(parseInt(newMinutes, 10) || 0, 0), 59).toString();
-    console.log('New Minutes:', newMinutes);
     setEditedMinutes(newMinutes);
 
     onChange && onChange(parseInt(editedHours, 10) || 0, parseInt(newMinutes, 10) || 0);

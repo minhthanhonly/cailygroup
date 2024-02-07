@@ -6,14 +6,13 @@ import { Pagination } from '../../components/Pagination';
 import { SelectCustom } from '../../components/Table/SelectCustom';
 import MonthYearSelector from '../../components/Table/SelectMonthYears';
 import NavTimcard from '../../layouts/components/Nav/NavTimcard';
-import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
+
 import { UserRole } from '../../components/UserRole';
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 
-import { Timecard } from './index';
 import CTableTimeCardHead from '../../components/Table/Table_01/CTableTimeCardHead';
 import CTableTimeCardBody from '../../components/Table/Table_01/CTableTimeCardBody';
 
@@ -151,9 +150,7 @@ export const TimecardList: React.FC = () => {
     }
   }, [checkClick]);
   const exportToExcel = async (realname: string) => {
-    const table = document.getElementById(
-      'timecards_table',
-    ) as HTMLTableElement;
+    const table = document.getElementById('timecards_table') as HTMLTableElement;
 
     if (!table) {
       console.error('Không tìm thấy bảng.');
