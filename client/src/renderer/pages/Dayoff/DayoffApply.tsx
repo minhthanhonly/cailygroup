@@ -4,7 +4,6 @@ import CTableBody from '../../components/Table/CTableBody';
 import { CTableHead } from '../../components/Table/CTableHead';
 import NavDayoff from '../../layouts/components/Nav/NavDayoff';
 import { useCallback, useEffect, useState } from 'react';
-import axios from '../../api/axios';
 import { SelectCustom } from '../../components/Table/SelectCustom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import React from 'react';
@@ -66,9 +65,18 @@ export const DayoffApply = () => {
     const [hours, minutes] = timeString.split(':').map(Number);
     return hours * 60 + minutes;
   }
-  const currentDate = new Date();
-  const threeMonthsAgo = new Date(currentDate);
-  threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
+  const [isChecked, setIsChecked] = useState(false);
+  const [threeMonthsAgo, setThreeMonthsAgo] = useState(new Date());
+  useEffect(() => {
+    const currentDate = new Date();
+    const updatedThreeMonthsAgo = new Date(currentDate);
+    if (isChecked) {
+      updatedThreeMonthsAgo.setMonth(currentDate.getMonth() - 3);
+    } else {
+      updatedThreeMonthsAgo.setMonth(currentDate.getMonth());
+    }
+    setThreeMonthsAgo(updatedThreeMonthsAgo);
+  }, [isChecked]);
   for (let i = 0; i < listOfGroups.length; i++) {
     let isDateInPast = false;
     const dates = listOfGroups[i].date.split(',').map((date) => date.trim());
@@ -246,6 +254,10 @@ export const DayoffApply = () => {
     const configItem = configArray.find((item) => item.config_key === key);
     return configItem ? configItem.config_value : null;
   }
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+    fetchData();
+  };
   useEffect(() => {
     const getTimeConfig = async () => {
       const responseConfig = await axiosPrivate.post('config');
@@ -261,6 +273,14 @@ export const DayoffApply = () => {
       <div className="left select-ml0">
         <SelectCustom onGroupChange={handleGroupChange} />
       </div>
+      <label className="checkbox">
+        <input
+          type="checkbox"
+          checked={isChecked}
+          onChange={handleCheckboxChange}
+        />{' '}
+        Hiển thị thêm những ngày nghỉ 3 tháng trước đây
+      </label>
       <CTable>
         <CTableHead
           heads={[

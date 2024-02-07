@@ -20,10 +20,9 @@
 }
 .checkbox {
   margin-top: 1rem;
-  display: flex;
-  align-items: center;
+  display: inline-block;
   input {
-    margin-right: 1rem;
+    margin: 0.3rem 1rem 0 0;
   }
 }
 .clr {
