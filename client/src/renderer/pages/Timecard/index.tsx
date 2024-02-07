@@ -63,6 +63,7 @@ export const Timecard = () => {
             const loggedInUser = response.data.find((users: { id: number }) => users.id === loggedInUserId.id);
             setCurrentUser(loggedInUser);
           } else {
+
             console.error('Không tìm thấy giá trị loggedInUserId trong localStorage');
           }
         } catch (error) {

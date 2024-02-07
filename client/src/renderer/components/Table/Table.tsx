@@ -28,8 +28,6 @@ const TablePage = () => {
     setSelectedYear(year);
     setDaysInMonth(daysInMonth);
 
-    console.log('setSelectedMonth(month);', month);
-    console.log('setSelectedYear(year)', year);
   };
 
 

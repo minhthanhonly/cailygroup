@@ -11,6 +11,9 @@ import { format, parse } from 'date-fns';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { symlink } from 'fs';
+import { toast } from "react-toastify";
+
+
 import {
   isValidTimecardsholidaysEdit,
   isValidTimecardsholidays,
@@ -65,7 +68,7 @@ const TimecardHolidays = () => {
     }
   };
 
-  let dynamicUpdate = ({id,name,days,}: {id: string;name: string;days: string;}) => (
+  let dynamicUpdate = ({ id, name, days, }: { id: string; name: string; days: string; }) => (
     <>
       <button onClick={() => openModal(id, name, days)}>
         <p className="icon icon--check">
@@ -160,7 +163,7 @@ const TimecardHolidays = () => {
     });
     return dateObjects.filter((date) => date !== null);
   };
-  const openModal = (initialNameId: string,initialName: string,initialDays: string,) => {
+  const openModal = (initialNameId: string, initialName: string, initialDays: string,) => {
     setModalId(initialNameId);
     setModalName(initialName);
     // Tách các ngày thành mảng sử dụng dấu phẩy và loại bỏ khoảng trắng xung quanh mỗi ngày
@@ -175,7 +178,7 @@ const TimecardHolidays = () => {
       const isValid = !isNaN(formattedDate.getTime());
       // In thông báo để kiểm tra
       if (!isValid) {
-        console.log(`Ngày không hợp lệ: ${day}`);
+        toast.error(`Ngày không hợp lệ: ${day}`);
       }
       return isValid;
     });
@@ -207,7 +210,7 @@ const TimecardHolidays = () => {
             return format(day, 'dd-MM-yyyy').toString();
           } else {
             // Xử lý trường hợp không hợp lệ, có thể log hoặc trả về một giá trị mặc định
-            console.error('Ngày không hợp lệ:', day);
+            toast.error('Ngày không hợp lệ:', day);
             return 'Ngày không hợp lệ';
           }
         })
@@ -221,11 +224,12 @@ const TimecardHolidays = () => {
             dataUpdate,
             { headers: { 'Content-Type': 'application/json' } },
           );
-          console.log('Update Response:', response.data);
+          //  console.log('Update Response:', response.data);
           closeModal();
           setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
         } catch (error) {
-          console.error('Lỗi khi cập nhật trạng thái:', error);
+          toast.error('Lỗi khi cập nhật trạng thái');
+          // console.error('Lỗi khi cập nhật trạng thái:', error);
         }
       }
     }
@@ -241,10 +245,11 @@ const TimecardHolidays = () => {
           headers: { 'Content-Type': 'application/json' },
           data: payload,
         });
-        console.log('DELETE Response:', response.data);
+        //  console.log('DELETE Response:', response.data);
         closeModaldelete();
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
       } catch (error) {
+
         console.error('Lỗi khi cập nhật trạng thái:', error);
       }
     }

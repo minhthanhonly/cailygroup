@@ -105,12 +105,12 @@ export const Group = () => {
       try {
         const payload = { id: groupId };
         let response = await axiosPrivate.delete('groups/delete/', { headers: { 'Content-Type': 'application/json', }, data: payload, });
-        console.log(response);
-        console.log('DELETE Response:', response.data);
+        toast.success('Xoá Nhóm Thành Công !');
         closeModaldelete();
         setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
       } catch (error) {
-        console.error('Lỗi khi cập nhật trạng thái:', error);
+        toast.error("Lỗi khi cập nhật trạng thái hàm xoá");
+        //  console.error('Lỗi khi cập nhật trạng thái:', error);
       }
     }
   };
@@ -125,10 +125,10 @@ export const Group = () => {
           try {
             const dataUpdate = { id, group_name };
             const response = await axiosPrivate.put('groups/update/', dataUpdate, { headers: { 'Content-Type': 'application/json' } });
-            console.log('Update Response:', response.data);
+            toast.success('Cập Nhật Tên Nhóm: ' + group_name + ' Thành công');
             closeModal();
             setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-          } catch (error) { console.error('Lỗi khi cập nhật trạng thái:', error); }
+          } catch (error) { toast.error('Lỗi Cập Nhật Hàm Update'); }
         } else {
           toast.error("Nhóm " + group_name + " đã tồn tại trong bảng !");
         }
@@ -188,10 +188,10 @@ export const Group = () => {
           };
           setGroupName('');
           const res = await axiosPrivate.post("groups/add/", group_data);
-          console.log('Data inserted successfully:', res.data);
+          toast.success('Thêm Nhóm ' + group_name + ' Thành công');
           setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
         }
-        catch (error) { console.error('Lỗi khi thêm dữ liệu:', error); }
+        catch (error) { toast.error('Lỗi khi thêm Nhóm'); }
       }
       else {
         toast.error("Nhóm " + groupName + " đã tồn tại trong bảng !");

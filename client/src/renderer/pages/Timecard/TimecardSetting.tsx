@@ -53,8 +53,7 @@ export const TimecardSetting = () => {
         const data = response.data;
 
         if (!Array.isArray(data)) {
-          console.error('Dữ liệu không phải là một mảng');
-          return;
+          return; //console.error('Dữ liệu không phải là một mảng');  
         }
 
         // Tìm đối tượng có config_key là 'opentime'
@@ -97,13 +96,14 @@ export const TimecardSetting = () => {
                 lunchEndMinutes: lunchMinuteEnd,
               }));
             } else {
-              console.error('Giá trị giờ và phút không hợp lệ');
+              toast.error("Giá trị giờ và phút không hợp lệ");
             }
           } else {
-            console.error('Định dạng giờ không đúng');
+            toast.error("Định dạng giờ không đúng");
           }
         } else {
-          console.error('Không tìm thấy đối tượng opentime hoặc closetime trong dữ liệu');
+          toast.error("Không tìm thấy đối tượng opentime hoặc closetime trong dữ liệu");
+          //   console.error('Không tìm thấy đối tượng opentime hoặc closetime trong dữ liệu');
         }
       } catch (error) {
         console.error('Error fetching config data:', error);
@@ -130,7 +130,8 @@ export const TimecardSetting = () => {
         setTimeLunchEndMinutes(parseInt(timeValues.lunchEndMinutes, 10) || 0);
 
       } catch (error) {
-        console.error('Lỗi khi lấy giá trị thời gian:', error);
+        toast.error("Lỗi khi lấy giá trị thời gian");
+        //  console.error('Lỗi khi lấy giá trị thời gian:', error);
       }
     };
 
@@ -181,9 +182,7 @@ export const TimecardSetting = () => {
       setTimeLunchEndHouse(hours);
       setTimeLunchEndMinutes(minutes);
       setConfigData((prevState) => ({
-        ...prevState,
-        lunchEndHour: hours,
-        lunchEndMinutes: minutes,
+        ...prevState, lunchEndHour: hours, lunchEndMinutes: minutes,
       }));
       setIsTimeLunchEnd(true)
     }
@@ -213,13 +212,13 @@ export const TimecardSetting = () => {
         }
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật trạng thái:', error);
+      // console.error('Lỗi khi cập nhật trạng thái:', error);
       // Xử lý lỗi nếu cần
       if (error && typeof error === 'object' && 'response' in error) {
-        console.error('Response status:', (error as any).response.status);
-        console.error('Server error message:', (error as any).response.data);
+        // console.error('Response status:', (error as any).response.status);
+        // console.error('Server error message:', (error as any).response.data);
       } else {
-        console.error('Unexpected error:', error);
+        // console.error('Unexpected error:', error);
       }
     }
   };
@@ -249,13 +248,13 @@ export const TimecardSetting = () => {
         }
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật trạng thái:', error);
+      // console.error('Lỗi khi cập nhật trạng thái:', error);
       // Xử lý lỗi nếu cần
       if (error && typeof error === 'object' && 'response' in error) {
-        console.error('Response status:', (error as any).response.status);
-        console.error('Server error message:', (error as any).response.data);
+        //    console.error('Response status:', (error as any).response.status);
+        //    console.error('Server error message:', (error as any).response.data);
       } else {
-        console.error('Unexpected error:', error);
+        //    console.error('Unexpected error:', error);
       }
     }
 
@@ -284,13 +283,13 @@ export const TimecardSetting = () => {
         }
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật trạng thái:', error);
+      //   console.error('Lỗi khi cập nhật trạng thái:', error);
       // Xử lý lỗi nếu cần
       if (error && typeof error === 'object' && 'response' in error) {
-        console.error('Response status:', (error as any).response.status);
-        console.error('Server error message:', (error as any).response.data);
+        //     console.error('Response status:', (error as any).response.status);
+        //     console.error('Server error message:', (error as any).response.data);
       } else {
-        console.error('Unexpected error:', error);
+        //     console.error('Unexpected error:', error);
       }
     }
   };
@@ -321,13 +320,13 @@ export const TimecardSetting = () => {
         }
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật trạng thái:', error);
+      //    console.error('Lỗi khi cập nhật trạng thái:', error);
       // Xử lý lỗi nếu cần
       if (error && typeof error === 'object' && 'response' in error) {
-        console.error('Response status:', (error as any).response.status);
-        console.error('Server error message:', (error as any).response.data);
+        //     console.error('Response status:', (error as any).response.status);
+        //     console.error('Server error message:', (error as any).response.data);
       } else {
-        console.error('Unexpected error:', error);
+        //    console.error('Unexpected error:', error);
       }
     }
   };

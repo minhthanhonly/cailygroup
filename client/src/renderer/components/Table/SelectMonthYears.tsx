@@ -3,21 +3,13 @@ import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
 import './SelectMonthYears.scss';
 
 interface MonthYearSelectorProps {
-  onChange: (
-    selectedMonth: string,
-    selectedYear: string,
-    daysInMonth: Date[],
-  ) => void;
+  onChange: (selectedMonth: string, selectedYear: string, daysInMonth: Date[]) => void;
   initialMonth?: string;
   initialYear?: string;
   isDefaultSelected?: boolean; // Thêm prop này
 }
 
-const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({
-  onChange,
-  initialMonth,
-  initialYear,
-}) => {
+const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({ onChange, initialMonth, initialYear }) => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [isDefaultSelected, setIsDefaultSelected] = useState(true);
@@ -44,15 +36,6 @@ const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({
       onChange(currentMonth.toString(), currentYear.toString(), daysInMonth);
     }
   }, [isDefaultSelected, initialMonth, initialYear]);
-
-
-  // useEffect(() => {
-  //   const currentMonth = initialMonth || new Date().getMonth() + 1;
-  //   const currentYear = initialYear || new Date().getFullYear();
-
-  //   setSelectedMonth(currentMonth.toString());
-  //   setSelectedYear(currentYear.toString());
-  // }, [initialMonth, initialYear]);
 
   const handleMonthChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
