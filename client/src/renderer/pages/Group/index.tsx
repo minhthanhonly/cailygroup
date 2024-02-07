@@ -5,7 +5,7 @@ import CTableBody from '../../components/Table/CTableBody';
 import { Heading2 } from '../../components/Heading';
 import Modal from '../../components/Modal/Modal';
 import Modaldelete from '../../components/Modal/Modaldelete';
-import {isValidGroupEdit, isValidGroup} from "../../components/Validate";
+import { isValidGroupEdit, isValidGroup } from "../../components/Validate";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { toast } from "react-toastify";
 
@@ -65,7 +65,7 @@ export const Group = () => {
                   <div className="col-12">
                     <div className="form-group">
                       <label>Sửa tên nhóm
-                        <img src={require('../../../../assets/icn-group.png')} alt="" className="fluid-image"/>
+                        <img src={require('../../../../assets/icn-group.png')} alt="" className="fluid-image" />
                       </label>
                       <input
                         value={modalGroupName}
@@ -99,12 +99,12 @@ export const Group = () => {
     setModalOpen(false);
   };
 
-  const handleDelete = async (groupId:string, event:any) => {
+  const handleDelete = async (groupId: string, event: any) => {
     if (event) {
       event.preventDefault();
       try {
         const payload = { id: groupId };
-        let response = await axiosPrivate.delete('groups/delete/', {headers: {'Content-Type': 'application/json',},data: payload,});
+        let response = await axiosPrivate.delete('groups/delete/', { headers: { 'Content-Type': 'application/json', }, data: payload, });
         console.log(response);
         console.log('DELETE Response:', response.data);
         closeModaldelete();
@@ -115,38 +115,43 @@ export const Group = () => {
     }
   };
 
-  const handleUpdate = async (id: string, group_name: string, event:any) => {
-    const validationErrors = isValidGroupEdit({group_name});
+  const handleUpdate = async (id: string, group_name: string, event: any) => {
+    const validationErrors = isValidGroupEdit({ group_name });
     if (event) {
-        event.preventDefault();
-        if(validationErrors === true) {
+      event.preventDefault();
+      if (validationErrors === true) {
+        const isGroupExist = listOfGroups.some((group) => group.group_name.toLowerCase() === group_name.toLowerCase());
+        if (isGroupExist !== true) {
           try {
             const dataUpdate = { id, group_name };
-            const response = await axiosPrivate.put('groups/update/',dataUpdate,{ headers: { 'Content-Type': 'application/json' } });
+            const response = await axiosPrivate.put('groups/update/', dataUpdate, { headers: { 'Content-Type': 'application/json' } });
             console.log('Update Response:', response.data);
             closeModal();
             setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
           } catch (error) { console.error('Lỗi khi cập nhật trạng thái:', error); }
+        } else {
+          toast.error("Nhóm " + group_name + " đã tồn tại trong bảng !");
         }
+      }
     }
   };
 
-  let dynamicDelete = (id:string) => (
+  let dynamicDelete = (id: string) => (
     <>
-      <button onClick={(event) => {openModaldelete(id); }}>
+      <button onClick={(event) => { openModaldelete(id); }}>
         <p className="icon icon--check">
-            <img src={require('../../../../assets/icndelete.png')} alt="edit" className="fluid-image"/>
+          <img src={require('../../../../assets/icndelete.png')} alt="edit" className="fluid-image" />
         </p>
       </button>
     </>
   );
 
-  const openModaldelete = async(groupid: string) => {
-    const res = await axiosPrivate.get("users/groups/"+groupid);
-    if(res.data.length > 0) {
+  const openModaldelete = async (groupid: string) => {
+    const res = await axiosPrivate.get("users/groups/" + groupid);
+    if (res.data.length > 0) {
       setCheckGroup(true)
     }
-    else{
+    else {
       setCheckGroup(false);
     }
     setDeleteModalId(groupid);
@@ -158,7 +163,9 @@ export const Group = () => {
 
   let DataTable: FieldGroups[] = [];
   for (let i = 0; i < listOfGroups.length; i++) {
+
     DataTable.push({
+      id: (i + 1).toString(),
       group_name: `${listOfGroups[i].group_name}`,
       update: dynamicUpdate({
         id: listOfGroups[i].id,
@@ -167,27 +174,27 @@ export const Group = () => {
       delete: dynamicDelete(listOfGroups[i].id),
     });
   }
-  const handleSubmint = async() => {
+  const handleSubmint = async () => {
     const group_name = groupName;
-    const validationErrors = isValidGroup({group_name});
+    const validationErrors = isValidGroup({ group_name });
     if (validationErrors === true) {
       const isGroupExist = listOfGroups.some((group) => group.group_name.toLowerCase() === group_name.toLowerCase());
-        if (isGroupExist !== true) {
-          try{
-            const group_data = {
-              group_name: groupName,
-              add_level: 1,
-              owner: 'admin',
-            };
-            setGroupName('');
-            const res = await axiosPrivate.post("groups/add/", group_data);
-            console.log('Data inserted successfully:', res.data);
-            setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
-          }
-          catch(error){console.error('Lỗi khi thêm dữ liệu:', error);}
-      } 
-      else{
-        toast.error("Nhóm " + groupName + " đã tồn tại !");
+      if (isGroupExist !== true) {
+        try {
+          const group_data = {
+            group_name: groupName,
+            add_level: 1,
+            owner: 'admin',
+          };
+          setGroupName('');
+          const res = await axiosPrivate.post("groups/add/", group_data);
+          console.log('Data inserted successfully:', res.data);
+          setIsTableUpdated(true); //Khi thêm nhóm mới ,cập nhật state mới
+        }
+        catch (error) { console.error('Lỗi khi thêm dữ liệu:', error); }
+      }
+      else {
+        toast.error("Nhóm " + groupName + " đã tồn tại trong bảng !");
       }
     }
   };
@@ -197,19 +204,19 @@ export const Group = () => {
       <Heading2 text="Quản lý nhóm" />
       <div className="form-group form-addgroup">
         <label>Tên Nhóm:</label>
-        <img src={require('../../../../assets/icn-group.png')} alt="" className="fluid-image form-addgroup__image"/>
-        <input value={groupName} onChange={(event) => setGroupName(event.target.value)}  className="form-input"  type="text"  placeholder="Tên nhóm muốn thêm" />
+        <img src={require('../../../../assets/icn-group.png')} alt="" className="fluid-image form-addgroup__image" />
+        <input value={groupName} onChange={(event) => setGroupName(event.target.value)} className="form-input" type="text" placeholder="Tên nhóm muốn thêm" />
         <button className="btn" onClick={handleSubmint}>Thêm</button>
       </div>
       <CTable>
-        <CTableHead heads={['Tên Nhóm', 'Sửa', 'Xóa']} />
-        <CTableBody data={DataTable} path_edit="/group/edit" path_timecard=""/>
+        <CTableHead heads={['STT', 'Tên Nhóm', 'Sửa', 'Xóa']} />
+        <CTableBody data={DataTable} path_edit="/group/edit" path_timecard="" />
       </CTable>
       <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
-        {checkGroup?<h2>Bạn không thể xóa vì nhóm có thành viên đang hoạt động</h2>:<h2>Bạn có chắc chắn muốn xóa không?</h2>}
+        {checkGroup ? <h2>Bạn không thể xóa vì nhóm có thành viên đang hoạt động</h2> : <h2>Bạn có chắc chắn muốn xóa không?</h2>}
         <div className='wrp-button'>
-        {!checkGroup ? <button className='btn btn--green'  onClick={(event) => handleDelete(isDeleteModalid, event)}>Đồng ý</button> : ''
-        }
+          {!checkGroup ? <button className='btn btn--green' onClick={(event) => handleDelete(isDeleteModalid, event)}>Đồng ý</button> : ''
+          }
           <button className='btn btn--orange' onClick={closeModaldelete}>Quay lại</button>
         </div>
       </Modaldelete>
