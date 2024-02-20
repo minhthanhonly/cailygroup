@@ -146,9 +146,11 @@ export const TimecardList: React.FC = () => {
       setTimeout(() => {
         exportToExcel(clickName);
         setCheckClick(false);
-      }, 1000);
+      }, 1500);
     }
   }, [checkClick]);
+
+
   const exportToExcel = async (realname: string) => {
     const table = document.getElementById('timecards_table') as HTMLTableElement;
 
@@ -160,7 +162,7 @@ export const TimecardList: React.FC = () => {
     const tableWithRows = table as HTMLTableElement & {
       rows: HTMLCollectionOf<HTMLTableRowElement>;
     };
-    const month = selectedMonth;
+    const month = selectedMonth.toString().padStart(2, '0');
     const year = selectedYear;
     const startRow = 4;
     const workbook = new ExcelJS.Workbook();
@@ -523,7 +525,7 @@ export const TimecardList: React.FC = () => {
         onPageChange={handlePageChange}
       />
 
-      <div className="table-container table--01" style={{ display: 'none' }}>
+      <div className="table-container table--01" style={{ display: 'none' }}  >
         <table id="timecards_table" className="table table__custom">
           <thead id="timecards_table_head">
             <CTableTimeCardHead />

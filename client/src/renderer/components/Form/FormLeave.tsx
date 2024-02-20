@@ -236,7 +236,7 @@ export const FormLeave: React.FC = () => {
       axiosPrivate
         .post('dayoffs/add', { group_data })
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           navigate('/dayoffs');
         })
         .catch((error) => {
