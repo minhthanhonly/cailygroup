@@ -104,6 +104,8 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [timecardNote, setTimecardNote] = useState<string>();
   const [timecardDateEdit, setTimecardDateEdit] = useState<string | null>(null);
   const [timecardCheck, setTimecardCheck] = useState<number | undefined>(0);
+
+  const [timeLate, setTimeLate] = useState(0);
   const openModaldelete = (
     id: number,
     timecards_date: string,

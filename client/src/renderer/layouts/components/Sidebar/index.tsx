@@ -96,6 +96,14 @@ export const Sidebar = () => {
               Quản lý nhóm
             </NavLink>
           </li> : ''}
+          <li className="nav-global__item">
+            <NavLink to="/module">
+              <span className="icn">
+                <FontAwesomeIcon icon={faCalendarDays} />
+              </span>
+              module
+            </NavLink>
+          </li>
         </ul>
       </nav>
       <div className="acount">
