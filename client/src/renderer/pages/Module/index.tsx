@@ -35,7 +35,7 @@ export const Module = () => {
 
 
         {/* Thủy */}
-        <div></div>
+        <div>kyuky</div>
 
 
 
