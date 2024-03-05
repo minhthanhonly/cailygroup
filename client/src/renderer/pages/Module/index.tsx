@@ -62,11 +62,80 @@ export const Module = () => {
                               <p className='list-accordion__item__head__btn__btn'>
                                 <a href="#">承認する</a>
                               </p>
+                              <p className='list-accordion__item__head__btn__icn'>
+                                <span className='icn-edit'><img
+                                    src={require('../../../../assets/icn-edit.png')}
+                                    alt="edit"
+                                    className="fluid-image"
+                                /></span>
+                                <span className='icn-close'><img
+                                    src={require('../../../../assets/icn-close.png')}
+                                    alt="close"
+                                    className="fluid-image"
+                                /></span>
+                              </p>
                             </div>
                           </div>
                           <div className='list-accordion__item__content'>
                             <div className='list-accordion__item__content__inner'>
-                              
+                                <div className='list-accordion__item__content__item'>
+                                  <div className='box-register'>
+                                    <ul>
+                                      <li>
+                                        <div className='box-register__item'>
+                                          <span className='box-register__item__title'>期間</span>
+                                          <span className='box-register__item__content'>2024/00/00</span>
+                                        </div>
+                                      </li>
+                                      <li>
+                                        <div className='box-register__item'>
+                                        <span className='box-register__item__title'>行先</span>
+                                        <span className='box-register__item__content'>行先が入ります</span>
+                                        </div>
+                                      </li>
+                                      <li>
+                                        <div className='box-register__item'>
+                                        <span className='box-register__item__title'>事由</span>
+                                          <span className='box-register__item__content'>事由が入ります事由が入ります事由が入ります事由が入ります事由が入ります事由が入ります</span>
+                                        </div>
+                                      </li>
+                                      <li>
+                                        <div className='box-register__item'>
+                                        <span className='box-register__item__title'>備考</span>
+                                        <span className='box-register__item__content'>備考が入ります備考が入ります備考が入ります備考が入ります備考が入ります備考が入ります備考が入ります備考が入ります<br/>備考が入ります備考が入ります備考が入ります備考が入ります備考が入ります備考が入ります備考が入ります備考が入ります</span>
+                                        </div>
+                                      </li> 
+                                    </ul>
+                                  </div>
+                                  <div className='box-approve'>
+                                    <div className='box-approve__inner'>
+                                      <p className='box-approve__headding'>承認状況</p>
+                                      <ul>
+                                        <li>
+                                          <div className='box-approve__item'>
+                                            <div className='box-approve__item__title'>
+                                              <span>申</span>
+                                            </div>
+                                            <div className='box-approve__item__content'>
+                                              <p className='box-approve__item__content__text'>申請者名：申請者名が入ります（申請日時：2024/00/00　00：00：00）</p>
+                                            </div>
+                                          </div>
+                                        </li>
+                                        <li>
+                                          <div className='box-approve__item'>
+                                            <div className='box-approve__item__title'>
+                                              <span className='active'>1</span>
+                                            </div>
+                                            <div className='box-approve__item__content'>
+                                              <p className='box-approve__item__content__text'>承認者名：承認者名が入ります</p>
+                                            </div>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                   
+                                  </div>
+                                </div>
                             </div>
                           </div>
                         </div>
