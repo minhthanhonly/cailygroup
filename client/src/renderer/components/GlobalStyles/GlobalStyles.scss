@@ -2266,6 +2266,117 @@ textarea {
   }
 }
 
+// box-tab
+.box-tab{
+  margin-top: 7rem;
+  .tab-head{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #707070;
+    &__item{
+      padding: 1rem;
+      box-sizing: border-box;
+      margin-right: 2rem;
+      border-top: 1px solid #707070;
+      border-left: 1px solid #707070;
+      border-right: 1px solid #707070;
+      width: 13rem;
+      text-align: center;
+      a{
+        color: #111;
+        display: block;
+        font-size: 1.8rem;
+      }
+    }
+    .is-active{
+      position: relative;
+      &::before{
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        background-color: #fff;
+      }
+    }
+  }
+  .tab-content{
+    margin-top: 3rem;
+  }
+}
+
+// list-accordion
+.list-accordion{
+  &__item{
+    border-bottom: 1px solid #707070;
+    &__head{
+      padding: 2.6rem 0;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-around;
+      align-items: start;
+      width: 100%;
+      &__title{
+        width: 85%;
+        padding: 0 1rem;
+        box-sizing: border-box;
+        &__title{
+          font-size: 1.8rem;
+          font-weight: bold;
+        }
+        &__subtitle{
+          font-size: 1.5rem;
+        }
+      }
+      &__btn{
+        width: 15%;
+        padding: 0 1rem;
+        box-sizing: border-box;
+        text-align: end;
+        &__btn{
+          position: relative;
+          a{
+            width: 9.5rem;
+            border-radius: 1rem;
+            background-color: #038803;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 0.5rem;
+            box-sizing: border-box;
+            display: block;
+            text-align: center;
+            transition: all 0.5s ease;
+            position: absolute;
+            right: 0;
+            &:hover{
+              opacity: 0.7;
+            }
+            &::after{
+              content: "";
+              background: url('../../../../assets/icn-edit.png');
+              background-size: 100%;
+              width: 2rem;
+              height: 1.9rem;
+              position: absolute;
+              top:4.1rem;
+              right: 0;
+            }
+          }
+        }
+      }
+    }
+    &__content{
+      &__inner{
+        padding: 2.5rem;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
 /*>>> 2-4-12. Form     [frm-***]*/
 
 /*>>> 2-4-13. Error    [err-***]*/

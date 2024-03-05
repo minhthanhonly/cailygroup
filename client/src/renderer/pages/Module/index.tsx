@@ -35,7 +35,48 @@ export const Module = () => {
 
 
         {/* Thủy */}
-        <div></div>
+        {/* tab */}
+        <div className='box-tab'>
+            <div className='tab01 tab-head'>
+              <div className="tab-head__item is-active"><a href="#"><span>進行中</span></a></div>
+              <div className='tab-head__item'><a href="#"><span>すべて</span></a></div>
+              <div className='tab-head__item'><a href="#"><span>差し戻し</span></a></div>
+              <div className='tab-head__item'><a href="#"><span>却下</span></a></div>
+              <div className='tab-head__item'><a href="#"><span>完了</span></a></div>
+              <div className='tab-head__item'><a href="#"><span>下書き</span></a></div>
+              <div className='tab-head__item'><a href="#"><span>取り消し</span></a></div>
+            </div>
+            <div className="tab01 tab-content">
+              <div>
+                <div className="is-active">
+                  <div className='list-accordion'>
+                    <div className='list-accorditon__inner'>
+                      <div className='list-accordion__parent'>
+                        <div className='list-accordion__item'>
+                          <div className='list-accordion__item__head'>
+                            <div className='list-accordion__item__head__title'>
+                              <p className='list-accordion__item__head__title__title'>【申請書名が入ります】</p>
+                              <span className='list-accordion__item__head__title__subtitle'>髙崎　亜生（2024/01/01　14:00）</span>
+                            </div>
+                            <div className='list-accordion__item__head__btn'>
+                              <p className='list-accordion__item__head__btn__btn'>
+                                <a href="#">承認する</a>
+                              </p>
+                            </div>
+                          </div>
+                          <div className='list-accordion__item__content'>
+                            <div className='list-accordion__item__content__inner'>
+                              
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+		        </div>
+        </div>
 
 
 
