@@ -88,16 +88,14 @@ export const Sidebar = () => {
               Thành viên
             </NavLink>
           </li> : ''}
-          {isAdmin && (
-            <li className="nav-global__item">
-              <NavLink to="/group">
-                <span className="icn">
-                  <FontAwesomeIcon icon={faBarsProgress} />
-                </span>
-                Quản lý nhóm
-              </NavLink>
-            </li>
-          )}
+          {(isAdmin || isManager) ? <li className="nav-global__item">
+            <NavLink to="/group">
+              <span className="icn">
+                <FontAwesomeIcon icon={faBarsProgress} />
+              </span>
+              Quản lý nhóm
+            </NavLink>
+          </li> : ''}
         </ul>
       </nav>
       <div className="acount">

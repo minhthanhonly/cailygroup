@@ -91,7 +91,7 @@ export const DayoffApply = () => {
           break;
         }
       } else {
-        console.log(`${date} không phải là ngày hợp lệ.`);
+        console.error(`${date} không phải là ngày hợp lệ.`);
       }
     }
     let dynamicYes =
@@ -135,38 +135,35 @@ export const DayoffApply = () => {
     isDateInPast
       ? null
       : DataTable.push({
-          realname: `${listOfGroups[i].realname}`,
-          group_name: `${listOfGroups[i].group_name}`,
-          day_number: `${listOfGroups[i].day_number}`,
-          date: (
-            <React.Fragment>
-              {listOfGroups[i].date.split(',').map((date, index, array) => {
-                const numberOfDays = array.length;
-                return (
-                  <React.Fragment key={date}>
-                    {index === 0
-                      ? numberOfDays === 1
-                        ? `${listOfGroups[i].time_start} đến ${
-                            listOfGroups[i].time_end
-                          } ngày ${date.trim()}`
-                        : `${
-                            listOfGroups[i].time_start
-                          } đến ${closetimeValue} Ngày: ${date.trim()}`
-                      : index === numberOfDays - 1
-                      ? `${opentimeValue} đến ${
-                          listOfGroups[i].time_end
-                        } Ngày: ${date.trim()}`
+        realname: `${listOfGroups[i].realname}`,
+        group_name: `${listOfGroups[i].group_name}`,
+        day_number: `${listOfGroups[i].day_number}`,
+        date: (
+          <React.Fragment>
+            {listOfGroups[i].date.split(',').map((date, index, array) => {
+              const numberOfDays = array.length;
+              return (
+                <React.Fragment key={date}>
+                  {index === 0
+                    ? numberOfDays === 1
+                      ? `${listOfGroups[i].time_start} đến ${listOfGroups[i].time_end
+                      } ngày ${date.trim()}`
+                      : `${listOfGroups[i].time_start
+                      } đến ${closetimeValue} Ngày: ${date.trim()}`
+                    : index === numberOfDays - 1
+                      ? `${opentimeValue} đến ${listOfGroups[i].time_end
+                      } Ngày: ${date.trim()}`
                       : `${opentimeValue} đến ${closetimeValue} Ngày: ${date.trim()}`}
-                    {index !== array.length - 1 && <br />}{' '}
-                  </React.Fragment>
-                );
-              })}
-            </React.Fragment>
-          ),
-          note: `${listOfGroups[i].note}`,
-          yes: dynamicYes,
-          no: dynamicNo,
-        } as unknown as FieldGroups);
+                  {index !== array.length - 1 && <br />}{' '}
+                </React.Fragment>
+              );
+            })}
+          </React.Fragment>
+        ),
+        note: `${listOfGroups[i].note}`,
+        yes: dynamicYes,
+        no: dynamicNo,
+      } as unknown as FieldGroups);
   }
 
   const fetchData = useCallback(async () => {
@@ -243,7 +240,7 @@ export const DayoffApply = () => {
         let response = await axiosPrivate.post('dayoffs/refuse/' + dayoffId, {
           data,
         });
-        console.log(response.data);
+        // console.log(response.data);
         fetchData();
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
