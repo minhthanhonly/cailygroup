@@ -103,7 +103,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const [validateErr, setValidateErr] = useState(0);
   const [timecardNote, setTimecardNote] = useState<string>();
   const [timecardDateEdit, setTimecardDateEdit] = useState<string | null>(null);
-  const [timecardCheck, setTimecardCheck] = useState<number>(0);
+  const [timecardCheck, setTimecardCheck] = useState<number | undefined>(0);
   const openModaldelete = (
     id: number,
     timecards_date: string,
@@ -576,7 +576,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const updateDayoffs = async (id: number) => {
     try {
-      const response = await axiosPrivate.post('dayoffs/update/' + id);
+      const response = await axiosPrivate.post('dayoffs/update/' + id); 
+
+      
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
