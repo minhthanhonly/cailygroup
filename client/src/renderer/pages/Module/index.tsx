@@ -29,6 +29,21 @@ export const Module = () => {
     <div>
       <div className="wrp-container">
         module
+        {/* Hiếu */}
+
+
+
+
+        {/* Thủy */}
+        <div></div>
+
+
+
+        {/* Thịnh */}
+
+
+
+
       </div>
     </div>
   );
