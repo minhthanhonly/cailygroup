@@ -128,6 +128,7 @@ export const Module = () => {
                                             </div>
                                             <div className='box-approve__item__content'>
                                               <p className='box-approve__item__content__text'>承認者名：承認者名が入ります</p>
+                                              <textarea  rows="4" cols="50">コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。コメントが入ります。コメント</textarea>
                                             </div>
                                           </div>
                                         </li>

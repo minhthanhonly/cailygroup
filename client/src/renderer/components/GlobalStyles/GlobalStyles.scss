@@ -2460,17 +2460,29 @@ textarea {
       padding-top: 0.5rem;
       &__text{
         font-size: 1.5rem;
+        &+ textarea{
+          margin-top: 2rem;
+        }
       }
+      textarea{
+        padding: 2rem;
+        box-sizing: border-box;
+      }
+      
     }
     
   }
-  li{
-    &:first-child{
-      .box-approve__item{
-        .box-approve__item__title{
-          span{
-            &::before{
-              display: none;
+  ul{
+    padding: 0 2rem;
+    box-sizing: border-box;
+    li{
+      &:first-child{
+        .box-approve__item{
+          .box-approve__item__title{
+            span{
+              &::before{
+                display: none;
+              }
             }
           }
         }
