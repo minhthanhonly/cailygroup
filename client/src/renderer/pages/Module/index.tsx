@@ -69,12 +69,12 @@ export const Module = () => {
 															<a href="#" className='btn01'>承認する</a>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
-															<span className='icn-edit'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-edit.png')}
 																alt="edit"
 																className="fluid-image"
 															/></span>
-															<span className='icn-close'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-close.png')}
 																alt="close"
 																className="fluid-image"
@@ -206,12 +206,12 @@ export const Module = () => {
 															<a href="#" className='bg-yellow01 btn01'>差し戻し</a>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
-															<span className='icn-edit'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-edit.png')}
 																alt="edit"
 																className="fluid-image"
 															/></span>
-															<span className='icn-close'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-close.png')}
 																alt="close"
 																className="fluid-image"
@@ -233,12 +233,12 @@ export const Module = () => {
 															<a href="#" className='bg-grey01 btn01'>下書き</a>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
-															<span className='icn-edit'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-edit.png')}
 																alt="edit"
 																className="fluid-image"
 															/></span>
-															<span className='icn-close'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-close.png')}
 																alt="close"
 																className="fluid-image"
@@ -260,12 +260,12 @@ export const Module = () => {
 															<a href="#" className='bg-pink01 btn01'>却下</a>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
-															<span className='icn-edit'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-edit.png')}
 																alt="edit"
 																className="fluid-image"
 															/></span>
-															<span className='icn-close'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-close.png')}
 																alt="close"
 																className="fluid-image"
@@ -287,12 +287,12 @@ export const Module = () => {
 															<a href="#" className='bg-white btn01'>完了</a>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
-															<span className='icn-edit'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-edit.png')}
 																alt="edit"
 																className="fluid-image"
 															/></span>
-															<span className='icn-close'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-close.png')}
 																alt="close"
 																className="fluid-image"
@@ -314,14 +314,9 @@ export const Module = () => {
 															<a href="#" className='bg-white btn01'>取り消し</a>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
-															<span className='icn-edit'><img
-																src={require('../../../../assets/icn-edit.png')}
+															<span className='icn-item mr0'><img
+																src={require('../../../../assets/icn-delete.png')}
 																alt="edit"
-																className="fluid-image"
-															/></span>
-															<span className='icn-close'><img
-																src={require('../../../../assets/icn-close.png')}
-																alt="close"
 																className="fluid-image"
 															/></span>
 														</p>
@@ -341,7 +336,7 @@ export const Module = () => {
 															<a href="#" className='bg-blue01 color-white btn01'>承認する</a>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
-															<span className='icn-edit mr0'><img
+															<span className='icn-item mr0'><img
 																src={require('../../../../assets/icn-edit.png')}
 																alt="edit"
 																className="fluid-image"
