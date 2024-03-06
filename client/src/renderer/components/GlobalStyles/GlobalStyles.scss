@@ -2348,15 +2348,6 @@ textarea {
         &__btn{
           position: relative;
           a{
-            // width: 9.5rem;
-            // border-radius: 5rem;
-            // background-color: #D6E8F8;
-            // color: #000;
-            // font-size: 1.5rem;
-            // padding: 0.3rem 0.5rem;
-            // box-sizing: border-box;
-            // display: block;
-            // text-align: center;
             transition: all 0.5s ease;
             position: absolute;
             border: 1px solid #707070;
@@ -2487,7 +2478,7 @@ textarea {
           width: 0;
           height: 0;
           border-style: solid;
-          border-width: 10px 6px 0 6px;
+          border-width: 1rem 0.6rem 0 0.6rem;
           border-color: #C9C8C8 transparent transparent transparent;
           position: absolute;
           top: -1.7rem;
