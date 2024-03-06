@@ -2365,6 +2365,12 @@ textarea {
               opacity: 0.7;
             }
           }
+          &--01{
+            a{
+              border-radius: 1rem;
+              font-weight: bold;
+            }
+          }
         }
         &__icn{
           margin-top: 4.5rem;
@@ -2599,9 +2605,6 @@ textarea {
 }
 .color-white{
   color: var(--white) !important;
-}
-.txt-bold{
-  font-weight: bold !important;
 }
 
 

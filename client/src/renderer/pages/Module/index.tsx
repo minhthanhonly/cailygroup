@@ -326,8 +326,8 @@ export const Module = () => {
                                 <span className='list-accordion__item__head__title__subtitle'>髙崎　亜生（2024/01/01　14:00）</span>
                             </div>
                             <div className='list-accordion__item__head__btn'>
-                                <p className='list-accordion__item__head__btn__btn'>
-                                  <a href="#" className='bg-blue01 color-white txt-bold'>承認する</a>
+                                <p className='list-accordion__item__head__btn__btn list-accordion__item__head__btn__btn--01'>
+                                  <a href="#" className='bg-blue01 color-white'>承認する</a>
                                 </p>
                                 <p className='list-accordion__item__head__btn__icn'>
                                   <span className='icn-edit mr0'><img
