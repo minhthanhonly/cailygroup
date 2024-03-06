@@ -2499,6 +2499,10 @@ textarea {
             padding: 0.5rem;
             box-sizing: border-box;
             text-align: center;
+            transition: all 0.3s ease;
+            &:hover{
+              opacity: 0.7;
+            }
           }
         }
       }
@@ -2594,8 +2598,12 @@ textarea {
   background-color: var(--white) !important;
 }
 .color-white{
-  color: var(--white);
+  color: var(--white) !important;
 }
+.txt-bold{
+  font-weight: bold !important;
+}
+
 
 
 /*>>> 2-4-12. Form     [frm-***]*/
