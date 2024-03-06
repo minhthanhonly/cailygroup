@@ -352,220 +352,220 @@ export const Module = () => {
 						</div>
 					</div>
 				</div>
-
-				{/* Thịnh */}
-
-				<div className='table tbl_custom'>
-					<div className='tbl_custom--03'>
-						<table>
-							<thead>
-								<tr>
-									<th>日付</th>
-									<th>項目</th>
-									<th>交通費</th>
-									<th>宿泊費</th>
-									<th>交際費</th>
-									<th>食費</th>
-									<th>その他</th>
-									<th>合計</th>
-									<th>備考</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td>0</td>
-									<td><input type="text" /></td>
-								</tr>
-
-							</tbody>
-						</table>
-						<a href='@' className='plus-row'> 行を追加する</a>
-					</div>
-
-					<div className='tbl_custom--04 tbl_width tbl_right'>
-						<table>
-							<tbody>
-								<tr>
-									<th>仮払金差引合計</th>
-									<td></td>
-								</tr>
-								<tr>
-									<th>仮払金</th>
-									<td><input className='input_noboder w100' type="text" placeholder='金額を入力' /></td>
-								</tr>
-								<tr>
-									<th>出張手当</th>
-									<td><span>日当 3,000 × </span><input className='input_noboder' type="text" placeholder='日数を入力' /><span> 日</span></td>
-								</tr>
-								<tr>
-									<th>精算額</th>
-									<td>0</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-
-
-					<div className='tbl_custom--04 tbl_width tbl_right'>
-						<table>
-							<tbody>
-								<tr>
-									<th className='rowspan' rowSpan={2}>合計</th>
-									<td>0</td>
-								</tr>
-								<tr>
-									<td>0</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-
-
-					<div className='tbl_custom--03 boder-input'>
-						<table>
-							<thead>
-								<tr>
-									<th>鉄道名</th>
-									<th>路線名</th>
-									<th className='w500'>利用区間</th>
-									<th>1ヵ月の定期代 <br />(普通運賃往復の場合)</th>
-									<th>備考</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td> <p className='grid-row grid--flex'> <input className='width_auto' type="text" /> ↔ <input className='width_auto' type="text" /></p></td>
-									<td><input type="text" /> <input type="text" /></td>
-									<td>note</td>
-								</tr>
-								<tr>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td> <p className='grid-row grid--flex'> <input className='width_auto' type="text" /> ↔ <input className='width_auto' type="text" /></p></td>
-									<td><input type="text" /> <input type="text" /></td>
-									<td>note note note note  note </td>
-								</tr>
-							</tbody>
-						</table>
-						<a href='@' className='plus-row'> 行を追加する</a>
-					</div>
-
-
-
-					<div className='tbl_custom--03'>
-						<table>
-							<thead>
-								<tr>
-									<th>日付</th>
-									<th>内容</th>
-									<th>支払先</th>
-									<th>金額（税抜）</th>
-									<th>消費税</th>
-									<th>軽減税率</th>
-									<th>備考</th>
-
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td><input type="text" /></td>
-									<td className='tdCheckbox'>	<input type="checkbox" id="id" /><label htmlFor='id'></label></td>
-									<td><input type="text" /></td>
-
-								</tr>
-
-							</tbody>
-						</table>
-						<a href='@' className='plus-row'> 行を追加する</a>
-					</div>
-				</div>
-
-
-				<div className='Email'>
-
-					<div className='email'>
-						<div className='grid-row grid-email'>
-							<p>承認者</p> <p>→</p>
-							<p>申請者</p>
-							<p>自動送信メール</p>
-						</div>
-					</div>
-
-					<div className='box_email'>
-						<div className='grid-row box_email--flex'>
-							<div className='box_email--content'>
-								<p>件名：申請差し戻し：休暇申請</p>
-								<p>株式会社GUIS <br /> 〇〇　〇〇（〇〇〇〇〇@guis.co.jp）様</p>
-								<p className='mt1'>申請が差し戻しされました。<br />内容を確認し、再申請もしくは申請取り消しをしてください。</p>
-								<p className='mt1'>----------------------------------------------------------------------</p>
-								<p>申請者: 〇〇　〇〇</p>
-								<p>状態: 差し戻し</p>
-								<p>申請の種類: 休暇届</p>
-								<p className='mt1'>----------------------------------------------------------------------</p>
-								<p>以下のURLにアクセスして詳細を確認してください。</p>
-								<p>http://〇〇〇〇〇</p>
-								<p className='box_email--note mt1'># 本メールはシステムより自動送信されています。<br /># 本メールに返信されましても、返答できませんのでご了承ください。</p>
-							</div>
-							<div className='box_email--content'>
-								<p>件名：申請差し戻し：休暇申請</p>
-								<p>株式会社GUIS <br /> 〇〇　〇〇（〇〇〇〇〇@guis.co.jp）様</p>
-								<p className='mt1'>申請が差し戻しされました。<br />内容を確認し、再申請もしくは申請取り消しをしてください。</p>
-								<p className='mt1'>----------------------------------------------------------------------</p>
-								<p>申請者: 〇〇　〇〇</p>
-								<p>状態: 差し戻し</p>
-								<p>申請の種類: 休暇届</p>
-								<p className='mt1'>----------------------------------------------------------------------</p>
-								<p>以下のURLにアクセスして詳細を確認してください。</p>
-								<p>http://〇〇〇〇〇</p>
-								<p className='box_email--note mt1'># 本メールはシステムより自動送信されています。<br /># 本メールに返信されましても、返答できませんのでご了承ください。</p>
-							</div>
-							<div className='box_email--content'>
-								<p>件名：申請差し戻し：休暇申請</p>
-								<p>株式会社GUIS <br /> 〇〇　〇〇（〇〇〇〇〇@guis.co.jp）様</p>
-								<p className='mt1'>申請が差し戻しされました。<br />内容を確認し、再申請もしくは申請取り消しをしてください。</p>
-								<p className='mt1'>----------------------------------------------------------------------</p>
-								<p>申請者: 〇〇　〇〇</p>
-								<p>状態: 差し戻し</p>
-								<p>申請の種類: 休暇届</p>
-								<p className='mt1'>----------------------------------------------------------------------</p>
-								<p>以下のURLにアクセスして詳細を確認してください。</p>
-								<p>http://〇〇〇〇〇</p>
-								<p className='box_email--note mt1'># 本メールはシステムより自動送信されています。<br /># 本メールに返信されましても、返答できませんのでご了承ください。</p>
-							</div>
-							<div className='box_email--content'>
-								<p>件名：申請差し戻し：休暇申請</p>
-								<p>株式会社GUIS <br /> 〇〇　〇〇（〇〇〇〇〇@guis.co.jp）様</p>
-								<p className='mt1'>申請が差し戻しされました。<br />内容を確認し、再申請もしくは申請取り消しをしてください。</p>
-								<p className='mt1'>----------------------------------------------------------------------</p>
-								<p>申請者: 〇〇　〇〇</p>
-								<p>状態: 差し戻し</p>
-								<p>申請の種類: 休暇届</p>
-								<p className='mt1'>----------------------------------------------------------------------</p>
-								<p>以下のURLにアクセスして詳細を確認してください。</p>
-								<p>http://〇〇〇〇〇</p>
-								<p className='box_email--note mt1'># 本メールはシステムより自動送信されています。<br /># 本メールに返信されましても、返答できませんのでご了承ください。</p>
-							</div>
-						</div>
-					</div>
-
-
-				</div>
-
-				{/* Thịnh end */}
 			</div>
+			{/* Thịnh */}
+
+			<div className='table tbl_custom'>
+				<div className='tbl_custom--03'>
+					<table>
+						<thead>
+							<tr>
+								<th>日付</th>
+								<th>項目</th>
+								<th>交通費</th>
+								<th>宿泊費</th>
+								<th>交際費</th>
+								<th>食費</th>
+								<th>その他</th>
+								<th>合計</th>
+								<th>備考</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td>0</td>
+								<td><input type="text" /></td>
+							</tr>
+
+						</tbody>
+					</table>
+					<a href='@' className='plus-row'> 行を追加する</a>
+				</div>
+
+				<div className='tbl_custom--04 tbl_width tbl_right'>
+					<table>
+						<tbody>
+							<tr>
+								<th>仮払金差引合計</th>
+								<td></td>
+							</tr>
+							<tr>
+								<th>仮払金</th>
+								<td><input className='input_noboder w100' type="text" placeholder='金額を入力' /></td>
+							</tr>
+							<tr>
+								<th>出張手当</th>
+								<td><span>日当 3,000 × </span><input className='input_noboder' type="text" placeholder='日数を入力' /><span> 日</span></td>
+							</tr>
+							<tr>
+								<th>精算額</th>
+								<td>0</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+				<div className='tbl_custom--04 tbl_width tbl_right'>
+					<table>
+						<tbody>
+							<tr>
+								<th className='rowspan' rowSpan={2}>合計</th>
+								<td>0</td>
+							</tr>
+							<tr>
+								<td>0</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+				<div className='tbl_custom--03 boder-input'>
+					<table>
+						<thead>
+							<tr>
+								<th>鉄道名</th>
+								<th>路線名</th>
+								<th className='w500'>利用区間</th>
+								<th>1ヵ月の定期代 <br />(普通運賃往復の場合)</th>
+								<th>備考</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td> <p className='grid-row grid--flex'> <input className='width_auto' type="text" /> ↔ <input className='width_auto' type="text" /></p></td>
+								<td><input type="text" /> <input type="text" /></td>
+								<td>note</td>
+							</tr>
+							<tr>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td> <p className='grid-row grid--flex'> <input className='width_auto' type="text" /> ↔ <input className='width_auto' type="text" /></p></td>
+								<td><input type="text" /> <input type="text" /></td>
+								<td>note note note note  note </td>
+							</tr>
+						</tbody>
+					</table>
+					<a href='@' className='plus-row'> 行を追加する</a>
+				</div>
+
+
+
+				<div className='tbl_custom--03'>
+					<table>
+						<thead>
+							<tr>
+								<th>日付</th>
+								<th>内容</th>
+								<th>支払先</th>
+								<th>金額（税抜）</th>
+								<th>消費税</th>
+								<th>軽減税率</th>
+								<th>備考</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td><input type="text" /></td>
+								<td className='tdCheckbox'>	<input type="checkbox" id="id" /><label htmlFor='id'></label></td>
+								<td><input type="text" /></td>
+
+							</tr>
+
+						</tbody>
+					</table>
+					<a href='@' className='plus-row'> 行を追加する</a>
+				</div>
+			</div>
+
+
+			<div className='Email'>
+
+				<div className='email'>
+					<div className='grid-row grid-email'>
+						<p>承認者</p> <p>→</p>
+						<p>申請者</p>
+						<p>自動送信メール</p>
+					</div>
+				</div>
+
+				<div className='box_email'>
+					<div className='grid-row box_email--flex'>
+						<div className='box_email--content'>
+							<p>件名：申請差し戻し：休暇申請</p>
+							<p>株式会社GUIS <br /> 〇〇　〇〇（〇〇〇〇〇@guis.co.jp）様</p>
+							<p className='mt1'>申請が差し戻しされました。<br />内容を確認し、再申請もしくは申請取り消しをしてください。</p>
+							<p className='mt1'>----------------------------------------------------------------------</p>
+							<p>申請者: 〇〇　〇〇</p>
+							<p>状態: 差し戻し</p>
+							<p>申請の種類: 休暇届</p>
+							<p className='mt1'>----------------------------------------------------------------------</p>
+							<p>以下のURLにアクセスして詳細を確認してください。</p>
+							<p>http://〇〇〇〇〇</p>
+							<p className='box_email--note mt1'># 本メールはシステムより自動送信されています。<br /># 本メールに返信されましても、返答できませんのでご了承ください。</p>
+						</div>
+						<div className='box_email--content'>
+							<p>件名：申請差し戻し：休暇申請</p>
+							<p>株式会社GUIS <br /> 〇〇　〇〇（〇〇〇〇〇@guis.co.jp）様</p>
+							<p className='mt1'>申請が差し戻しされました。<br />内容を確認し、再申請もしくは申請取り消しをしてください。</p>
+							<p className='mt1'>----------------------------------------------------------------------</p>
+							<p>申請者: 〇〇　〇〇</p>
+							<p>状態: 差し戻し</p>
+							<p>申請の種類: 休暇届</p>
+							<p className='mt1'>----------------------------------------------------------------------</p>
+							<p>以下のURLにアクセスして詳細を確認してください。</p>
+							<p>http://〇〇〇〇〇</p>
+							<p className='box_email--note mt1'># 本メールはシステムより自動送信されています。<br /># 本メールに返信されましても、返答できませんのでご了承ください。</p>
+						</div>
+						<div className='box_email--content'>
+							<p>件名：申請差し戻し：休暇申請</p>
+							<p>株式会社GUIS <br /> 〇〇　〇〇（〇〇〇〇〇@guis.co.jp）様</p>
+							<p className='mt1'>申請が差し戻しされました。<br />内容を確認し、再申請もしくは申請取り消しをしてください。</p>
+							<p className='mt1'>----------------------------------------------------------------------</p>
+							<p>申請者: 〇〇　〇〇</p>
+							<p>状態: 差し戻し</p>
+							<p>申請の種類: 休暇届</p>
+							<p className='mt1'>----------------------------------------------------------------------</p>
+							<p>以下のURLにアクセスして詳細を確認してください。</p>
+							<p>http://〇〇〇〇〇</p>
+							<p className='box_email--note mt1'># 本メールはシステムより自動送信されています。<br /># 本メールに返信されましても、返答できませんのでご了承ください。</p>
+						</div>
+						<div className='box_email--content'>
+							<p>件名：申請差し戻し：休暇申請</p>
+							<p>株式会社GUIS <br /> 〇〇　〇〇（〇〇〇〇〇@guis.co.jp）様</p>
+							<p className='mt1'>申請が差し戻しされました。<br />内容を確認し、再申請もしくは申請取り消しをしてください。</p>
+							<p className='mt1'>----------------------------------------------------------------------</p>
+							<p>申請者: 〇〇　〇〇</p>
+							<p>状態: 差し戻し</p>
+							<p>申請の種類: 休暇届</p>
+							<p className='mt1'>----------------------------------------------------------------------</p>
+							<p>以下のURLにアクセスして詳細を確認してください。</p>
+							<p>http://〇〇〇〇〇</p>
+							<p className='box_email--note mt1'># 本メールはシステムより自動送信されています。<br /># 本メールに返信されましても、返答できませんのでご了承ください。</p>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+
+			{/* Thịnh end */}
 		</div>
+
 	);
 };
