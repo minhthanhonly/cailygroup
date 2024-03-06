@@ -2311,9 +2311,10 @@ textarea {
 // list-accordion
 .list-accordion{
   &__item{
+    background: #fff;
     border-bottom: 1px solid #707070;
     &__head{
-      padding: 2.6rem 0;
+      padding: 1.5rem 0;
       box-sizing: border-box;
       display: flex;
       justify-content: space-around;
@@ -2370,12 +2371,15 @@ textarea {
     }
     &__content{
       background-color: #F1EFEF;
-      padding: 2.5rem 2.5rem 0 2.5rem;
+      padding: 2.5rem 2.5rem 2.5rem 2.5rem;
       box-sizing: border-box;
       &__inner{
         background-color: #fff;
       }
     }
+  }
+  .is-active{
+    background: #F1EFEF;
   }
 }
 
@@ -2553,6 +2557,18 @@ textarea {
 }
 .bg-blue{
   background-color: #038803 !important;
+}
+.bg-yellow{
+  background-color: #FBE5B9 !important;
+}
+.bg-grey{
+  background-color: #E9E9E9 !important;
+}
+.bg-pink{
+  background-color: #FFA5A5 !important;
+}
+.bg-white{
+  background-color: #fff!important;
 }
 .color-white{
   color: #fff;
