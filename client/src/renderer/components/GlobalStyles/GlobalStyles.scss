@@ -10,8 +10,10 @@
   --white: #fff;
   --yellow: #ffc107;
   --yellow01:#FBE5B9;
+  --yellow02:#C78B00;
   --red: #dc3545;
   --red01:#FF0000;
+  --red02:#D61D00;
   --purple: #b75aff;
   --orange: #ef5600;
   --green: #89b502;
@@ -22,6 +24,7 @@
   --header-table: #4682b4;
   --grey: #888888;
   --grey01:#E9E9E9;
+  --grey02:#919191;
   --border-color: #888888;
 
 }
@@ -2561,19 +2564,18 @@ textarea {
   }
 }
 .btncomment{
-  background-color: #919191;
+  background-color: var(--grey02);
 }
 .btnapprove{
-  background-color: #038803;
+  background-color: var(--blue01);
 }
 .btnremand{
-  background-color: #C78B00;
+  background-color: var(--yellow02);
 }
 .btndismiss{
-  background-color: #D61D00;
+  background-color: var(--red02);
 }
 .bg-red01{
-  // background-color: #FF0000 !important;
   background-color: var(--red01) !important;
 }
 .bg-blue01{
