@@ -2344,7 +2344,7 @@ textarea {
             background-color: #D6E8F8;
             color: #000;
             font-size: 1.5rem;
-            padding: 0.5rem;
+            padding: 0.3rem 0.5rem;
             box-sizing: border-box;
             display: block;
             text-align: center;
@@ -2412,7 +2412,7 @@ textarea {
   padding: 2.5rem;
   box-sizing: border-box;
   &__inner{
-    padding: 2.5rem;
+    padding: 2.5rem 2.5rem 0 2.5rem;
     box-sizing: border-box;
     border: 5px solid #CECECE;
   }
@@ -2438,6 +2438,7 @@ textarea {
         text-align: center;
         line-height: 3.3rem;
         position: relative;
+        cursor: pointer;
         &::before{
           content: "";
           display: inline-block;
@@ -2467,10 +2468,25 @@ textarea {
       textarea{
         padding: 2rem;
         box-sizing: border-box;
+        height: 11rem;
+        &+ textarea{
+          margin-top: 2rem;
+        }
       }
-      
+      &__btn{
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+      }
     }
-    
+    &--01{
+      .box-approve__item__title{
+        span{
+          &::before{
+            display: none;
+          }
+        }
+      }
+    }
   }
   ul{
     padding: 0 2rem;
@@ -2487,9 +2503,61 @@ textarea {
           }
         }
       }
+      &:nth-child(3){
+        display: inline-block;
+        width: 3.5rem;
+      }
+      &:nth-child(4){
+        display: inline-block;
+        width: 3.5rem;
+        position: relative;
+        left: 1.5rem;
+        top: 0;
+      }
+      &:nth-child(5){
+        display: inline-block;
+        width: 3.5rem;
+        position: relative;
+        left: 3rem;
+        top: 0;
+      }
+      &:nth-child(6){
+        display: inline-block;
+        width: 3.5rem;
+        position: relative;
+        left: 4.5rem;
+        top: 0;
+      }
+      &:nth-child(7){
+        display: inline-block;
+        width: 3.5rem;
+        position: relative;
+        left: 5.5rem;
+        top: 0;
+      }
     }
   }
 }
+.btncomment{
+  width: 11rem;
+  background-color: #919191;
+  color: #fff;
+  font-size: 1.5rem;
+  display: block;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+.bg-red{
+  background-color: #FF0000 !important;
+}
+.bg-blue{
+  background-color: #038803 !important;
+}
+.color-white{
+  color: #fff;
+}
+
 
 /*>>> 2-4-12. Form     [frm-***]*/
 

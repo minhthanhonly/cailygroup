@@ -128,14 +128,50 @@ export const Module = () => {
                                             </div>
                                             <div className='box-approve__item__content'>
                                               <p className='box-approve__item__content__text'>承認者名：承認者名が入ります</p>
-                                              <textarea  rows="4" cols="50">コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。コメントが入ります。コメント</textarea>
+                                              <textarea  rows="4" cols="50">コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
+                                              <textarea  rows="4" cols="50">コメントを入力（任意1000文字以内）</textarea>
+                                              <p className='box-approve__item__content__btn'><a href="#" className='btncomment'>コメントする</a></p>
+                                            </div>
+                                          </div>
+                                        </li>
+                                        <li>
+                                          <div className='box-approve__item'>
+                                            <div className='box-approve__item__title'>
+                                              <span>未</span>
+                                            </div>
+                                          </div>
+                                        </li>
+                                        <li>
+                                          <div className='box-approve__item box-approve__item--01'>
+                                            <div className='box-approve__item__title'>
+                                              <span className='bg-blue color-white'>完</span>
+                                            </div>
+                                          </div>
+                                        </li>
+                                        <li>
+                                          <div className='box-approve__item box-approve__item--01'>
+                                            <div className='box-approve__item__title'>
+                                              <span className='bg-red'>却</span>
+                                            </div>
+                                          </div>
+                                        </li>
+                                        <li>
+                                          <div className='box-approve__item box-approve__item--01'>
+                                            <div className='box-approve__item__title'>
+                                            <span className='bg-blue color-white'>下</span>
+                                            </div>
+                                          </div>
+                                        </li>
+                                        <li>
+                                          <div className='box-approve__item box-approve__item--01'>
+                                            <div className='box-approve__item__title'>
+                                            <span className='bg-blue color-white'>消</span>
                                             </div>
                                           </div>
                                         </li>
                                       </ul>
                                     </div>
-                                   
-                                  </div>
+                                   </div>
                                 </div>
                             </div>
                           </div>
