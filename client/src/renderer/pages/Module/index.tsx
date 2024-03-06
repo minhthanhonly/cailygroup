@@ -61,7 +61,7 @@ export const Module = () => {
                             </div>
                             <div className='list-accordion__item__head__btn'>
                               <p className='list-accordion__item__head__btn__btn'>
-                                <a href="#">承認する</a>
+                                <a href="#" className='btn01'>承認する</a>
                               </p>
                               <p className='list-accordion__item__head__btn__icn'>
                                 <span className='icn-edit'><img
@@ -132,10 +132,16 @@ export const Module = () => {
                                               <textarea  rows="4" cols="50">コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
                                               <textarea  rows="4" cols="50">コメントを入力（任意1000文字以内）</textarea>
                                               <p className='box-approve__item__content__btn'>
-                                                <span><a href="#" className='btncomment'>コメントする</a></span>
-                                                <span><a href="#" className='btnapprove'>承認する</a></span>
-                                                <span><a href="#" className='btnremand'>差し戻す</a></span>
-                                                <span><a href="#" className='btndismiss'>却下する</a></span>
+                                                <span><a href="#" className='btncomment btn02'>コメントする</a></span>
+                                                <span><a href="#" className='btnapprove btn02'>承認する</a></span>
+                                                <span><a href="#" className='btnremand btn02'>差し戻す</a></span>
+                                                <span><a href="#" className='btndismiss btn02'>却下する</a></span>
+                                              </p>
+                                              <p className='list-btn'>
+                                                <span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>差し戻し</a></span>
+                                                <span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>却下</a></span>
+                                                <span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>承認待ち</a></span>
+                                                <span className='list-btn__item'><a href="#" className='btn01 color-blue01 boder-blue01'>承認済み</a></span>
                                               </p>
                                             </div>
                                           </div>
@@ -192,7 +198,7 @@ export const Module = () => {
                           </div>
                           <div className='list-accordion__item__head__btn'>
                               <p className='list-accordion__item__head__btn__btn'>
-                                <a href="#" className='bg-yellow01'>差し戻し</a>
+                                <a href="#" className='bg-yellow01 btn01'>差し戻し</a>
                               </p>
                               <p className='list-accordion__item__head__btn__icn'>
                                 <span className='icn-edit'><img
@@ -219,7 +225,7 @@ export const Module = () => {
                             </div>
                             <div className='list-accordion__item__head__btn'>
                                 <p className='list-accordion__item__head__btn__btn'>
-                                  <a href="#" className='bg-grey01'>下書き</a>
+                                  <a href="#" className='bg-grey01 btn01'>下書き</a>
                                 </p>
                                 <p className='list-accordion__item__head__btn__icn'>
                                   <span className='icn-edit'><img
@@ -246,7 +252,7 @@ export const Module = () => {
                             </div>
                             <div className='list-accordion__item__head__btn'>
                                 <p className='list-accordion__item__head__btn__btn'>
-                                  <a href="#" className='bg-pink01'>却下</a>
+                                  <a href="#" className='bg-pink01 btn01'>却下</a>
                                 </p>
                                 <p className='list-accordion__item__head__btn__icn'>
                                   <span className='icn-edit'><img
@@ -273,7 +279,7 @@ export const Module = () => {
                             </div>
                             <div className='list-accordion__item__head__btn'>
                                 <p className='list-accordion__item__head__btn__btn'>
-                                  <a href="#" className='bg-white'>完了</a>
+                                  <a href="#" className='bg-white btn01'>完了</a>
                                 </p>
                                 <p className='list-accordion__item__head__btn__icn'>
                                   <span className='icn-edit'><img
@@ -300,7 +306,7 @@ export const Module = () => {
                             </div>
                             <div className='list-accordion__item__head__btn'>
                                 <p className='list-accordion__item__head__btn__btn'>
-                                  <a href="#" className='bg-white'>取り消し</a>
+                                  <a href="#" className='bg-white btn01'>取り消し</a>
                                 </p>
                                 <p className='list-accordion__item__head__btn__icn'>
                                   <span className='icn-edit'><img
@@ -327,7 +333,7 @@ export const Module = () => {
                             </div>
                             <div className='list-accordion__item__head__btn'>
                                 <p className='list-accordion__item__head__btn__btn list-accordion__item__head__btn__btn--01'>
-                                  <a href="#" className='bg-blue01 color-white'>承認する</a>
+                                  <a href="#" className='bg-blue01 color-white btn01'>承認する</a>
                                 </p>
                                 <p className='list-accordion__item__head__btn__icn'>
                                   <span className='icn-edit mr0'><img
