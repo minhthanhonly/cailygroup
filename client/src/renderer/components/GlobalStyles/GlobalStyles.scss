@@ -9,14 +9,19 @@
   --text-color-second: #4f4f4f;
   --white: #fff;
   --yellow: #ffc107;
+  --yellow01:#FBE5B9;
   --red: #dc3545;
+  --red01:#FF0000;
   --purple: #b75aff;
   --orange: #ef5600;
   --green: #89b502;
   --blue: #a7c9eb;
+  --blue01:#038803;
   --pink: #ffdddd;
+  --pink01:#FFA5A5;
   --header-table: #4682b4;
   --grey: #888888;
+  --grey01:#E9E9E9;
   --border-color: #888888;
 
 }
@@ -2480,6 +2485,19 @@ textarea {
       &__btn{
         margin-top: 2rem;
         margin-bottom: 1.5rem;
+        display: flex;
+        span{
+          margin-right: 1.5rem;
+          a{
+            width: 11rem;
+            color: #fff;
+            font-size: 1.5rem;
+            display: block;
+            padding: 0.5rem;
+            box-sizing: border-box;
+            text-align: center;
+          }
+        }
       }
     }
     &--01{
@@ -2543,35 +2561,38 @@ textarea {
   }
 }
 .btncomment{
-  width: 11rem;
   background-color: #919191;
-  color: #fff;
-  font-size: 1.5rem;
-  display: block;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  text-align: center;
 }
-.bg-red{
-  background-color: #FF0000 !important;
+.btnapprove{
+  background-color: #038803;
 }
-.bg-blue{
-  background-color: #038803 !important;
+.btnremand{
+  background-color: #C78B00;
 }
-.bg-yellow{
-  background-color: #FBE5B9 !important;
+.btndismiss{
+  background-color: #D61D00;
 }
-.bg-grey{
-  background-color: #E9E9E9 !important;
+.bg-red01{
+  // background-color: #FF0000 !important;
+  background-color: var(--red01) !important;
 }
-.bg-pink{
-  background-color: #FFA5A5 !important;
+.bg-blue01{
+  background-color: var(--blue01) !important;
+}
+.bg-yellow01{
+  background-color: var(--yellow01) !important;
+}
+.bg-grey01{
+  background-color: var(--grey01) !important;
+}
+.bg-pink01{
+  background-color: var(--pink01) !important;
 }
 .bg-white{
-  background-color: #fff!important;
+  background-color: var(--white) !important;
 }
 .color-white{
-  color: #fff;
+  color: var(--white);
 }
 
 

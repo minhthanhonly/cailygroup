@@ -131,7 +131,12 @@ export const Module = () => {
                                               <p className='box-approve__item__content__text'>承認者名：承認者名が入ります</p>
                                               <textarea  rows="4" cols="50">コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
                                               <textarea  rows="4" cols="50">コメントを入力（任意1000文字以内）</textarea>
-                                              <p className='box-approve__item__content__btn'><a href="#" className='btncomment'>コメントする</a></p>
+                                              <p className='box-approve__item__content__btn'>
+                                                <span><a href="#" className='btncomment'>コメントする</a></span>
+                                                <span><a href="#" className='btnapprove'>承認する</a></span>
+                                                <span><a href="#" className='btnremand'>差し戻す</a></span>
+                                                <span><a href="#" className='btndismiss'>却下する</a></span>
+                                              </p>
                                             </div>
                                           </div>
                                         </li>
@@ -145,28 +150,28 @@ export const Module = () => {
                                         <li>
                                           <div className='box-approve__item box-approve__item--01'>
                                             <div className='box-approve__item__title'>
-                                              <span className='bg-blue color-white'>完</span>
+                                              <span className='bg-blue01 color-white'>完</span>
                                             </div>
                                           </div>
                                         </li>
                                         <li>
                                           <div className='box-approve__item box-approve__item--01'>
                                             <div className='box-approve__item__title'>
-                                              <span className='bg-red'>却</span>
+                                              <span className='bg-red01 color-white'>却</span>
                                             </div>
                                           </div>
                                         </li>
                                         <li>
                                           <div className='box-approve__item box-approve__item--01'>
                                             <div className='box-approve__item__title'>
-                                            <span className='bg-blue color-white'>下</span>
+                                            <span className='bg-blue01 color-white'>下</span>
                                             </div>
                                           </div>
                                         </li>
                                         <li>
                                           <div className='box-approve__item box-approve__item--01'>
                                             <div className='box-approve__item__title'>
-                                            <span className='bg-blue color-white'>消</span>
+                                            <span className='bg-blue01 color-white'>消</span>
                                             </div>
                                           </div>
                                         </li>
@@ -187,7 +192,7 @@ export const Module = () => {
                           </div>
                           <div className='list-accordion__item__head__btn'>
                               <p className='list-accordion__item__head__btn__btn'>
-                                <a href="#" className='bg-yellow'>差し戻し</a>
+                                <a href="#" className='bg-yellow01'>差し戻し</a>
                               </p>
                               <p className='list-accordion__item__head__btn__icn'>
                                 <span className='icn-edit'><img
@@ -214,7 +219,7 @@ export const Module = () => {
                             </div>
                             <div className='list-accordion__item__head__btn'>
                                 <p className='list-accordion__item__head__btn__btn'>
-                                  <a href="#" className='bg-grey'>下書き</a>
+                                  <a href="#" className='bg-grey01'>下書き</a>
                                 </p>
                                 <p className='list-accordion__item__head__btn__icn'>
                                   <span className='icn-edit'><img
@@ -241,7 +246,7 @@ export const Module = () => {
                             </div>
                             <div className='list-accordion__item__head__btn'>
                                 <p className='list-accordion__item__head__btn__btn'>
-                                  <a href="#" className='bg-pink'>却下</a>
+                                  <a href="#" className='bg-pink01'>却下</a>
                                 </p>
                                 <p className='list-accordion__item__head__btn__icn'>
                                   <span className='icn-edit'><img
