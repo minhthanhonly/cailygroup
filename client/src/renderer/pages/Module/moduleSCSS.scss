@@ -161,7 +161,7 @@
         cursor: pointer;
 
         &:before {
-            content: '';
+            content: ''; 
             background-color: transparent;
             border: 2px solid #0079bf;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
@@ -175,3 +175,33 @@
     }
 }
 
+.Email{
+    margin-top: 5rem;
+}
+
+.email{
+    & .grid-email{
+        & p {
+            padding: 0rem 1rem;
+            font-size: 2rem;
+            box-sizing: border-box;
+        }
+    }
+ 
+}
+
+.box_email{
+    .box_email--flex{
+
+        & > .box_email--content{
+            margin-top: 5rem;
+            padding-right: 4rem;
+            padding-left: 4rem;
+            width: 33.33%;
+            box-sizing: border-box;
+        }
+    }
+}
+.mt1{
+    margin-top: 1rem;
+}
