@@ -1,36 +1,20 @@
-import {
-	FormUser,
-	AddGroup,
-	AddEditMember,
-} from '../../components/Form/Form';
-import { FormLeave } from '../../components/Form/FormLeave';
-import Dashboard from '../../components/Dashboard/Dashboard';
-import { Button } from '../../components/Button/';
-import TablePage from '../../components/Table/Table';
-import TableCalendar from '../../components/Dashboard/date';
-import { Heading2, Heading3 } from '../../components/Heading';
-import { Search } from '../../components/Search';
-import { Pagination } from '../../components/Pagination';
-import { InputQuantity } from '../../components/InputQuantity';
-import { Menberdetails } from '../../components/Menberdetails';
-import CardTime from '../../components/Card/Card';
-import {
-	SelectCustom,
-	SelectCustomName,
-} from '../../components/Table/SelectCustom';
-import ButtonDelete from '../../components/Button/ButtonDelete';
-import { ButtonCenter } from '../../components/Button/ButtonCenter';
-import NavTimcard from '../../layouts/components/Nav/NavTimcard';
-import ButtonEdit from '../../components/Button/ButtonEdit';
-import FormLogin from '../../components/Form/AuthForm';
-import { faDisplay } from '@fortawesome/free-solid-svg-icons';
-
+import React, { useEffect, useState } from 'react';
 import './moduleSCSS.scss'
 
-import Iconadd from '../../../../assets/add.png';
+
 
 
 export const Module = () => {
+	const [isInputVisible, setIsInputVisible] = useState(false);
+
+	const toggleSearchInput = () => {
+		setIsInputVisible(!isInputVisible);
+	};
+	const handleInputClick = (e) => {
+		// Stop the click event propagation to prevent it from reaching the parent div
+		e.stopPropagation();
+	};
+
 	return (
 		<div>
 			<div className="wrp-container">
@@ -494,8 +478,35 @@ export const Module = () => {
 			</div>
 
 
-			<div className='Email'>
+			<div className='select'>
+				<div className='grid-row select__flex'>
+					<div className='select_sort select__flex--box'>
+						<select name="select-sort" id="sort">
+							<option value="0">申請日順（新しい順）</option>
+							<option value="1">thấp đến cao</option>
+							<option value="2">lâu nhất</option>
+							<option value="3">a - z</option>
+						</select>
+					</div>
+					<div className='select_sort select__flex--box'>
+						<select name="select-sort" id="sort">
+							<option value="0">申請日順（新しい順）</option>
+							<option value="1">thấp đến cao</option>
+							<option value="2">lâu nhất</option>
+							<option value="3">a - z</option>
+						</select>
+					</div>
+					<div className='search_icon' onClick={toggleSearchInput}>
+						<span className="search">
+							<span className={`search_icon--input ${isInputVisible ? 'visible' : ''}`}></span>
+						</span>
+						{isInputVisible && (<input type="text" onClick={handleInputClick} />)}
+					</div>
+				</div>
 
+			</div>
+
+			<div className='Email'>
 				<div className='email'>
 					<div className='grid-row grid-email'>
 						<p>承認者</p> <p>→</p>
@@ -563,6 +574,8 @@ export const Module = () => {
 
 
 			</div>
+
+
 
 			{/* Thịnh end */}
 		</div>

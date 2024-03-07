@@ -205,3 +205,82 @@
 .mt1{
     margin-top: 1rem;
 }
+
+.select{
+    margin-top: 5rem;
+
+    &__flex {
+        justify-content: end;
+        &--box{
+            padding-left: 2rem;
+            padding-left: 2rem;
+            box-sizing: border-box;
+
+            & > select{
+                padding: 0.5rem;
+            }
+        }
+
+    }
+    & .search_icon{
+            padding-left: 4rem;
+    }
+
+}
+
+.search_icon {
+    position: relative;
+  
+
+    input {
+            border-radius: 2rem;
+            border: 1px solid var(--text-color);
+            padding: 0.6rem 1.6rem;
+            box-sizing: border-box;
+            background: none;
+            position: absolute;
+            top: 4rem;
+            right: 0;
+            &::after {
+                content: "";
+                background: url("../../../../assets/icn-search.png") no-repeat;
+            }
+        }
+    & .visible{
+        position: relative;
+        &::after{
+                content: "";
+                background: url("../../../../assets/close.png") no-repeat;
+                width: 2rem;
+                height: 2rem;
+                position: absolute;
+                right: 1.8rem;
+                vertical-align: middle;
+                top: 0.5rem;
+                background-size: 100%;
+                cursor: pointer;
+            }
+    }
+    &--input.visible {
+       &::before{
+        display: none;
+       }
+    }
+    &--input {
+            padding-left: 2rem;
+            position: relative;
+    
+            &::before {
+                content: "";
+                background: url("../../../../assets/icn-search.png") no-repeat;
+                width: 2rem;
+                height: 2rem;
+                position: absolute;
+                right: 1.8rem;
+                vertical-align: middle;
+                top: 0.5rem;
+                background-size: 100%;
+                cursor: pointer;
+            }
+        }
+}
