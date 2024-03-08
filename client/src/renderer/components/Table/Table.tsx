@@ -1,58 +1,145 @@
-
-
-
-import { SetStateAction, useState } from 'react';
-import CTableTimeCardHead from './Table_01/CTableTimeCardHead';
-import CTableTimeCardBody from './Table_01/CTableTimeCardBody';
-
-
-import MonthYearSelector from './SelectMonthYears';
-// import  TestOne  from "./TestOne";
 import './Table.scss';
-import '../GlobalStyles/GlobalStyles.scss';
-import { SelectCustom, SelectCustomName } from './SelectCustom';
 
+interface TableFromProps {
+	customProp: string;
+}
 
-
-let Col_count_rows = 9;
-const Col_title = { col_1: 'Họ Và Tên', col_2: 'Nhóm', col_3: 'Email', col_4: 'Skype ID', col_5: 'Tháng Năm', col_6: 'Phone', col_7: 'Phone', col_8: 'Ghi Chú', };
-
-
-const TablePage = () => {
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
-  const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
-
-  const handleDateChange = (month: string, year: string, daysInMonth: Date[]) => {
-    setSelectedMonth(month);
-    setSelectedYear(year);
-    setDaysInMonth(daysInMonth);
-
-  };
-
-
-
+export const TableFrom: React.FC<TableFromProps> = ({ customProp }) => {
+	console.log(customProp);
   return (
-    <div>
-      <h2>Table Page</h2>
-
-      <SelectCustom />
-      <SelectCustomName />
-      <MonthYearSelector onChange={handleDateChange} />
-      <h2 className='hdg-lv2'>Thẻ giờ</h2>
-      <div className='table-container table--01'>
-        <table className="table table__custom">
-          <thead>
-            <CTableTimeCardHead />
-          </thead>
-          <tbody>
-            {/* RowCounts = {RowCounts} */}
-            <CTableTimeCardBody selectedMonth={selectedMonth} selectedYear={selectedYear} daysInMonth={daysInMonth} />
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-export default TablePage;
+    <table className='tb-from'>
+      <tr>
+		<th><div className='tb-from--th'>期間<span className='txt-red'>（必須）</span></div></th>
+		<td>
+			<div className='tb-from--td'>
+				<div className='tb-from--times'>
+					<span><input type="text" className='tb-from--input' /></span>
+					<span><input type="text" className='tb-from--input' /></span>
+				</div>
+			</div>
+		</td>
+	  </tr>
+      <tr>
+		<th><div className='tb-from--th'>期間<span className='txt-red'>（必須）</span></div></th>
+		<td>
+			<div className='tb-from--td'>
+				<div className='tb-from--times'>
+					<span><input type="text" className='tb-from--input' /></span>
+					<span><input type="text" className='tb-from--input' /></span>
+				</div>
+				<div className='tb-from--days'>
+					<input type="text" className='tb-from--input' />
+				</div>
+			</div>
+		</td>
+	  </tr>
+      <tr>
+		<th><div className='tb-from--th'>期間<span className='txt-red'>（必須）</span></div></th>
+		<td>
+			<div className='tb-from--td'>
+				<div className='tb-from--days'>
+					<input type="text" className='tb-from--input' />
+				</div>
+				<div className='tb-from--times'>
+					<span><input type="text" className='tb-from--input' /></span>
+					<span><input type="text" className='tb-from--input' /></span>
+				</div>
+			</div>
+		</td>
+	  </tr>
+      <tr>
+		<th><div className='tb-from--th'>用途<span className='txt-red'>（必須）</span></div></th>
+		<td>
+			<div className='tb-from--td'>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+				</div>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>早退</label>
+				</div>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>時間外勤務</label>
+				</div>
+			</div>
+		</td>
+	  </tr>
+      <tr>
+		<th><div className='tb-from--th'>用途<span className='txt-red'>（必須）</span></div></th>
+		<td>
+			<div className='tb-from--td'>
+				<h5 className='tb-from--title'>■有給休暇</h5>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+				</div>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>早退</label>
+				</div>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>時間外勤務</label>
+				</div>
+				<h5 className='tb-from--title'>■無給休暇</h5>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+				</div>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>早退</label>
+				</div>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>時間外勤務</label>
+				</div>
+			</div>
+		</td>
+	  </tr>
+      <tr>
+		<th><div className='tb-from--th'>用途<span className='txt-red'>（必須）</span></div></th>
+		<td>
+			<div className='tb-from--td'>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+				</div>
+				<div className='tb-from--checkbox'>
+					<label><input type="checkbox" name="checkbox" /><span></span>早退</label>
+				</div>
+				<input type="text" className='tb-from--input' />
+			</div>
+		</td>
+	  </tr>
+      <tr>
+		<th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
+		<td>
+			<div className='tb-from--td tb-from--file'>
+				<input type="file" id="fileInput" className='tb-from--fileInput' />
+				<input type="text" className='tb-from--input' />
+				<button className="tb-from--button">ファイル選択</button>
+				<button className="tb-from--button tb-from--button__red">キャンセル</button>
+				<p>※全てのデータをひとつのフォルダにまとめてzipファイルに圧縮してからアップロードしてください。</p>
+			</div>
+		</td>
+	  </tr>
+      <tr>
+		<th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
+		<td>
+			<div className='tb-from--td'>
+				<input type="text" className='tb-from--input' />
+			</div>
+		</td>
+	  </tr>
+      <tr>
+		<th><div className='tb-from--th'>事由<span className='txt-red'>（必須）</span></div></th>
+		<td>
+			<div className='tb-from--td'>
+				<textarea className='tb-from--area'></textarea>
+			</div>
+		</td>
+	  </tr>
+      <tr>
+		<th><div className='tb-from--th'>備考</div></th>
+		<td>
+			<div className='tb-from--td'>
+				<textarea className='tb-from--area'></textarea>
+			</div>
+		</td>
+	  </tr>
+    </table>
+  )
+}

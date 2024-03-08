@@ -45,6 +45,24 @@
     height: auto;
     padding: 0;
   }
+  &--gray{
+    background-color: #9D9B9B;
+  }
+
+  &--from{
+    border-radius: 0;
+    height: 6rem;
+    &.btn--blue{
+      background-color: #0472E1;
+    }
+    &.btn--transparent{
+      border: 1px solid #707070;
+      color: #000000;
+      margin-top: 10rem;
+      float: right;
+      display: inline-block;
+    }
+  }
 }
 .icon {
   background: none;
