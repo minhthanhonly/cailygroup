@@ -298,7 +298,7 @@ export const Module = () => {
 															<a href="#" className='bg-white btn01'>取り消し</a>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
-															<span className='icn-item mr0'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-delete.png')}
 																alt="edit"
 																className="fluid-image"
@@ -320,7 +320,7 @@ export const Module = () => {
 															<a href="#" className='bg-blue01 color-white btn01'>承認する</a>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
-															<span className='icn-item mr0'><img
+															<span className='icn-item'><img
 																src={require('../../../../assets/icn-edit.png')}
 																alt="edit"
 																className="fluid-image"
@@ -336,6 +336,12 @@ export const Module = () => {
 						</div>
 					</div>
 				</div>
+				<ul class="list-page list-page--01">
+					<li class="active"><a href="#">1</a></li>
+					<li class=""><a href="#">2</a></li>
+					<li class=""><a href="#">3</a></li>
+					<li><a href="#">最後のページ</a></li>
+				</ul>
 			</div>
 			{/* Thịnh */}
 
