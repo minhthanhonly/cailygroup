@@ -2448,7 +2448,7 @@ textarea {
 }
 
 // box-approve
-.box-approve{
+.box-approves{
   margin-top: 0.5rem;
   padding: 2.5rem;
   box-sizing: border-box;
@@ -2532,7 +2532,7 @@ textarea {
       }
     }
     &--01{
-      .box-approve__item__title{
+      .box-approves__item__title{
         span{
           &::before{
             display: none;
@@ -2546,8 +2546,8 @@ textarea {
     box-sizing: border-box;
     li{
       &:first-child{
-        .box-approve__item{
-          .box-approve__item__title{
+        .box-approves__item{
+          .box-approves__item__title{
             span{
               &::before{
                 display: none;
