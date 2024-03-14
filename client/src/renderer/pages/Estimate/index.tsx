@@ -64,6 +64,7 @@ export const Estimate = () => {
                     <p className='plus-row'>承認ルートを編集</p>
                 </div>
             </div>
+            <div className="wrp-button"><button className="btn btn--from btn--gray">下書き保存</button><button className="btn btn--from btn--blue">申請する</button></div>
         </>
     )
 
