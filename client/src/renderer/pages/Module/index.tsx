@@ -1,5 +1,7 @@
+import { FromWork } from "../From/FromWork";
 import React, { useEffect, useState } from 'react';
 import './moduleSCSS.scss'
+import { TableBase } from "../../components/Table/Table";
 
 
 
@@ -21,7 +23,8 @@ export const Module = () => {
 				module
 				{/* Hiếu */}
 
-
+				<FromWork />
+				<TableBase />
 
 
 				{/* Thủy */}
