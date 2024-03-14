@@ -104,6 +104,11 @@ export const Sidebar = () => {
               module
             </NavLink>
           </li>
+          <li className="nav-global__item">
+            <NavLink to="/application">
+              申請状況
+            </NavLink>
+          </li>
         </ul>
       </nav>
       <div className="acount">
