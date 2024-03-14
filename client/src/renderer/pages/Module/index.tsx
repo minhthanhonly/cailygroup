@@ -585,6 +585,21 @@ export const Module = () => {
 			</div>
 
 
+			<div className='box-router'>
+				<div className='box-router__title'>承認ルート</div>
+				<div className='grid-row box-router__grid'>
+					<div className='box-router__name'>
+						<p>承認者: </p> <p>齋藤社長</p>
+					</div>
+					<div className='box-router__name'>
+						<p>共有者: </p> <p>総務</p>
+					</div>
+
+				</div>
+				<div className='box-router__edit'>
+					<p className='plus-row'>承認ルートを編集</p>
+				</div>
+			</div>
 
 			{/* Thịnh end */}
 		</div>

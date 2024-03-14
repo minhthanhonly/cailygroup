@@ -12,6 +12,8 @@ import { DayoffApply } from './pages/Dayoff/DayoffApply';
 import { Group } from './pages/Group';
 import { GroupEdit } from './pages/Group/GroupEdit';
 import { Module } from './pages/Module';
+import {Application} from './pages/Application';
+import { Estimate } from './pages/Estimate';
 import Login from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
 import FluidLayout from './layouts/FluidLayout/FluidLayout';
@@ -64,6 +66,8 @@ export default function App() {
               <Route path="group" element={<Group />} />
               <Route path="group/edit" element={<GroupEdit />} />
               <Route path="module" element={<Module />} />
+              <Route path="application" element={<Application />} />
+              <Route path="estimate" element={<Estimate />} />
               <Route path="field" element={<Field />} />
             </Route>
           </Route>
