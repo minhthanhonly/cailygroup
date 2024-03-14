@@ -2285,7 +2285,7 @@ textarea {
       margin-right: 2rem;
       border-top: 1px solid #707070;
       border-left: 1px solid #707070;
-      border-right: 1px solid #707070;
+      border-right: 1px solid hsl(0, 0%, 44%);
       width: 13.1rem;
       text-align: center;
       a{
@@ -2304,7 +2304,7 @@ textarea {
         left: 0;
         right: 0;
         bottom: -1px;
-        background-color: #fff;
+        background-color:var(--white)
       }
     }
   }
