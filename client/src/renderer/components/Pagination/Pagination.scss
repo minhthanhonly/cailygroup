@@ -51,4 +51,29 @@
 
         
     }
+    &--01{
+        margin-top: 6rem;
+       li{
+            &.active{
+            
+                & a{
+                    background: #707070;
+                    color: #fff;
+                }
+            }
+            a{
+                width: 3.5rem !important;
+                font-size: 1.5rem;
+                color: #040404;
+                background: #fff;
+                border: 1px solid #707070;
+                font-weight: bold;
+            }
+            &:last-child{
+                a{
+                    width: 11.7rem !important;
+                }
+            }
+       } 
+    }
 }

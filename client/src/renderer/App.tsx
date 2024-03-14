@@ -21,6 +21,7 @@ import MemberEdit from './pages/Members/MemberEdit';
 import RequireAuth from './components/RequireAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Field from './pages/From/Field';
 
 export default function App() {
   return (
@@ -63,6 +64,7 @@ export default function App() {
               <Route path="group" element={<Group />} />
               <Route path="group/edit" element={<GroupEdit />} />
               <Route path="module" element={<Module />} />
+              <Route path="field" element={<Field />} />
             </Route>
           </Route>
           <Route path="/login" element={<FluidLayout />}>
