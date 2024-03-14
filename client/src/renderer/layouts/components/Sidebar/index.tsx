@@ -105,19 +105,11 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
-<<<<<<< HEAD
             <NavLink to="/estimate">
               <span className="icn">
                 {/* <FontAwesomeIcon icon={faCalendarDays} /> */}
               </span>
               Estimate
-=======
-            <NavLink to="/field">
-              <span className="icn">
-                <FontAwesomeIcon icon={faCalendarDays} />
-              </span>
-              Field
->>>>>>> 33d1d508fe5b70159235234b7aa170534dc5ab60
             </NavLink>
           </li>
         </ul>
