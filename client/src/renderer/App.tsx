@@ -65,11 +65,8 @@ export default function App() {
               <Route path="group" element={<Group />} />
               <Route path="group/edit" element={<GroupEdit />} />
               <Route path="module" element={<Module />} />
-<<<<<<< HEAD
               <Route path="estimate" element={<Estimate />} />
-=======
               <Route path="field" element={<Field />} />
->>>>>>> 33d1d508fe5b70159235234b7aa170534dc5ab60
             </Route>
           </Route>
           <Route path="/login" element={<FluidLayout />}>

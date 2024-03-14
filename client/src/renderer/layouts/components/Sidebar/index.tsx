@@ -112,6 +112,14 @@ export const Sidebar = () => {
               Estimate
             </NavLink>
           </li>
+          <li className="nav-global__item">
+            <NavLink to="/field">
+              <span className="icn">
+                <FontAwesomeIcon icon={faCalendarDays} />
+              </span>
+              Field
+            </NavLink>
+          </li>
         </ul>
       </nav>
       <div className="acount">
