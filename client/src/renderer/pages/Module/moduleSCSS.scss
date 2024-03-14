@@ -288,3 +288,28 @@
     font-size: 1.5rem;
     color: #111;
 }
+
+.box-router{
+    margin-top: 5rem;
+    border: 5px solid #CECECE;
+    padding: 2rem;
+    box-sizing: border-box;
+
+    &__grid{
+        padding-left: 1rem;
+        padding-right: 1rem;
+        box-sizing: border-box;
+    }
+    &__name{
+        display: flex;
+        padding-left: 10rem;
+        p {
+            padding: 0 1rem;
+        }
+    }
+    &__edit{
+        text-align: right;
+    }
+
+
+}

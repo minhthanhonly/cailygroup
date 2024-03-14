@@ -7,6 +7,7 @@ import ButtonSave from '../Button/ButtonSave';
 import ButtonExport from '../Button/ButtonExport';
 import ButtonDelete from '../Button/ButtonDelete';
 import MonthYearSelector from './SelectMonthYears';
+import './Table.scss'
 
 interface TableRowProps {
   rowData: {

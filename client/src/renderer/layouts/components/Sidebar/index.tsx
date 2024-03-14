@@ -109,6 +109,22 @@ export const Sidebar = () => {
               申請状況
             </NavLink>
           </li>
+          <li className="nav-global__item">
+            <NavLink to="/estimate">
+              <span className="icn">
+                {/* <FontAwesomeIcon icon={faCalendarDays} /> */}
+              </span>
+              Estimate
+            </NavLink>
+          </li>
+          <li className="nav-global__item">
+            <NavLink to="/field">
+              <span className="icn">
+                <FontAwesomeIcon icon={faCalendarDays} />
+              </span>
+              Field
+            </NavLink>
+          </li>
         </ul>
       </nav>
       <div className="acount">

@@ -13,6 +13,7 @@ import { Group } from './pages/Group';
 import { GroupEdit } from './pages/Group/GroupEdit';
 import { Module } from './pages/Module';
 import {Application} from './pages/Application';
+import { Estimate } from './pages/Estimate';
 import Login from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
 import FluidLayout from './layouts/FluidLayout/FluidLayout';
@@ -22,6 +23,7 @@ import MemberEdit from './pages/Members/MemberEdit';
 import RequireAuth from './components/RequireAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Field from './pages/From/Field';
 
 export default function App() {
   return (
@@ -65,6 +67,8 @@ export default function App() {
               <Route path="group/edit" element={<GroupEdit />} />
               <Route path="module" element={<Module />} />
               <Route path="application" element={<Application />} />
+              <Route path="estimate" element={<Estimate />} />
+              <Route path="field" element={<Field />} />
             </Route>
           </Route>
           <Route path="/login" element={<FluidLayout />}>

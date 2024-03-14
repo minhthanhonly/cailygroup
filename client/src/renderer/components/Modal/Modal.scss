@@ -7,6 +7,29 @@
   text-align: center;
   z-index: 999;
   color: #000;
+  &-field{
+    text-align: left;
+    .text{
+      &-required{
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: 2rem;
+        input{
+          margin-left: 2rem;
+        }
+      }
+      &-small{
+        font-style: italic;
+      }
+    }
+    th{
+      padding-top: 1rem;
+    }
+    td{
+      padding-bottom: 2rem;
+    }
+  }
   &-content {
     width: 90rem;
     background-color: #fff;

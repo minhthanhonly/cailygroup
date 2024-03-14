@@ -11,7 +11,7 @@ export const Heading2 = (props : attr) => {
         <h2 className="hdglv2"><span>{text_title}</span></h2>
     );
 };
-export const HeadingLV2 = (props : attr) => {
+export const HeadingLv2 = (props : attr) => {
 
     let text_title = props.text;
     return (
