@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import Modal from '../../components/Modal/Modal';
+import React from 'react';
 
 const Field = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [fields, setFields] = useState('');
-  const [required, setRequired] = useState(false);
+  const [required, setRequired] = useState(true);
   const [fieldType, setFieldType] = useState('');
-
   const [inputValues, setInputValues] = useState({
     formName: '',
     fieldLable: '',
@@ -31,8 +31,28 @@ const Field = () => {
     setModalOpen(false);
   };
   const hadleSubmit = () => {
-    console.log(inputValues);
-    const form = '';
+    const form = {
+      formName: inputValues.formName,
+      required: required,
+      fieldLable: inputValues.fieldLable,
+      fieldType: fieldType,
+      fieldName: inputValues.fieldName,
+    };
+  };
+  const handleFieldType = (event: any) => {
+    setFieldType(event.target.value);
+  };
+
+  const [checkboxes, setCheckboxes] = useState([0]);
+
+  const handleAddCheckbox = () => {
+    const newCheckboxes = [...checkboxes, checkboxes.length];
+    setCheckboxes(newCheckboxes);
+  };
+
+  const handleAddGroupCheckbox = () => {
+    const newCheckboxes = [...Array(checkboxes.length + 1).keys()];
+    setCheckboxes(newCheckboxes);
   };
   return (
     <div className="field">
@@ -100,7 +120,7 @@ const Field = () => {
                   </p>
                 </th>
                 <td>
-                  <select className="form-input">
+                  <select className="form-input" onChange={handleFieldType}>
                     <option value="text">text</option>
                     <option value="text-area">text area</option>
                     <option value="hour">hour</option>
@@ -112,6 +132,26 @@ const Field = () => {
                     </option>
                     <option value="checkbox">checkbox</option>
                   </select>
+                  {fieldType == 'checkbox' ? (
+                    <>
+                      {checkboxes.map((checkbox, index) => (
+                        <div key={index}>
+                          <input type="checkbox" />
+                          <input type="text" placeholder="name checkbox" />
+                          {index === checkboxes.length - 1 && (
+                            <button className="btn" onClick={handleAddCheckbox}>
+                              Thêm checkbox
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                      <button className="btn" onClick={handleAddGroupCheckbox}>
+                        mutiple group checkbox
+                      </button>
+                    </>
+                  ) : (
+                    ''
+                  )}
                 </td>
               </tr>
               <tr>
