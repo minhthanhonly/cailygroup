@@ -497,7 +497,6 @@ export const Module = () => {
 							<tr>
 								<th className='rowspan'>合計（税込）</th>
 								<td colSpan={2}>0</td>
-
 							</tr>
 						</tbody>
 					</table>
