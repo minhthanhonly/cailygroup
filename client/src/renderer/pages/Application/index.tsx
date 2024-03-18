@@ -4,6 +4,10 @@ import {AccordionComponent} from '../../components/AccordionComponent'
 
 export const Application = () => {
     const [activeTab, setActiveTab] = useState(0);
+    const toggleAccordion = () => {
+        // Định nghĩa hàm toggleAccordion ở đây
+        setIsOpen(!isOpen);
+    };
     
     const handleTabClick = (index, event) => {
         event.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ a

@@ -8,9 +8,6 @@ const AccordionItem = ({ title, subtitle, content: initialContent }) => {
     const toggleAccordion = () => {
       setIsOpen(!isOpen);
     };
-    const handleContentChange = (event) => {
-      setContent(event.target.value);
-    };
   
     return (
       <div className='list-accordion__parent'>
