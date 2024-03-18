@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { Heading2 } from '../../components/Heading';
 import {AccordionComponent} from '../../components/AccordionComponent'
-
+import editIcon from '../../../../assets/icn-edit.png';
+import closeIcon from '../../../../assets/icn-close.png';
 export const Application = () => {
     const [activeTab, setActiveTab] = useState(0);
-    const toggleAccordion = () => {
-        // Định nghĩa hàm toggleAccordion ở đây
-        setIsOpen(!isOpen);
-    };
+    
     
     const handleTabClick = (index, event) => {
         event.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ a
@@ -22,7 +20,7 @@ export const Application = () => {
                 <p className='txt-lead'>自分が行った申請の一覧です。</p>
                 <div className='box-tab'>
                     <div className='tab01 tab-head'>
-                        {['進行中', 'すべて', '差し戻し', '却下', '完了', '下書き', '取り消し'].map((label, index) => (
+                        {['進行中(5)', 'すべて(4)', '差し戻し(2)', '却下(1)', '完了(0)', '下書き(3)', '取り消し(3)'].map((label, index) => (
                             <div key={index} className={`tab-head__item ${index === activeTab ? 'is-active' : ''}`}>
                                 <a href="#" onClick={(event) => handleTabClick(index, event)}><span>{label}</span></a>
                             </div>
@@ -38,6 +36,9 @@ export const Application = () => {
                                         {
                                             title: '【申請書名が入ります】', 
                                             subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                            approveText: '承認待ち',
+                                            editIcon: editIcon,
+                                            closeIcon: closeIcon,
                                             content: (
                                                 <div>
                                                     <div className='box-register'>
@@ -150,6 +151,9 @@ export const Application = () => {
                                         { 
                                             title: '【申請書名が入ります】', 
                                             subtitle: '髙崎　亜生（2024/01/01　14:00）', 
+                                            approveText: '差し戻し',
+                                            editIcon: editIcon,
+                                            closeIcon: closeIcon,
                                             content: (
                                                 <div>
                                                     <div className='box-register'>
@@ -262,6 +266,9 @@ export const Application = () => {
                                         { 
                                             title: '【申請書名が入ります】', 
                                             subtitle: '髙崎　亜生（2024/01/01　14:00）', 
+                                            approveText: '下書き',
+                                            editIcon: editIcon,
+                                            closeIcon: closeIcon,
                                             content: (
                                                 <div>
                                                     <div className='box-register'>
@@ -383,6 +390,9 @@ export const Application = () => {
                                     {
                                         title: '【申請書名が入ります】', 
                                         subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                        approveText: '差し戻し',
+                                        editIcon: editIcon,
+                                        closeIcon: closeIcon,
                                         content: (
                                             <div>
                                                 <div className='box-register'>
@@ -504,6 +514,9 @@ export const Application = () => {
                                         {
                                             title: '【申請書名が入ります】', 
                                             subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                            approveText: '差し戻し',
+                                            editIcon: editIcon,
+                                            closeIcon: closeIcon,
                                             content: (
                                                 <div>
                                                     <div className='box-register'>
@@ -616,6 +629,9 @@ export const Application = () => {
                                         {
                                             title: '【申請書名が入ります】', 
                                             subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                            approveText: '下書き',
+                                            editIcon: editIcon,
+                                            closeIcon: closeIcon,
                                             content: (
                                                 <div>
                                                     <div className='box-register'>
@@ -737,6 +753,9 @@ export const Application = () => {
                                         {
                                             title: '【申請書名が入ります】', 
                                             subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                            approveText: '却下',
+                                            editIcon: editIcon,
+                                            closeIcon: closeIcon,
                                             content: (
                                                 <div>
                                                     <div className='box-register'>
@@ -858,6 +877,9 @@ export const Application = () => {
                                     {
                                         title: '【申請書名が入ります】', 
                                         subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                        approveText: '差し戻し',
+                                        editIcon: editIcon,
+                                        closeIcon: closeIcon,
                                         content: (
                                             <div>
                                                 <div className='box-register'>
@@ -970,6 +992,9 @@ export const Application = () => {
                                     {
                                         title: '【申請書名が入ります】', 
                                         subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                        approveText: '差し戻し',
+                                        editIcon: editIcon,
+                                        closeIcon: closeIcon,
                                         content: (
                                             <div>
                                                 <div className='box-register'>
@@ -1091,6 +1116,9 @@ export const Application = () => {
                                         {
                                             title: '【申請書名が入ります】', 
                                             subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                            approveText: '差し戻し',
+                                            editIcon: editIcon,
+                                            closeIcon: closeIcon,
                                             content: (
                                                 <div>
                                                     <div className='box-register'>
@@ -1212,6 +1240,9 @@ export const Application = () => {
                                         {
                                             title: '【申請書名が入ります】', 
                                             subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                            approveText: '差し戻し',
+                                            editIcon: editIcon,
+                                            closeIcon: closeIcon,
                                             content: (
                                                 <div>
                                                     <div className='box-register'>
@@ -1324,6 +1355,9 @@ export const Application = () => {
                                         {
                                             title: '【申請書名が入ります】', 
                                             subtitle: '髙崎　亜生（2024/01/01　14:00）',
+                                            approveText: '差し戻し',
+                                            editIcon: editIcon,
+                                            closeIcon: closeIcon,
                                             content: (
                                                 <div>
                                                     <div className='box-register'>
