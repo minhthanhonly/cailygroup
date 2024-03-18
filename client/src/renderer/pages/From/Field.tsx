@@ -1,6 +1,14 @@
-import { ReactElement, useState } from 'react';
+import {
+  ReactElement,
+  RefObject,
+  createRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import Modal from '../../components/Modal/Modal';
 import React from 'react';
+import './field.scss';
 
 const Field = () => {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -12,7 +20,6 @@ const Field = () => {
     fieldLable: '',
     fieldName: '',
   });
-
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     setInputValues({
@@ -30,30 +37,152 @@ const Field = () => {
   const closeModal = () => {
     setModalOpen(false);
   };
-  const hadleSubmit = () => {
-    const form = {
-      formName: inputValues.formName,
-      required: required,
-      fieldLable: inputValues.fieldLable,
-      fieldType: fieldType,
-      fieldName: inputValues.fieldName,
-    };
-  };
   const handleFieldType = (event: any) => {
     setFieldType(event.target.value);
   };
 
-  const [checkboxes, setCheckboxes] = useState([0]);
+  const [items, setItems] = useState([
+    <div className="item-group" key={0}>
+      <div className="item-title">
+        <p className="text-error">name group</p>
+        <input className="form-input" placeholder="title group checkbox" />
+        <button className="btn btn--red" onClick={() => handleRemoveGroup(0)}>
+          X
+        </button>
+      </div>
+      <div className="item">
+        <input type="checkbox" />
+        <input type="text" placeholder="name checkbox" />
+      </div>
+      <div className="wrp-button">
+        <button
+          className="btn btn--small btn--blue"
+          onClick={() => handleAddCheckbox(0)}
+        >
+          Add
+        </button>
+        <button
+          className="btn btn--small btn--black"
+          onClick={() => handleMinusCheckbox(0)}
+        >
+          Minus
+        </button>
+      </div>
+    </div>,
+  ]);
 
-  const handleAddCheckbox = () => {
-    const newCheckboxes = [...checkboxes, checkboxes.length];
-    setCheckboxes(newCheckboxes);
+  const inputRefs = useRef<
+    (HTMLInputElement | null | RefObject<HTMLInputElement>)[]
+  >([]);
+
+  useEffect(() => {
+    inputRefs.current = Array(items.length)
+      .fill(0)
+      .map((_, i) => inputRefs.current[i] || createRef<HTMLInputElement>());
+  }, [items]);
+
+  const handleRemoveGroup = (index: number) => {
+    setItems((prevItems) => {
+      if (prevItems.length <= 1) return prevItems; // Đảm bảo rằng luôn có ít nhất một item-group
+      const updatedItems = prevItems.filter((_, i) => i !== index); // Loại bỏ item-group tại chỉ số index
+      return updatedItems;
+    });
+  };
+
+  const handleAddCheckbox = (index: number) => {
+    setItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      const newItem = (
+        <div className="item">
+          <input type="checkbox" />
+          <input
+            type="text"
+            ref={(ref) => {
+              if (ref) inputRefs.current[index] = ref;
+            }}
+            placeholder="name checkbox"
+          />
+        </div>
+      );
+      const itemGroup = updatedItems[index];
+      const children = React.Children.toArray(itemGroup.props.children);
+      children.splice(1, 0, newItem);
+      const newGroup = React.cloneElement(itemGroup, {}, ...children);
+      updatedItems[index] = newGroup;
+      return updatedItems;
+    });
+  };
+
+  const handleMinusCheckbox = (index: number) => {
+    setItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      const itemGroup = updatedItems[index];
+      const children = React.Children.toArray(itemGroup.props.children);
+      const itemsCount = children.filter(
+        (child) =>
+          React.isValidElement(child) && child.props.className === 'item',
+      ).length;
+      if (itemsCount <= 1) return prevItems; // Nếu số lượng items <= 1, không làm gì cả
+      const lastIndex = children.findIndex(
+        (child) =>
+          React.isValidElement(child) && child.props.className === 'item',
+      );
+      if (lastIndex !== -1) {
+        children.splice(lastIndex, 1); // Loại bỏ phần tử cuối cùng có class "item"
+        const newGroup = React.cloneElement(itemGroup, {}, ...children);
+        updatedItems[index] = newGroup;
+      }
+      return updatedItems;
+    });
   };
 
   const handleAddGroupCheckbox = () => {
-    const newCheckboxes = [...Array(checkboxes.length + 1).keys()];
-    setCheckboxes(newCheckboxes);
+    setItems((prevItems) => [
+      ...prevItems,
+      <div className="item-group" key={prevItems.length}>
+        <div className="item-title">
+          <p className="text-error">name group</p>
+          <input className="form-input" placeholder="title group checkbox" />
+          <button
+            className="btn btn--red"
+            onClick={() => handleRemoveGroup(prevItems.length)}
+          >
+            X
+          </button>
+        </div>
+        <div className="item">
+          <input type="checkbox" />
+          <input type="text" placeholder="name checkbox" />
+        </div>
+        <div className="wrp-button">
+          <button
+            className="btn btn--small btn--blue"
+            onClick={() => handleAddCheckbox(prevItems.length)}
+          >
+            Add
+          </button>
+          <button
+            className="btn btn--small btn--black"
+            onClick={() => handleMinusCheckbox(prevItems.length)}
+          >
+            Minus
+          </button>
+        </div>
+      </div>,
+    ]);
   };
+  const handleSubmit = () => {
+    const checkboxValues = inputRefs.current.map((ref) => {
+      if (ref instanceof HTMLInputElement) {
+        return ref.value || '';
+      } else if (ref.current?.value) {
+        return ref.current.value || '';
+      }
+      return '';
+    });
+    console.log(checkboxValues);
+  };
+
   return (
     <div className="field">
       <h2 className="hdg-lv2">
@@ -94,7 +223,7 @@ const Field = () => {
               onChange={handleCheckboxChange}
             />
           </label>
-          <table>
+          <table className="field-table">
             <tbody>
               <tr>
                 <th>
@@ -134,19 +263,14 @@ const Field = () => {
                   </select>
                   {fieldType == 'checkbox' ? (
                     <>
-                      {checkboxes.map((checkbox, index) => (
-                        <div key={index}>
-                          <input type="checkbox" />
-                          <input type="text" placeholder="name checkbox" />
-                          {index === checkboxes.length - 1 && (
-                            <button className="btn" onClick={handleAddCheckbox}>
-                              Thêm checkbox
-                            </button>
-                          )}
-                        </div>
+                      {items.map((item, index) => (
+                        <div key={index}>{item}</div> // Render mỗi phần tử trong mảng items
                       ))}
-                      <button className="btn" onClick={handleAddGroupCheckbox}>
-                        mutiple group checkbox
+                      <button
+                        className="btn item-btn btn--green"
+                        onClick={handleAddGroupCheckbox}
+                      >
+                        Multiple group checkbox
                       </button>
                     </>
                   ) : (
@@ -176,7 +300,7 @@ const Field = () => {
             </tbody>
           </table>
           <div className="wrp-button">
-            <button className="btn" onClick={hadleSubmit}>
+            <button className="btn" onClick={handleSubmit}>
               Xác nhận
             </button>
             <button className="btn btn--orange" onClick={closeModal}>
