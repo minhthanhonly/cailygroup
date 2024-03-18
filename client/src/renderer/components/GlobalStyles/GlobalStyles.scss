@@ -2336,7 +2336,7 @@ textarea {
       width: 100%;
       &__title{
         width: 85%;
-        padding: 0 1rem;
+        padding: 0 1rem 0 2.5rem;
         box-sizing: border-box;
         &__title{
           font-size: 1.8rem;
@@ -2348,7 +2348,7 @@ textarea {
       }
       &__btn{
         width: 15%;
-        padding: 0 1rem;
+        padding: 0 2.5rem 0 1rem;
         box-sizing: border-box;
         text-align: end;
         &__btn{
@@ -2395,6 +2395,15 @@ textarea {
   .is-active{
     background: #F1EFEF;
   }
+  .open {
+    .list-accordion__item__head{
+      background: #F1EFEF;
+    }
+    .list-accordion__item__content{
+      display: block;
+    }
+  }
+  
 }
 
 .btn01{
@@ -2448,7 +2457,7 @@ textarea {
 }
 
 // box-approve
-.box-approve{
+.box-approves{
   margin-top: 0.5rem;
   padding: 2.5rem;
   box-sizing: border-box;
@@ -2532,7 +2541,7 @@ textarea {
       }
     }
     &--01{
-      .box-approve__item__title{
+      .box-approves__item__title{
         span{
           &::before{
             display: none;
@@ -2546,8 +2555,8 @@ textarea {
     box-sizing: border-box;
     li{
       &:first-child{
-        .box-approve__item{
-          .box-approve__item__title{
+        .box-approves__item{
+          .box-approves__item__title{
             span{
               &::before{
                 display: none;

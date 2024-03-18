@@ -100,30 +100,30 @@ export const Module = () => {
 																	</li>
 																</ul>
 															</div>
-															<div className='box-approve'>
-																<div className='box-approve__inner'>
-																	<p className='box-approve__headding'>承認状況</p>
+															<div className='box-approves'>
+																<div className='box-approves__inner'>
+																	<p className='box-approves__headding'>承認状況</p>
 																	<ul>
 																		<li>
-																			<div className='box-approve__item'>
-																				<div className='box-approve__item__title'>
+																			<div className='box-approves__item'>
+																				<div className='box-approves__item__title'>
 																					<span>申</span>
 																				</div>
-																				<div className='box-approve__item__content'>
-																					<p className='box-approve__item__content__text'>申請者名：申請者名が入ります（申請日時：2024/00/00　00：00：00）</p>
+																				<div className='box-approves__item__content'>
+																					<p className='box-approves__item__content__text'>申請者名：申請者名が入ります（申請日時：2024/00/00　00：00：00）</p>
 																				</div>
 																			</div>
 																		</li>
 																		<li>
-																			<div className='box-approve__item'>
-																				<div className='box-approve__item__title'>
+																			<div className='box-approves__item'>
+																				<div className='box-approves__item__title'>
 																					<span className='active'>1</span>
 																				</div>
-																				<div className='box-approve__item__content'>
-																					<p className='box-approve__item__content__text'>承認者名：承認者名が入ります</p>
+																				<div className='box-approves__item__content'>
+																					<p className='box-approves__item__content__text'>承認者名：承認者名が入ります</p>
 																					<textarea rows="4" cols="50">コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
 																					<textarea rows="4" cols="50">コメントを入力（任意1000文字以内）</textarea>
-																					<p className='box-approve__item__content__btn'>
+																					<p className='box-approves__item__content__btn'>
 																						<span><a href="#" className='btncomment btn02'>コメントする</a></span>
 																						<span><a href="#" className='btnapprove btn02'>承認する</a></span>
 																						<span><a href="#" className='btnremand btn02'>差し戻す</a></span>
@@ -139,36 +139,36 @@ export const Module = () => {
 																			</div>
 																		</li>
 																		<li>
-																			<div className='box-approve__item'>
-																				<div className='box-approve__item__title'>
+																			<div className='box-approves__item'>
+																				<div className='box-approves__item__title'>
 																					<span>未</span>
 																				</div>
 																			</div>
 																		</li>
 																		<li>
-																			<div className='box-approve__item box-approve__item--01'>
-																				<div className='box-approve__item__title'>
+																			<div className='box-approves__item box-approves__item--01'>
+																				<div className='box-approves__item__title'>
 																					<span className='bg-blue01 color-white'>完</span>
 																				</div>
 																			</div>
 																		</li>
 																		<li>
-																			<div className='box-approve__item box-approve__item--01'>
-																				<div className='box-approve__item__title'>
+																			<div className='box-approves__item box-approves__item--01'>
+																				<div className='box-approves__item__title'>
 																					<span className='bg-red01 color-white'>却</span>
 																				</div>
 																			</div>
 																		</li>
 																		<li>
-																			<div className='box-approve__item box-approve__item--01'>
-																				<div className='box-approve__item__title'>
+																			<div className='box-approves__item box-approves__item--01'>
+																				<div className='box-approves__item__title'>
 																					<span className='bg-blue01 color-white'>下</span>
 																				</div>
 																			</div>
 																		</li>
 																		<li>
-																			<div className='box-approve__item box-approve__item--01'>
-																				<div className='box-approve__item__title'>
+																			<div className='box-approves__item box-approves__item--01'>
+																				<div className='box-approves__item__title'>
 																					<span className='bg-blue01 color-white'>消</span>
 																				</div>
 																			</div>
