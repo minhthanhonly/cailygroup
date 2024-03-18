@@ -1,6 +1,50 @@
 
 
+import React, { useEffect, useState } from 'react';
+import DatePicker from 'react-multi-date-picker';
+
+
 export const Estimate = () => {
+    const [date, setDate] = useState(new Date());
+    const [number, setNumber] = useState('');
+    const [rows, setRows] = useState([{ id: 0, number: '' }]);
+    const [total, setTotal] = useState(0);
+
+    const handleLeaveDateChange = () => {
+        const newRows = [...rows];
+        setRows(newRows);
+    };
+    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const inputValue = event.target.value;
+        const sanitizedValue = inputValue.replace(/,/g, '');
+        const newValue = parseInt(sanitizedValue, 10);
+        const newRows = [...rows];
+        newRows[index].number = isNaN(newValue) ? '' : newValue.toLocaleString();
+        setRows(newRows);
+    };
+
+    // thêm 
+    const addRow = () => {
+        const newRow = { id: rows.length, number: '' };
+        setRows([...rows, newRow]);
+    };
+
+
+    useEffect(() => {
+        calculateTotal();
+    }, [rows]);
+
+    const calculateTotal = () => {
+        let total = 0;
+        rows.forEach(row => {
+            const number = parseInt(row.number.replace(/,/g, ''), 10);
+            if (!isNaN(number)) {
+                total += number;
+            }
+        });
+        setTotal(total);
+    };
+
     return (
         <>
             <h2 className="hdglv2"><span>交通費清算書</span></h2>
@@ -22,19 +66,23 @@ export const Estimate = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><input type="text" /></td>
-                                <td><input type="text" /></td>
-                                <td><input type="text" /></td>
-                                <td><input type="text" /></td>
-                                <td><input type="text" /></td>
-                                <td><input type="text" /></td>
-                                <td><input type="text" /></td>
-                            </tr>
+                            {rows.map((row, index) => (
+                                <tr key={row.id}>
+                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="DD-MM" />
+                                    </td>
+                                    <td><input type="text" placeholder='入力してください' /></td>
+                                    <td><input type="text" placeholder='入力してください' /></td>
+                                    <td><input type="text" placeholder='入力してください' /></td>
+                                    <td><input type="text" placeholder='入力してください' /></td>
+                                    <td><input id="numberInput" type="text" value={row.number} onChange={(e) => handleNumberChange(e, index)} /></td>
+                                    <td><input type="text" placeholder='入力してください' /></td>
+                                </tr>
+                            ))}
+
 
                         </tbody>
                     </table>
-                    <a href='@' className='plus-row'> 行を追加する</a>
+                    <p onClick={addRow} className='plus-row'> 行を追加する</p>
                 </div>
 
                 <div className='tbl_custom--04 tbl_width tbl_right'>
@@ -42,7 +90,7 @@ export const Estimate = () => {
                         <tbody>
                             <tr>
                                 <th>合計金額</th>
-                                <td></td>
+                                <td>{total.toLocaleString()}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -61,7 +109,7 @@ export const Estimate = () => {
 
                 </div>
                 <div className='box-router__edit'>
-                    <p className='plus-row'>承認ルートを編集</p>
+                    <p className='plus-row box-router__edit--content'>承認ルートを編集</p>
                 </div>
             </div>
             <div className="wrp-button"><button className="btn btn--from btn--gray">下書き保存</button><button className="btn btn--from btn--blue">申請する</button></div>
