@@ -105,7 +105,7 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
-            <NavLink to="/application">
+            <NavLink to="/tabs/tab2">
               申請状況
             </NavLink>
           </li>
