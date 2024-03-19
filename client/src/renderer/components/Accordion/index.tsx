@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import ColorByStatus from '../../components/ColorByStatus';
+import ColorByStatus from '../ColorByStatus';
+import './Accordion.scss'
 
 const AccordionItem = ({ title, subtitle, content: initialContent, btnContent, approveText, editIcon, closeIcon }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +20,7 @@ const AccordionItem = ({ title, subtitle, content: initialContent, btnContent, a
             </div>
             <div className='list-accordion__item__head__btn'>
               <p className='list-accordion__item__head__btn__btn'>
-                  <a href="#" className='btn01'  style={{ backgroundColor: approveColor }}>{approveText}</a>
+                  <span className='lbl01'  style={{ backgroundColor: approveColor }}>{approveText}</span>
               </p>
               <p className='list-accordion__item__head__btn__icn'>
                 <span className='icn-item'><img src={editIcon} alt="edit" className="fluid-image"/></span>
@@ -42,7 +43,7 @@ const AccordionItem = ({ title, subtitle, content: initialContent, btnContent, a
     );
 };
 
-export const AccordionComponent  = ({ items}) => {
+export const Accordion  = ({ items}) => {
     
     return (
       <div className='list-accordion'>

@@ -1,10 +1,9 @@
 import React from 'react';
 import NavForm from '../../layouts/components/Nav/NavForm';
 import { Heading2 } from '../../components/Heading';
-import {AccordionComponent} from '../../components/AccordionComponent'
+import {Accordion} from '../Accordion'
 import editIcon from '../../../../assets/icn-edit.png';
 import closeIcon from '../../../../assets/icn-close.png';
-//import ColorByStatus from '../../components/ColorByStatus';
 
 export  const Tab1Content = () => {
   return (
@@ -16,7 +15,7 @@ export  const Tab1Content = () => {
           <NavForm />
           <div className="tab01 tab-content">
               <div>
-                <AccordionComponent items=
+                <Accordion items=
                 {
                     [
                         {
@@ -85,10 +84,10 @@ export  const Tab1Content = () => {
                                                                 <span><a href="#" className='btndismiss btn02'>却下する</a></span>
                                                             </p>
                                                             <p className='list-btn'>
-                                                                <span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>差し戻し</a></span>
-                                                                <span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>却下</a></span>
-                                                                <span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>承認待ち</a></span>
-                                                                <span className='list-btn__item'><a href="#" className='btn01 color-blue01 boder-blue01'>承認済み</a></span>
+                                                                <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>差し戻し</a></span>
+                                                                <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>却下</a></span>
+                                                                <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>承認待ち</a></span>
+                                                                <span className='list-btn__item'><a href="#" className='lbl01 color-blue01 boder-blue01'>承認済み</a></span>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -200,10 +199,10 @@ export  const Tab1Content = () => {
                                                                 <span><a href="#" className='btndismiss btn02'>却下する</a></span>
                                                             </p>
                                                             <p className='list-btn'>
-                                                                <span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>差し戻し</a></span>
-                                                                <span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>却下</a></span>
-                                                                <span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>承認待ち</a></span>
-                                                                <span className='list-btn__item'><a href="#" className='btn01 color-blue01 boder-blue01'>承認済み</a></span>
+                                                                <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>差し戻し</a></span>
+                                                                <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>却下</a></span>
+                                                                <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>承認待ち</a></span>
+                                                                <span className='list-btn__item'><a href="#" className='lbl01 color-blue01 boder-blue01'>承認済み</a></span>
                                                             </p>
                                                         </div>
                                                     </div>
