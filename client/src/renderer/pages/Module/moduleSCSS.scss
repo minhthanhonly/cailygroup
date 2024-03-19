@@ -68,11 +68,11 @@
             border: 1px solid #9C9C9C;
         }
         
-    }
-    .input_noboder {
-        border: none;
-        width: auto;
-        margin-top: 0;
+        & .input_noboder {
+            border: none;
+            width: auto;
+            margin-top: 0;
+        }
     }
 
     .w100 {
@@ -317,4 +317,21 @@
     }
 
 
+}
+.rmdp-input {
+    height: 4.7rem;
+}
+.price{
+    display: inline-block;
+    width: 100px;
+}
+.tb-from--checkbox {
+
+    &__date span{
+        width: auto;
+        height: auto;
+        border: none;
+        margin-right: 0;
+    }
+   
 }
