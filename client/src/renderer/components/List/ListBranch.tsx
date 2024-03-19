@@ -8,6 +8,13 @@ interface ListBranchProps {
   }[];
 }
 
+interface ListTabProps {
+  tab: {
+    text: string;
+    to: string;
+  }[];
+}
+
 const ListBranch: React.FC<ListBranchProps> = ({ branch }) => {
   // const [activeTab, setActiveTab] = useState<number>(() => {
   //   const storedTab = localStorage.getItem('activeTab');
@@ -36,3 +43,16 @@ const ListBranch: React.FC<ListBranchProps> = ({ branch }) => {
 };
 
 export default ListBranch;
+
+export const ListTabs:React.FC<ListTabProps> = ({ tab }) => {
+
+  return (
+    <div className='tab01 tab-head'>
+      {tab.map((item, index) => (
+        <div key={index}>
+          <NavLink to={item.to}>{item.text}</NavLink>
+        </div>
+      ))}
+    </div>
+  );
+};

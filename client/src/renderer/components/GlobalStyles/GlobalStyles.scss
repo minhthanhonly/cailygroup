@@ -2275,6 +2275,48 @@ textarea {
 // box-tab
 .box-tab{
   margin-top: 7rem;
+  .lst-branch{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #707070;
+    margin-bottom: 0;
+    li{
+      padding: 1rem 0;
+      box-sizing: border-box;
+      margin-right: 2rem;
+      border-top: 1px solid #707070;
+      border-left: 1px solid #707070;
+      border-right: 1px solid hsl(0, 0%, 44%);
+      width: 13.1rem;
+      text-align: center;
+      a{
+        color: #111;
+        display: block;
+        font-size: 1.6rem;
+        font-weight: normal;
+        padding: 0;
+      }
+      
+    }
+    .active{
+      position: relative;
+      padding: 0 0.3rem;
+      box-sizing: border-box;
+      &::before{
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        left: 0;
+        right: 0;
+        bottom: -1.1rem;
+        background-color:var(--white)
+      }
+      &:hover{
+        opacity: 100%;
+      }
+    }
+  }
   .tab-head{
     display: flex;
     align-items: center;
@@ -2294,19 +2336,19 @@ textarea {
         font-size: 1.8rem;
       }
     }
-    .is-active{
-      position: relative;
-      &::before{
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 1px;
-        left: 0;
-        right: 0;
-        bottom: -1px;
-        background-color:var(--white)
-      }
-    }
+    // .is-active{
+    //   position: relative;
+    //   &::before{
+    //     content: "";
+    //     position: absolute;
+    //     width: 100%;
+    //     height: 1px;
+    //     left: 0;
+    //     right: 0;
+    //     bottom: -1px;
+    //     background-color:var(--white)
+    //   }
+    // }
   }
   .tab-content{
     margin-top: 2rem;
@@ -2409,7 +2451,8 @@ textarea {
 .btn01{
   width: 9.5rem;
   border-radius: 5rem;
-  background-color: #D6E8F8;
+  // background-color: #D6E8F8;
+  background-color: #fff;
   color: #000;
   font-size: 1.5rem;
   padding: 0.3rem 0.5rem;
