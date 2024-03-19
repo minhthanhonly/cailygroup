@@ -12,8 +12,12 @@ import { DayoffApply } from './pages/Dayoff/DayoffApply';
 import { Group } from './pages/Group';
 import { GroupEdit } from './pages/Group/GroupEdit';
 import { Module } from './pages/Module';
-import {Application} from './pages/Application';
+import { Application } from './pages/Application';
 import { Estimate } from './pages/Estimate';
+import { TravelExpenses } from './pages/Estimate/TravelExpenses';
+import { ExpenseReport } from './pages/Estimate/ExpenseReport';
+import { PriceBusinessReport } from './pages/Estimate/PriceBusinessReport';
+import { TravelAllowance } from './pages/Estimate/TravelAllowance';
 import Login from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
 import FluidLayout from './layouts/FluidLayout/FluidLayout';
@@ -74,7 +78,14 @@ export default function App() {
               <Route path="group/edit" element={<GroupEdit />} />
               <Route path="module" element={<Module />} />
               <Route path="application" element={<Application />} />
+              {/* Khu cua thịnh */}
               <Route path="estimate" element={<Estimate />} />
+              <Route path="/TravelExpenses" element={<TravelExpenses />} />
+              <Route path="/ExpenseReport" element={<ExpenseReport />} />
+              <Route path="/PriceBusinessReport" element={<PriceBusinessReport />} />
+              <Route path="/TravelAllowance" element={<TravelAllowance />} />
+              {/* Khu cua thịnh */}
+
               <Route path="field" element={<Field />} />
 
 

@@ -339,10 +339,10 @@ export const Module = () => {
 						</div>
 					</div>
 				</div>
-				<ul class="list-page list-page--01">
-					<li class="active"><a href="#">1</a></li>
-					<li class=""><a href="#">2</a></li>
-					<li class=""><a href="#">3</a></li>
+				<ul className="list-page list-page--01">
+					<li className="active"><a href="#">1</a></li>
+					<li className=""><a href="#">2</a></li>
+					<li className=""><a href="#">3</a></li>
 					<li><a href="#">最後のページ</a></li>
 				</ul>
 			</div>
@@ -483,6 +483,23 @@ export const Module = () => {
 						</tbody>
 					</table>
 					<a href='@' className='plus-row'> 行を追加する</a>
+				</div>
+
+
+				<div className='tbl_custom--04 table_custom'>
+					<table>
+						<tbody>
+							<tr>
+								<th className='rowspan'>小計</th>
+								<td>0</td>
+								<td>0</td>
+							</tr>
+							<tr>
+								<th className='rowspan'>合計（税込）</th>
+								<td colSpan={2}>0</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 
