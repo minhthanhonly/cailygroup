@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import ColorByStatus from '../../components/ColorByStatus';
 
 const AccordionItem = ({ title, subtitle, content: initialContent, btnContent, approveText, editIcon, closeIcon }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -7,22 +7,22 @@ const AccordionItem = ({ title, subtitle, content: initialContent, btnContent, a
 
     const toggleAccordion = () => {
       setIsOpen(!isOpen);
-  };
-  
+    };
+    const approveColor = approveText ? ColorByStatus(approveText) : '#fff';
     return (
       <div className='list-accordion__parent'>
         <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
-          <div className='list-accordion__item__head'>
+          <div className='list-accordion__item__head' onClick={toggleAccordion}>
             <div className='list-accordion__item__head__title'>
               <p className='list-accordion__item__head__title__title'>{title}</p>
               <span className='list-accordion__item__head__title__subtitle'>{subtitle}</span>
             </div>
             <div className='list-accordion__item__head__btn'>
               <p className='list-accordion__item__head__btn__btn'>
-                <a href="#" className='btn01'>{approveText}</a>
+                  <a href="#" className='btn01'  style={{ backgroundColor: approveColor }}>{approveText}</a>
               </p>
               <p className='list-accordion__item__head__btn__icn'>
-                <span className='icn-item'  onClick={toggleAccordion}><img src={editIcon} alt="edit" className="fluid-image"/></span>
+                <span className='icn-item'><img src={editIcon} alt="edit" className="fluid-image"/></span>
                 <span className='icn-item'><img src={closeIcon} alt="close" className="fluid-image" /></span>
               </p>
                {btnContent}
