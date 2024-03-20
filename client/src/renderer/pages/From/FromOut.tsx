@@ -1,26 +1,51 @@
-import { BoxApprove } from "../../components/Box/Box";
-import { ButtonBack } from "../../components/Button/ButtonBack";
-import { HeadingLv2 } from "../../components/Heading";
-import { TableFrom } from "../../components/Table/Table";
-import { TextLead, TextRight } from "../../components/TextGroup";
+import { ChangeEvent, ReactElement, useState } from 'react';
+import { BoxApprove } from '../../components/Box/Box';
+import { ButtonBack } from '../../components/Button/ButtonBack';
+import { HeadingLv2 } from '../../components/Heading';
+import { TableFrom } from '../../components/Table/Table';
+import { TextLead, TextRight } from '../../components/TextGroup';
 
 export const FromOut = () => {
-    return (
-      <>
-        <HeadingLv2 text='外出申請書' />
-        <TextLead text="下記の通り申請致します。" />
-        <TableFrom customProp="fromOut" />
-        <TextRight text="※1週間前までに提出して下さい。" />
-        <BoxApprove />
-        <div className="wrp-button">
-            <button className="btn btn--from btn--gray" >
-            下書き保存
-            </button>
-            <button className="btn btn--from btn--blue" >
-            申請する
-            </button>
-        </div>
-        <ButtonBack />
-      </>
-    );
+  const [inputs, setInputs] = useState<ReactElement[]>([]);
+  const [inputValues, setInputValues] = useState<string[]>([]);
+
+  const handleCreateInput = () => {
+    const newInputs = [
+      ...inputs,
+      <input
+        key={inputs.length}
+        type="text"
+        onChange={(e) => handleInputChanges(e, inputs.length)}
+      />,
+    ];
+    setInputs(newInputs);
   };
+
+  const handleInputChanges = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    // Định kiểu cho event và index
+    const newInputValues = [...inputValues];
+    newInputValues[index] = e.target.value;
+    setInputValues(newInputValues);
+  };
+
+  const handleLogValues = () => {
+    console.log(inputValues);
+  };
+  return (
+    <>
+      <button className="btn a" onClick={handleCreateInput}>
+        Click để tạo input
+      </button>
+      <button className="b" onClick={handleLogValues}>
+        Log giá trị của các input
+      </button>
+      {/* Hiển thị các input được tạo ra */}
+      {inputs.map((input, index) => (
+        <div key={index}>{input}</div>
+      ))}
+    </>
+  );
+};
