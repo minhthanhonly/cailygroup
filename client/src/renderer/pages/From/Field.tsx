@@ -8,7 +8,7 @@ const Field = () => {
   const [required, setRequired] = useState(true);
   const [fieldType, setFieldType] = useState('');
   interface Form {
-    checkbox: Record<string, { title: string; items: string[] }>;
+    checkbox_group: Record<string, { title: string; items: string[] }>;
   }
 
   const [forms, setForms] = useState<Form[]>([]);
@@ -37,15 +37,18 @@ const Field = () => {
 
   const closeModal = () => {
     setModalOpen(false);
+    setErr(0);
+    setInputValues((prevState) => ({
+      ...prevState,
+      fieldLable: '',
+      fieldName: '',
+    }));
     const elements = document.getElementsByClassName('field-content');
     for (let i = 0; i < elements.length; i++) {
       elements[i].innerHTML = '';
     }
-
-    setFieldType('text');
   };
 
-  const handleInputCheckChange = () => {};
   const [items, setItems] = useState([
     {
       id: 0,
@@ -56,7 +59,6 @@ const Field = () => {
             <input
               className="form-input input-title"
               placeholder="title group checkbox"
-              onChange={handleInputCheckChange}
             />
             <button
               className="btn btn--red"
@@ -70,7 +72,6 @@ const Field = () => {
               className="input-checkbox"
               type="text"
               placeholder="name checkbox"
-              onChange={handleInputCheckChange}
             />
           </div>
           <div className="wrp-button">
@@ -125,7 +126,6 @@ const Field = () => {
             }}
             className="input-checkbox"
             placeholder="name checkbox"
-            onChange={handleInputCheckChange}
           />
         </div>
       );
@@ -173,7 +173,6 @@ const Field = () => {
               <input
                 className="form-input input-title"
                 placeholder="title group checkbox"
-                onChange={handleInputCheckChange}
               />
               <button
                 className="btn btn--red"
@@ -187,7 +186,6 @@ const Field = () => {
                 className="input-checkbox"
                 type="text"
                 placeholder="name checkbox"
-                onChange={handleInputCheckChange}
               />
             </div>
             <div className="wrp-button">
@@ -213,7 +211,7 @@ const Field = () => {
   const handleSubmit = () => {
     if (inputValues.fieldLable && inputValues.fieldName) {
       setErr(0);
-      if (fieldType == 'checkbox') {
+      if (fieldType == 'checkbox-group') {
         let groups = document.getElementsByClassName('item-group');
         let title = document.getElementsByClassName('input-title');
 
@@ -239,7 +237,7 @@ const Field = () => {
         }
 
         let dataWithCheckbox = {
-          checkbox: checkboxData,
+          checkbox_group: checkboxData,
         };
         console.log(inputValues.fieldLable, inputValues.fieldName);
         console.log(JSON.stringify(dataWithCheckbox));
@@ -310,7 +308,9 @@ const Field = () => {
             <tbody>
               <tr>
                 <th>
-                  <p>Field Label</p>
+                  <p>
+                    Field Label <span className="text-error">(* required)</span>
+                  </p>
                 </th>
                 <td>
                   <input
@@ -341,18 +341,23 @@ const Field = () => {
                 <td>
                   <select className="form-input" onChange={handleFieldType}>
                     <option value="text">text</option>
-                    <option value="text-area">text area</option>
-                    <option value="hour">hour</option>
-                    <option value="range-hour">range hour</option>
-                    <option value="date">date</option>
-                    <option value="range-date">range date</option>
-                    <option value="range-date-number">
-                      range date and number of days
-                    </option>
+                    <option value="note">note</option>
+                    <option value="input-text">input text</option>
                     <option value="checkbox">checkbox</option>
+                    <option value="checkbox-group">checkbox group</option>
+                    <option value="radio">radio</option>
+                    <option value="radio-group">radio group</option>
+                    <option value="text-area">text area</option>
+                    <option value="input-date">input date</option>
+                    <option value="date">date (form ~ to)</option>
+                    <option value="date-day">
+                      date (form ~ to) and number days
+                    </option>
                   </select>
                   <div className="field-content">
-                    {fieldType == 'checkbox' ? (
+                    {/* {fieldType == 'text' || fieldType == 'note' || fieldType == 'input-text' ? <><input type="text" placeholder='' /></> : ''} */}
+                    {fieldType == 'checkbox' ? '' : ''}
+                    {fieldType == 'checkbox-group' ? (
                       <>
                         {items.map((item) => (
                           <React.Fragment key={item.id}>
