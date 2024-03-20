@@ -28,6 +28,13 @@ import RequireAuth from './components/RequireAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Field from './pages/From/Field';
+import { Tab1Content } from './components/Tabs/Tab1Content';
+import { Tab2Content } from './components/Tabs/Tab2Content';
+import {Tab3Content} from './components/Tabs/Tab3Content';
+import {Tab4Content} from './components/Tabs/Tab4Content';
+import { Tab5Content } from './components/Tabs/Tab5Content';
+import { Tab6Content } from './components/Tabs/Tab6Content';
+import {Tab7Content} from './components/Tabs/Tab7Content';
 
 export default function App() {
   return (
@@ -80,6 +87,15 @@ export default function App() {
               {/* Khu cua thịnh */}
 
               <Route path="field" element={<Field />} />
+
+
+              <Route path="tabs/tab1" element={<Tab1Content />} />
+              <Route path="tabs/tab2" element={<Tab2Content />} />
+              <Route path="tabs/tab3" element={<Tab3Content />} />
+              <Route path="tabs/tab4" element={<Tab4Content />} />
+              <Route path="tabs/tab5" element={<Tab5Content />} />
+              <Route path="tabs/tab6" element={<Tab6Content />} />
+              <Route path="tabs/tab7" element={<Tab7Content />} />
             </Route>
           </Route>
           <Route path="/login" element={<FluidLayout />}>

@@ -53,7 +53,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<a href="#" className='btn01'>承認する</a>
+															<span className='lbl01'>承認する</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -130,10 +130,10 @@ export const Module = () => {
 																						<span><a href="#" className='btndismiss btn02'>却下する</a></span>
 																					</p>
 																					<p className='list-btn'>
-																						<span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>差し戻し</a></span>
-																						<span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>却下</a></span>
-																						<span className='list-btn__item'><a href="#" className='btn01 color-read01 boder-read01'>承認待ち</a></span>
-																						<span className='list-btn__item'><a href="#" className='btn01 color-blue01 boder-blue01'>承認済み</a></span>
+																						<span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>差し戻し</a></span>
+																						<span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>却下</a></span>
+																						<span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>承認待ち</a></span>
+																						<span className='list-btn__item'><a href="#" className='lbl01 color-blue01 boder-blue01'>承認済み</a></span>
 																					</p>
 																				</div>
 																			</div>
@@ -190,7 +190,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<a href="#" className='bg-yellow01 btn01'>差し戻し</a>
+															<span  className='bg-yellow01 lbl01'>差し戻し</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -217,7 +217,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<a href="#" className='bg-grey01 btn01'>下書き</a>
+															<span  className='bg-grey01 lbl01'>下書き</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -244,7 +244,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<a href="#" className='bg-pink01 btn01'>却下</a>
+															<span className='bg-pink01 lbl01'>却下</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -271,7 +271,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<a href="#" className='bg-white btn01'>完了</a>
+															<span  className='bg-white lbl01'>完了</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -298,7 +298,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<a href="#" className='bg-white btn01'>取り消し</a>
+															<span  className='bg-white lbl01'>取り消し</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -320,7 +320,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn list-accordion__item__head__btn__btn--01'>
-															<a href="#" className='bg-blue01 color-white btn01'>承認する</a>
+															<span  className='bg-blue01 color-white lbl01'>承認する</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -497,7 +497,6 @@ export const Module = () => {
 							<tr>
 								<th className='rowspan'>合計（税込）</th>
 								<td colSpan={2}>0</td>
-
 							</tr>
 						</tbody>
 					</table>
