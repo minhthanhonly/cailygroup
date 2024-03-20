@@ -72,23 +72,50 @@ export  const Tab4Content = () => {
                                             <li>
                                                 <div className='box-approves__item'>
                                                     <div className='box-approves__item__title'>
-                                                        <span className='active'>1</span>
+                                                        <span>1</span>
                                                     </div>
                                                     <div className='box-approves__item__content'>
                                                         <p className='box-approves__item__content__text'>承認者名：承認者名が入ります</p>
-                                                        <textarea rows="4" cols="50">コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
-                                                        <textarea rows="4" cols="50">コメントを入力（任意1000文字以内）</textarea>
+                                                        <textarea>コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
                                                         <p className='box-approves__item__content__btn'>
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
-                                                            <span><a href="#" className='btnapprove btn02'>承認する</a></span>
-                                                            <span><a href="#" className='btnremand btn02'>差し戻す</a></span>
-                                                            <span><a href="#" className='btndismiss btn02'>却下する</a></span>
                                                         </p>
                                                         <p className='list-btn'>
-                                                            <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>差し戻し</a></span>
-                                                            <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>却下</a></span>
-                                                            <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>承認待ち</a></span>
-                                                            <span className='list-btn__item'><a href="#" className='lbl01 color-blue01 boder-blue01'>承認済み</a></span>
+                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className='box-approves__item'>
+                                                    <div className='box-approves__item__title'>
+                                                        <span>2</span>
+                                                    </div>
+                                                    <div className='box-approves__item__content'>
+                                                        <p className='box-approves__item__content__text'>承認者名：承認者名が入ります</p>
+                                                        <textarea>コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
+                                                        <p className='box-approves__item__content__btn'>
+                                                            <span><a href="#" className='btncomment btn02'>コメントする</a></span>
+                                                        </p>
+                                                        <p className='list-btn'>
+                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className='box-approves__item'>
+                                                    <div className='box-approves__item__title'>
+                                                        <span className='active'>3</span>
+                                                    </div>
+                                                    <div className='box-approves__item__content'>
+                                                        <p className='box-approves__item__content__text'>承認者名：承認者名が入ります</p>
+                                                        <textarea>コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
+                                                        <p className='box-approves__item__content__btn'>
+                                                            <span><a href="#" className='btncomment btn02'>コメントする</a></span>
+                                                        </p>
+                                                        <p className='list-btn'>
+                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -132,7 +159,7 @@ export  const Tab4Content = () => {
                                     </div>
                                 </div>
                             </div>
-                        ) 
+                        )
                     },
                     {
                         title: '【申請書名が入ります】', 
@@ -187,23 +214,50 @@ export  const Tab4Content = () => {
                                             <li>
                                                 <div className='box-approves__item'>
                                                     <div className='box-approves__item__title'>
-                                                        <span className='active'>1</span>
+                                                        <span>1</span>
                                                     </div>
                                                     <div className='box-approves__item__content'>
                                                         <p className='box-approves__item__content__text'>承認者名：承認者名が入ります</p>
-                                                        <textarea rows="4" cols="50">コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
-                                                        <textarea rows="4" cols="50">コメントを入力（任意1000文字以内）</textarea>
+                                                        <textarea>コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
                                                         <p className='box-approves__item__content__btn'>
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
-                                                            <span><a href="#" className='btnapprove btn02'>承認する</a></span>
-                                                            <span><a href="#" className='btnremand btn02'>差し戻す</a></span>
-                                                            <span><a href="#" className='btndismiss btn02'>却下する</a></span>
                                                         </p>
                                                         <p className='list-btn'>
-                                                            <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>差し戻し</a></span>
-                                                            <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>却下</a></span>
-                                                            <span className='list-btn__item'><a href="#" className='lbl01 color-read01 boder-read01'>承認待ち</a></span>
-                                                            <span className='list-btn__item'><a href="#" className='lbl01 color-blue01 boder-blue01'>承認済み</a></span>
+                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className='box-approves__item'>
+                                                    <div className='box-approves__item__title'>
+                                                        <span>2</span>
+                                                    </div>
+                                                    <div className='box-approves__item__content'>
+                                                        <p className='box-approves__item__content__text'>承認者名：承認者名が入ります</p>
+                                                        <textarea>コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
+                                                        <p className='box-approves__item__content__btn'>
+                                                            <span><a href="#" className='btncomment btn02'>コメントする</a></span>
+                                                        </p>
+                                                        <p className='list-btn'>
+                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div className='box-approves__item'>
+                                                    <div className='box-approves__item__title'>
+                                                        <span className='active'>3</span>
+                                                    </div>
+                                                    <div className='box-approves__item__content'>
+                                                        <p className='box-approves__item__content__text'>承認者名：承認者名が入ります</p>
+                                                        <textarea>コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
+                                                        <p className='box-approves__item__content__btn'>
+                                                            <span><a href="#" className='btncomment btn02'>コメントする</a></span>
+                                                        </p>
+                                                        <p className='list-btn'>
+                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
                                                         </p>
                                                     </div>
                                                 </div>
