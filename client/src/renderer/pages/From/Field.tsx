@@ -7,7 +7,11 @@ const Field = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [required, setRequired] = useState(true);
   const [fieldType, setFieldType] = useState('');
-  const [forms, setForms] = useState('');
+  interface Form {
+    checkbox_group: Record<string, { title: string; items: string[] }>;
+  }
+
+  const [forms, setForms] = useState<Form[]>([]);
   const [err, setErr] = useState<number>();
   const [inputValues, setInputValues] = useState({
     formName: '',
@@ -33,9 +37,18 @@ const Field = () => {
 
   const closeModal = () => {
     setModalOpen(false);
+    setErr(0);
+    setInputValues((prevState) => ({
+      ...prevState,
+      fieldLable: '',
+      fieldName: '',
+    }));
+    const elements = document.getElementsByClassName('field-content');
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].innerHTML = '';
+    }
   };
 
-  const handleInputCheckChange = () => {};
   const [items, setItems] = useState([
     {
       id: 0,
@@ -46,7 +59,6 @@ const Field = () => {
             <input
               className="form-input input-title"
               placeholder="title group checkbox"
-              onChange={handleInputCheckChange}
             />
             <button
               className="btn btn--red"
@@ -60,7 +72,6 @@ const Field = () => {
               className="input-checkbox"
               type="text"
               placeholder="name checkbox"
-              onChange={handleInputCheckChange}
             />
           </div>
           <div className="wrp-button">
@@ -115,7 +126,6 @@ const Field = () => {
             }}
             className="input-checkbox"
             placeholder="name checkbox"
-            onChange={handleInputCheckChange}
           />
         </div>
       );
@@ -163,7 +173,6 @@ const Field = () => {
               <input
                 className="form-input input-title"
                 placeholder="title group checkbox"
-                onChange={handleInputCheckChange}
               />
               <button
                 className="btn btn--red"
@@ -177,7 +186,6 @@ const Field = () => {
                 className="input-checkbox"
                 type="text"
                 placeholder="name checkbox"
-                onChange={handleInputCheckChange}
               />
             </div>
             <div className="wrp-button">
@@ -203,7 +211,7 @@ const Field = () => {
   const handleSubmit = () => {
     if (inputValues.fieldLable && inputValues.fieldName) {
       setErr(0);
-      if (fieldType == 'checkbox') {
+      if (fieldType == 'checkbox-group') {
         let groups = document.getElementsByClassName('item-group');
         let title = document.getElementsByClassName('input-title');
 
@@ -229,11 +237,18 @@ const Field = () => {
         }
 
         let dataWithCheckbox = {
-          checkbox: checkboxData,
+          checkbox_group: checkboxData,
         };
         console.log(inputValues.fieldLable, inputValues.fieldName);
         console.log(JSON.stringify(dataWithCheckbox));
-        // setForms(JSON.stringify(dataWithCheckbox));
+        setForms((prevForms) => [...prevForms, dataWithCheckbox]);
+      } else {
+        // let dataWithCheckbox = {
+        //   checkbox: checkboxData,
+        // };
+        // console.log(inputValues.fieldLable, inputValues.fieldName);
+        // console.log(JSON.stringify(dataWithCheckbox));
+        // setForms((prevForms) => [...prevForms, dataWithCheckbox]);
       }
     } else {
       if (!inputValues.fieldLable) {
@@ -242,6 +257,9 @@ const Field = () => {
         setErr(2);
       }
     }
+  };
+  const handleSave = () => {
+    console.log(forms);
   };
 
   return (
@@ -271,7 +289,9 @@ const Field = () => {
       </div>
       <div className="wrp-button">
         <button className="btn btn--from btn--gray">下書き保存</button>
-        <button className="btn btn--from btn--blue">申請する</button>
+        <button className="btn btn--from btn--blue" onClick={handleSave}>
+          申請する
+        </button>
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="modal-field">
@@ -288,7 +308,9 @@ const Field = () => {
             <tbody>
               <tr>
                 <th>
-                  <p>Field Label</p>
+                  <p>
+                    Field Label <span className="text-error">(* required)</span>
+                  </p>
                 </th>
                 <td>
                   <input
@@ -319,33 +341,40 @@ const Field = () => {
                 <td>
                   <select className="form-input" onChange={handleFieldType}>
                     <option value="text">text</option>
-                    <option value="text-area">text area</option>
-                    <option value="hour">hour</option>
-                    <option value="range-hour">range hour</option>
-                    <option value="date">date</option>
-                    <option value="range-date">range date</option>
-                    <option value="range-date-number">
-                      range date and number of days
-                    </option>
+                    <option value="note">note</option>
+                    <option value="input-text">input text</option>
                     <option value="checkbox">checkbox</option>
+                    <option value="checkbox-group">checkbox group</option>
+                    <option value="radio">radio</option>
+                    <option value="radio-group">radio group</option>
+                    <option value="text-area">text area</option>
+                    <option value="input-date">input date</option>
+                    <option value="date">date (form ~ to)</option>
+                    <option value="date-day">
+                      date (form ~ to) and number days
+                    </option>
                   </select>
-                  {fieldType == 'checkbox' ? (
-                    <>
-                      {items.map((item) => (
-                        <React.Fragment key={item.id}>
-                          {item.jsx}
-                        </React.Fragment>
-                      ))}
-                      <button
-                        className="btn item-btn btn--green"
-                        onClick={handleAddGroupCheckbox}
-                      >
-                        Multiple group checkbox
-                      </button>
-                    </>
-                  ) : (
-                    ''
-                  )}
+                  <div className="field-content">
+                    {/* {fieldType == 'text' || fieldType == 'note' || fieldType == 'input-text' ? <><input type="text" placeholder='' /></> : ''} */}
+                    {fieldType == 'checkbox' ? '' : ''}
+                    {fieldType == 'checkbox-group' ? (
+                      <>
+                        {items.map((item) => (
+                          <React.Fragment key={item.id}>
+                            {item.jsx}
+                          </React.Fragment>
+                        ))}
+                        <button
+                          className="btn item-btn btn--green"
+                          onClick={handleAddGroupCheckbox}
+                        >
+                          Multiple group checkbox
+                        </button>
+                      </>
+                    ) : (
+                      ''
+                    )}
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -362,17 +391,15 @@ const Field = () => {
                     value={inputValues.fieldName}
                     name="fieldName"
                   />
-                  <p className="text-small">
-                    {err == 2 ? (
-                      <p className="text-small text-error">
-                        * cannot be left blank
-                      </p>
-                    ) : (
-                      <p className="text-small">
-                        * Single word, no spaces. Underscores and dashes allowed
-                      </p>
-                    )}
-                  </p>
+                  {err == 2 ? (
+                    <p className="text-small text-error">
+                      * cannot be left blank
+                    </p>
+                  ) : (
+                    <p className="text-small">
+                      * Single word, no spaces. Underscores and dashes allowed
+                    </p>
+                  )}
                 </td>
               </tr>
             </tbody>
