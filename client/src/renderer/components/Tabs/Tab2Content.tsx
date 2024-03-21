@@ -625,7 +625,7 @@ export  const Tab2Content = () => {
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
                                                         </p>
                                                         <p className='list-btn'>
-                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認済み</span></span>
+                                                            <span className='list-btn__item'><span className='lbl01 lbl01 color-blue01 boder-blue01'>承認済み</span></span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -761,7 +761,7 @@ export  const Tab2Content = () => {
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
                                                         </p>
                                                         <p className='list-btn'>
-                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
+                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>却下</span></span>
                                                         </p>
                                                     </div>
                                                 </div>

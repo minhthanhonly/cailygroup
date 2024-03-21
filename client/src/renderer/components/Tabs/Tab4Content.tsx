@@ -81,7 +81,7 @@ export  const Tab4Content = () => {
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
                                                         </p>
                                                         <p className='list-btn'>
-                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
+                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>却下</span></span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -97,9 +97,6 @@ export  const Tab4Content = () => {
                                                         <p className='box-approves__item__content__btn'>
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
                                                         </p>
-                                                        <p className='list-btn'>
-                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
-                                                        </p>
                                                     </div>
                                                 </div>
                                             </li>
@@ -113,9 +110,6 @@ export  const Tab4Content = () => {
                                                         <textarea>コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
                                                         <p className='box-approves__item__content__btn'>
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
-                                                        </p>
-                                                        <p className='list-btn'>
-                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -223,7 +217,7 @@ export  const Tab4Content = () => {
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
                                                         </p>
                                                         <p className='list-btn'>
-                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
+                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>却下</span></span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -239,9 +233,6 @@ export  const Tab4Content = () => {
                                                         <p className='box-approves__item__content__btn'>
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
                                                         </p>
-                                                        <p className='list-btn'>
-                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
-                                                        </p>
                                                     </div>
                                                 </div>
                                             </li>
@@ -255,9 +246,6 @@ export  const Tab4Content = () => {
                                                         <textarea>コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。</textarea>
                                                         <p className='box-approves__item__content__btn'>
                                                             <span><a href="#" className='btncomment btn02'>コメントする</a></span>
-                                                        </p>
-                                                        <p className='list-btn'>
-                                                            <span className='list-btn__item'><span className='lbl01 color-read01 boder-read01'>承認待ち</span></span>
                                                         </p>
                                                     </div>
                                                 </div>
