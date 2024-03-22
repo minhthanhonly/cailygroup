@@ -7,11 +7,8 @@ const Field = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [required, setRequired] = useState(true);
   const [fieldType, setFieldType] = useState('');
-  interface Form {
-    checkbox_group: Record<string, { title: string; items: string[] }>;
-  }
 
-  const [forms, setForms] = useState<Form[]>([]);
+  const [forms, setForms] = useState<any[]>([]);
   const [err, setErr] = useState<number>();
   const [inputValues, setInputValues] = useState({
     formName: '',
@@ -33,20 +30,32 @@ const Field = () => {
   };
   const openModal = () => {
     setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
+    const elements = document.getElementsByClassName('field-content');
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].innerHTML = '';
+    }
     setErr(0);
     setInputValues((prevState) => ({
       ...prevState,
       fieldLable: '',
       fieldName: '',
     }));
+    setFieldType('text');
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
     const elements = document.getElementsByClassName('field-content');
     for (let i = 0; i < elements.length; i++) {
       elements[i].innerHTML = '';
     }
+    setErr(0);
+    setInputValues((prevState) => ({
+      ...prevState,
+      fieldLable: '',
+      fieldName: '',
+    }));
+    setFieldType('text');
   };
 
   const [items, setItems] = useState([
@@ -209,9 +218,9 @@ const Field = () => {
   };
 
   const handleSubmit = () => {
-    if (inputValues.fieldLable && inputValues.fieldName) {
-      setErr(0);
-      if (fieldType == 'checkbox-group') {
+    let result: {}[] = [];
+    if (inputValues.fieldLable) {
+      if (fieldType == 'checkbox_group') {
         let groups = document.getElementsByClassName('item-group');
         let title = document.getElementsByClassName('input-title');
 
@@ -233,29 +242,128 @@ const Field = () => {
             groupData.items.push(item.value);
           }
 
-          checkboxData['checkbox-group-' + i] = groupData;
+          checkboxData['checkbox_group_' + i] = groupData;
         }
-
         let dataWithCheckbox = {
-          checkbox_group: checkboxData,
+          checkbox_group: {
+            required: required,
+            ...checkboxData,
+          },
         };
-        console.log(inputValues.fieldLable, inputValues.fieldName);
-        console.log(JSON.stringify(dataWithCheckbox));
+        console.log(dataWithCheckbox);
         setForms((prevForms) => [...prevForms, dataWithCheckbox]);
+        result = [dataWithCheckbox];
       } else {
-        // let dataWithCheckbox = {
-        //   checkbox: checkboxData,
-        // };
-        // console.log(inputValues.fieldLable, inputValues.fieldName);
-        // console.log(JSON.stringify(dataWithCheckbox));
-        // setForms((prevForms) => [...prevForms, dataWithCheckbox]);
+        setForms((prevForms) => [
+          ...prevForms,
+          {
+            [fieldType]: {
+              required: required,
+              fieldLable: inputValues.fieldLable,
+              fieldName: inputValues.fieldName,
+            },
+          },
+        ]);
+        result = [
+          {
+            [fieldType]: {
+              required: required,
+              fieldLable: inputValues.fieldLable,
+              fieldName: inputValues.fieldName,
+            },
+          },
+        ];
       }
+      const outerClassName = Object.keys(
+        result[0],
+      )[0] as keyof (typeof result)[0];
+      console.log(outerClassName);
+      function buildDefault() {
+        return (
+          '<tr><th><div class="tb-from--th">' +
+          result[0][outerClassName].fieldLable +
+          (result[0][outerClassName].required
+            ? ' <span class="txt-red">(*required)</span>'
+            : '') +
+          '</div></th><td><div class="tb-from--td">'
+        );
+      }
+      function buildText() {
+        return '<p>' + result[0][outerClassName].fieldLable + '</p>';
+      }
+      function buildNote() {
+        return (
+          '<p class="text-small">' +
+          result[0][outerClassName].fieldLable +
+          '</p>'
+        );
+      }
+      function buildCheckboxGroup() {
+        return (
+          <tr>
+            <th>
+              <p>
+                {Object.keys(result[0])[0][1]}{' '}
+                <span className="text-error">(* required)</span>
+              </p>
+            </th>
+            <td></td>
+          </tr>
+        );
+      }
+      function buildInput_text() {
+        return '<input class="form-input" /></div></td></tr>';
+      }
+      function buildCheckbox() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      function buildText_area() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      function buildInput_date() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      function buildDate() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      function buildDate_day() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      var content = document
+        .getElementsByClassName('tb-from')[0]
+        .getElementsByTagName('tbody')[0];
+      switch (outerClassName) {
+        case 'note':
+          content.innerHTML += buildNote();
+          break;
+        case 'input_text':
+          content.innerHTML += buildDefault() + buildInput_text();
+          break;
+        case 'checkbox':
+          content.innerHTML += buildDefault() + buildCheckbox();
+          break;
+        case 'checkbox_group':
+          content.innerHTML += buildDefault() + buildCheckboxGroup();
+          break;
+        case 'text_area':
+          content.innerHTML += buildDefault() + buildText_area();
+          break;
+        case 'input_date':
+          content.innerHTML += buildDefault() + buildInput_date();
+          break;
+        case 'date':
+          content.innerHTML += buildDefault() + buildDate();
+          break;
+        case 'date_day':
+          content.innerHTML += buildDefault() + buildDate_day();
+          break;
+        default:
+          content.innerHTML += buildText();
+          break;
+      }
+      setModalOpen(false);
     } else {
-      if (!inputValues.fieldLable) {
-        setErr(1);
-      } else {
-        setErr(2);
-      }
+      setErr(1);
     }
   };
   const handleSave = () => {
@@ -285,7 +393,9 @@ const Field = () => {
       </button>
       <div className="">
         <h2 className="hdg-lv2 mt50">Preview:</h2>
-        <p>下記の通り申請致します。</p>
+        <table className="tb-from">
+          <tbody></tbody>
+        </table>
       </div>
       <div className="wrp-button">
         <button className="btn btn--from btn--gray">下書き保存</button>
@@ -342,22 +452,21 @@ const Field = () => {
                   <select className="form-input" onChange={handleFieldType}>
                     <option value="text">text</option>
                     <option value="note">note</option>
-                    <option value="input-text">input text</option>
+                    <option value="input_text">input text</option>
                     <option value="checkbox">checkbox</option>
-                    <option value="checkbox-group">checkbox group</option>
+                    <option value="checkbox_group">checkbox group</option>
                     <option value="radio">radio</option>
-                    <option value="radio-group">radio group</option>
-                    <option value="text-area">text area</option>
-                    <option value="input-date">input date</option>
+                    <option value="radio_group">radio group</option>
+                    <option value="text_area">text area</option>
+                    <option value="input_date">input date</option>
                     <option value="date">date (form ~ to)</option>
-                    <option value="date-day">
+                    <option value="date_day">
                       date (form ~ to) and number days
                     </option>
                   </select>
                   <div className="field-content">
-                    {/* {fieldType == 'text' || fieldType == 'note' || fieldType == 'input-text' ? <><input type="text" placeholder='' /></> : ''} */}
                     {fieldType == 'checkbox' ? '' : ''}
-                    {fieldType == 'checkbox-group' ? (
+                    {fieldType == 'checkbox_group' ? (
                       <>
                         {items.map((item) => (
                           <React.Fragment key={item.id}>
