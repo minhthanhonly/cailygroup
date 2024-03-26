@@ -1,7 +1,7 @@
 <?php
 
-class TravelexpensesModel {
-   function getList(){
+class EstimateModal {
+   function getlist(){
 			global $conn;
 
 			// Thực hiện truy vấn SELECT
@@ -18,7 +18,7 @@ class TravelexpensesModel {
 				$data = [];
 			}
 			
-			header('Content-Type: application/json');
+		    header('Content-Type: application/json');
 			echo json_encode($data);
 			return;
 
