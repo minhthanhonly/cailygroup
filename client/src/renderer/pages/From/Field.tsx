@@ -1,20 +1,15 @@
-import {
-  ReactElement,
-  RefObject,
-  createRef,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { RefObject, useRef, useState } from 'react';
 import Modal from '../../components/Modal/Modal';
 import React from 'react';
 import './field.scss';
 
 const Field = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [fields, setFields] = useState('');
   const [required, setRequired] = useState(true);
   const [fieldType, setFieldType] = useState('');
+
+  const [forms, setForms] = useState<any[]>([]);
+  const [err, setErr] = useState<number>();
   const [inputValues, setInputValues] = useState({
     formName: '',
     fieldLable: '',
@@ -30,157 +25,349 @@ const Field = () => {
   const handleCheckboxChange = () => {
     setRequired(!required);
   };
+  const handleFieldType = (event: any) => {
+    setFieldType(event.target.value);
+  };
   const openModal = () => {
     setModalOpen(true);
+    const elements = document.getElementsByClassName('field-content');
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].innerHTML = '';
+    }
+    setErr(0);
+    setInputValues((prevState) => ({
+      ...prevState,
+      fieldLable: '',
+      fieldName: '',
+    }));
+    setFieldType('text');
   };
 
   const closeModal = () => {
     setModalOpen(false);
-  };
-  const handleFieldType = (event: any) => {
-    setFieldType(event.target.value);
+    const elements = document.getElementsByClassName('field-content');
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].innerHTML = '';
+    }
+    setErr(0);
+    setInputValues((prevState) => ({
+      ...prevState,
+      fieldLable: '',
+      fieldName: '',
+    }));
+    setFieldType('text');
   };
 
   const [items, setItems] = useState([
-    <div className="item-group" key={0}>
-      <div className="item-title">
-        <p className="text-error">name group</p>
-        <input className="form-input" placeholder="title group checkbox" />
-        <button className="btn btn--red" onClick={() => handleRemoveGroup(0)}>
-          X
-        </button>
-      </div>
-      <div className="item">
-        <input type="checkbox" />
-        <input type="text" placeholder="name checkbox" />
-      </div>
-      <div className="wrp-button">
-        <button
-          className="btn btn--small btn--blue"
-          onClick={() => handleAddCheckbox(0)}
-        >
-          Add
-        </button>
-        <button
-          className="btn btn--small btn--black"
-          onClick={() => handleMinusCheckbox(0)}
-        >
-          Minus
-        </button>
-      </div>
-    </div>,
+    {
+      id: 0,
+      jsx: (
+        <div className="item-group" key={0}>
+          <div className="item-title">
+            <p className="text-error">name group</p>
+            <input
+              className="form-input input-title"
+              placeholder="title group checkbox"
+            />
+            <button
+              className="btn btn--red"
+              onClick={() => handleRemoveGroup(0)}
+            >
+              X
+            </button>
+          </div>
+          <div className="item">
+            <input
+              className="input-checkbox"
+              type="text"
+              placeholder="name checkbox"
+            />
+          </div>
+          <div className="wrp-button">
+            <button
+              className="btn btn--small btn--blue"
+              onClick={() => handleAddCheckbox(0)}
+            >
+              Add
+            </button>
+            <button
+              className="btn btn--small btn--black"
+              onClick={() => handleMinusCheckbox(0)}
+            >
+              Minus
+            </button>
+          </div>
+        </div>
+      ),
+    },
   ]);
 
   const inputRefs = useRef<
     (HTMLInputElement | null | RefObject<HTMLInputElement>)[]
   >([]);
 
-  useEffect(() => {
-    inputRefs.current = Array(items.length)
-      .fill(0)
-      .map((_, i) => inputRefs.current[i] || createRef<HTMLInputElement>());
-  }, [items]);
-
-  const handleRemoveGroup = (index: number) => {
+  const handleRemoveGroup = (id: number) => {
     setItems((prevItems) => {
-      if (prevItems.length <= 1) return prevItems; // Đảm bảo rằng luôn có ít nhất một item-group
-      const updatedItems = prevItems.filter((_, i) => i !== index); // Loại bỏ item-group tại chỉ số index
+      if (prevItems.length <= 1) return prevItems;
+      const updatedItems = prevItems.filter((item) => item.id !== id);
       return updatedItems;
     });
   };
 
-  const handleAddCheckbox = (index: number) => {
+  const handleAddCheckbox = (id: number) => {
     setItems((prevItems) => {
       const updatedItems = [...prevItems];
+      const itemIndex = updatedItems.findIndex((item) => item.id === id);
+      const item = updatedItems[itemIndex];
+      const children = React.Children.toArray(item.jsx.props.children);
+      const buttonIndex = children.findIndex(
+        (child) =>
+          React.isValidElement(child) &&
+          child.props &&
+          child.props.className === 'wrp-button',
+      );
       const newItem = (
-        <div className="item">
-          <input type="checkbox" />
+        <div className="item" key={id + '-checkbox'}>
           <input
             type="text"
             ref={(ref) => {
-              if (ref) inputRefs.current[index] = ref;
+              if (ref) inputRefs.current[id] = ref;
             }}
+            className="input-checkbox"
             placeholder="name checkbox"
           />
         </div>
       );
-      const itemGroup = updatedItems[index];
-      const children = React.Children.toArray(itemGroup.props.children);
-      children.splice(1, 0, newItem);
-      const newGroup = React.cloneElement(itemGroup, {}, ...children);
-      updatedItems[index] = newGroup;
+      children.splice(buttonIndex, 0, newItem);
+      const newGroup = React.cloneElement(item.jsx, {}, ...children);
+      updatedItems[itemIndex] = { ...item, jsx: newGroup };
       return updatedItems;
     });
   };
 
-  const handleMinusCheckbox = (index: number) => {
+  const handleMinusCheckbox = (id: number) => {
     setItems((prevItems) => {
       const updatedItems = [...prevItems];
-      const itemGroup = updatedItems[index];
-      const children = React.Children.toArray(itemGroup.props.children);
+      const itemIndex = updatedItems.findIndex((item) => item.id === id);
+      const item = updatedItems[itemIndex];
+      const children = React.Children.toArray(item.jsx.props.children);
       const itemsCount = children.filter(
         (child) =>
           React.isValidElement(child) && child.props.className === 'item',
       ).length;
-      if (itemsCount <= 1) return prevItems; // Nếu số lượng items <= 1, không làm gì cả
+      if (itemsCount <= 1) return prevItems;
       const lastIndex = children.findIndex(
         (child) =>
           React.isValidElement(child) && child.props.className === 'item',
       );
       if (lastIndex !== -1) {
-        children.splice(lastIndex, 1); // Loại bỏ phần tử cuối cùng có class "item"
-        const newGroup = React.cloneElement(itemGroup, {}, ...children);
-        updatedItems[index] = newGroup;
+        children.splice(lastIndex, 1);
+        const newGroup = React.cloneElement(item.jsx, {}, ...children);
+        updatedItems[itemIndex] = { ...item, jsx: newGroup };
       }
       return updatedItems;
     });
   };
 
   const handleAddGroupCheckbox = () => {
+    const newId = items.length;
     setItems((prevItems) => [
       ...prevItems,
-      <div className="item-group" key={prevItems.length}>
-        <div className="item-title">
-          <p className="text-error">name group</p>
-          <input className="form-input" placeholder="title group checkbox" />
-          <button
-            className="btn btn--red"
-            onClick={() => handleRemoveGroup(prevItems.length)}
-          >
-            X
-          </button>
-        </div>
-        <div className="item">
-          <input type="checkbox" />
-          <input type="text" placeholder="name checkbox" />
-        </div>
-        <div className="wrp-button">
-          <button
-            className="btn btn--small btn--blue"
-            onClick={() => handleAddCheckbox(prevItems.length)}
-          >
-            Add
-          </button>
-          <button
-            className="btn btn--small btn--black"
-            onClick={() => handleMinusCheckbox(prevItems.length)}
-          >
-            Minus
-          </button>
-        </div>
-      </div>,
+      {
+        id: newId,
+        jsx: (
+          <div className="item-group" key={newId}>
+            <div className="item-title">
+              <p className="text-error">name group</p>
+              <input
+                className="form-input input-title"
+                placeholder="title group checkbox"
+              />
+              <button
+                className="btn btn--red"
+                onClick={() => handleRemoveGroup(newId)}
+              >
+                X
+              </button>
+            </div>
+            <div className="item">
+              <input
+                className="input-checkbox"
+                type="text"
+                placeholder="name checkbox"
+              />
+            </div>
+            <div className="wrp-button">
+              <button
+                className="btn btn--small btn--blue"
+                onClick={() => handleAddCheckbox(newId)}
+              >
+                Add
+              </button>
+              <button
+                className="btn btn--small btn--black"
+                onClick={() => handleMinusCheckbox(newId)}
+              >
+                Minus
+              </button>
+            </div>
+          </div>
+        ),
+      },
     ]);
   };
+
   const handleSubmit = () => {
-    const checkboxValues = inputRefs.current.map((ref) => {
-      if (ref instanceof HTMLInputElement) {
-        return ref.value || '';
-      } else if (ref.current?.value) {
-        return ref.current.value || '';
+    let result: {}[] = [];
+    if (inputValues.fieldLable) {
+      if (fieldType == 'checkbox_group') {
+        let groups = document.getElementsByClassName('item-group');
+        let title = document.getElementsByClassName('input-title');
+
+        let checkboxData: Record<string, { title: string; items: string[] }> =
+          {};
+
+        for (let i = 0; i < groups.length; i++) {
+          let group = groups[i];
+          let items = group.getElementsByClassName('input-checkbox');
+
+          let titleInput = title[i] as HTMLInputElement;
+          let groupData = {
+            title: titleInput.value,
+            items: [] as string[],
+          };
+
+          for (let j = 0; j < items.length; j++) {
+            let item = items[j] as HTMLInputElement;
+            groupData.items.push(item.value);
+          }
+
+          checkboxData['checkbox_group_' + i] = groupData;
+        }
+        let dataWithCheckbox = {
+          checkbox_group: {
+            required: required,
+            ...checkboxData,
+          },
+        };
+        console.log(dataWithCheckbox);
+        setForms((prevForms) => [...prevForms, dataWithCheckbox]);
+        result = [dataWithCheckbox];
+      } else {
+        setForms((prevForms) => [
+          ...prevForms,
+          {
+            [fieldType]: {
+              required: required,
+              fieldLable: inputValues.fieldLable,
+              fieldName: inputValues.fieldName,
+            },
+          },
+        ]);
+        result = [
+          {
+            [fieldType]: {
+              required: required,
+              fieldLable: inputValues.fieldLable,
+              fieldName: inputValues.fieldName,
+            },
+          },
+        ];
       }
-      return '';
-    });
-    console.log(checkboxValues);
+      const outerClassName = Object.keys(
+        result[0],
+      )[0] as keyof (typeof result)[0];
+      console.log(outerClassName);
+      function buildDefault() {
+        return (
+          '<tr><th><div class="tb-from--th">' +
+          result[0][outerClassName].fieldLable +
+          (result[0][outerClassName].required
+            ? ' <span class="txt-red">(*required)</span>'
+            : '') +
+          '</div></th><td><div class="tb-from--td">'
+        );
+      }
+      function buildText() {
+        return '<p>' + result[0][outerClassName].fieldLable + '</p>';
+      }
+      function buildNote() {
+        return (
+          '<p class="text-small">' +
+          result[0][outerClassName].fieldLable +
+          '</p>'
+        );
+      }
+      function buildCheckboxGroup() {
+        return (
+          <tr>
+            <th>
+              <p>
+                {Object.keys(result[0])[0][1]}{' '}
+                <span className="text-error">(* required)</span>
+              </p>
+            </th>
+            <td></td>
+          </tr>
+        );
+      }
+      function buildInput_text() {
+        return '<input class="form-input" /></div></td></tr>';
+      }
+      function buildCheckbox() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      function buildText_area() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      function buildInput_date() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      function buildDate() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      function buildDate_day() {
+        return result[0][outerClassName].fieldName + '</div></td></tr>';
+      }
+      var content = document
+        .getElementsByClassName('tb-from')[0]
+        .getElementsByTagName('tbody')[0];
+      switch (outerClassName) {
+        case 'note':
+          content.innerHTML += buildNote();
+          break;
+        case 'input_text':
+          content.innerHTML += buildDefault() + buildInput_text();
+          break;
+        case 'checkbox':
+          content.innerHTML += buildDefault() + buildCheckbox();
+          break;
+        case 'checkbox_group':
+          content.innerHTML += buildDefault() + buildCheckboxGroup();
+          break;
+        case 'text_area':
+          content.innerHTML += buildDefault() + buildText_area();
+          break;
+        case 'input_date':
+          content.innerHTML += buildDefault() + buildInput_date();
+          break;
+        case 'date':
+          content.innerHTML += buildDefault() + buildDate();
+          break;
+        case 'date_day':
+          content.innerHTML += buildDefault() + buildDate_day();
+          break;
+        default:
+          content.innerHTML += buildText();
+          break;
+      }
+      setModalOpen(false);
+    } else {
+      setErr(1);
+    }
+  };
+  const handleSave = () => {
+    console.log(forms);
   };
 
   return (
@@ -206,11 +393,15 @@ const Field = () => {
       </button>
       <div className="">
         <h2 className="hdg-lv2 mt50">Preview:</h2>
-        <p>下記の通り申請致します。</p>
+        <table className="tb-from">
+          <tbody></tbody>
+        </table>
       </div>
       <div className="wrp-button">
         <button className="btn btn--from btn--gray">下書き保存</button>
-        <button className="btn btn--from btn--blue">申請する</button>
+        <button className="btn btn--from btn--blue" onClick={handleSave}>
+          申請する
+        </button>
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div className="modal-field">
@@ -227,19 +418,28 @@ const Field = () => {
             <tbody>
               <tr>
                 <th>
-                  <p>Field Label</p>
+                  <p>
+                    Field Label <span className="text-error">(* required)</span>
+                  </p>
                 </th>
                 <td>
                   <input
                     type="text"
-                    className="form-input"
+                    className={err == 1 ? 'form-input err-input' : 'form-input'}
                     value={inputValues.fieldLable}
                     name="fieldLable"
                     onChange={handleInputChange}
                   />
-                  <p className="text-small">
-                    * This is the name which will appear on the EDIT page
-                  </p>
+
+                  {err == 1 ? (
+                    <p className="text-small text-error">
+                      * cannot be left blank
+                    </p>
+                  ) : (
+                    <p className="text-small">
+                      * This is the name which will appear on the EDIT page
+                    </p>
+                  )}
                 </td>
               </tr>
               <tr>
@@ -251,31 +451,39 @@ const Field = () => {
                 <td>
                   <select className="form-input" onChange={handleFieldType}>
                     <option value="text">text</option>
-                    <option value="text-area">text area</option>
-                    <option value="hour">hour</option>
-                    <option value="range-hour">range hour</option>
-                    <option value="date">date</option>
-                    <option value="range-date">range date</option>
-                    <option value="range-date-number">
-                      range date and number of days
-                    </option>
+                    <option value="note">note</option>
+                    <option value="input_text">input text</option>
                     <option value="checkbox">checkbox</option>
+                    <option value="checkbox_group">checkbox group</option>
+                    <option value="radio">radio</option>
+                    <option value="radio_group">radio group</option>
+                    <option value="text_area">text area</option>
+                    <option value="input_date">input date</option>
+                    <option value="date">date (form ~ to)</option>
+                    <option value="date_day">
+                      date (form ~ to) and number days
+                    </option>
                   </select>
-                  {fieldType == 'checkbox' ? (
-                    <>
-                      {items.map((item, index) => (
-                        <div key={index}>{item}</div> // Render mỗi phần tử trong mảng items
-                      ))}
-                      <button
-                        className="btn item-btn btn--green"
-                        onClick={handleAddGroupCheckbox}
-                      >
-                        Multiple group checkbox
-                      </button>
-                    </>
-                  ) : (
-                    ''
-                  )}
+                  <div className="field-content">
+                    {fieldType == 'checkbox' ? '' : ''}
+                    {fieldType == 'checkbox_group' ? (
+                      <>
+                        {items.map((item) => (
+                          <React.Fragment key={item.id}>
+                            {item.jsx}
+                          </React.Fragment>
+                        ))}
+                        <button
+                          className="btn item-btn btn--green"
+                          onClick={handleAddGroupCheckbox}
+                        >
+                          Multiple group checkbox
+                        </button>
+                      </>
+                    ) : (
+                      ''
+                    )}
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -287,14 +495,20 @@ const Field = () => {
                 <td>
                   <input
                     type="text"
-                    className="form-input"
+                    className={err == 2 ? 'form-input err-input' : 'form-input'}
                     onChange={handleInputChange}
                     value={inputValues.fieldName}
                     name="fieldName"
                   />
-                  <p className="text-small">
-                    * Single word, no spaces. Underscores and dashes allowed
-                  </p>
+                  {err == 2 ? (
+                    <p className="text-small text-error">
+                      * cannot be left blank
+                    </p>
+                  ) : (
+                    <p className="text-small">
+                      * Single word, no spaces. Underscores and dashes allowed
+                    </p>
+                  )}
                 </td>
               </tr>
             </tbody>

@@ -4,7 +4,7 @@ import ListTabs from '../../../components/List/ListBranch';
 // console.log(a)
 const Tabs = [
   {
-    text: '進行中(2)',
+    text: '進行中(1)',
     to: '/tabs/tab1',
   },
   {
