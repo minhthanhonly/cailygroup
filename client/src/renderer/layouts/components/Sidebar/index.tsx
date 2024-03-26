@@ -11,6 +11,8 @@ import {
   faBarsProgress,
   faCalendarDays,
   faClock,
+  faFileClipboard,
+  faFileLines,
   faGear,
   faHouse,
   faUsers,
@@ -123,6 +125,14 @@ export const Sidebar = () => {
                 <FontAwesomeIcon icon={faCalendarDays} />
               </span>
               Field
+            </NavLink>
+          </li>
+          <li className="nav-global__item">
+            <NavLink to="/form/add">
+              <span className="icn">
+                <FontAwesomeIcon icon={faFileLines} />
+              </span>
+              Add New Form
             </NavLink>
           </li>
         </ul>
