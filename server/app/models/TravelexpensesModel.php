@@ -11,7 +11,7 @@ class TravelexpensesModel {
             // Đọc dữ liệu JSON từ yêu cầu POST
             $json_data = file_get_contents("php://input");
             $tablejson = $json_data;
-            
+
             $decode = json_decode($json_data);
              $table_id =  $decode->table_id;
              $status = $decode -> $status;

@@ -70,7 +70,7 @@
 
     // epenseReport
     $routes['epensereport'] = 'expensereport';
-    $routes['travelexpenses/add'] = 'travelexpenses/add';
+    $routes['travelexpenses'] = 'travelexpenses';
 
     
 
