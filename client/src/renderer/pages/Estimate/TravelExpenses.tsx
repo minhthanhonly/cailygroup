@@ -87,41 +87,41 @@ export const TravelExpenses = () => {
 
     const saveAsJSON = async () => {
         try {
-            // Tạo một đối tượng mới chứa dữ liệu và các giá trị table_id và status
-            const requestData = {
-                dataToSend: rows.map(row => ({
-                    date: date,
-                    route: row.route,
-                    boardingStation: row.boardingStation,
-                    alightingStation: row.alightingStation,
-                    amount: row.amount,
-                    mealExpense: row.mealExpense,
-                    note: row.note
-                })),
-                table_id: 1, // Đặt table_id là 1
-                status: 1    // Đặt status là 1
-            };
+            // Vòng lặp qua mỗi hàng trong rows để gửi yêu cầu POST riêng biệt cho mỗi hàng
+            for (const row of rows) {
+                // Tạo một đối tượng mới chứa dữ liệu cho hàng hiện tại
+                const requestData = {
+                    dataToSend: rows.map(row => ({
+                        date: date,
+                        route: row.route,
+                        boardingStation: row.boardingStation,
+                        alightingStation: row.alightingStation,
+                        amount: row.amount,
+                        mealExpense: row.mealExpense,
+                        note: row.note
+                    })),
+                    table_id: 1, // Đặt table_id là 1
+                    id_status: 1    // Đặt status là 1
+                };
 
-            // Log dữ liệu trước khi gửi
-            console.log('Data to send:', requestData);
+                // Log dữ liệu trước khi gửi
+                console.log('Data to send:', requestData);
 
-            // Gửi yêu cầu POST với dữ liệu đã chuẩn bị
-            const response = await axiosPrivate.post('travelexpenses', requestData, { headers: { 'Content-Type': 'application/json' } });
+                // Gửi yêu cầu POST với dữ liệu của hàng hiện tại
+                const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
 
-            if (response.status >= 200 && response.status < 300) {
-                console.log('Yêu cầu POST đã thành công!');
-
-                // Kiểm tra dữ liệu trả về từ máy chủ
-                console.log('Dữ liệu từ máy chủ:', response.data);
-            } else {
-                console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
+                if (response.status >= 200 && response.status < 300) {
+                    console.log('Yêu cầu POST đã thành công!');
+                    // Kiểm tra dữ liệu trả về từ máy chủ
+                    console.log('Dữ liệu từ máy chủ:', response.data);
+                } else {
+                    console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
+                }
             }
         } catch (error) {
             console.error('Error saving expenses:', error);
         }
     };
-
-
 
     return (
         <>

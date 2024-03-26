@@ -1,18 +1,16 @@
 <?php
-    class Travelexpenses extends Controller{
+    class Estimate extends Controller{
         function __construct(){
             $getAuthHeader = Controller::getAuthorizationHeader();
             $getBearerToken = Controller::getBearerToken($getAuthHeader);
             return $getBearerToken;
         }
-        function add($id ='', $tablejson = '', $owner = '', $table_id ='', $status = ''){
+        
+        function index(){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('TravelexpensesModel')->postadd($id , $tablejson, $owner, $table_id, $status);
+                return $this->model('EstimateModal')->getList();
             }
         }
-       
-       
-       
-   }  
+    }
 ?>
