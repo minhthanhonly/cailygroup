@@ -68,6 +68,12 @@
     $routes['timecardsholidays/delete'] = 'timecardsholidays/delete';
 
 
+    // epenseReport
+    $routes['epensereport'] = 'expensereport';
+    $routes['travelexpenses/add'] = 'travelexpenses/add';
+
+    
+
     // application
     $routes['application'] = 'application';
 ?>
