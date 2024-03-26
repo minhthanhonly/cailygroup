@@ -34,12 +34,8 @@ import { Tab3Content } from './components/Tabs/Tab3Content';
 import { Tab4Content } from './components/Tabs/Tab4Content';
 import { Tab5Content } from './components/Tabs/Tab5Content';
 import { Tab6Content } from './components/Tabs/Tab6Content';
-<<<<<<< HEAD
 import { Tab7Content } from './components/Tabs/Tab7Content';
-=======
-import {Tab7Content} from './components/Tabs/Tab7Content';
 import FormAdd from './pages/Form/FormAdd';
->>>>>>> e2f91b04836832eaa3bde7be9f2ec5b5025f560d
 
 export default function App() {
   return (
