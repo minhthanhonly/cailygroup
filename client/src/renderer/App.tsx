@@ -30,11 +30,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import Field from './pages/From/Field';
 import { Tab1Content } from './components/Tabs/Tab1Content';
 import { Tab2Content } from './components/Tabs/Tab2Content';
-import {Tab3Content} from './components/Tabs/Tab3Content';
-import {Tab4Content} from './components/Tabs/Tab4Content';
+import { Tab3Content } from './components/Tabs/Tab3Content';
+import { Tab4Content } from './components/Tabs/Tab4Content';
 import { Tab5Content } from './components/Tabs/Tab5Content';
 import { Tab6Content } from './components/Tabs/Tab6Content';
-import {Tab7Content} from './components/Tabs/Tab7Content';
+import { Tab7Content } from './components/Tabs/Tab7Content';
+import FormAdd from './pages/Form/FormAdd';
 
 export default function App() {
   return (
@@ -80,10 +81,10 @@ export default function App() {
               <Route path="application" element={<Application />} />
               {/* Khu cua thịnh */}
               <Route path="estimate" element={<Estimate />} />
-              <Route path="/TravelExpenses" element={<TravelExpenses />} />
-              <Route path="/ExpenseReport" element={<ExpenseReport />} />
-              <Route path="/PriceBusinessReport" element={<PriceBusinessReport />} />
-              <Route path="/TravelAllowance" element={<TravelAllowance />} />
+              <Route path="TravelExpenses" element={<TravelExpenses />} />
+              <Route path="ExpenseReport" element={<ExpenseReport />} />
+              <Route path="PriceBusinessReport" element={<PriceBusinessReport />} />
+              <Route path="TravelAllowance" element={<TravelAllowance />} />
               {/* Khu cua thịnh */}
 
               <Route path="field" element={<Field />} />
@@ -96,6 +97,8 @@ export default function App() {
               <Route path="tabs/tab5" element={<Tab5Content />} />
               <Route path="tabs/tab6" element={<Tab6Content />} />
               <Route path="tabs/tab7" element={<Tab7Content />} />
+
+              <Route path="form/add" element={<FormAdd />} />
             </Route>
           </Route>
           <Route path="/login" element={<FluidLayout />}>

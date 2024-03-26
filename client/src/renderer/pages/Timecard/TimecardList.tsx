@@ -44,12 +44,10 @@ export const TimecardList: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [daysInMonth, setDaysInMonth] = useState<Date[]>([]);
-  const [user_id, setUser_id] = useState<number>();
 
   const navigate = useNavigate();
 
   // Lưu giá trị biến state trong Link
-  const [selectedParams, setSelectedParams] = useState<TimecardParams>({});
 
   const [selectedDates, setSelectedDates] = useState<{
     [id: number]: { month: string; year: string; daysInMonth?: Date[] };
