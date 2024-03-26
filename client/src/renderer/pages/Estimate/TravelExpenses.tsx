@@ -106,7 +106,7 @@ export const TravelExpenses = () => {
             console.log('Data to send:', requestData);
 
             // Gửi yêu cầu POST với dữ liệu đã chuẩn bị
-            const response = await axiosPrivate.post('TravelexpensesModel.php', requestData, { headers: { 'Content-Type': 'application/json' } });
+            const response = await axiosPrivate.post('travelexpenses', requestData, { headers: { 'Content-Type': 'application/json' } });
 
             if (response.status >= 200 && response.status < 300) {
                 console.log('Yêu cầu POST đã thành công!');
