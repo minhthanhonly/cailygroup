@@ -10,12 +10,8 @@ const ColorByStatus = (status) => {
         return '#E9E9E9'; // Màu nâu cho trạng thái '下書き'
       case '却下':
         return '#FFA5A5'; // Màu đỏ cho trạng thái '却下'
-      case '完了':
-        return '#FFFFFF'; // Màu trắng cho trạng thái '完了'
-      case '取り消し':
-        return '#FFFFFF'; // Màu trắng cho trạng thái '取り消し'
       default:
-        return '#fff'; // Màu mặc định
+        return '#FFFFFF'; // Màu mặc định
     }
 }
 

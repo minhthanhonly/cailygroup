@@ -43,9 +43,14 @@ const ListBranch: React.FC<ListBranchProps> = ({ branch }) => {
 };
 
 export default ListBranch;
-
-export const ListTabs:React.FC<ListTabProps> = ({ tab }) => {
-
+interface ListTabsProps {
+  tab: {
+    text: string;
+    to: string;
+  }[];
+  //number?: number; // Khai báo number là một props tùy chọn
+}
+export const ListTabs: React.FC<ListTabsProps> = ({ tab, number }) => {
   return (
     <div className='tab01 tab-head'>
       {tab.map((item, index) => (
