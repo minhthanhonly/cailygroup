@@ -13,25 +13,9 @@ class TravelexpensesModel {
             $tablejson = $json_data;
 
             $decode = json_decode($json_data);
+             $owner = $decode->owner;
              $table_id =  $decode->table_id;
              $statusOne = $decode->id_status;
-           //   $table_id = $json_data['requestData']['table_id'];
-
-
-          //  $status = $json_data['requestData']['status'];
-          //  var_dump($tablejson);
-            // Chuẩn bị câu lệnh SQL chèn dữ liệu với tham số ràng buộc
-            // $insertQuery = "INSERT INTO table_json (tablejson, owner, table_id, status) VALUES ('$tablejson', '?','$table_id', '$statusOne')";
-            // $result = $conn->query($insertQuery);
- 
-            // if($result) {
-            //     echo json_encode(['success' => 'Thêm thành viên mới thành công']);
-            //     return;
-            // } else {
-            //     echo json_encode(['success' => 'Please check the Users data!']);
-            //     return;
-            // }
-
             
             $insertQuery = "INSERT INTO table_json (tablejson, owner, table_id, id_status) VALUES (?, ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $insertQuery);
