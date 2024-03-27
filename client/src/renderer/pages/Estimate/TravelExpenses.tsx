@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-multi-date-picker';
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useLocation } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 interface Row {
     id: number;
@@ -15,11 +17,34 @@ interface Row {
 }
 
 export const TravelExpenses = () => {
+
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
     const [date, setDate] = useState(new Date());
     const [number, setNumber] = useState('');
     const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', boardingStation: '', alightingStation: '', amount: '', mealExpense: 0, note: '' }]);
     const [total, setTotal] = useState(0);
+
+    const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
+
+    const validateInput = (value: string, fieldName: string, index: number) => {
+        const newVisibleErrors = [...visibleErrors];
+
+        if (!value && !newVisibleErrors.includes(fieldName)) {
+            newVisibleErrors.push(fieldName); // Thêm lỗi chỉ khi giá trị rỗng và lỗi chưa được hiển thị
+        } else if (value && newVisibleErrors.includes(fieldName)) {
+            // Loại bỏ lỗi nếu giá trị không rỗng và lỗi đã được hiển thị
+            const errorIndex = newVisibleErrors.indexOf(fieldName);
+            newVisibleErrors.splice(errorIndex, 1);
+        }
+
+        setVisibleErrors(newVisibleErrors);
+    };
+
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const selectedId = searchParams.get('selectedId');
 
 
     const [mealExpenses, setMealExpenses] = useState<string[]>(new Array(rows.length).fill(''));
@@ -82,39 +107,72 @@ export const TravelExpenses = () => {
             newRows[index] = { ...newRows[index], [field]: value };
             return newRows;
         });
+
+        validateInput(value, field, index); // Truyền index vào hàm validateInput
     };
 
+    const saveAsDraft = async () => {
+        await saveExpense(3); // Trạng thái cho bản nháp
+    };
 
-    const saveAsJSON = async () => {
+    const saveAsAwaitingApproval = async () => {
+        await saveExpense(1); // Trạng thái cho đang chờ duyệt
+    };
+    const checkBeforeSave = (): boolean => {
+        // Kiểm tra xem mỗi hàng có đầy đủ dữ liệu không
+        const isValid = rows.every(row => (
+            row.route && row.boardingStation && row.alightingStation && row.amount && row.mealExpense && row.note
+        ));
+
+        if (!isValid) {
+            toast.error('Vui lòng nhập đầy đủ các thông tin mỗi hàng.');
+        }
+
+        return isValid;
+    };
+
+    const saveExpense = async (status: number) => {
         try {
-            // Tạo một đối tượng mới chứa dữ liệu và các giá trị table_id và status
-            const requestData = {
-                dataToSend: rows.map(row => ({
-                    date: date,
-                    route: row.route,
-                    boardingStation: row.boardingStation,
-                    alightingStation: row.alightingStation,
-                    amount: row.amount,
-                    mealExpense: row.mealExpense,
-                    note: row.note
-                })),
-                table_id: 1, // Đặt table_id là 1
-                status: 1    // Đặt status là 1
-            };
+            const isValid = checkBeforeSave();
+            // Vòng lặp qua mỗi hàng trong rows để gửi yêu cầu POST riêng biệt cho mỗi hàng
+            if (isValid) {
+                for (const row of rows) {
+                    // Tạo một đối tượng mới chứa dữ liệu cho hàng hiện tại
+                    const requestData = {
+                        dataToSend: rows.map(row => ({
+                            date: date,
+                            route: row.route,
+                            boardingStation: row.boardingStation,
+                            alightingStation: row.alightingStation,
+                            amount: row.amount,
+                            mealExpense: row.mealExpense,
+                            note: row.note
+                        })),
+                        owner: users.realname,
+                        table_id: selectedId, // Đặt table_id truyền từ bên kia qua
+                        id_status: status
+                    };
 
-            // Log dữ liệu trước khi gửi
-            console.log('Data to send:', requestData);
+                    // Log dữ liệu trước khi gửi
+                    // console.log('Data to send:', requestData);
 
-            // Gửi yêu cầu POST với dữ liệu đã chuẩn bị
-            const response = await axiosPrivate.post('travelexpenses', requestData, { headers: { 'Content-Type': 'application/json' } });
+                    // Gửi yêu cầu POST với dữ liệu của hàng hiện tại
+                    const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
 
-            if (response.status >= 200 && response.status < 300) {
-                console.log('Yêu cầu POST đã thành công!');
-
-                // Kiểm tra dữ liệu trả về từ máy chủ
-                console.log('Dữ liệu từ máy chủ:', response.data);
-            } else {
-                console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
+                    if (response.status >= 200 && response.status < 300) {
+                        if (status === 1) {
+                            toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
+                        }
+                        else {
+                            toast.success('Bạn Lưu vào bản nháp thành công');
+                        }
+                        // console.log('Yêu cầu POST đã thành công!');
+                        // Kiểm tra dữ liệu trả về từ máy chủ
+                        //  console.log('Dữ liệu từ máy chủ:', response.data);
+                    } else {
+                        console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
+                    }
+                }
             }
         } catch (error) {
             console.error('Error saving expenses:', error);
@@ -122,9 +180,11 @@ export const TravelExpenses = () => {
     };
 
 
-
     return (
         <>
+            {visibleErrors.map((error, index) => (
+                <div key={index}>{error} is required.</div>
+            ))}
             <h2 className="hdglv2"><span>交通費清算書</span></h2>
             <p className="txt-lead">下記の通り申請致します。</p>
 
@@ -151,12 +211,8 @@ export const TravelExpenses = () => {
                                     <td><input type="text" value={row.boardingStation} onChange={(e) => handleInputChange(e, index, 'boardingStation')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.alightingStation} onChange={(e) => handleInputChange(e, index, 'alightingStation')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.amount} onChange={(e) => handleInputChange(e, index, 'amount')} placeholder='入力してください' /></td>
-                                    {/* <td><input className="numberInput" type="text" value={number} onChange={(e) => handleNumberChange(e, index)} placeholder='0' /></td> */}
                                     <td><input className="numberInput" type="text" value={mealExpenses[index]} onChange={(e) => handleNumberChange(e, index)} placeholder='0' /></td>
-
                                     <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
-
-
                                 </tr>
                             ))}
 
@@ -190,10 +246,13 @@ export const TravelExpenses = () => {
 
                 </div>
                 <div className='box-router__edit'>
-                    <p className='plus-row box-router__edit--content'>承認ルートを編集</p>
+                    <p className='plus-row box-router__edit--content' >承認ルートを編集</p>
                 </div>
             </div>
-            <div className="wrp-button"><button className="btn btn--from btn--gray">下書き保存</button><button className="btn btn--from btn--blue" onClick={saveAsJSON}>申請する</button></div>
+            <div className="wrp-button">
+                <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
+                <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
+            </div>
         </>
     )
 

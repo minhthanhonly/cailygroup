@@ -69,12 +69,18 @@
 
 
     // epenseReport
-    $routes['epensereport'] = 'expensereport';
-    $routes['travelexpenses'] = 'travelexpenses';
+  
+    $routes['estimate'] = 'estimate';
 
+
+    $routes['travelexpenses'] = 'travelexpenses';
+    $routes['travelexpenses/add'] = 'travelexpenses/add';
     
+
+
+      $routes['epensereport'] = 'expensereport';
 
     // application
     //$routes['Tab1Content'] = 'application';
-    $routes['tab1content'] = 'tab1content';
+    $routes['tabcontent'] = 'tabcontent';
 ?>
