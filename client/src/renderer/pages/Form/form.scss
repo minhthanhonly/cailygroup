@@ -1,0 +1,33 @@
+.react-form-builder{
+  & > div{
+    display: flex;
+    justify-content: space-between;
+  }
+  .react-form-builder-preview{
+    width: 70%;
+  }
+  .react-form-builder-toolbar{
+    margin-top: -25px;
+    width: 30%;
+  }
+  .btn{
+    width: auto;
+    background: none;
+    color: var(--black);
+    padding: 0 1rem;
+  }
+  .react-form-builder-preview .Sortable .rfb-item .toolbar-header .toolbar-header-buttons{
+    margin-top: 0;
+    right: 0;
+  }
+}
+
+.modal {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+  padding: 30px;
+  max-height: 800px;
+  overflow-y: auto
+}
