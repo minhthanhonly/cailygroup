@@ -1,0 +1,23 @@
+.react-form-builder{
+  & > div{
+    display: flex;
+    justify-content: space-between;
+  }
+  .react-form-builder-preview{
+    width: 70%;
+  }
+  .react-form-builder-toolbar{
+    margin-top: -25px;
+    width: 30%;
+  }
+}
+
+.modal {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+  padding: 30px;
+  max-height: 800px;
+  overflow-y: auto
+}
