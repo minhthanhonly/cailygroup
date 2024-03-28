@@ -10,9 +10,14 @@ const MyInput = React.forwardRef((props, ref) => {
   return <input ref={ref} name={name} defaultValue={defaultValue} disabled={disabled} />;
 });
 
-const GuisInput = (name: string) => {
-  return <input name={name} />
-}
+const GuisInput = React.forwardRef((props, ref) => {
+  const { name } = props;
+  return <input name={name} />;
+});
+
+// const GuisInput = (name: string) => {
+//   return <input name={name} />
+// }
 
 Registry.register('GuisInput', GuisInput);
 Registry.register('MyInput', MyInput);
@@ -104,12 +109,10 @@ const items = [{
   element: 'CustomElement',
   component: GuisInput,
   type: 'custom',
-  forwardRef: true,
-  field_name: 'my_input_',
+  field_name: 'guis_input_',
   name: 'Guis Input',
   icon: 'fa fa-cog',
-  props: { test: 'test_input' },
-  label: 'Label Input',
+  label: 'Guis Input',
 },
 ];
 
@@ -117,6 +120,7 @@ export default function FormAdd(){
   return (
     <>
       <div className="c-form">
+        <button className="btn btn-default float-right" style={{ marginRight: '10px' }}>Save Form</button>
         <ReactFormBuilder
           toolbarItems={items}
         />
