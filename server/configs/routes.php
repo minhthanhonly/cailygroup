@@ -81,6 +81,9 @@
       $routes['epensereport'] = 'expensereport';
 
     // application
-    //$routes['Tab1Content'] = 'application';
+
+    $routes['application'] = 'application';
+    // $routes['application/get'] = 'application/getforid';
+    $routes['application/getforid/.+-(\d+)'] = 'application/getforid/$1';
     $routes['tabcontent'] = 'tabcontent';
 ?>

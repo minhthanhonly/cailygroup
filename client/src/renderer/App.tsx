@@ -78,18 +78,22 @@ export default function App() {
               <Route path="group" element={<Group />} />
               <Route path="group/edit" element={<GroupEdit />} />
               <Route path="module" element={<Module />} />
-              <Route path="application" element={<Application />} />
+
               {/* Khu cua thịnh */}
               <Route path="estimate" element={<Estimate />} />
               <Route path="TravelExpenses" element={<TravelExpenses />} />
               <Route path="ExpenseReport" element={<ExpenseReport />} />
-              <Route path="PriceBusinessReport" element={<PriceBusinessReport />} />
+              <Route
+                path="PriceBusinessReport"
+                element={<PriceBusinessReport />}
+              />
               <Route path="TravelAllowance" element={<TravelAllowance />} />
               {/* Khu cua thịnh */}
 
               <Route path="field" element={<Field />} />
 
-
+              <Route path="application" element={<Application />} />
+              <Route path="application/getforid/:id" />
               <Route path="tabs/tab1" element={<Tab1Content />} />
               <Route path="tabs/tab2" element={<Tab2Content />} />
               <Route path="tabs/tab3" element={<Tab3Content />} />

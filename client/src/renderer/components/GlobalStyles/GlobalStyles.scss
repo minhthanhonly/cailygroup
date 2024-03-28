@@ -9,24 +9,23 @@
   --text-color-second: #4f4f4f;
   --white: #fff;
   --yellow: #ffc107;
-  --yellow01:#FBE5B9;
-  --yellow02:#C78B00;
+  --yellow01: #fbe5b9;
+  --yellow02: #c78b00;
   --red: #dc3545;
-  --red01:#FF0000;
-  --red02:#D61D00;
+  --red01: #ff0000;
+  --red02: #d61d00;
   --purple: #b75aff;
   --orange: #ef5600;
   --green: #89b502;
   --blue: #a7c9eb;
-  --blue01:#038803;
+  --blue01: #038803;
   --pink: #ffdddd;
-  --pink01:#FFA5A5;
+  --pink01: #ffa5a5;
   --header-table: #4682b4;
   --grey: #888888;
-  --grey01:#E9E9E9;
-  --grey02:#919191;
+  --grey01: #e9e9e9;
+  --grey02: #919191;
   --border-color: #888888;
-
 }
 /* -----------------------------------------------
 Table of Contents (common css)
@@ -2015,7 +2014,7 @@ textarea {
 
 /*>>> 2-4-3.  Text     [txt-***]*/
 
-.text-small{
+.text-small {
   font-style: italic;
 }
 .txt-copyright {
@@ -2277,14 +2276,14 @@ textarea {
 }
 
 // box-tab
-.box-tab{
+.box-tab {
   margin-top: 7rem;
-  .lst-branch{
+  .lst-branch {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #707070;
+    // border-bottom: 1px solid #707070;
     margin-bottom: 0;
-    li{
+    li {
       padding: 1rem 0;
       box-sizing: border-box;
       margin-right: 2rem;
@@ -2293,39 +2292,38 @@ textarea {
       border-right: 1px solid hsl(0, 0%, 44%);
       width: 13.1rem;
       text-align: center;
-      a{
+      a {
         color: #111;
         display: block;
         font-size: 1.6rem;
         font-weight: normal;
         padding: 0;
       }
-      
     }
-    .active{
+    .active {
       position: relative;
       padding: 0 0.3rem;
       box-sizing: border-box;
-      &::before{
-        content: "";
+      &::before {
+        content: '';
         position: absolute;
         width: 100%;
         height: 1px;
         left: 0;
         right: 0;
         bottom: -1.1rem;
-        background-color:var(--white)
+        background-color: var(--white);
       }
-      &:hover{
+      &:hover {
         opacity: 100%;
       }
     }
   }
-  .tab-head{
+  .tab-head {
     display: flex;
     align-items: center;
     border-bottom: 1px solid #707070;
-    &__item{
+    &__item {
       padding: 1rem;
       box-sizing: border-box;
       margin-right: 2rem;
@@ -2334,20 +2332,20 @@ textarea {
       border-right: 1px solid hsl(0, 0%, 44%);
       width: 13.1rem;
       text-align: center;
-      a{
+      a {
         color: #111;
         display: block;
         font-size: 1.8rem;
       }
     }
   }
-  .tab-content{
+  .tab-content {
     margin-top: 2rem;
-    background-color: #F1EFEF;
+    background-color: #f1efef;
   }
 }
 
-.lbl01{
+.lbl01 {
   width: 9.5rem;
   border-radius: 5rem;
   color: #000;
@@ -2360,7 +2358,7 @@ textarea {
   line-height: 2.5rem;
 }
 
-.btn02{
+.btn02 {
   width: 11rem;
   color: #fff;
   font-size: 1.5rem;
@@ -2371,19 +2369,18 @@ textarea {
 }
 
 // list-btn
-.list-btn{
+.list-btn {
   position: absolute;
   right: 7rem;
   top: 7.5rem;
-  &__item{
+  &__item {
     display: block;
     margin-bottom: 1rem;
-    span{
+    span {
       background-color: var(--white);
     }
   }
 }
-
 
 /*>>> 2-4-12. Form     [frm-***]*/
 
@@ -2562,6 +2559,22 @@ textarea {
       }
     }
   }
+}
+
+.lbl-blue {
+  background: #d6e8f8;
+}
+.lbl-yellow {
+  background: #fbe5b9;
+}
+.lbl-brown {
+  background: #e9e9e9;
+}
+.lbl-red {
+  background: #ffa5a5;
+}
+.lbl-white {
+  background: #fff;
 }
 
 .box-menberdetails {
