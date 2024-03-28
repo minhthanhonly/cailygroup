@@ -23,7 +23,248 @@ export const Module = () => {
 				module
 				{/* Hiếu */}
 
-				<FromWork />
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+							<div className="grid-row group_box--form ">
+								<div className="group_box--input">
+									<input type="text" className="" />
+								</div>
+								<div className="group_box--input group_box--space">
+									<input type="text" className="" />
+								</div>
+								<div className="group_box--input">
+									<input type="text" className="" />
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+							<div className="grid-row group_box--form ">
+								<div className="group_box--input">
+									<input type="text" className="" />
+								</div>
+								<div className="group_box--input group_box--space">
+									<input type="text" className="" />
+								</div>
+								<div className="group_box--input w100">
+									<input type="text" className="" />
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+
+							<div className="grid-row group_box--form  ">
+								<div className="group_box--input w100">
+									<input type="text" className="" />
+								</div>
+								<div className="group_box--input">
+									<input type="text" className="" />
+								</div>
+								<div className="group_box--input group_box--space">
+									<input type="text" className="" />
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+
+
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+
+							<div className="grid-row group_box--form ">
+								<div className="group_box--checkbox">
+									<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+								</div>
+								<div className="group_box--checkbox">
+									<label><input type="checkbox" name="checkbox" /><span></span>早退</label>
+								</div>
+								<div className="group_box--checkbox">
+									<label><input type="checkbox" name="checkbox" /><span></span>時間外勤務</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+
+							<div className="grid-row group_box--form ">
+								<div className="group_box--checkbox">
+									<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+								</div>
+
+								<div className="group_box--checkbox">
+									<label><input type="checkbox" name="checkbox" /><span></span><input type="text" className="" />時間外勤務</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+							<div className="grid-row group_box--form ">
+								<div className="group_box--box">
+									<h5 className="group_box--h5">■有給休暇</h5>
+									<div className="group_box--flex">
+										<div className="group_box--checkbox">
+											<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+										</div>
+										<div className="group_box--checkbox">
+											<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+										</div>
+										<div className="group_box--checkbox">
+											<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+							<div className="grid-row group_box--form ">
+								<div className="group_box--box">
+									<div className="group_box--flex">
+										<div className="group_box--checkbox">
+											<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+										</div>
+										<div className="group_box--checkbox">
+											<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+										</div>
+										<div className="group_box--checkbox">
+											<label><input type="checkbox" name="checkbox" /><span></span>遅刻</label>
+										</div>
+									</div>
+
+									<input type="text" className="mt-3" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+							<div className="grid-row group_box--form ">
+								<div className="group_box--box">
+									<div className="group_box--flex">
+										<input type="file" id="fileInput" className="group_box--fileInput" />
+										<input type="text" className="w50 box-input" />
+										<button className="group_box--button">ファイル選択</button>
+										<button className="group_box--button group_box--button__red">キャンセル</button>
+										<p>※全てのデータをひとつのフォルダにまとめてzipファイルに圧縮してからアップロードしてください。</p>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+							<div className="grid-row group_box--form ">
+								<div className="group_box--box">
+									<div className="group_box--flex">
+										<input type="text" className="" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間 <span className="txt-red">（必須）</span></p>
+						</div>
+						<div className="group_box__insert">
+							<div className="grid-row group_box--form ">
+								<div className="group_box--box">
+									<div className="group_box--flex">
+										<textarea className="group_box--area"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="group_box">
+					<div className="grid-row group_box--grid">
+						<div className="group_box--title">
+							<p>期間</p>
+						</div>
+						<div className="group_box__insert">
+							<div className="grid-row group_box--form">
+								<div className="group_box--box">
+									<div className="group_box--flex">
+										<textarea className="group_box--area"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* <FromWork /> */}
 				<TableBase />
 
 
@@ -190,7 +431,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<span  className='bg-yellow01 lbl01'>差し戻し</span>
+															<span className='bg-yellow01 lbl01'>差し戻し</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -217,7 +458,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<span  className='bg-grey01 lbl01'>下書き</span>
+															<span className='bg-grey01 lbl01'>下書き</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -271,7 +512,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<span  className='bg-white lbl01'>完了</span>
+															<span className='bg-white lbl01'>完了</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -298,7 +539,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn'>
-															<span  className='bg-white lbl01'>取り消し</span>
+															<span className='bg-white lbl01'>取り消し</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
@@ -320,7 +561,7 @@ export const Module = () => {
 													</div>
 													<div className='list-accordion__item__head__btn'>
 														<p className='list-accordion__item__head__btn__btn list-accordion__item__head__btn__btn--01'>
-															<span  className='bg-blue01 color-white lbl01'>承認する</span>
+															<span className='bg-blue01 color-white lbl01'>承認する</span>
 														</p>
 														<p className='list-accordion__item__head__btn__icn'>
 															<span className='icn-item'><img
