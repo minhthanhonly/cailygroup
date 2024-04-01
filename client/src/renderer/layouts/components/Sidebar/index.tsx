@@ -135,6 +135,14 @@ export const Sidebar = () => {
               Add New Form
             </NavLink>
           </li>
+          <li className="nav-global__item">
+            <NavLink to="/form/detail/2">
+              <span className="icn">
+                <FontAwesomeIcon icon={faFileLines} />
+              </span>
+              Form Detail
+            </NavLink>
+          </li>
         </ul>
       </nav>
       <div className="acount">

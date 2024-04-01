@@ -1,8 +1,9 @@
-import { ReactFormBuilder, ElementStore, Registry } from "react-form-builder2";
+import { ReactFormBuilder, ElementStore, Registry, ReactFormGenerator } from "react-form-builder2";
 import 'react-form-builder2/dist/app.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './form.scss';
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const TestComponent = () => <h2>Hello</h2>;
 const MyInput = React.forwardRef((props, ref) => {
@@ -12,16 +13,35 @@ const MyInput = React.forwardRef((props, ref) => {
 
 const GuisInput = React.forwardRef((props, ref) => {
   const { name } = props;
-  return <input name={name} />;
+  return (
+    <>
+      <div className="group_box">
+        <div className="grid-row group_box--grid">
+          <div className="group_box--title">
+            <p>期間 <span className="txt-red">（必須）</span></p>
+          </div>
+          <div className="group_box__insert">
+            <div className="grid-row group_box--form ">
+              <div className="group_box--box">
+                <div className="group_box--flex">
+                  <input type="text" className="" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 });
 
 // const GuisInput = (name: string) => {
 //   return <input name={name} />
 // }
 
-Registry.register('GuisInput', GuisInput);
-Registry.register('MyInput', MyInput);
-Registry.register('TestComponent', TestComponent);
+// Registry.register('GuisInput', GuisInput);
+// Registry.register('MyInput', MyInput);
+// Registry.register('TestComponent', TestComponent);
 
 
 const items = [{
@@ -92,37 +112,64 @@ const items = [{
   props: { test: 'test_comp' },
   label: 'Label Test',
 },
-{
-  key: 'MyInput',
-  element: 'CustomElement',
-  component: MyInput,
-  type: 'custom',
-  forwardRef: true,
-  field_name: 'my_input_',
-  name: 'My Input',
-  icon: 'fa fa-cog',
-  props: { test: 'test_input' },
-  label: 'Label Input',
-},
-{
-  key: 'GuisInput',
-  element: 'CustomElement',
-  component: GuisInput,
-  type: 'custom',
-  field_name: 'guis_input_',
-  name: 'Guis Input',
-  icon: 'fa fa-cog',
-  label: 'Guis Input',
-},
+// {
+//   key: 'MyInput',
+//   element: 'CustomElement',
+//   component: MyInput,
+//   type: 'custom',
+//   forwardRef: true,
+//   field_name: 'my_input_',
+//   name: 'My Input',
+//   icon: 'fa fa-cog',
+//   props: { test: 'test_input' },
+//   label: 'Label Input',
+// },
+// {
+//   key: 'GuisInput',
+//   element: 'CustomElement',
+//   component: GuisInput,
+//   type: 'custom',
+//   field_name: 'guis_input_',
+//   name: 'Guis Input',
+//   icon: 'fa fa-cog',
+//   label: 'Guis Input',
+// },
 ];
 
 export default function FormAdd(){
+  const axiosPrivate = useAxiosPrivate();
+	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'})
+  const [reactFormData, setReactFormData] = useState<any>([]);
+
+  const handleInput = (e) => {
+		setFormValue({ ...formValue, [e.target.name]: e.target.value })
+	}
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = { form_name: formValue.form_name, reactFormData, status: formValue.status, owner: formValue.owner }
+    const res = await axiosPrivate.post("form/add", formData);
+
+
+  }
   return (
     <>
       <div className="c-form">
-        <button className="btn btn-default float-right" style={{ marginRight: '10px' }}>Save Form</button>
+      <h2 className="hdg-lv2">
+        <span>Add new form:</span>
+        <input
+          className="form-input"
+          type="text"
+          name="form_name"
+          value={formValue.form_name} onChange={handleInput}
+        />
+      </h2>
+        <button className="btn btn-default float-right" style={{ marginRight: '10px' }} onClick={handleSubmit}>Save Form</button>
+
         <ReactFormBuilder
-          toolbarItems={items}
+          data={reactFormData}
+          onChange={setReactFormData}
+          onSubmit={handleSubmit}
         />
       </div>
 

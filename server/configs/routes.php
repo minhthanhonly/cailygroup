@@ -83,4 +83,8 @@
     // application
     //$routes['Tab1Content'] = 'application';
     $routes['tabcontent'] = 'tabcontent';
+
+    // Form
+    $routes['form/add'] = 'form/add';
+    $routes['form/detail/.+-(\d+)'] = 'form/detail/$1';
 ?>
