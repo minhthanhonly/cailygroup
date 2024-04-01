@@ -2,7 +2,7 @@
     class DayoffsModel{
         function postAdd($user_id, $date, $time_start, $time_end, $note, $day_number, $status, $owner){
             global $conn;
-            $data = json_decode(file_get_contents("php://input"), true);
+            
             $user_id = $data['group_data']['user_id'];
             $date = $data['group_data']['date'];
             $time_start = $data['group_data']['time_start'];
@@ -26,9 +26,10 @@
             }
             $conn->close();
         }
-        
         function getDayoffs(){
             global $conn;
+
+            
             $groupFilter = isset($_GET['group']) ? mysqli_real_escape_string($conn, $_GET['group']) : 'all';
             $query = "SELECT dayoffs.*, 
                         users.realname,
@@ -68,8 +69,8 @@
             else{
                 $dayoffs = [];
             }
-            $conn->close();
             echo json_encode($dayoffs);
+            $conn->close();
         }
         function getDayoffsUser($id){
             global $conn;

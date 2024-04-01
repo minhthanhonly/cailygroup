@@ -112,6 +112,12 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
+            {/* <NavLink to="/tabs/tab2"> */}
+            <NavLink to="/application">
+              application
+            </NavLink>
+          </li>
+          <li className="nav-global__item">
             <NavLink to="/estimate">
               <span className="icn">
                 {/* <FontAwesomeIcon icon={faCalendarDays} /> */}

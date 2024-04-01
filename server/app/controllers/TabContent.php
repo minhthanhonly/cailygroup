@@ -14,6 +14,8 @@
         function index(){
             return $this->model('TabContentModel')->getTabContent();
         }
-        
+        function index(){
+                return $this->model('TabContentModel')->getAplication();
+        }
     }
 ?>
