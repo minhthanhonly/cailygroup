@@ -11,11 +11,14 @@
         //         return $this->model('Tab1ContentModel')->getTab1Content();
         //     }
         // }
+        // function index(){
+        //     return $this->model('TabContentModel')->getTabContent();
+        // }
+        // function index(){
+        //         return $this->model('TabContentModel')->getAplication();
+        // }
         function index(){
-            return $this->model('TabContentModel')->getTabContent();
-        }
-        function index(){
-                return $this->model('TabContentModel')->getAplication();
+            return $this->model('TabContentModel')->getComment();
         }
     }
 ?>

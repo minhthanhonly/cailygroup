@@ -18,7 +18,7 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { useContext, useEffect, useState } from 'react';
-import axios from "../../../api/axios";
+import axios from '../../../api/axios';
 import { Button } from '../../../components/Button';
 import useAuth from '../../../hooks/useAuth';
 import { UserRole } from '../../../components/UserRole';
@@ -42,10 +42,10 @@ export const Sidebar = () => {
 
   const [formValue, setFormValue] = useState({ realname: '', group_name: '' });
   useEffect(() => {
-    axios.get('users/detail/' + users.userid).then(response => {
+    axios.get('users/detail/' + users.userid).then((response) => {
       setFormValue(response.data);
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <div className="sidebar">
@@ -82,22 +82,30 @@ export const Sidebar = () => {
               Nghỉ phép
             </NavLink>
           </li>
-          {(isAdmin || isManager) ? <li className="nav-global__item">
-            <NavLink to="/members">
-              <span className="icn">
-                <FontAwesomeIcon icon={faUsers} />
-              </span>
-              Thành viên
-            </NavLink>
-          </li> : ''}
-          {(isAdmin || isManager) ? <li className="nav-global__item">
-            <NavLink to="/group">
-              <span className="icn">
-                <FontAwesomeIcon icon={faBarsProgress} />
-              </span>
-              Quản lý nhóm
-            </NavLink>
-          </li> : ''}
+          {isAdmin || isManager ? (
+            <li className="nav-global__item">
+              <NavLink to="/members">
+                <span className="icn">
+                  <FontAwesomeIcon icon={faUsers} />
+                </span>
+                Thành viên
+              </NavLink>
+            </li>
+          ) : (
+            ''
+          )}
+          {isAdmin || isManager ? (
+            <li className="nav-global__item">
+              <NavLink to="/group">
+                <span className="icn">
+                  <FontAwesomeIcon icon={faBarsProgress} />
+                </span>
+                Quản lý nhóm
+              </NavLink>
+            </li>
+          ) : (
+            ''
+          )}
           <li className="nav-global__item">
             <NavLink to="/module">
               <span className="icn">
@@ -107,15 +115,11 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
-            <NavLink to="/tabs/tab2">
-              申請状況
-            </NavLink>
+            <NavLink to="/tabs/tab2">申請状況</NavLink>
           </li>
           <li className="nav-global__item">
             {/* <NavLink to="/tabs/tab2"> */}
-            <NavLink to="/application">
-              application
-            </NavLink>
+            <NavLink to="/application">application</NavLink>
           </li>
           <li className="nav-global__item">
             <NavLink to="/estimate">
@@ -147,13 +151,16 @@ export const Sidebar = () => {
         <div className="acount__inner">
           <figure className="acount__avatar">
             <img
-              src='https://placehold.jp/50x50.png'
+              src="https://placehold.jp/50x50.png"
               alt=""
               className="fluid-image"
             />
           </figure>
           <div className="acount__info">
-            <NavLink to={"/users/detail/" + users.userid} className="acount__name">
+            <NavLink
+              to={'/users/detail/' + users.userid}
+              className="acount__name"
+            >
               {users.realname}
             </NavLink>
             <p className="acount__des">Nhóm: {users.user_group}</p>
