@@ -29,8 +29,8 @@ export const ExpenseReport = () => {
     // const [rows, setRows] = useState([{ id: 0, values: ['', ''] }]);
     const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: 0, note: '' }]);
     const [total, setTotal] = useState(0);
-    const [priceNotTax, setPriceNotTax] = useState(0);
-    const [priceTax, setPriceTax] = useState(0);
+    const [totalPriceNotTax, setTotalPriceNotTax] = useState<number>(0);
+    const [totalpriceTax, setTotalPriceTax] = useState(0);
 
 
     const [priceNotax, setPriceNotax] = useState<string[]>(new Array(rows.length).fill(''));
@@ -65,6 +65,11 @@ export const ExpenseReport = () => {
             newTax[index] = formattedValue;
             setTax(newTax);
         }
+
+        const total = newRows.reduce((acc, row) => acc + row.priceNotax, 0);
+        const total2 = newRows.reduce((acc, row) => acc + row.tax, 0);
+        setTotalPriceNotTax(total);
+        setTotalPriceTax(total2);
     };
 
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
@@ -125,10 +130,11 @@ export const ExpenseReport = () => {
 
 
     const saveExpense = async (status: number) => {
+
         try {
             const isValid = checkBeforeSave();
             if (isValid) {
-                // Tạo mảng requestData.dataToSend từ rows và checkedState
+                // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
                 const dataToSend = rows.map((row, index) => ({
                     date: date,
                     route: row.route,
@@ -139,15 +145,15 @@ export const ExpenseReport = () => {
                     note: row.note
                 }));
 
-                // Tạo đối tượng requestData
+                // Tạo đối tượng JSON chứa các mảng dữ liệu
                 const requestData = {
-                    dataToSend: dataToSend,
+                    rows: dataToSend,
                     owner: users.realname,
                     table_id: selectedId,
                     id_status: status
                 };
 
-                // Gửi yêu cầu POST với dữ liệu requestData
+                // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
                 const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
 
                 if (response.status >= 200 && response.status < 300) {
@@ -196,7 +202,7 @@ export const ExpenseReport = () => {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="DD-MM" /></td>
+                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY-MM-DD HH:mm:ss" /></td>
                                     <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'route')} /></td>
                                     <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'paymentDestination')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceNotax[index]} onChange={(e) => handleNumberChange(e, index, 'priceNotax')} /></td>
@@ -219,8 +225,8 @@ export const ExpenseReport = () => {
                         <tbody>
                             <tr>
                                 <th className='rowspan'>小計</th>
-                                <td>{priceNotTax.toLocaleString()}</td>
-                                <td>{priceTax.toLocaleString()}</td>
+                                <td>{totalPriceNotTax.toLocaleString()}</td>
+                                <td>{totalpriceTax.toLocaleString()}</td>
                             </tr>
                             <tr>
                                 <th className='rowspan'>合計（税込）</th>
