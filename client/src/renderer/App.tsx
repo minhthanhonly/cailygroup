@@ -36,6 +36,7 @@ import { Tab5Content } from './components/Tabs/Tab5Content';
 import { Tab6Content } from './components/Tabs/Tab6Content';
 import { Tab7Content } from './components/Tabs/Tab7Content';
 import FormAdd from './pages/Form/FormAdd';
+import FormDetail from './pages/Form/FormDetail';
 
 export default function App() {
   return (
@@ -78,18 +79,22 @@ export default function App() {
               <Route path="group" element={<Group />} />
               <Route path="group/edit" element={<GroupEdit />} />
               <Route path="module" element={<Module />} />
-              <Route path="application" element={<Application />} />
+
               {/* Khu cua thịnh */}
               <Route path="estimate" element={<Estimate />} />
               <Route path="TravelExpenses" element={<TravelExpenses />} />
               <Route path="ExpenseReport" element={<ExpenseReport />} />
-              <Route path="PriceBusinessReport" element={<PriceBusinessReport />} />
+              <Route
+                path="PriceBusinessReport"
+                element={<PriceBusinessReport />}
+              />
               <Route path="TravelAllowance" element={<TravelAllowance />} />
               {/* Khu cua thịnh */}
 
               <Route path="field" element={<Field />} />
 
-
+              <Route path="application" element={<Application />} />
+              <Route path="application/getforid/:id" />
               <Route path="tabs/tab1" element={<Tab1Content />} />
               <Route path="tabs/tab2" element={<Tab2Content />} />
               <Route path="tabs/tab3" element={<Tab3Content />} />
@@ -99,6 +104,7 @@ export default function App() {
               <Route path="tabs/tab7" element={<Tab7Content />} />
 
               <Route path="form/add" element={<FormAdd />} />
+              <Route path="form/detail/:id" element={<FormDetail />} />
             </Route>
           </Route>
           <Route path="/login" element={<FluidLayout />}>

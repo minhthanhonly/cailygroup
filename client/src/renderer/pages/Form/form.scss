@@ -10,6 +10,16 @@
     margin-top: -25px;
     width: 30%;
   }
+  .btn{
+    width: auto;
+    background: none;
+    color: var(--black);
+    padding: 0 1rem;
+  }
+  .react-form-builder-preview .Sortable .rfb-item .toolbar-header .toolbar-header-buttons{
+    margin-top: 0;
+    right: 0;
+  }
 }
 
 .modal {

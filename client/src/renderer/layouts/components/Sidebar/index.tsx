@@ -112,6 +112,12 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
+            {/* <NavLink to="/tabs/tab2"> */}
+            <NavLink to="/application">
+              application
+            </NavLink>
+          </li>
+          <li className="nav-global__item">
             <NavLink to="/estimate">
               <span className="icn">
                 {/* <FontAwesomeIcon icon={faCalendarDays} /> */}
@@ -133,6 +139,14 @@ export const Sidebar = () => {
                 <FontAwesomeIcon icon={faFileLines} />
               </span>
               Add New Form
+            </NavLink>
+          </li>
+          <li className="nav-global__item">
+            <NavLink to="/form/detail/2">
+              <span className="icn">
+                <FontAwesomeIcon icon={faFileLines} />
+              </span>
+              Form Detail
             </NavLink>
           </li>
         </ul>

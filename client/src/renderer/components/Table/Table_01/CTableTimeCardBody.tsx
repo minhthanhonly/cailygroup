@@ -518,6 +518,7 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const fetchHolidays = async () => {
     try {
       const response = await axiosPrivate.get('holidays');
+      console.log(response.data)
       if (response.data && Array.isArray(response.data)) {
         setHolidays(response.data);
       }
