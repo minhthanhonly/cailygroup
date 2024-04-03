@@ -1,8 +1,32 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from 'react-multi-date-picker';
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useLocation } from 'react-router-dom';
+import { toast } from "react-toastify";
+
+
+interface Row {
+    id: number;
+    railwayName: string;
+    router: string;
+    startroad: string;
+    endroad: string;
+    monthlyticket: number;
+    roundtrip: number;
+    note: string;
+}
+
 
 export const TravelAllowance = () => {
 
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const selectedId = searchParams.get('selectedId');
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+    const axiosPrivate = useAxiosPrivate();
+
+    const [rows, setRows] = useState([{ id: 0, railwayName: '', router: '', startroad: '', endroad: '', monthlyticket: 0, roundtrip: 0, note: '' }]);
+    const [totalColumnSum, setTotalColumnSum] = useState([0, 0]);
     const [isNew, setNew] = useState(true);
     const [isChange, setChange] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -44,25 +68,41 @@ export const TravelAllowance = () => {
     }
 
 
-    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, rowIndex: number, columnIndex: number) => {
-        const inputValue = event.target.value;
-        const sanitizedValue = inputValue.replace(/,/g, '');
-        const newValue = parseInt(sanitizedValue, 10);
-        const newRows = [...rows];
-        newRows[rowIndex].values[columnIndex] = isNaN(newValue) ? '' : newValue.toLocaleString();
-        setRows(newRows);
 
-        // Tính tổng của cột
-        const newTotalColumnSum = [...totalColumnSum];
-        let sum = 0;
-        newRows.forEach((row) => {
-            const value = parseInt(row.values[columnIndex].replace(/,/g, ''), 10);
-            if (!isNaN(value)) {
-                sum += value;
-            }
-        });
-        newTotalColumnSum[columnIndex] = sum;
-        setTotalColumnSum(newTotalColumnSum);
+    const [monthlyticket, setmonthlyticket] = useState<string[]>(new Array(rows.length).fill(''));
+    const [roundtrip, setroundtrip] = useState<string[]>(new Array(rows.length).fill(''));
+
+
+    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'monthlyticket' | 'roundtrip') => {
+        let inputValue = event.target.value;
+        // Loại bỏ các ký tự không phải số
+        inputValue = inputValue.replace(/[^0-9]/g, '');
+
+        // Kiểm tra xem giá trị sau khi loại bỏ ký tự không phải số có là chuỗi rỗng không
+        if (inputValue === '') {
+            // Nếu là chuỗi rỗng, có thể gán giá trị là 0 hoặc bất kỳ giá trị mặc định khác tùy theo yêu cầu của bạn
+            inputValue = '0';
+        }
+
+        const newValue = parseInt(inputValue, 10);
+        const formattedValue = newValue.toLocaleString();
+
+        const newRows: Row[] = [...rows];
+        const rowToUpdate = newRows[index];
+        if (rowToUpdate) {
+            rowToUpdate[field] = newValue;
+            setRows(newRows);
+        }
+
+        if (field === 'monthlyticket') {
+            const newmonthlyticket = [...monthlyticket];
+            newmonthlyticket[index] = formattedValue;
+            setmonthlyticket(newmonthlyticket);
+        } else if (field === 'roundtrip') {
+            const newroundtrip = [...roundtrip];
+            newroundtrip[index] = formattedValue;
+            setroundtrip(newroundtrip);
+        }
     };
 
     const formatNumberWithCommas = (value: number) => {
@@ -72,13 +112,103 @@ export const TravelAllowance = () => {
     };
 
 
+    const [address, setAddress] = useState('');
+    const [station, setstation] = useState('');
+    const handleInputChange02 = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        if (name === 'address') {
+            setAddress(value);
+            // Thực hiện các xử lý khác dựa trên giá trị mới của address
+        } else {
+            setstation(value);
+        }
+    };
 
-    const [rows, setRows] = useState([{ id: 0, values: ['', ''] }]);
-    const [totalColumnSum, setTotalColumnSum] = useState([0, 0]);
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
+        const { value } = event.target;
+        setRows(prevRows => {
+            const newRows = [...prevRows];
+            newRows[index] = { ...newRows[index], [field]: value };
+            return newRows;
+        });
+
+        //   validateInput(value, field, index); // Truyền index vào hàm validateInput
+    };
+
+    const saveAsDraft = async () => {
+        await saveExpense(3); // Trạng thái cho bản nháp
+    };
+
+    const saveAsAwaitingApproval = async () => {
+        await saveExpense(1); // Trạng thái cho đang chờ duyệt
+    };
+
+    const calculateTotalSum = (array: number[]) => {
+        const validValues = array.filter(value => !isNaN(value)); // Lọc các giá trị không phải là số
+        return validValues.reduce((total, value) => total + value, 0);
+    };
+
+    // Tính tổng cho monthlyticket và roundtrip
+    const totalMonthlyTicket = calculateTotalSum(monthlyticket.map(value => parseInt(value.replace(/,/g, ''), 10)));
+    const totalRoundtrip = calculateTotalSum(roundtrip.map(value => parseInt(value.replace(/,/g, ''), 10)));
+
 
     const addRow = () => {
-        const newRow = { id: rows.length, values: ['', ''] };
+        const newRow = { id: rows.length, railwayName: '', router: '', startroad: '', endroad: '', monthlyticket: 0, roundtrip: 0, note: '' };
         setRows([...rows, newRow]);
+    };
+
+    const saveExpense = async (status: number) => {
+
+        try {
+            const additionalData = {
+                isNew: isNew,
+                isChange: isChange,
+                isChangePrice: isChangePrice,
+                address: address,
+                station: station,
+                isStartNow: isStartNow,
+                isStartDate: isStartDate,
+                date_input: date,
+                // Thêm các trường khác nếu cần
+            };
+            // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
+            const dataToSend = rows.map((row, index) => ({
+
+                railwayName: row.railwayName,
+                router: row.router,
+                startroad: row.startroad,
+                endroad: row.endroad,
+                monthlyticket: row.monthlyticket,
+                roundtrip: row.roundtrip,
+                note: row.note
+            }));
+
+            // Tạo đối tượng JSON chứa các mảng dữ liệu
+            const requestData = {
+                rows: dataToSend,
+                owner: users.realname,
+                table_id: selectedId,
+                id_status: status,
+                ...additionalData,
+            };
+
+            // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
+            const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
+
+            if (response.status >= 200 && response.status < 300) {
+                if (status === 1) {
+                    toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
+                } else {
+                    toast.success('Bạn Lưu vào bản nháp thành công');
+                }
+            } else {
+                console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
+            }
+
+        } catch (error) {
+            console.error('Error saving expenses:', error);
+        }
     };
     return (
         <>
@@ -107,7 +237,8 @@ export const TravelAllowance = () => {
                     <th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
                     <td>
                         <div className='tb-from--td'>
-                            <input type="text" className='tb-from--input' />
+                            <input type="text" className='tb-from--input' name="address" value={address}
+                                onChange={handleInputChange02} />
                         </div>
                     </td>
                 </tr>
@@ -115,7 +246,8 @@ export const TravelAllowance = () => {
                     <th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
                     <td>
                         <div className='tb-from--td'>
-                            <input type="text" className='tb-from--input' />
+                            <input type="text" className='tb-from--input' name="station" value={station}
+                                onChange={handleInputChange02} />
                         </div>
                     </td>
                 </tr>
@@ -134,7 +266,6 @@ export const TravelAllowance = () => {
                                     <span></span>
                                     <DatePicker className="tb-from--checkbox__date" onChange={(_date) => handleLeaveDateChange()} value={date} format="DD-MM" />
                                     <p>から適用</p>
-
                                 </label>
 
                             </div>
@@ -161,12 +292,12 @@ export const TravelAllowance = () => {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr>
-                                    <td><input type="text" /></td>
-                                    <td><input type="text" /></td>
-                                    <td> <p className='grid-row grid--flex'> <input className='width_auto' type="text" /> ↔ <input className='width_auto' type="text" /></p></td>
+                                    <td><input type="text" value={row.railwayName} onChange={(e) => handleInputChange(e, index, 'railwayName')} /></td>
+                                    <td><input type="text" value={row.router} onChange={(e) => handleInputChange(e, index, 'router')} /></td>
+                                    <td> <p className='grid-row grid--flex'> <input className='width_auto' type="text" value={row.startroad} onChange={(e) => handleInputChange(e, index, 'startroad')} /> ↔ <input className='width_auto' type="text" value={row.endroad} onChange={(e) => handleInputChange(e, index, 'endroad')} /></p></td>
                                     <td>
-                                        <input className="numberInput" type="text" placeholder="税率を入力" value={row.values[0]} onChange={(e) => handleNumberChange(e, index, 0)} />
-                                        <input className="numberInput" type="text" placeholder="税率を入力" value={row.values[1]} onChange={(e) => handleNumberChange(e, index, 1)} />
+                                        <input className="numberInput" type="text" placeholder="税率を入力" value={monthlyticket[index]} onChange={(e) => handleNumberChange(e, index, 'monthlyticket')} />
+                                        <input className="numberInput" type="text" placeholder="税率を入力" value={roundtrip[index]} onChange={(e) => handleNumberChange(e, index, 'roundtrip')} />
                                     </td>
                                     <td><input className="input_noboder" placeholder="入力してください" type="text" /></td>
                                 </tr>
@@ -181,10 +312,10 @@ export const TravelAllowance = () => {
                         <tbody>
                             <tr>
                                 <th className='rowspan' rowSpan={2}>合計</th>
-                                <td>{formatNumberWithCommas(totalColumnSum[0])}</td>
+                                <td>{totalMonthlyTicket !== 0 ? formatNumberWithCommas(totalMonthlyTicket) : '0'}</td>
                             </tr>
                             <tr>
-                                <td>{formatNumberWithCommas(totalColumnSum[1])}</td>
+                                <td>{totalMonthlyTicket !== 0 ? formatNumberWithCommas(totalRoundtrip) : '0'}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -206,7 +337,10 @@ export const TravelAllowance = () => {
                     <p className='plus-row box-router__edit--content'>承認ルートを編集</p>
                 </div>
             </div>
-            <div className="wrp-button"><button className="btn btn--from btn--gray">下書き保存</button><button className="btn btn--from btn--blue">申請する</button></div>
+            <div className="wrp-button">
+                <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
+                <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
+            </div>
         </>
     )
 }

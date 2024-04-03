@@ -89,4 +89,8 @@
     $routes['application/deletecomment/.+-(\d+)'] = 'application/deletecomment/$1';
     $routes['application/addcomment'] = 'application/addcomment';
     $routes['tabcontent'] = 'tabcontent';
+
+    // Form
+    $routes['form/add'] = 'form/add';
+    $routes['form/detail/.+-(\d+)'] = 'form/detail/$1';
 ?>
