@@ -87,7 +87,7 @@
 			global $conn;
 
 			// Thực hiện truy vấn SELECT
-			$sql = "SELECT form FROM forms WHERE id='4'";
+			$sql = "SELECT form FROM forms WHERE id='2'";
 
 			$result = $conn->query($sql);
 

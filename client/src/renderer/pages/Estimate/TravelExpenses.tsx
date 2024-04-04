@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-multi-date-picker';
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useLocation } from 'react-router-dom';
+import moment from 'moment';
 import { toast } from "react-toastify";
 
 interface Row {
@@ -132,12 +133,16 @@ export const TravelExpenses = () => {
     };
 
     const saveExpense = async (status: number) => {
+
         try {
+            const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
             const isValid = checkBeforeSave();
             if (isValid) {
                 // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
+                // const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
+
                 const rowData = rows.map(row => ({
-                    date: date,
+                    date: formattedDate,
                     route: row.route,
                     boardingStation: row.boardingStation,
                     alightingStation: row.alightingStation,
@@ -199,7 +204,7 @@ export const TravelExpenses = () => {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY-MM-DD HH:mm" /></td>
+                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY/MM/DD HH:mm:ss" /></td>
                                     <td><input type="text" value={row.route} onChange={(e) => handleInputChange(e, index, 'route')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.boardingStation} onChange={(e) => handleInputChange(e, index, 'boardingStation')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.alightingStation} onChange={(e) => handleInputChange(e, index, 'alightingStation')} placeholder='入力してください' /></td>

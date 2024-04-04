@@ -3,6 +3,7 @@ import DatePicker from 'react-multi-date-picker';
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
+import moment from 'moment';
 
 
 interface Row {
@@ -130,13 +131,14 @@ export const ExpenseReport = () => {
 
 
     const saveExpense = async (status: number) => {
-
+        const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
         try {
             const isValid = checkBeforeSave();
             if (isValid) {
                 // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
+
                 const dataToSend = rows.map((row, index) => ({
-                    date: date,
+                    date: formattedDate,
                     route: row.route,
                     paymentDestination: row.paymentDestination,
                     priceNotax: row.priceNotax,

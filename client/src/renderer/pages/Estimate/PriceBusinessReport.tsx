@@ -3,10 +3,15 @@ import DatePicker from 'react-multi-date-picker';
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
+import moment from "moment";
+
+import { DateObject } from 'react-multi-date-picker';
+
 
 interface Row {
     id: number;
     project: string;
+    date: string; // Thêm thuộc tính 'date' với kiểu string
     priceTrain: number;
     priceHouse: number;
     priceCustomer: number;
@@ -28,7 +33,7 @@ export const PriceBusinessReport = () => {
     const axiosPrivate = useAxiosPrivate();
 
 
-    const [rows, setRows] = useState<Row[]>([{ id: 0, project: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' }]);
+    const [rows, setRows] = useState<Row[]>([{ id: 0, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' }]);
     const [date, setDate] = useState(new Date());
     const [selectedFileName, setSelectedFileName] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -113,8 +118,13 @@ export const PriceBusinessReport = () => {
             calculateTotalSum();
         }
     };
-    const handleLeaveDateChange02 = () => {
+    const handleLeaveDateChange02 = (date: DateObject | DateObject[] | null, index: number) => {
+        console.log("Date received:", date);
         const newRows = [...rows];
+        if (date && !Array.isArray(date)) { // Kiểm tra nếu date không phải là một mảng
+            const normalDate = date.toDate(); // Chuyển đổi đối tượng ngày sang một đối tượng ngày thông thường
+            newRows[index] = { ...newRows[index], date: moment(normalDate).format("YYYY/MM/DD HH:mm:ss") };
+        }
         setRows(newRows);
     };
     const handleFileChange = () => {
@@ -244,7 +254,7 @@ export const PriceBusinessReport = () => {
 
 
     const addRow = () => {
-        const newRow = { id: rows.length, project: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' };
+        const newRow = { id: rows.length, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' };
         setRows([...rows, newRow]);
         calculateTotalSum();
     };
@@ -252,13 +262,18 @@ export const PriceBusinessReport = () => {
 
     const saveExpense = async (status: number) => {
 
+
+        const dateStart = moment(dateRange.dateStart).format("YYYY/MM/DD HH:mm:ss");
+        const dateEnd = moment(dateRange.dateEnd).format("YYYY/MM/DD HH:mm:ss");
+        const date_form = moment(date).format("YYYY/MM/DD HH:mm:ss");
+
         try {
             const additionalData = {
                 isDomestic: isDomestic,
                 isForeign: isForeign,
                 addressDomesticForeign: addressDomesticForeign, // giả sử bạn đã định nghĩa biến này trong phần state
-                dateStart: dateRange.dateStart,
-                dateEnd: dateRange.dateEnd,
+                dateStart: dateStart,
+                dateEnd: dateEnd,
                 selectedFileName: selectedFileName,
                 inputDate: inputDate,
                 inputValue: inputValue,
@@ -266,7 +281,7 @@ export const PriceBusinessReport = () => {
             };
             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
             const dataToSend = rows.map((row, index) => ({
-                date: date,
+                date: date_form,
                 project: row.project,
                 priceTrain: row.priceTrain,
                 priceHouse: row.priceHouse,
@@ -382,7 +397,7 @@ export const PriceBusinessReport = () => {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange02()} value={date} format="DD-MM" /> </td>
+                                    <td><DatePicker onChange={(_date) => handleLeaveDateChange02(_date, index)} value={date} format="YYYY/MM/DD HH:mm:ss" /> </td>
                                     <td><input type="text" value={row.project} onChange={(e) => handleInputChange(e, index, 'project')} placeholder='入力してください' /></td>
 
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceTrain[index]} onChange={(e) => handleNumberChange(e, index, 'priceTrain')} /></td>

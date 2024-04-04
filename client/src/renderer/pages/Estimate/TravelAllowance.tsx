@@ -3,6 +3,7 @@ import DatePicker from 'react-multi-date-picker';
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
+import moment from "moment";
 
 
 interface Row {
@@ -160,6 +161,9 @@ export const TravelAllowance = () => {
 
     const saveExpense = async (status: number) => {
 
+
+        const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
+
         try {
             const additionalData = {
                 isNew: isNew,
@@ -169,7 +173,7 @@ export const TravelAllowance = () => {
                 station: station,
                 isStartNow: isStartNow,
                 isStartDate: isStartDate,
-                date_input: date,
+                date_input: formattedDate,
                 // Thêm các trường khác nếu cần
             };
             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
@@ -264,7 +268,7 @@ export const TravelAllowance = () => {
                                 <label>
                                     <input type="checkbox" name="checkbox" checked={isStartDate} onChange={handleStartDateCheck} />
                                     <span></span>
-                                    <DatePicker className="tb-from--checkbox__date" onChange={(_date) => handleLeaveDateChange()} value={date} format="DD-MM" />
+                                    <DatePicker className="tb-from--checkbox__date" onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY/MM/DD HH:mm:ss" />
                                     <p>から適用</p>
                                 </label>
 
