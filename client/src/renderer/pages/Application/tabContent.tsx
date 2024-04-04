@@ -22,6 +22,7 @@ export const TabContent = ({ id }) => {
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
+
   useEffect(() => {
     const Load = async () => {
       try {
@@ -39,6 +40,7 @@ export const TabContent = ({ id }) => {
     try {
       const response = await axiosPrivate.get('application/getcomment/' + id);
       const commentData = response.data;
+
       // Xử lý dữ liệu dựa trên kiểu dữ liệu trả về
       if (Array.isArray(commentData)) {
         // Lặp qua mỗi bình luận và ghi nhận tên thực của người dùng
@@ -134,7 +136,10 @@ export const TabContent = ({ id }) => {
     }
   };
 
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
   const handleSubmit = async () => {
+    console.log('ssss', users.roles);
+
     const note = textValue.trim(); // Loại bỏ các khoảng trắng dư thừa
     if (note.length === 0) {
       console.error('Không thể thêm comment: Nội dung trống');
@@ -143,7 +148,7 @@ export const TabContent = ({ id }) => {
     try {
       const comment_data = {
         note: textValue,
-        user_id: 71,
+        user_id: users.id,
         id_register: id,
       };
       //console.log(comment_data);
@@ -312,7 +317,8 @@ export const TabContent = ({ id }) => {
                                     >
                                       <p className="box-approves__item__content__comment__head">
                                         <span className="box-approves__item__content__comment__title">
-                                          {commentItem.user_id}
+                                          {/* {commentItem.user_id} */}
+                                          {commentItem.realname}
                                           ：（{commentItem.createdAt}）
                                         </span>
                                         <span
