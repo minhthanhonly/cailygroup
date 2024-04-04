@@ -1,37 +1,119 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from 'react-multi-date-picker';
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useLocation } from 'react-router-dom';
+import { toast } from "react-toastify";
+
+interface Row {
+    id: number;
+    project: string;
+    priceTrain: number;
+    priceHouse: number;
+    priceCustomer: number;
+    priceEat: number;
+    priceOther: number;
+    totalPrice: number;
+    note: string;
+}
+
+
 
 
 export const PriceBusinessReport = () => {
-    const [rows, setRows] = useState([{ id: 0, values: ['', '', '', '', ''] }]);
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const selectedId = searchParams.get('selectedId');
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+    const axiosPrivate = useAxiosPrivate();
+
+
+    const [rows, setRows] = useState<Row[]>([{ id: 0, project: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' }]);
     const [date, setDate] = useState(new Date());
     const [selectedFileName, setSelectedFileName] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [isDomestic, setDomestic] = useState(true);
-    const [isForeign, setForeign] = useState(false);
+    const [isDomestic, setDomestic] = useState(1);
+    const [isForeign, setForeign] = useState(0);
     const [totalColumnSum, setTotalColumnSum] = useState<number>(0);
 
     const [inputValue, setInputValue] = useState<number>(0);
     const [inputDate, setInputDate] = useState<number>(0);
     // const [totalPriceDate, setPriceDate] = useState<number>(0);
+    const [totalSum, setTotalSum] = useState<number>(0);
+
+    const [addressDomesticForeign, setAddressDomesticForeign] = useState('');
+    const [dateRange, setDateRange] = useState<{ dateStart: Date | null, dateEnd: Date | null }>({
+        dateStart: date,
+        dateEnd: date
+    });
+
+    const handleLeaveDateChange = (date: Date | null, type: 'start' | 'end') => {
+        setDateRange(prevState => ({
+            ...prevState,
+            [type === 'start' ? 'dateStart' : 'dateEnd']: date
+        }));
+    };
+
+    const handleInputChangeAdress = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setAddressDomesticForeign(event.target.value);
+        // Đây là nơi bạn có thể thực hiện các xử lý khác dựa trên giá trị mới của inputText
+    };
+
+    const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
+
+    const validateInput = (value: string, fieldName: string, index: number) => {
+        const newVisibleErrors = [...visibleErrors];
+
+        if (!value && !newVisibleErrors.includes(fieldName)) {
+            newVisibleErrors.push(fieldName); // Thêm lỗi chỉ khi giá trị rỗng và lỗi chưa được hiển thị
+        } else if (value && newVisibleErrors.includes(fieldName)) {
+            // Loại bỏ lỗi nếu giá trị không rỗng và lỗi đã được hiển thị
+            const errorIndex = newVisibleErrors.indexOf(fieldName);
+            newVisibleErrors.splice(errorIndex, 1);
+        }
+
+        setVisibleErrors(newVisibleErrors);
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
+        const { value } = event.target;
+        setRows(prevRows => {
+            const newRows = [...prevRows];
+            newRows[index] = { ...newRows[index], [field]: value };
+            return newRows;
+        });
+
+        validateInput(value, field, index); // Truyền index vào hàm validateInput
+    };
 
 
     const handleDomesticCheck = () => {
-        setDomestic(!isDomestic);
-        if (isForeign) setForeign(false); // Deselect early leave if late is selected
+        setDomestic(isDomestic === 1 ? 0 : 1);
+        if (isForeign === 1) setForeign(0); // Deselect early leave if late is selected
     };
 
     const handleForeignCheck = () => {
-        setForeign(!isForeign);
-        if (isDomestic) setDomestic(false); // Deselect late if early leave is selected
+        setForeign(isForeign === 1 ? 0 : 1);
+        if (isDomestic === 1) setDomestic(0); // Deselect late if early leave is selected
     };
 
     // thêm 
-    const addRow = () => {
-        const newRow = { id: rows.length, values: ['', '', '', '', ''] };
-        setRows([...rows, newRow]);
+
+    const updateRow = (updatedRow: Row) => {
+        // Tìm chỉ mục của dòng được cập nhật trong mảng rows
+        const rowIndex = rows.findIndex(row => row.id === updatedRow.id);
+        if (rowIndex !== -1) {
+            // Tạo một bản sao của mảng rows
+            const updatedRows = [...rows];
+            // Cập nhật dòng tương ứng trong mảng rows với dữ liệu mới
+            updatedRows[rowIndex] = updatedRow;
+            // Cập nhật mảng rows với dữ liệu đã được cập nhật
+            setRows(updatedRows);
+            // Gọi hàm calculateTotalSum để tính toán lại tổng
+            calculateTotalSum();
+        }
     };
-    const handleLeaveDateChange = () => {
+    const handleLeaveDateChange02 = () => {
         const newRows = [...rows];
         setRows(newRows);
     };
@@ -55,24 +137,77 @@ export const PriceBusinessReport = () => {
 
 
     // ham changed and reda
-    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, rowIndex: number, columnIndex: number) => {
-        const inputValue = event.target.value;
-        const sanitizedValue = inputValue.replace(/,/g, '');
-        const newValue = parseInt(sanitizedValue, 10);
-        const newRows = [...rows];
-        newRows[rowIndex].values[columnIndex] = isNaN(newValue) ? '' : newValue.toLocaleString();
-        setRows(newRows);
+
+    const [priceTrain, setpriceTrain] = useState<string[]>(new Array(rows.length).fill(''));
+    const [priceHouse, setpriceHouse] = useState<string[]>(new Array(rows.length).fill(''));
+    const [priceCustomer, setpriceCustomer] = useState<string[]>(new Array(rows.length).fill(''));
+    const [priceEat, setpriceEat] = useState<string[]>(new Array(rows.length).fill(''));
+    const [priceOther, setpriceOther] = useState<string[]>(new Array(rows.length).fill(''));
+
+
+    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceTrain' | 'priceHouse' | 'priceCustomer' | 'priceEat' | 'priceOther') => {
+        let inputValue = event.target.value;
+        // Loại bỏ các ký tự không phải số
+        inputValue = inputValue.replace(/[^0-9]/g, '');
+
+        // Kiểm tra xem giá trị sau khi loại bỏ ký tự không phải số có là chuỗi rỗng không
+        if (inputValue === '') {
+            // Nếu là chuỗi rỗng, có thể gán giá trị là 0 hoặc bất kỳ giá trị mặc định khác tùy theo yêu cầu của bạn
+            inputValue = '0';
+        }
+
+        const newValue = parseInt(inputValue, 10);
+        const formattedValue = newValue.toLocaleString();
+
+        const newRows: Row[] = [...rows];
+        const rowToUpdate = newRows[index];
+        if (rowToUpdate) {
+            rowToUpdate[field] = newValue;
+            setRows(newRows);
+        }
+
+        if (field === 'priceTrain') {
+            const newpriceTrain = [...priceTrain];
+            newpriceTrain[index] = formattedValue;
+            setpriceTrain(newpriceTrain);
+        } else if (field === 'priceHouse') {
+            const newpriceHouse = [...priceHouse];
+            newpriceHouse[index] = formattedValue;
+            setpriceHouse(newpriceHouse);
+        } else if (field === 'priceCustomer') {
+            const newpriceCustomer = [...priceCustomer];
+            newpriceCustomer[index] = formattedValue;
+            setpriceCustomer(newpriceCustomer);
+        } else if (field === 'priceEat') {
+            const newpriceEat = [...priceEat];
+            newpriceEat[index] = formattedValue;
+            setpriceEat(newpriceEat);
+        }
+        else if (field === 'priceOther') {
+            const newpriceOther = [...priceOther];
+            newpriceOther[index] = formattedValue;
+            setpriceOther(newpriceOther);
+        }
+
+    };
+
+    const calculateTotalSum = () => {
+        const newTotalSum = rows.reduce((acc, row) => {
+            const valuesBeforeColumn5 = [row.priceTrain, row.priceHouse, row.priceCustomer, row.priceEat, row.priceOther].slice(0, 5);
+            const totalForRow = valuesBeforeColumn5.reduce((sum, currentValue) => sum + currentValue, 0);
+            return acc + totalForRow;
+        }, 0);
+        setTotalSum(newTotalSum);
+    };
+
+    const calculateRowSum = (row: Row) => {
+        const valuesBeforeColumn5 = [row.priceTrain, row.priceHouse, row.priceCustomer, row.priceEat, row.priceOther].slice(0, 5);
+        const totalForRow = valuesBeforeColumn5.reduce((acc, currentValue) => acc + currentValue, 0);
+        return totalForRow;
     };
 
     const formatNumberWithCommas = (value: number) => {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
-
-    const calculateRowSum = (row: { values: string[] }) => {
-        return row.values.reduce((acc, curr) => {
-            const value = parseInt(curr.replace(/,/g, ''), 10);
-            return isNaN(value) ? acc : acc + value;
-        }, 0);
     };
 
     const handleInputValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,18 +221,91 @@ export const PriceBusinessReport = () => {
 
     };
 
-    useEffect(() => {
-        // Tính tổng của tất cả các cột khi rows thay đổi và cập nhật giá trị của biến state
-        const sum = rows.reduce((acc, currRow) => acc + calculateRowSum(currRow), 0);
-        setTotalColumnSum(sum);
-    }, [rows]);
-
 
     // tính tổng
     const calculatedPrice = inputDate * 3000;
-    const finalPayment = totalColumnSum - inputValue;
+    const finalPayment = totalSum - inputValue;
 
     const finalTotalPrice = finalPayment + calculatedPrice;
+
+
+    useEffect(() => {
+        calculateTotalSum();
+    }, [rows]); // Lắng nghe sự thay đổi của mảng rows
+
+
+    const saveAsDraft = async () => {
+        await saveExpense(3); // Trạng thái cho bản nháp
+    };
+
+    const saveAsAwaitingApproval = async () => {
+        await saveExpense(1); // Trạng thái cho đang chờ duyệt
+    };
+
+
+    const addRow = () => {
+        const newRow = { id: rows.length, project: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' };
+        setRows([...rows, newRow]);
+        calculateTotalSum();
+    };
+
+
+    const saveExpense = async (status: number) => {
+
+        try {
+            const additionalData = {
+                isDomestic: isDomestic,
+                isForeign: isForeign,
+                addressDomesticForeign: addressDomesticForeign, // giả sử bạn đã định nghĩa biến này trong phần state
+                dateStart: dateRange.dateStart,
+                dateEnd: dateRange.dateEnd,
+                selectedFileName: selectedFileName,
+                inputDate: inputDate,
+                inputValue: inputValue,
+                // Thêm các trường khác nếu cần
+            };
+            // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
+            const dataToSend = rows.map((row, index) => ({
+                date: date,
+                project: row.project,
+                priceTrain: row.priceTrain,
+                priceHouse: row.priceHouse,
+                priceCustomer: row.priceCustomer,
+                priceEat: row.priceEat,
+                priceOther: row.priceOther,
+                totalPrice: calculateRowSum(row),
+
+                // tax: row.tax,
+                // check: checkedState[index], // Trạng thái checkbox tại index tương ứng
+                note: row.note
+            }));
+
+            // Tạo đối tượng JSON chứa các mảng dữ liệu
+            const requestData = {
+                rows: dataToSend,
+                owner: users.realname,
+                table_id: selectedId,
+                id_status: status,
+                ...additionalData,
+            };
+
+            // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
+            const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
+
+            if (response.status >= 200 && response.status < 300) {
+                if (status === 1) {
+                    toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
+                } else {
+                    toast.success('Bạn Lưu vào bản nháp thành công');
+                }
+            } else {
+                console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
+            }
+
+        } catch (error) {
+            console.error('Error saving expenses:', error);
+        }
+    };
     return (
         <>
             <h2 className="hdglv2"><span>出張旅費清算書</span></h2>
@@ -110,12 +318,18 @@ export const PriceBusinessReport = () => {
                         <td>
                             <div className='tb-from--td'>
                                 <div className='tb-from--checkbox'>
-                                    <label><input type="checkbox" name="checkbox" checked={isDomestic} onChange={handleDomesticCheck} /><span></span>遅刻</label>
+                                    <label><input type="checkbox" name="checkbox" checked={isDomestic === 1} onChange={handleDomesticCheck} /><span></span>遅刻</label>
                                 </div>
                                 <div className='tb-from--checkbox'>
-                                    <label><input type="checkbox" name="checkbox" checked={isForeign} onChange={handleForeignCheck} /><span></span>早退</label>
+                                    <label><input type="checkbox" name="checkbox" checked={isForeign === 1} onChange={handleForeignCheck} /><span></span>早退</label>
                                 </div>
-                                <input type="text" className='tb-from--input' />
+                                <input
+                                    type="text"
+                                    className='tb-from--input'
+                                    placeholder="address"
+                                    value={addressDomesticForeign}
+                                    onChange={handleInputChangeAdress}
+                                />
                             </div>
                         </td>
                     </tr>
@@ -124,8 +338,10 @@ export const PriceBusinessReport = () => {
                         <td>
                             <div className='tb-from--td'>
                                 <div className='tb-from--times'>
-                                    <span> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="DD-MM" /></span>
-                                    <span> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="DD-MM" /></span>
+                                    <span>
+                                        <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateStart, 'start')} value={dateRange.dateStart} />
+                                    </span>
+                                    <span> <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateEnd, 'end')} value={dateRange.dateEnd} /></span>
                                 </div>
                             </div>
                         </td>
@@ -144,7 +360,6 @@ export const PriceBusinessReport = () => {
                         </td>
                     </tr>
                 </tbody>
-
             </table>
 
             <div className="table tbl_custom">
@@ -167,15 +382,18 @@ export const PriceBusinessReport = () => {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="DD-MM" /> </td>
-                                    <td><input type="text" placeholder='入力してください' /></td>
-                                    <td><input className="numberInput" type="text" placeholder="税率を入力" value={row.values[0]} onChange={(e) => handleNumberChange(e, index, 0)} /></td>
-                                    <td><input className="numberInput" type="text" placeholder="税率を入力" value={row.values[1]} onChange={(e) => handleNumberChange(e, index, 1)} /></td>
-                                    <td><input className="numberInput" type="text" placeholder="税率を入力" value={row.values[2]} onChange={(e) => handleNumberChange(e, index, 2)} /></td>
-                                    <td><input className="numberInput" type="text" placeholder="税率を入力" value={row.values[3]} onChange={(e) => handleNumberChange(e, index, 3)} /></td>
-                                    <td><input className="numberInput" type="text" placeholder="税率を入力" value={row.values[4]} onChange={(e) => handleNumberChange(e, index, 4)} /></td>
+                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange02()} value={date} format="DD-MM" /> </td>
+                                    <td><input type="text" value={row.project} onChange={(e) => handleInputChange(e, index, 'project')} placeholder='入力してください' /></td>
+
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceTrain[index]} onChange={(e) => handleNumberChange(e, index, 'priceTrain')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceHouse[index]} onChange={(e) => handleNumberChange(e, index, 'priceHouse')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceCustomer[index]} onChange={(e) => handleNumberChange(e, index, 'priceCustomer')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceEat[index]} onChange={(e) => handleNumberChange(e, index, 'priceEat')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceOther[index]} onChange={(e) => handleNumberChange(e, index, 'priceOther')} /></td>
+
                                     <td>{formatNumberWithCommas(calculateRowSum(row))}</td>
-                                    <td><input type="text" placeholder='入力してください' /></td>
+
+                                    <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
                                 </tr>
                             ))}
 
@@ -191,6 +409,7 @@ export const PriceBusinessReport = () => {
                             <tr>
                                 <th>仮払金差引合計</th>
                                 <td>{formatNumberWithCommas(finalPayment)}</td>
+
                             </tr>
                             <tr>
                                 <th>仮払金</th>
@@ -224,7 +443,10 @@ export const PriceBusinessReport = () => {
                     <p className='plus-row box-router__edit--content'>承認ルートを編集</p>
                 </div>
             </div>
-            <div className="wrp-button"><button className="btn btn--from btn--gray">下書き保存</button><button className="btn btn--from btn--blue">申請する</button></div>
+            <div className="wrp-button">
+                <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
+                <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
+            </div>
         </>
     )
 

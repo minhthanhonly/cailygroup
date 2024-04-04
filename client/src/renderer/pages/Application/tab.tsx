@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios, { axiosPrivate } from '../../api/axios';
-import { TabContent } from './tabContent';
+import { TabContent } from '../Application/tabContent';
 
 interface TabContentProps {
   status: string | number;

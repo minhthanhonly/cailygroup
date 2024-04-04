@@ -48,6 +48,7 @@ export const Application = () => {
   useEffect(() => {
     Load();
   }, [activeTab]);
+
   return (
     <div>
       <Heading2 text="申請状況" />

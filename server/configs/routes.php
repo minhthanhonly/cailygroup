@@ -85,6 +85,9 @@
     $routes['application'] = 'application';
     // $routes['application/get'] = 'application/getforid';
     $routes['application/getforid/.+-(\d+)'] = 'application/getforid/$1';
+    $routes['application/getcomment/.+-(\d+)'] = 'application/getcomment/$1';
+    $routes['application/deletecomment/.+-(\d+)'] = 'application/deletecomment/$1';
+    $routes['application/addcomment'] = 'application/addcomment';
     $routes['tabcontent'] = 'tabcontent';
 
     // Form

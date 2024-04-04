@@ -134,44 +134,37 @@ export const TravelExpenses = () => {
     const saveExpense = async (status: number) => {
         try {
             const isValid = checkBeforeSave();
-            // Vòng lặp qua mỗi hàng trong rows để gửi yêu cầu POST riêng biệt cho mỗi hàng
             if (isValid) {
-                for (const row of rows) {
-                    // Tạo một đối tượng mới chứa dữ liệu cho hàng hiện tại
-                    const requestData = {
-                        dataToSend: rows.map(row => ({
-                            date: date,
-                            route: row.route,
-                            boardingStation: row.boardingStation,
-                            alightingStation: row.alightingStation,
-                            amount: row.amount,
-                            mealExpense: row.mealExpense,
-                            note: row.note
-                        })),
-                        owner: users.realname,
-                        table_id: selectedId, // Đặt table_id truyền từ bên kia qua
-                        id_status: status
-                    };
+                // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
+                const rowData = rows.map(row => ({
+                    date: date,
+                    route: row.route,
+                    boardingStation: row.boardingStation,
+                    alightingStation: row.alightingStation,
+                    amount: row.amount,
+                    mealExpense: row.mealExpense,
+                    note: row.note
+                }));
 
-                    // Log dữ liệu trước khi gửi
-                    // console.log('Data to send:', requestData);
+                // Tạo đối tượng JSON chứa các mảng dữ liệu
+                const requestData = {
+                    rows: rowData,
+                    owner: users.realname,
+                    table_id: selectedId,
+                    id_status: status
+                };
 
-                    // Gửi yêu cầu POST với dữ liệu của hàng hiện tại
-                    const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
+                // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
+                const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
 
-                    if (response.status >= 200 && response.status < 300) {
-                        if (status === 1) {
-                            toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-                        }
-                        else {
-                            toast.success('Bạn Lưu vào bản nháp thành công');
-                        }
-                        // console.log('Yêu cầu POST đã thành công!');
-                        // Kiểm tra dữ liệu trả về từ máy chủ
-                        //  console.log('Dữ liệu từ máy chủ:', response.data);
+                if (response.status >= 200 && response.status < 300) {
+                    if (status === 1) {
+                        toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
                     } else {
-                        console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
+                        toast.success('Bạn Lưu vào bản nháp thành công');
                     }
+                } else {
+                    console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
                 }
             }
         } catch (error) {
@@ -206,7 +199,7 @@ export const TravelExpenses = () => {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="DD-MM" /></td>
+                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY-MM-DD HH:mm" /></td>
                                     <td><input type="text" value={row.route} onChange={(e) => handleInputChange(e, index, 'route')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.boardingStation} onChange={(e) => handleInputChange(e, index, 'boardingStation')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.alightingStation} onChange={(e) => handleInputChange(e, index, 'alightingStation')} placeholder='入力してください' /></td>
