@@ -141,6 +141,16 @@ export default function FormAdd(){
 	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'})
   const [reactFormData, setReactFormData] = useState<any>([]);
 
+  const [previewVisible, setPreviewVisible] = useState<boolean>(false);
+  const showPreview = () => {
+    // this.saveFormData()
+    // this.setState({
+    //   previewVisible: true,
+    // });
+    setPreviewVisible(true)
+  };
+
+
   const handleInput = (e) => {
 		setFormValue({ ...formValue, [e.target.name]: e.target.value })
 	}
@@ -149,22 +159,25 @@ export default function FormAdd(){
     e.preventDefault();
     const formData = { form_name: formValue.form_name, reactFormData, status: formValue.status, owner: formValue.owner }
     const res = await axiosPrivate.post("form/add", formData);
-
-
   }
+
+
+
+
   return (
     <>
       <div className="c-form">
-      <h2 className="hdg-lv2">
-        <span>Add new form:</span>
-        <input
-          className="form-input"
-          type="text"
-          name="form_name"
-          value={formValue.form_name} onChange={handleInput}
-        />
-      </h2>
+        <h2 className="hdg-lv2">
+          <span>Add new form:</span>
+          <input
+            className="form-input"
+            type="text"
+            name="form_name"
+            value={formValue.form_name} onChange={handleInput}
+          />
+        </h2>
         <button className="btn btn-default float-right" style={{ marginRight: '10px' }} onClick={handleSubmit}>Save Form</button>
+        <button className="btn btn-primary float-right" style={{ marginRight: '10px' }} onClick={showPreview}>Preview Form</button>
 
         <ReactFormBuilder
           data={reactFormData}
@@ -176,3 +189,7 @@ export default function FormAdd(){
     </>
   )
 }
+function showPreview() {
+  throw new Error("Function not implemented.");
+}
+
