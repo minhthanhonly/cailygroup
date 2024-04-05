@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import DatePicker from 'react-multi-date-picker';
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
 import moment from 'moment';
 
 
+interface Params {
+    id: string;
+}
 interface Row {
     id: number;
     route: string;
@@ -16,11 +18,10 @@ interface Row {
     note: string;
 }
 
-export const ExpenseReport = () => {
+export const ExpenseReport = (props: { id_table: any; }) => {
+    const { id_table } = props;
 
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const selectedId = searchParams.get('selectedId');
+
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
 
@@ -151,7 +152,7 @@ export const ExpenseReport = () => {
                 const requestData = {
                     rows: dataToSend,
                     owner: users.realname,
-                    table_id: selectedId,
+                    table_id: id_table,
                     id_status: status
                 };
 

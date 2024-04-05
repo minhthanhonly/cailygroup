@@ -1,4 +1,4 @@
-import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, useParams } from 'react-router-dom';
 import Home from './pages/Home';
 import { Timecard } from './pages/Timecard';
 import { TimecardSetting } from './pages/Timecard/TimecardSetting';
@@ -39,6 +39,9 @@ import FormAdd from './pages/Form/FormAdd';
 import FormDetail from './pages/Form/FormDetail';
 
 export default function App() {
+  const { id } = useParams<{ id: string }>();
+
+
   return (
     <Router>
       <div className="App">
@@ -81,14 +84,15 @@ export default function App() {
               <Route path="module" element={<Module />} />
 
               {/* Khu cua thịnh */}
+
+
               <Route path="estimate" element={<Estimate />} />
-              <Route path="TravelExpenses" element={<TravelExpenses />} />
-              <Route path="ExpenseReport" element={<ExpenseReport />} />
-              <Route
-                path="PriceBusinessReport"
-                element={<PriceBusinessReport />}
-              />
-              <Route path="TravelAllowance" element={<TravelAllowance />} />
+
+
+              <Route path="estimate/7" element={<TravelExpenses id_table="7" />} />
+              <Route path="estimate/8" element={<ExpenseReport id_table="8" />} />
+              <Route path="estimate/9" element={<PriceBusinessReport id_table="9" />} />
+              <Route path="estimate/10" element={<TravelAllowance id_table="10" />} />
               {/* Khu cua thịnh */}
 
               <Route path="field" element={<Field />} />

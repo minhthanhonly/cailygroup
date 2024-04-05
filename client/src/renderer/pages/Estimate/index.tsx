@@ -4,23 +4,23 @@ import { useEffect, useState } from 'react';
 
 interface Table {
     id: number;
-    name_table: string;
+    name: string;
+    content: string;
 }
 
 export const Estimate = () => {
     const axiosPrivate = useAxiosPrivate();
     const [empty, setEmpty] = useState(false);
     const [listOfTable, setListOfTable] = useState<Table[]>([]); // Sử dụng kiểu dữ liệu Table
+    const [selectedId, setSelectedId] = useState<number | null>(null); // Đặt kiểu dữ liệu cho selectedId là number | null
 
 
-    const [selectedId, setSelectedId] = useState(null);
 
     useEffect(() => {
         const getTables = async () => {
             try {
                 const response = await axiosPrivate.get('estimate');
                 setListOfTable(response.data); // Cập nhật mảng với dữ liệu từ API
-                console.log
                 setEmpty(response.data.length === 0);
             } catch (err) {
                 console.error('Lỗi khi lấy dữ liệu:', err);
@@ -29,21 +29,25 @@ export const Estimate = () => {
         getTables();
     }, []);
 
+    const handleButtonClick = (id: number) => {
+        setSelectedId(id); // Cập nhật selectedId khi click vào button
+    }
+
     return (
         <>
-            {/* <li><NavLink to="/TravelExpenses">交通費清算書</NavLink></li>
-            <li><NavLink to="/ExpenseReport">経費清算書</NavLink></li>
-            <li><NavLink to="/PriceBusinessReport">出張旅費清算書</NavLink></li>
-            <li><NavLink to="/TravelAllowance">通勤手当申請書</NavLink></li> */}
-            <nav>
-                <ul>
-                    {listOfTable.map((data, index) => (
-                        <li key={data.id}>
-                            <NavLink to={`/${data.link}?selectedId=${data.id}`}>{data.name_table}</NavLink>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
+
+            <table className="table-base">
+                {listOfTable.map((data, index) => (
+                    <tr key={data.id}>
+                        <th>
+                            <NavLink to={`/estimate/${data.id}`} className="link" onClick={() => handleButtonClick(data.id)}>{data.name}</NavLink>
+                        </th>
+                        <td>
+                            {data.content}
+                        </td>
+                    </tr>
+                ))}
+            </table>
         </>
     )
 }
