@@ -7,9 +7,13 @@ import { format, parse } from 'date-fns';
 export const TabContent = ({ id }) => {
   const [accordionItems, setAccordionItems] = useState<any>([]);
   const [comment, setComment] = useState<any>([]);
+  const [commentFirst, setCommentFirst] = useState<any>([]);
+  const [commentSeCond, setCommentSeCond] = useState<any>([]);
+  const [commentThird, setCommentThird] = useState<any>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [textValue, setTextValue] = useState('');
   const [commentValue, setCommentValue] = useState('');
+  const [commentValueThird, setCommentValueThird] = useState('');
   const [approve, setApprove] = useState({
     approveTexts: '',
     approveClass: '',
@@ -55,6 +59,84 @@ export const TabContent = ({ id }) => {
       console.error('Error fetching data:', error);
     }
   };
+
+  const getCommentForUserFirst = async () => {
+    try {
+      const response = await axiosPrivate.get(
+        'application/getcommentforuserfirst/' + id,
+      );
+      const commentData = response.data;
+
+      // Xử lý dữ liệu dựa trên kiểu dữ liệu trả về
+      if (Array.isArray(commentData)) {
+        // Lặp qua mỗi bình luận và ghi nhận tên thực của người dùng
+        commentData.forEach((commentFirst) => {
+          //console.log(comment.id); // Ghi nhận tên thực của người dùng
+        });
+        setCommentFirst(commentData); // Cập nhật state với dữ liệu bình luận
+      } else {
+        console.error('Error fetching data: Response data is not an array');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    getCommentForUserFirst();
+  }, [id]);
+
+  const getCommentForUserSecond = async () => {
+    try {
+      const response = await axiosPrivate.get(
+        'application/getcommentforusersecond/' + id,
+      );
+      const commentData = response.data;
+
+      // Xử lý dữ liệu dựa trên kiểu dữ liệu trả về
+      if (Array.isArray(commentData)) {
+        // Lặp qua mỗi bình luận và ghi nhận tên thực của người dùng
+        commentData.forEach((commentSeCond) => {
+          //console.log(comment.id); // Ghi nhận tên thực của người dùng
+        });
+        setCommentSeCond(commentData); // Cập nhật state với dữ liệu bình luận
+      } else {
+        console.error('Error fetching data: Response data is not an array');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    getCommentForUserSecond();
+  }, [id]);
+
+  const getCommentForUserThird = async () => {
+    try {
+      const response = await axiosPrivate.get(
+        'application/getcommentforuserthird/' + id,
+      );
+      const commentData = response.data;
+
+      // Xử lý dữ liệu dựa trên kiểu dữ liệu trả về
+      if (Array.isArray(commentData)) {
+        // Lặp qua mỗi bình luận và ghi nhận tên thực của người dùng
+        commentData.forEach((commentThird) => {
+          //console.log(comment.id); // Ghi nhận tên thực của người dùng
+        });
+        setCommentThird(commentData); // Cập nhật state với dữ liệu bình luận
+      } else {
+        console.error('Error fetching data: Response data is not an array');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    getCommentForUserThird();
+  }, [id]);
 
   useEffect(() => {
     GetComment();
@@ -123,11 +205,43 @@ export const TabContent = ({ id }) => {
       // Gọi hàm xóa comment tại đây với commentId
       //console.log('Deleting comment with id:', commentId);
       const response = await axiosPrivate.delete(
-        `application/deletecomment/${commentId}`,
+        `application/deletecommentfirst/${commentId}`,
       );
       if (response.status === 200) {
         console.log('Comment deleted successfully');
-        GetComment();
+        getCommentForUserFirst();
+      } else {
+        console.error('Failed to delete comment:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };
+
+  const handDeleteSeCond = async (commentId) => {
+    try {
+      const response = await axiosPrivate.delete(
+        `application/deletecommentsecond/${commentId}`,
+      );
+      if (response.status === 200) {
+        console.log('Comment deleted successfully');
+        getCommentForUserSecond();
+      } else {
+        console.error('Failed to delete comment:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };
+
+  const handleDeleteThird = async (commentId) => {
+    try {
+      const response = await axiosPrivate.delete(
+        `application/deletecommentthird/${commentId}`,
+      );
+      if (response.status === 200) {
+        console.log('Comment deleted successfully');
+        getCommentForUserThird();
       } else {
         console.error('Failed to delete comment:', response.statusText);
       }
@@ -137,9 +251,9 @@ export const TabContent = ({ id }) => {
   };
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  const handleSubmit = async () => {
-    console.log('ssss', users.roles);
 
+  const handleSubmit = async () => {
+    //console.log('ssss', users.roles);
     const note = textValue.trim(); // Loại bỏ các khoảng trắng dư thừa
     if (note.length === 0) {
       console.error('Không thể thêm comment: Nội dung trống');
@@ -157,13 +271,13 @@ export const TabContent = ({ id }) => {
         'application/addcomment/',
         comment_data,
       );
-      GetComment();
+      getCommentForUserFirst();
     } catch (error) {
       console.error('Lỗi khi thêm comment:', error);
     }
   };
 
-  const handleAddComment = async () => {
+  const handleAddCommentSeCond = async () => {
     const note = commentValue.trim(); // Loại bỏ các khoảng trắng dư thừa
     if (note.length === 0) {
       console.error('Không thể thêm comment: Nội dung trống');
@@ -171,18 +285,41 @@ export const TabContent = ({ id }) => {
     }
     try {
       const comment_data = {
-        note: textValue,
-        // user_id: 71,
-        user_id: null,
+        note: commentValue,
+        user_id: users.id,
         id_register: id,
       };
       //console.log(comment_data);
       setCommentValue('');
       const res = await axiosPrivate.post(
-        'application/addcomment/',
+        'application/addcommentsecond/',
         comment_data,
       );
-      GetComment();
+      getCommentForUserSecond();
+    } catch (error) {
+      console.error('Lỗi khi thêm comment:', error);
+    }
+  };
+
+  const handleAddCommentThird = async () => {
+    const note = commentValueThird.trim(); // Loại bỏ các khoảng trắng dư thừa
+    if (note.length === 0) {
+      console.error('Không thể thêm comment: Nội dung trống');
+      return;
+    }
+    try {
+      const comment_data = {
+        note: commentValueThird,
+        user_id: users.id,
+        id_register: id,
+      };
+      console.log(comment_data);
+      setCommentValueThird('');
+      const res = await axiosPrivate.post(
+        'application/addcommentthird/',
+        comment_data,
+      );
+      getCommentForUserThird();
     } catch (error) {
       console.error('Lỗi khi thêm comment:', error);
     }
@@ -308,16 +445,15 @@ export const TabContent = ({ id }) => {
                                 {'\u00A0\u00A0'}
                                 {accordionItems.time}）
                               </p>
-                              {comment.length > 0 && (
+                              {commentFirst.length > 0 && (
                                 <div className="box-approves__item__content__comment">
-                                  {comment.map((commentItem, index) => (
+                                  {commentFirst.map((commentItem, index) => (
                                     <div
                                       key={index}
                                       className="box-approves__item__content__comment__item"
                                     >
                                       <p className="box-approves__item__content__comment__head">
                                         <span className="box-approves__item__content__comment__title">
-                                          {/* {commentItem.user_id} */}
                                           {commentItem.realname}
                                           ：（{commentItem.createdAt}）
                                         </span>
@@ -380,6 +516,38 @@ export const TabContent = ({ id }) => {
                                 {'\u00A0\u00A0'}
                                 {accordionItems.time}）
                               </p>
+                              {commentSeCond.length > 0 && (
+                                <div className="box-approves__item__content__comment">
+                                  {commentSeCond.map((commentItem, index) => (
+                                    <div
+                                      key={index}
+                                      className="box-approves__item__content__comment__item"
+                                    >
+                                      <p className="box-approves__item__content__comment__head">
+                                        <span className="box-approves__item__content__comment__title">
+                                          {commentItem.realname}
+                                          ：（{commentItem.createdAt}）
+                                        </span>
+                                        <span
+                                          className="btn-delete"
+                                          onClick={() =>
+                                            handDeleteSeCond(commentItem.id)
+                                          }
+                                        >
+                                          <img
+                                            src={require('../../../../assets/close.png')}
+                                            alt="delete"
+                                            className="fluid-image"
+                                          />
+                                        </span>
+                                      </p>
+                                      <p className="box-approves__item__content__comment__text">
+                                        {commentItem.note}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                               <textarea
                                 placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
                                 value={commentValue}
@@ -391,7 +559,7 @@ export const TabContent = ({ id }) => {
                                 <span>
                                   <a
                                     className="btncomment btn02"
-                                    onClick={handleAddComment}
+                                    onClick={handleAddCommentSeCond}
                                   >
                                     コメントする
                                   </a>
@@ -407,18 +575,56 @@ export const TabContent = ({ id }) => {
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
-                                承認者名：承認者名が入ります
+                                承認者名：{accordionItems.owner}（申請日時：
+                                {accordionItems.date}
+                                {'\u00A0\u00A0'}
+                                {accordionItems.time}）
                               </p>
+                              {commentThird.length > 0 && (
+                                <div className="box-approves__item__content__comment">
+                                  {commentThird.map((commentItem, index) => (
+                                    <div
+                                      key={index}
+                                      className="box-approves__item__content__comment__item"
+                                    >
+                                      <p className="box-approves__item__content__comment__head">
+                                        <span className="box-approves__item__content__comment__title">
+                                          {commentItem.realname}
+                                          ：（{commentItem.createdAt}）
+                                        </span>
+                                        <span
+                                          className="btn-delete"
+                                          onClick={() =>
+                                            handleDeleteThird(commentItem.id)
+                                          }
+                                        >
+                                          <img
+                                            src={require('../../../../assets/close.png')}
+                                            alt="delete"
+                                            className="fluid-image"
+                                          />
+                                        </span>
+                                      </p>
+                                      <p className="box-approves__item__content__comment__text">
+                                        {commentItem.note}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                               <textarea
                                 placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
-                                // value={textValue}
-                                // onChange={(event) =>
-                                //   setTextValue(event.target.value)
-                                // }
+                                value={commentValueThird}
+                                onChange={(event) =>
+                                  setCommentValueThird(event.target.value)
+                                }
                               />
                               <p className="box-approves__item__content__btn">
                                 <span>
-                                  <a href="#" className="btncomment btn02">
+                                  <a
+                                    className="btncomment btn02"
+                                    onClick={handleAddCommentThird}
+                                  >
                                     コメントする
                                   </a>
                                 </span>
