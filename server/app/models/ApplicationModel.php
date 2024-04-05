@@ -153,6 +153,24 @@
             }
             $conn->close();
         }
+        function deleteCommentThird($id){
+            global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            if (isset($id)) {
+                $deleteQuery = "DELETE FROM comment WHERE id = $id";
+                if (mysqli_query($conn, $deleteQuery)) {
+                    http_response_code(200);
+                echo json_encode(['errCode' => 0]);
+                } else {
+                    http_response_code(500);
+                echo json_encode(['errCode' => 1, 'message' => 'không thể Xóa comment']);
+                }
+            } else {
+                http_response_code(400);
+                echo json_encode(['errCode' => 2, 'message' => 'không thể tìm thấy comment của người dùng']);
+            }
+            $conn->close();
+        }
         function addComment($user_id, $id_register, $note, $createdAt)
         {
             global $conn;

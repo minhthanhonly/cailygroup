@@ -53,6 +53,12 @@
                 return $this->model('ApplicationModel')->deleteCommentSeCond($id);
             }
         }
+        function deletecommentthird($id=''){
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('ApplicationModel')->deletecommentthird($id);
+            }
+        }
         function addComment($user_id='',$id_register='',$note=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
@@ -63,6 +69,12 @@
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
                 return $this->model('ApplicationModel')->addCommentSeCond($user_id,$id_register,$note, date('Y-m-d H:i:s'));
+            }
+        }
+        function addCommentThird($user_id='',$id_register='',$note=''){
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('ApplicationModel')->addCommentThird($user_id,$id_register,$note, date('Y-m-d H:i:s'));
             }
         }
     }
