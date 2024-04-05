@@ -1,10 +1,17 @@
-import axios, { axiosPrivate } from '../../api/axios';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 import editIcon from '../../../../assets/icn-edit.png';
 import closeIcon from '../../../../assets/icn-close.png';
 import { format, parse } from 'date-fns';
+import { UserRole } from '../../components/UserRole';
+
+const users = JSON.parse(localStorage.getItem('users') || '{}');
+const isAdmin = users.roles === UserRole.ADMIN;
+const isManager = users.roles === UserRole.MANAGER;
+const isLeader = users.roles === UserRole.LEADER;
 
 export const TabContent = ({ id }) => {
+  const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);
   const [comment, setComment] = useState<any>([]);
   const [commentFirst, setCommentFirst] = useState<any>([]);
@@ -200,7 +207,7 @@ export const TabContent = ({ id }) => {
     }
   }, [accordionItems]);
 
-  const handDelete = async (commentId) => {
+  const handDelete = async (commentId: any) => {
     try {
       // Gọi hàm xóa comment tại đây với commentId
       //console.log('Deleting comment with id:', commentId);
@@ -218,7 +225,7 @@ export const TabContent = ({ id }) => {
     }
   };
 
-  const handDeleteSeCond = async (commentId) => {
+  const handDeleteSeCond = async (commentId: any) => {
     try {
       const response = await axiosPrivate.delete(
         `application/deletecommentsecond/${commentId}`,
@@ -234,7 +241,7 @@ export const TabContent = ({ id }) => {
     }
   };
 
-  const handleDeleteThird = async (commentId) => {
+  const handleDeleteThird = async (commentId: any) => {
     try {
       const response = await axiosPrivate.delete(
         `application/deletecommentthird/${commentId}`,
@@ -250,8 +257,6 @@ export const TabContent = ({ id }) => {
     }
   };
 
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
-
   const handleSubmit = async () => {
     //console.log('ssss', users.roles);
     const note = textValue.trim(); // Loại bỏ các khoảng trắng dư thừa
@@ -264,13 +269,15 @@ export const TabContent = ({ id }) => {
         note: textValue,
         user_id: users.id,
         id_register: id,
+        authority: 1,
       };
-      //console.log(comment_data);
+
       setTextValue('');
       const res = await axiosPrivate.post(
         'application/addcomment/',
         comment_data,
       );
+      console.log(res.data);
       getCommentForUserFirst();
     } catch (error) {
       console.error('Lỗi khi thêm comment:', error);
@@ -288,8 +295,8 @@ export const TabContent = ({ id }) => {
         note: commentValue,
         user_id: users.id,
         id_register: id,
+        authority: 2,
       };
-      //console.log(comment_data);
       setCommentValue('');
       const res = await axiosPrivate.post(
         'application/addcommentsecond/',
@@ -312,8 +319,8 @@ export const TabContent = ({ id }) => {
         note: commentValueThird,
         user_id: users.id,
         id_register: id,
+        authority: 3,
       };
-      console.log(comment_data);
       setCommentValueThird('');
       const res = await axiosPrivate.post(
         'application/addcommentthird/',
@@ -325,7 +332,7 @@ export const TabContent = ({ id }) => {
     }
   };
 
-  const formatCreatedAt = (createdAt) => {
+  const formatCreatedAt = (createdAt: any) => {
     const datetime = new Date(createdAt);
     const year = datetime.getFullYear();
     const month = ('0' + (datetime.getMonth() + 1)).slice(-2); // Thêm số 0 vào trước nếu tháng < 10
@@ -447,53 +454,69 @@ export const TabContent = ({ id }) => {
                               </p>
                               {commentFirst.length > 0 && (
                                 <div className="box-approves__item__content__comment">
-                                  {commentFirst.map((commentItem, index) => (
-                                    <div
-                                      key={index}
-                                      className="box-approves__item__content__comment__item"
-                                    >
-                                      <p className="box-approves__item__content__comment__head">
-                                        <span className="box-approves__item__content__comment__title">
-                                          {commentItem.realname}
-                                          ：（{commentItem.createdAt}）
-                                        </span>
-                                        <span
-                                          className="btn-delete"
-                                          onClick={() =>
-                                            handDelete(commentItem.id)
-                                          }
-                                        >
-                                          <img
-                                            src={require('../../../../assets/close.png')}
-                                            alt="delete"
-                                            className="fluid-image"
-                                          />
-                                        </span>
-                                      </p>
-                                      <p className="box-approves__item__content__comment__text">
-                                        {commentItem.note}
-                                      </p>
-                                    </div>
-                                  ))}
+                                  {commentFirst.map(
+                                    (commentItem: any, index: any) => (
+                                      <div
+                                        key={index}
+                                        className="box-approves__item__content__comment__item"
+                                      >
+                                        <p className="box-approves__item__content__comment__head">
+                                          <span className="box-approves__item__content__comment__title">
+                                            {commentItem.realname}
+                                            ：（{commentItem.createdAt}）
+                                          </span>
+
+                                          {isAdmin ? (
+                                            <>
+                                              <span
+                                                className="btn-delete"
+                                                onClick={() =>
+                                                  handDelete(commentItem.id)
+                                                }
+                                              >
+                                                <img
+                                                  src={require('../../../../assets/close.png')}
+                                                  alt="delete"
+                                                  className="fluid-image"
+                                                />
+                                              </span>
+                                            </>
+                                          ) : (
+                                            <span></span>
+                                          )}
+                                        </p>
+                                        <p className="box-approves__item__content__comment__text">
+                                          {commentItem.note}
+                                        </p>
+                                      </div>
+                                    ),
+                                  )}
                                 </div>
                               )}
-                              <textarea
-                                placeholder="ココメントを入力（任意1000文字以内）"
-                                value={textValue}
-                                onChange={(event) =>
-                                  setTextValue(event.target.value)
-                                }
-                              />
-                              <p className="box-approves__item__content__btn">
-                                <span>
-                                  <a
-                                    className="btncomment btn02"
-                                    onClick={handleSubmit}
-                                  >
-                                    コメントする
-                                  </a>
-                                </span>
-                              </p>
+                              {isAdmin ? (
+                                <>
+                                  <textarea
+                                    placeholder="ココメントを入力（任意1000文字以内）"
+                                    value={textValue}
+                                    onChange={(event) =>
+                                      setTextValue(event.target.value)
+                                    }
+                                  />
+                                  <p className="box-approves__item__content__btn">
+                                    <span>
+                                      <a
+                                        className="btncomment btn02"
+                                        onClick={handleSubmit}
+                                      >
+                                        コメントする
+                                      </a>
+                                    </span>
+                                  </p>
+                                </>
+                              ) : (
+                                <div></div>
+                              )}
+
                               <p className="list-btn">
                                 <span className="list-btn__item">
                                   <span className={statusattr.statusattrClass}>
@@ -518,56 +541,65 @@ export const TabContent = ({ id }) => {
                               </p>
                               {commentSeCond.length > 0 && (
                                 <div className="box-approves__item__content__comment">
-                                  {commentSeCond.map((commentItem, index) => (
-                                    <div
-                                      key={index}
-                                      className="box-approves__item__content__comment__item"
-                                    >
-                                      <p className="box-approves__item__content__comment__head">
-                                        <span className="box-approves__item__content__comment__title">
-                                          {commentItem.realname}
-                                          ：（{commentItem.createdAt}）
-                                        </span>
-                                        <span
-                                          className="btn-delete"
-                                          onClick={() =>
-                                            handDeleteSeCond(commentItem.id)
-                                          }
-                                        >
-                                          <img
-                                            src={require('../../../../assets/close.png')}
-                                            alt="delete"
-                                            className="fluid-image"
-                                          />
-                                        </span>
-                                      </p>
-                                      <p className="box-approves__item__content__comment__text">
-                                        {commentItem.note}
-                                      </p>
-                                    </div>
-                                  ))}
+                                  {commentSeCond.map(
+                                    (commentItem: any, index: any) => (
+                                      <div
+                                        key={index}
+                                        className="box-approves__item__content__comment__item"
+                                      >
+                                        <p className="box-approves__item__content__comment__head">
+                                          <span className="box-approves__item__content__comment__title">
+                                            {commentItem.realname}
+                                            ：（{commentItem.createdAt}）
+                                          </span>
+                                          <span
+                                            className="btn-delete"
+                                            onClick={() =>
+                                              handDeleteSeCond(commentItem.id)
+                                            }
+                                          >
+                                            <img
+                                              src={require('../../../../assets/close.png')}
+                                              alt="delete"
+                                              className="fluid-image"
+                                            />
+                                          </span>
+                                        </p>
+                                        <p className="box-approves__item__content__comment__text">
+                                          {commentItem.note}
+                                        </p>
+                                      </div>
+                                    ),
+                                  )}
                                 </div>
                               )}
-                              <textarea
-                                placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
-                                value={commentValue}
-                                onChange={(event) =>
-                                  setCommentValue(event.target.value)
-                                }
-                              />
-                              <p className="box-approves__item__content__btn">
-                                <span>
-                                  <a
-                                    className="btncomment btn02"
-                                    onClick={handleAddCommentSeCond}
-                                  >
-                                    コメントする
-                                  </a>
-                                </span>
-                              </p>
+                              {isManager ? (
+                                <>
+                                  <textarea
+                                    placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
+                                    value={commentValue}
+                                    onChange={(event) =>
+                                      setCommentValue(event.target.value)
+                                    }
+                                  />
+                                  <p className="box-approves__item__content__btn">
+                                    <span>
+                                      <a
+                                        className="btncomment btn02"
+                                        onClick={handleAddCommentSeCond}
+                                      >
+                                        コメントする
+                                      </a>
+                                    </span>
+                                  </p>
+                                </>
+                              ) : (
+                                <div></div>
+                              )}
                             </div>
                           </div>
                         </li>
+
                         <li>
                           <div className="box-approves__item">
                             <div className="box-approves__item__title">
@@ -582,53 +614,69 @@ export const TabContent = ({ id }) => {
                               </p>
                               {commentThird.length > 0 && (
                                 <div className="box-approves__item__content__comment">
-                                  {commentThird.map((commentItem, index) => (
-                                    <div
-                                      key={index}
-                                      className="box-approves__item__content__comment__item"
-                                    >
-                                      <p className="box-approves__item__content__comment__head">
-                                        <span className="box-approves__item__content__comment__title">
-                                          {commentItem.realname}
-                                          ：（{commentItem.createdAt}）
-                                        </span>
-                                        <span
-                                          className="btn-delete"
-                                          onClick={() =>
-                                            handleDeleteThird(commentItem.id)
-                                          }
-                                        >
-                                          <img
-                                            src={require('../../../../assets/close.png')}
-                                            alt="delete"
-                                            className="fluid-image"
-                                          />
-                                        </span>
-                                      </p>
-                                      <p className="box-approves__item__content__comment__text">
-                                        {commentItem.note}
-                                      </p>
-                                    </div>
-                                  ))}
+                                  {commentThird.map(
+                                    (commentItem: any, index: any) => (
+                                      <div
+                                        key={index}
+                                        className="box-approves__item__content__comment__item"
+                                      >
+                                        <p className="box-approves__item__content__comment__head">
+                                          <span className="box-approves__item__content__comment__title">
+                                            {commentItem.realname}
+                                            ：（{commentItem.createdAt}）
+                                          </span>
+                                          {isLeader ? (
+                                            <>
+                                              <span
+                                                className="btn-delete"
+                                                onClick={() =>
+                                                  handleDeleteThird(
+                                                    commentItem.id,
+                                                  )
+                                                }
+                                              >
+                                                <img
+                                                  src={require('../../../../assets/close.png')}
+                                                  alt="delete"
+                                                  className="fluid-image"
+                                                />
+                                              </span>
+                                            </>
+                                          ) : (
+                                            <span></span>
+                                          )}
+                                        </p>
+                                        <p className="box-approves__item__content__comment__text">
+                                          {commentItem.note}
+                                        </p>
+                                      </div>
+                                    ),
+                                  )}
                                 </div>
                               )}
-                              <textarea
-                                placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
-                                value={commentValueThird}
-                                onChange={(event) =>
-                                  setCommentValueThird(event.target.value)
-                                }
-                              />
-                              <p className="box-approves__item__content__btn">
-                                <span>
-                                  <a
-                                    className="btncomment btn02"
-                                    onClick={handleAddCommentThird}
-                                  >
-                                    コメントする
-                                  </a>
-                                </span>
-                              </p>
+                              {isLeader ? (
+                                <>
+                                  <textarea
+                                    placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
+                                    value={commentValueThird}
+                                    onChange={(event) =>
+                                      setCommentValueThird(event.target.value)
+                                    }
+                                  />
+                                  <p className="box-approves__item__content__btn">
+                                    <span>
+                                      <a
+                                        className="btncomment btn02"
+                                        onClick={handleAddCommentThird}
+                                      >
+                                        コメントする
+                                      </a>
+                                    </span>
+                                  </p>
+                                </>
+                              ) : (
+                                <div></div>
+                              )}
                             </div>
                           </div>
                         </li>

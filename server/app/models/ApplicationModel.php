@@ -22,6 +22,7 @@
                 echo json_encode(['errCode' => 1, 'message' => 'không thể tìm thấy status']);
             }
             $conn->close();
+
         }
         
         function getApplicationForId($id){
@@ -64,11 +65,13 @@
             global $conn;
             $query = "SELECT comment.*,
                         users.realname,
+                        authority.authority_name,
                         comment.createdAt AS createdAt
                     FROM comment
                     JOIN users ON comment.user_id = users.id
                     JOIN register ON register.id = comment.id_register
-                    WHERE comment.id_register = $id and comment.user_id = 71";
+                    JOIN authority ON comment.authority = authority.id
+                    WHERE comment.id_register = $id and comment.authority = 1";
             $allGroup = mysqli_query($conn, $query);
                 $data = [];
 
@@ -83,11 +86,13 @@
             global $conn;
             $query = "SELECT comment.*,
                         users.realname,
+                        authority.authority_name,
                         comment.createdAt AS createdAt
                     FROM comment
                     JOIN users ON comment.user_id = users.id
                     JOIN register ON register.id = comment.id_register
-                    WHERE comment.id_register = $id and comment.user_id = 41";
+                    JOIN authority ON comment.authority = authority.id
+                    WHERE comment.id_register = $id and comment.authority = 2";
             $allGroup = mysqli_query($conn, $query);
                 $data = [];
 
@@ -102,11 +107,13 @@
             global $conn;
             $query = "SELECT comment.*,
                         users.realname,
+                        authority.authority_name,
                         comment.createdAt AS createdAt
                     FROM comment
                     JOIN users ON comment.user_id = users.id
                     JOIN register ON register.id = comment.id_register
-                    WHERE comment.id_register = $id and comment.user_id = 89";
+                    JOIN authority ON comment.authority = authority.id
+                    WHERE comment.id_register = $id  and comment.authority = 3";
             $allGroup = mysqli_query($conn, $query);
                 $data = [];
 
@@ -171,26 +178,22 @@
             }
             $conn->close();
         }
-        function addComment($user_id, $id_register, $note, $createdAt)
+        function addComment($user_id, $id_register,$authority , $note, $createdAt)
         {
             global $conn;
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $commentPostData = json_decode(file_get_contents("php://input"));
                 $user_id = $commentPostData->user_id;
                 $id_register = $commentPostData->id_register;
+                $authority = $commentPostData->authority;
                 $note = trim($commentPostData->note); // Loại bỏ các khoảng trắng dư thừa
                 if (empty($note)) {
                     http_response_code(400);
                     echo json_encode(["error" => "Không thể thêm comment: Nội dung trống"]);
                     exit();
                 }
-                if ($user_id != 71) {
-                    http_response_code(400);
-                    echo json_encode(["error" => "Không được phép thêm comment: user_id không hợp lệ"]);
-                    exit();
-                }
-                $insertQuery = "INSERT INTO comment (user_id, id_register, note, createdAt) 
-                            VALUES (?, ?, ?, NOW())";
+                $insertQuery = "INSERT INTO comment (user_id, id_register,authority, note, createdAt) 
+                            VALUES (?, ?, ?, ?,NOW())";
                 $stmt = mysqli_prepare($conn, $insertQuery);
 
                 if (!$stmt) {
@@ -198,7 +201,7 @@
                     echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($conn)]);
                     exit();
                 }
-                mysqli_stmt_bind_param($stmt, "sis", $user_id, $id_register, $note);
+                mysqli_stmt_bind_param($stmt, "siis", $user_id, $id_register,$authority, $note);
 
                 if (mysqli_stmt_execute($stmt)) {
                     http_response_code(201);
@@ -211,26 +214,22 @@
                 mysqli_stmt_close($stmt);
             }
         }
-        function addCommentSeCond($user_id, $id_register, $note, $createdAt)
+        function addCommentSeCond($user_id, $id_register,$authority , $note, $createdAt)
         {
             global $conn;
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $commentPostData = json_decode(file_get_contents("php://input"));
                 $user_id = $commentPostData->user_id;
                 $id_register = $commentPostData->id_register;
+                $authority = $commentPostData->authority;
                 $note = trim($commentPostData->note); // Loại bỏ các khoảng trắng dư thừa
                 if (empty($note)) {
                     http_response_code(400);
                     echo json_encode(["error" => "Không thể thêm comment: Nội dung trống"]);
                     exit();
                 }
-                if ($user_id != 41) {
-                    http_response_code(400);
-                    echo json_encode(["error" => "Không được phép thêm comment: user_id không hợp lệ"]);
-                    exit();
-                }
-                $insertQuery = "INSERT INTO comment (user_id, id_register, note, createdAt) 
-                            VALUES (?, ?, ?, NOW())";
+                $insertQuery = "INSERT INTO comment (user_id, id_register,authority, note, createdAt) 
+                            VALUES (?, ?, ?, ?,NOW())";
                 $stmt = mysqli_prepare($conn, $insertQuery);
 
                 if (!$stmt) {
@@ -238,7 +237,7 @@
                     echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($conn)]);
                     exit();
                 }
-                mysqli_stmt_bind_param($stmt, "sis", $user_id, $id_register, $note);
+                mysqli_stmt_bind_param($stmt, "siis", $user_id, $id_register,$authority, $note);
 
                 if (mysqli_stmt_execute($stmt)) {
                     http_response_code(201);
@@ -250,26 +249,22 @@
                 mysqli_stmt_close($stmt);
             }
         }
-        function addCommentThird($user_id, $id_register, $note, $createdAt)
+        function addCommentThird($user_id, $id_register,$authority , $note, $createdAt)
         {
             global $conn;
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $commentPostData = json_decode(file_get_contents("php://input"));
                 $user_id = $commentPostData->user_id;
                 $id_register = $commentPostData->id_register;
+                $authority = $commentPostData->authority;
                 $note = trim($commentPostData->note); // Loại bỏ các khoảng trắng dư thừa
                 if (empty($note)) {
                     http_response_code(400);
                     echo json_encode(["error" => "Không thể thêm comment: Nội dung trống"]);
                     exit();
                 }
-                if ($user_id != 89) {
-                    http_response_code(400);
-                    echo json_encode(["error" => "Không được phép thêm comment: user_id không hợp lệ"]);
-                    exit();
-                }
-                $insertQuery = "INSERT INTO comment (user_id, id_register, note, createdAt) 
-                            VALUES (?, ?, ?, NOW())";
+                $insertQuery = "INSERT INTO comment (user_id, id_register,authority, note, createdAt) 
+                            VALUES (?, ?, ?, ?,NOW())";
                 $stmt = mysqli_prepare($conn, $insertQuery);
 
                 if (!$stmt) {
@@ -277,7 +272,7 @@
                     echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($conn)]);
                     exit();
                 }
-                mysqli_stmt_bind_param($stmt, "sis", $user_id, $id_register, $note);
+                mysqli_stmt_bind_param($stmt, "siis", $user_id, $id_register,$authority, $note);
 
                 if (mysqli_stmt_execute($stmt)) {
                     http_response_code(201);
