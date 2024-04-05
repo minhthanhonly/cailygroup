@@ -277,17 +277,18 @@ const Field = () => {
       const outerClassName = Object.keys(
         result[0],
       )[0] as keyof (typeof result)[0];
-      console.log(outerClassName);
-      function buildDefault() {
-        return (
-          '<tr><th><div class="tb-from--th">' +
-          result[0][outerClassName].fieldLable +
-          (result[0][outerClassName].required
-            ? ' <span class="txt-red">(*required)</span>'
-            : '') +
-          '</div></th><td><div class="tb-from--td">'
-        );
-      }
+      console.log(result);
+
+      // function buildDefault() {
+      //   return (
+      //     '<tr><th><div class="tb-from--th">' +
+      //     result[0][outerClassName].fieldLable +
+      //     (result[0][outerClassName].required
+      //       ? ' <span class="txt-red">(*required)</span>'
+      //       : '') +
+      //     '</div></th><td><div class="tb-from--td">'
+      //   );
+      // }
       function buildText() {
         return '<p>' + result[0][outerClassName].fieldLable + '</p>';
       }
@@ -336,27 +337,27 @@ const Field = () => {
         case 'note':
           content.innerHTML += buildNote();
           break;
-        case 'input_text':
-          content.innerHTML += buildDefault() + buildInput_text();
-          break;
-        case 'checkbox':
-          content.innerHTML += buildDefault() + buildCheckbox();
-          break;
-        case 'checkbox_group':
-          content.innerHTML += buildDefault() + buildCheckboxGroup();
-          break;
-        case 'text_area':
-          content.innerHTML += buildDefault() + buildText_area();
-          break;
-        case 'input_date':
-          content.innerHTML += buildDefault() + buildInput_date();
-          break;
-        case 'date':
-          content.innerHTML += buildDefault() + buildDate();
-          break;
-        case 'date_day':
-          content.innerHTML += buildDefault() + buildDate_day();
-          break;
+        // case 'input_text':
+        //   content.innerHTML += buildDefault() + buildInput_text();
+        //   break;
+        // case 'checkbox':
+        //   content.innerHTML += buildDefault() + buildCheckbox();
+        //   break;
+        // case 'checkbox_group':
+        //   content.innerHTML += buildDefault() + buildCheckboxGroup();
+        //   break;
+        // case 'text_area':
+        //   content.innerHTML += buildDefault() + buildText_area();
+        //   break;
+        // case 'input_date':
+        //   content.innerHTML += buildDefault() + buildInput_date();
+        //   break;
+        // case 'date':
+        //   content.innerHTML += buildDefault() + buildDate();
+        //   break;
+        // case 'date_day':
+        //   content.innerHTML += buildDefault() + buildDate_day();
+        //   break;
         default:
           content.innerHTML += buildText();
           break;
