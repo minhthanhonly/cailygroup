@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from 'axios';
 
-// const BASE_URL = 'http://cailygroup.com/';
-const BASE_URL = 'http://localhost/';
+const BASE_URL = 'http://cailygroup.com/';
+//const BASE_URL = 'http://localhost/';
 
 export default axios.create({
-  baseURL: BASE_URL
+  baseURL: BASE_URL,
 });
 
 export const axiosPrivate = axios.create({
@@ -13,4 +13,6 @@ export const axiosPrivate = axios.create({
   // withCredentials: true
 });
 
-axiosPrivate.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+axiosPrivate.defaults.headers.common[
+  'Authorization'
+] = `Bearer ${localStorage.getItem('token')}`;

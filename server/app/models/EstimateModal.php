@@ -5,7 +5,7 @@ class EstimateModal {
         global $conn;
 
         // Thực hiện truy vấn SELECT
-        $sql = "SELECT * FROM table_id";
+        $sql = "SELECT * FROM table_register";
         $result = $conn->query($sql);
 
         // Khởi tạo mảng để lưu trữ dữ liệu
