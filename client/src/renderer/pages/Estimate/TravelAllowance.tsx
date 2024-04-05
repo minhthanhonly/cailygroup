@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from 'react-multi-date-picker';
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { useLocation } from 'react-router-dom';
 import { toast } from "react-toastify";
 import moment from "moment";
-
 
 interface Row {
     id: number;
@@ -18,11 +16,10 @@ interface Row {
 }
 
 
-export const TravelAllowance = () => {
+export const TravelAllowance = (props: { id_table: any; }) => {
 
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const selectedId = searchParams.get('selectedId');
+    const { id_table } = props;
+
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
 
@@ -163,6 +160,7 @@ export const TravelAllowance = () => {
 
 
         const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
+        const fDateChanged = isStartDate === true ? formattedDate : "";
 
         try {
             const additionalData = {
@@ -173,7 +171,7 @@ export const TravelAllowance = () => {
                 station: station,
                 isStartNow: isStartNow,
                 isStartDate: isStartDate,
-                date_input: formattedDate,
+                date_input: fDateChanged
                 // Thêm các trường khác nếu cần
             };
             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
@@ -192,7 +190,7 @@ export const TravelAllowance = () => {
             const requestData = {
                 rows: dataToSend,
                 owner: users.realname,
-                table_id: selectedId,
+                table_id: id_table,
                 id_status: status,
                 ...additionalData,
             };
