@@ -100,22 +100,23 @@ export default function FormDetail(){
   const axiosPrivate = useAxiosPrivate();
   const {id} = useParams();
   const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'})
-  const [reactFormData, setReactFormData] = useState<any>([]);
+  const [formData, setFormData] = useState({reactFormData: {}});
   useEffect(() => {
     axiosPrivate.get('form/detail/'+id).then(response => {
-      setReactFormData(Object.values(response.data));
-      console.log(Object.values(response.data));
+      setFormData(response.data);
+      console.log(formData.reactFormData);
     })
   }, [])
 
   return (
     <>
       <h1>Form Demo</h1>
-      <ReactFormGenerator
+      {/* {formData.reactFormData} */}
+      {/* <ReactFormGenerator
         customToolbarItems={items}
         edit
         data={reactFormData}
-      />
+      /> */}
     </>
   )
 }

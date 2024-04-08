@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Heading2 } from '../../components/Heading';
 import { Tab } from './tab';
-import axios from 'axios';
-import { axiosPrivate } from '../../api/axios';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export const Application = () => {
+  const axiosPrivate = useAxiosPrivate();
   const [activeTab, setActiveTab] = useState('tab1');
   const [statusCount, setStatusCount] = useState([0, 0, 0, 0, 0, 0]);
   const [statusTotal, setStatusTotal] = useState(0);

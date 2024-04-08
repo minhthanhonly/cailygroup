@@ -59,22 +59,22 @@
                 return $this->model('ApplicationModel')->deletecommentthird($id);
             }
         }
-        function addComment($user_id='',$id_register='',$note=''){
+        function addComment($user_id='',$id_register='',$authority='',$note=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('ApplicationModel')->addComment($user_id,$id_register,$note, date('Y-m-d H:i:s'));
+                return $this->model('ApplicationModel')->addComment($user_id,$id_register,$authority,$note, date('Y-m-d H:i:s'));
             }
         }
-        function addCommentSeCond($user_id='',$id_register='',$note=''){
+        function addCommentSeCond($user_id='',$id_register='',$authority='',$note=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('ApplicationModel')->addCommentSeCond($user_id,$id_register,$note, date('Y-m-d H:i:s'));
+                return $this->model('ApplicationModel')->addCommentSeCond($user_id,$id_register,$authority,$note, date('Y-m-d H:i:s'));
             }
         }
-        function addCommentThird($user_id='',$id_register='',$note=''){
+        function addCommentThird($user_id='',$id_register='',$authority='',$note=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('ApplicationModel')->addCommentThird($user_id,$id_register,$note, date('Y-m-d H:i:s'));
+                return $this->model('ApplicationModel')->addCommentThird($user_id,$id_register,$authority,$note, date('Y-m-d H:i:s'));
             }
         }
     }

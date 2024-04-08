@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import axios, { axiosPrivate } from '../../api/axios';
 import { TabContent } from '../Application/tabContent';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 interface TabContentProps {
   status: string | number;
 }
+
 export const Tab: React.FC<TabContentProps & { key: React.Key }> = ({
   status,
   key,
 }) => {
+  const axiosPrivate = useAxiosPrivate();
   const [items, setItems] = useState<any>([]);
   useEffect(() => {
     const Load = async () => {
@@ -25,6 +27,7 @@ export const Tab: React.FC<TabContentProps & { key: React.Key }> = ({
     };
     Load();
   }, []);
+
   return (
     <div>
       {items.length > 0 && (
