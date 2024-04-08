@@ -37,16 +37,18 @@ export const Estimate = () => {
         <>
 
             <table className="table-base">
-                {listOfTable.map((data, index) => (
-                    <tr key={data.id}>
-                        <th>
-                            <NavLink to={`/estimate/${data.id}`} className="link" onClick={() => handleButtonClick(data.id)}>{data.name}</NavLink>
-                        </th>
-                        <td>
-                            {data.content}
-                        </td>
-                    </tr>
-                ))}
+                <tbody>
+                    {listOfTable.map((data, index) => (
+                        <tr key={data.id}>
+                            <th>
+                                <NavLink to={`/estimate/${data.id}`} className="link" onClick={() => handleButtonClick(data.id)}>{data.name}</NavLink>
+                            </th>
+                            <td>
+                                {data.content}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
             </table>
         </>
     )

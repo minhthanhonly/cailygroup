@@ -233,7 +233,7 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                             </tr>
                             <tr>
                                 <th className='rowspan'>合計（税込）</th>
-                                <td colSpan={2}>{total.toLocaleString()}</td>
+                                <td colSpan={2}>{(totalPriceNotTax + totalpriceTax).toLocaleString()}</td>
 
                             </tr>
                         </tbody>
