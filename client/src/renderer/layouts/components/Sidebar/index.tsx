@@ -126,7 +126,7 @@ export const Sidebar = () => {
               <span className="icn">
                 {/* <FontAwesomeIcon icon={faCalendarDays} /> */}
               </span>
-              Estimate
+              新規申請
             </NavLink>
           </li>
           <li className="nav-global__item">

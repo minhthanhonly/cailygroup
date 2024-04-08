@@ -63,7 +63,7 @@
 
 				// Lấy dữ liệu từ phần thân của yêu cầu
 				$form_name = $formPostData->form_name;
-                $form = json_encode($formPostData->reactFormData);
+                $form = file_get_contents("php://input");
 				$status = $formPostData->status;
 				$owner = $formPostData->owner;
 			
@@ -87,7 +87,7 @@
 			global $conn;
 
 			// Thực hiện truy vấn SELECT
-			$sql = "SELECT form FROM forms WHERE id='2'";
+			$sql = "SELECT form FROM forms WHERE id='5'";
 
 			$result = $conn->query($sql);
 
