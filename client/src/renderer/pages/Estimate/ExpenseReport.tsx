@@ -35,6 +35,8 @@ export const ExpenseReport = (props: { id_table: any; }) => {
     const [totalpriceTax, setTotalPriceTax] = useState(0);
 
 
+
+
     const [priceNotax, setPriceNotax] = useState<string[]>(new Array(rows.length).fill(''));
     const [tax, setTax] = useState<string[]>(new Array(rows.length).fill(''));
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceNotax' | 'tax') => {
@@ -135,6 +137,7 @@ export const ExpenseReport = (props: { id_table: any; }) => {
         const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
         try {
             const isValid = checkBeforeSave();
+            const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
             if (isValid) {
                 // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
 
@@ -153,7 +156,10 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                     rows: dataToSend,
                     owner: users.realname,
                     table_id: id_table,
-                    id_status: status
+                    id_status: status,
+                    totalPriceNotTax: totalPriceNotTax,
+                    totalPriceTax: totalpriceTax,
+                    total: totalTaxIncluded,
                 };
 
                 // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
