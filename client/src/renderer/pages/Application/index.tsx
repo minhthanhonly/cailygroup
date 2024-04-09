@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Heading2 } from '../../components/Heading';
 import { Tab } from './tab';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { log } from 'console';
 
 export const Application = () => {
   const axiosPrivate = useAxiosPrivate();

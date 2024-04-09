@@ -1,5 +1,6 @@
 <?php
     class ApplicationModel{
+
         function getApplication(){
             global $conn;
             $statusFilter = isset($_GET['status']) ? mysqli_real_escape_string($conn, $_GET['status']) : '-1';
@@ -22,8 +23,37 @@
                 echo json_encode(['errCode' => 1, 'message' => 'không thể tìm thấy status']);
             }
             $conn->close();
-
         }
+
+        // function getApplication(){
+        //     global $conn;
+        //     $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
+        //     // Thực hiện truy vấn SELECT
+        //     $sql = "SELECT * FROM table_json";
+        //     if ($statusFilter != -1) {
+        //         $query .= " WHERE status = $statusFilter";
+        //     }
+        //     $result = $conn->query($sql);
+
+        //     // Khởi tạo mảng để lưu trữ dữ liệu
+        //     $data = array();
+
+        //     // Kiểm tra và hiển thị kết quả
+        //     if ($result->num_rows > 0) {
+        //         // Duyệt qua từng dòng dữ liệu và thêm vào mảng
+        //         while ($row = $result->fetch_assoc()) {
+        //             $data[] = $row;
+        //         }
+        //     }
+
+        //     // Đóng kết nối
+        //     $conn->close();
+
+        //     // Trả về dữ liệu dưới dạng JSON
+        //     header('Content-Type: application/json');
+        //     echo json_encode($data);
+        //     return;
+        // }
         
         function getApplicationForId($id){
             global $conn;
@@ -42,6 +72,23 @@
             echo json_encode($register); // Trả về đối tượng JSON
             $conn->close();
         }
+        // function getApplicationForId($id){
+        //     global $conn;
+        //     $query = "SELECT * FROM table_json WHERE id = $id";
+        //     $result = $conn->query($query);
+        //     $register = null;
+
+        //     if ($result && $result->num_rows > 0) {
+        //         $register = $result->fetch_assoc(); // Lấy ra đối tượng từ kết quả truy vấn
+        //     }
+        //     else {
+        //         // Nếu không có dòng nào khớp với id, trả về một đối tượng trống
+        //         $register = new stdClass();
+        //     }
+
+        //     echo json_encode($register); // Trả về đối tượng JSON
+        //     $conn->close();
+        // }
         function getComment($id){
             global $conn;
             $query = "SELECT comment.*,
