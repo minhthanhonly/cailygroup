@@ -30,7 +30,7 @@
             $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
             // Thực hiện truy vấn SELECT
            //$sql = "SELECT * FROM table_json";
-             $sql= "SELECT table_json.*, table_register.name 
+             $sql= "SELECT table_json.*, table_register.name
            FROM table_json 
            LEFT JOIN table_register ON table_json.table_id = table_register.id";
             if ($statusFilter != -1) {
@@ -112,6 +112,7 @@
                 echo json_encode($data);
             $conn->close();
         }
+
         function getCommentForUserFirst($id){
             global $conn;
             $query = "SELECT comment.*,
