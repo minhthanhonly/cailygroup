@@ -169,6 +169,9 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     note: row.note,
                     total: formattedTotal,
                     tableName: tableName,
+                    owner: users.realname,
+                    table_id: id_table,
+                    id_status: status,
                 }));
 
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
