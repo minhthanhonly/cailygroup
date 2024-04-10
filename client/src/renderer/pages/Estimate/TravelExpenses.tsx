@@ -11,7 +11,6 @@ interface Row {
     route: string;
     boardingStation: string;
     alightingStation: string;
-    amount: string;
     mealExpense: number;
     note: string;
 }
@@ -25,7 +24,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
     const axiosPrivate = useAxiosPrivate();
     const [date, setDate] = useState(new Date());
     const [number, setNumber] = useState('');
-    const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', boardingStation: '', alightingStation: '', amount: '', mealExpense: 0, note: '' }]);
+    const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', boardingStation: '', alightingStation: '', mealExpense: 0, note: '' }]);
     const [total, setTotal] = useState(0);
 
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
@@ -58,7 +57,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
 
     // thêm
     const addRow = () => {
-        const newRow: Row = { id: rows.length, route: '', boardingStation: '', alightingStation: '', amount: '', mealExpense: 0, note: '' };
+        const newRow: Row = { id: rows.length, route: '', boardingStation: '', alightingStation: '', mealExpense: 0, note: '' };
         setRows(prevRows => [...prevRows, newRow]);
     };
 
@@ -123,7 +122,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
     const checkBeforeSave = (): boolean => {
         // Kiểm tra xem mỗi hàng có đầy đủ dữ liệu không
         const isValid = rows.every(row => (
-            row.route && row.boardingStation && row.alightingStation && row.amount && row.mealExpense && row.note
+            row.route && row.boardingStation && row.alightingStation && row.mealExpense && row.note
         ));
 
         if (!isValid) {
@@ -145,14 +144,14 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                 // const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
 
                 const rowData = rows.map(row => ({
-                    date: formattedDate,
-                    route: row.route,
-                    boardingStation: row.boardingStation,
-                    alightingStation: row.alightingStation,
-                    amount: row.amount,
-                    mealExpense: row.mealExpense,
-                    note: row.note,
+                    日付: formattedDate,
+                    路線: row.route,
+                    乗車駅: row.boardingStation,
+                    下車駅: row.alightingStation,
+                    金額: row.mealExpense,
+                    備考: row.note,
                     total: formattedTotal,
+                    owner: users.realname,
                 }));
 
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
@@ -200,7 +199,6 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                                 <th>乗車駅</th>
                                 <th>下車駅</th>
                                 <th>金額</th>
-                                <th>食費</th>
                                 <th>備考</th>
 
                             </tr>
@@ -212,7 +210,6 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                                     <td><input type="text" value={row.route} onChange={(e) => handleInputChange(e, index, 'route')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.boardingStation} onChange={(e) => handleInputChange(e, index, 'boardingStation')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.alightingStation} onChange={(e) => handleInputChange(e, index, 'alightingStation')} placeholder='入力してください' /></td>
-                                    <td><input type="text" value={row.amount} onChange={(e) => handleInputChange(e, index, 'amount')} placeholder='入力してください' /></td>
                                     <td><input className="numberInput" type="text" value={mealExpenses[index]} onChange={(e) => handleNumberChange(e, index)} placeholder='0' /></td>
                                     <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
                                 </tr>

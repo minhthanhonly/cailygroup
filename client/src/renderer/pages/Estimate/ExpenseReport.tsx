@@ -142,13 +142,17 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                 // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
 
                 const dataToSend = rows.map((row, index) => ({
-                    date: formattedDate,
-                    route: row.route,
-                    paymentDestination: row.paymentDestination,
-                    priceNotax: row.priceNotax,
-                    tax: row.tax,
-                    check: checkedState[index], // Trạng thái checkbox tại index tương ứng
-                    note: row.note
+                    日付: formattedDate,
+                    路線: row.route,
+                    支払先: row.paymentDestination,
+                    "金額（税抜)": row.priceNotax,
+                    消費税: row.tax,
+                    軽減税率: checkedState[index], // Trạng thái checkbox tại index tương ứng
+                    備考: row.note,
+                    owner: users.realname,
+                    totalPriceNotTax: totalPriceNotTax,
+                    totalPriceTax: totalpriceTax,
+                    total: totalTaxIncluded,
                 }));
 
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
@@ -157,9 +161,9 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                     owner: users.realname,
                     table_id: id_table,
                     id_status: status,
-                    totalPriceNotTax: totalPriceNotTax,
-                    totalPriceTax: totalpriceTax,
-                    total: totalTaxIncluded,
+                    // totalPriceNotTax: totalPriceNotTax,
+                    // totalPriceTax: totalpriceTax,
+                    // total: totalTaxIncluded,
                 };
 
                 // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
