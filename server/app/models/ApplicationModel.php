@@ -31,7 +31,7 @@
             // Thực hiện truy vấn SELECT
             $sql = "SELECT * FROM table_json";
             if ($statusFilter != -1) {
-                $query .= " WHERE status = $statusFilter";
+                $query .= " WHERE id_status = $statusFilter";
             }
             $result = $conn->query($sql);
 

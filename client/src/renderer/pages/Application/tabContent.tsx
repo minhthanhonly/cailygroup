@@ -422,7 +422,7 @@ export const TabContent = ({ id }) => {
                   </div> */}
                   <Report id={accordionItems.id} />
 
-                  {/* <div className="box-approves">
+                  <div className="box-approves">
                     <div className="box-approves__inner">
                       <p className="box-approves__headding">承認状況</p>
                       <ul>
@@ -540,40 +540,44 @@ export const TabContent = ({ id }) => {
                               </p>
                               {commentSeCond.length > 0 && (
                                 <div className="box-approves__item__content__comment">
-                                  {commentSeCond.map((commentItem, index) => (
-                                    <div
-                                      key={index}
-                                      className="box-approves__item__content__comment__item"
-                                    >
-                                      <p className="box-approves__item__content__comment__head">
-                                        <span className="box-approves__item__content__comment__title">
-                                          {commentItem.realname}
-                                          ：（{commentItem.createdAt}）
-                                        </span>
-                                        {isManager ? (
-                                          <>
-                                            <span
-                                              className="btn-delete"
-                                              onClick={() =>
-                                                handDeleteSeCond(commentItem.id)
-                                              }
-                                            >
-                                              <img
-                                                src={require('../../../../assets/close.png')}
-                                                alt="delete"
-                                                className="fluid-image"
-                                              />
-                                            </span>
-                                          </>
-                                        ) : (
-                                          <span></span>
-                                        )}
-                                      </p>
-                                      <p className="box-approves__item__content__comment__text">
-                                        {commentItem.note}
-                                      </p>
-                                    </div>
-                                  ))}
+                                  {commentSeCond.map(
+                                    (commentItem: any, index: any) => (
+                                      <div
+                                        key={index}
+                                        className="box-approves__item__content__comment__item"
+                                      >
+                                        <p className="box-approves__item__content__comment__head">
+                                          <span className="box-approves__item__content__comment__title">
+                                            {commentItem.realname}
+                                            ：（{commentItem.createdAt}）
+                                          </span>
+                                          {isManager ? (
+                                            <>
+                                              <span
+                                                className="btn-delete"
+                                                onClick={() =>
+                                                  handDeleteSeCond(
+                                                    commentItem.id,
+                                                  )
+                                                }
+                                              >
+                                                <img
+                                                  src={require('../../../../assets/close.png')}
+                                                  alt="delete"
+                                                  className="fluid-image"
+                                                />
+                                              </span>
+                                            </>
+                                          ) : (
+                                            <span></span>
+                                          )}
+                                        </p>
+                                        <p className="box-approves__item__content__comment__text">
+                                          {commentItem.note}
+                                        </p>
+                                      </div>
+                                    ),
+                                  )}
                                 </div>
                               )}
                               {isManager ? (
@@ -617,42 +621,44 @@ export const TabContent = ({ id }) => {
                               </p>
                               {commentThird.length > 0 && (
                                 <div className="box-approves__item__content__comment">
-                                  {commentThird.map((commentItem, index) => (
-                                    <div
-                                      key={index}
-                                      className="box-approves__item__content__comment__item"
-                                    >
-                                      <p className="box-approves__item__content__comment__head">
-                                        <span className="box-approves__item__content__comment__title">
-                                          {commentItem.realname}
-                                          ：（{commentItem.createdAt}）
-                                        </span>
-                                        {isLeader ? (
-                                          <>
-                                            <span
-                                              className="btn-delete"
-                                              onClick={() =>
-                                                handleDeleteThird(
-                                                  commentItem.id,
-                                                )
-                                              }
-                                            >
-                                              <img
-                                                src={require('../../../../assets/close.png')}
-                                                alt="delete"
-                                                className="fluid-image"
-                                              />
-                                            </span>
-                                          </>
-                                        ) : (
-                                          <span></span>
-                                        )}
-                                      </p>
-                                      <p className="box-approves__item__content__comment__text">
-                                        {commentItem.note}
-                                      </p>
-                                    </div>
-                                  ))}
+                                  {commentThird.map(
+                                    (commentItem: any, index: any) => (
+                                      <div
+                                        key={index}
+                                        className="box-approves__item__content__comment__item"
+                                      >
+                                        <p className="box-approves__item__content__comment__head">
+                                          <span className="box-approves__item__content__comment__title">
+                                            {commentItem.realname}
+                                            ：（{commentItem.createdAt}）
+                                          </span>
+                                          {isLeader ? (
+                                            <>
+                                              <span
+                                                className="btn-delete"
+                                                onClick={() =>
+                                                  handleDeleteThird(
+                                                    commentItem.id,
+                                                  )
+                                                }
+                                              >
+                                                <img
+                                                  src={require('../../../../assets/close.png')}
+                                                  alt="delete"
+                                                  className="fluid-image"
+                                                />
+                                              </span>
+                                            </>
+                                          ) : (
+                                            <span></span>
+                                          )}
+                                        </p>
+                                        <p className="box-approves__item__content__comment__text">
+                                          {commentItem.note}
+                                        </p>
+                                      </div>
+                                    ),
+                                  )}
                                 </div>
                               )}
                               {isLeader ? (
@@ -718,7 +724,7 @@ export const TabContent = ({ id }) => {
                         </li>
                       </ul>
                     </div>
-                  </div> */}
+                  </div>
                 </div>
               </div>
             )}
