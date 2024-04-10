@@ -151,27 +151,27 @@ export const TabContent = ({ id }) => {
   }, [id]);
 
   useEffect(() => {
-    if (accordionItems.status == 0) {
+    if (accordionItems.id_status == 1) {
       setApprove({
         approveTexts: '承認待ち',
         approveClass: 'lbl01 lbl-blue',
       });
-    } else if (accordionItems.status == 1) {
+    } else if (accordionItems.id_status == 2) {
       setApprove({
         approveTexts: '差し戻し',
         approveClass: 'lbl01 lbl-yellow',
       });
-    } else if (accordionItems.status == 2) {
+    } else if (accordionItems.id_status == 3) {
       setApprove({
         approveTexts: '下書き',
         approveClass: 'lbl01 lbl-brown',
       });
-    } else if (accordionItems.status == 3) {
+    } else if (accordionItems.id_status == 4) {
       setApprove({
         approveTexts: '却下',
         approveClass: 'lbl01 lbl-red',
       });
-    } else if (accordionItems.status == 4) {
+    } else if (accordionItems.id_status == 5) {
       setApprove({
         approveTexts: '完了',
         approveClass: 'lbl01 lbl-white',
@@ -376,7 +376,7 @@ export const TabContent = ({ id }) => {
             {isOpen && (
               <div className="list-accordion__item__content__inner">
                 <div className="list-accordion__item__content__item">
-                  <div className="box-register">
+                  {/* <div className="box-register">
                     <ul>
                       <li>
                         <div className="box-register__item">
@@ -419,9 +419,10 @@ export const TabContent = ({ id }) => {
                         </div>
                       </li>
                     </ul>
-                  </div>
-                  {/* <Report /> */}
-                  <div className="box-approves">
+                  </div> */}
+                  <Report id={accordionItems.id} />
+
+                  {/* <div className="box-approves">
                     <div className="box-approves__inner">
                       <p className="box-approves__headding">承認状況</p>
                       <ul>
@@ -717,7 +718,7 @@ export const TabContent = ({ id }) => {
                         </li>
                       </ul>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}

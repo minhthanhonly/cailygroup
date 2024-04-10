@@ -120,13 +120,13 @@ export const Application = () => {
           <div className="tab01 tab-content">
             <div className="list-accordion">
               <div className="list-accorditon__inner">
-                {activeTab === 'tab1' && <Tab key="tab1" status={0} />}
+                {activeTab === 'tab1' && <Tab key="tab1" status={1} />}
                 {activeTab === 'tab2' && <Tab key="tab2" status={-1} />}
-                {activeTab === 'tab3' && <Tab key="tab3" status={1} />}
-                {activeTab === 'tab4' && <Tab key="tab4" status={2} />}
-                {activeTab === 'tab5' && <Tab key="tab5" status={3} />}
-                {activeTab === 'tab6' && <Tab key="tab6" status={4} />}
-                {activeTab === 'tab7' && <Tab key="tab7" status={5} />}
+                {activeTab === 'tab3' && <Tab key="tab3" status={2} />}
+                {activeTab === 'tab4' && <Tab key="tab4" status={3} />}
+                {activeTab === 'tab5' && <Tab key="tab5" status={4} />}
+                {activeTab === 'tab6' && <Tab key="tab6" status={5} />}
+                {activeTab === 'tab7' && <Tab key="tab7" status={6} />}
               </div>
             </div>
           </div>
