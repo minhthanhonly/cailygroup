@@ -144,14 +144,13 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                 // const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
 
                 const rowData = rows.map(row => ({
-                    日付: formattedDate,
-                    路線: row.route,
-                    乗車駅: row.boardingStation,
-                    下車駅: row.alightingStation,
-                    金額: row.mealExpense,
-                    備考: row.note,
+                    date: formattedDate,
+                    route: row.route,
+                    boardingStation: row.boardingStation,
+                    alightingStation: row.alightingStation,
+                    mealExpense: row.mealExpense,
+                    note: row.note,
                     total: formattedTotal,
-                    owner: users.realname,
                 }));
 
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
@@ -159,7 +158,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     rows: rowData,
                     owner: users.realname,
                     table_id: id_table,
-                    id_status: status
+                    id_status: status,
                 };
 
                 // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
