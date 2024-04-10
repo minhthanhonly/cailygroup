@@ -22,9 +22,7 @@ export const TravelAllowance = (props: { id_table: any; }) => {
 
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
-
     const [rows, setRows] = useState([{ id: 0, railwayName: '', router: '', startroad: '', endroad: '', monthlyticket: 0, roundtrip: 0, note: '' }]);
-    const [totalColumnSum, setTotalColumnSum] = useState([0, 0]);
     const [isNew, setNew] = useState(true);
     const [isChange, setChange] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -42,7 +40,6 @@ export const TravelAllowance = (props: { id_table: any; }) => {
         const newRows = [...rows];
         setRows(newRows);
     };
-
     const handleisChangeCheck = () => {
         setChange(!isChange);
         if (isNew) setNew(false); // Deselect early leave if late is selected
@@ -54,8 +51,6 @@ export const TravelAllowance = (props: { id_table: any; }) => {
         if (isNew) setNew(false); // Deselect early leave if late is selected
         if (isChange) setChange(false);
     }
-
-
     const handleStartNowCheck = () => {
         setIsStartNow(!isStartNow)
         if (isStartDate) setIsStartDate(false);
@@ -64,8 +59,6 @@ export const TravelAllowance = (props: { id_table: any; }) => {
         setIsStartDate(!isStartDate)
         if (isStartNow) setIsStartNow(false);
     }
-
-
 
     const [monthlyticket, setmonthlyticket] = useState<string[]>(new Array(rows.length).fill(''));
     const [roundtrip, setroundtrip] = useState<string[]>(new Array(rows.length).fill(''));
@@ -157,8 +150,6 @@ export const TravelAllowance = (props: { id_table: any; }) => {
     };
 
     const saveExpense = async (status: number) => {
-
-
         const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
         const fDateChanged = isStartDate === true ? formattedDate : "";
 
@@ -171,7 +162,9 @@ export const TravelAllowance = (props: { id_table: any; }) => {
                 station: station,
                 isStartNow: isStartNow,
                 isStartDate: isStartDate,
-                date_input: fDateChanged
+                date_input: fDateChanged,
+                totalMonthlyTicket: totalMonthlyTicket,
+                totalRoundtrip: totalRoundtrip,
                 // Thêm các trường khác nếu cần
             };
             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
@@ -218,66 +211,67 @@ export const TravelAllowance = (props: { id_table: any; }) => {
             <p className="txt-lead">下記の通り申請致します。</p>
 
             <table className='tb-from'>
-                <tr>
-                    <th><div className='tb-from--th'>用途<span className='txt-red'>（必須）</span></div></th>
-                    <td>
-                        <div className='tb-from--td'>
-                            <div className='tb-from--checkbox'>
-                                <label><input type="checkbox" name="checkbox" checked={isNew} onChange={handleNewCheck} /><span></span>遅刻</label>
+                <tbody>
+                    <tr>
+                        <th><div className='tb-from--th'>用途<span className='txt-red'>（必須）</span></div></th>
+                        <td>
+                            <div className='tb-from--td'>
+                                <div className='tb-from--checkbox'>
+                                    <label><input type="checkbox" name="checkbox" checked={isNew} onChange={handleNewCheck} /><span></span>遅刻</label>
+                                </div>
+                                <div className='tb-from--checkbox'>
+                                    <label><input type="checkbox" name="checkbox" checked={isChange} onChange={handleisChangeCheck} /><span></span>早退</label>
+                                </div>
+                                <div className='tb-from--checkbox'>
+                                    <label><input type="checkbox" name="checkbox" checked={isChangePrice} onChange={handleChangePriceCheck} /><span></span>時間外勤務</label>
+                                </div>
                             </div>
-                            <div className='tb-from--checkbox'>
-                                <label><input type="checkbox" name="checkbox" checked={isChange} onChange={handleisChangeCheck} /><span></span>早退</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
+                        <td>
+                            <div className='tb-from--td'>
+                                <input type="text" className='tb-from--input' name="address" value={address}
+                                    onChange={handleInputChange02} />
                             </div>
-                            <div className='tb-from--checkbox'>
-                                <label><input type="checkbox" name="checkbox" checked={isChangePrice} onChange={handleChangePriceCheck} /><span></span>時間外勤務</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
+                        <td>
+                            <div className='tb-from--td'>
+                                <input type="text" className='tb-from--input' name="station" value={station}
+                                    onChange={handleInputChange02} />
                             </div>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                    <tr> <th>  <div className="tb-from--th">適用開始年月日<span className="txt-red">（必須）</span>  </div> </th>
+                        <td>
+                            <div className="tb-from--td">
+                                <div className="tb-from--checkbox">
+                                    <label>
+                                        <input type="checkbox" name="checkbox" checked={isStartNow} onChange={handleStartNowCheck} />
+                                        <span></span>入社日から適用
+                                    </label>
+                                </div>
+                                <div className="tb-from--checkbox">
+                                    <label>
+                                        <input type="checkbox" name="checkbox" checked={isStartDate} onChange={handleStartDateCheck} />
+                                        <span></span>
+                                        <DatePicker className="tb-from--checkbox__date" onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY/MM/DD HH:mm:ss" />
+                                        <p>から適用</p>
+                                    </label>
 
-                <tr>
-                    <th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
-                    <td>
-                        <div className='tb-from--td'>
-                            <input type="text" className='tb-from--input' name="address" value={address}
-                                onChange={handleInputChange02} />
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
-                    <td>
-                        <div className='tb-from--td'>
-                            <input type="text" className='tb-from--input' name="station" value={station}
-                                onChange={handleInputChange02} />
-                        </div>
-                    </td>
-                </tr>
-                <tr> <th>  <div className="tb-from--th">適用開始年月日<span className="txt-red">（必須）</span>  </div> </th>
-                    <td>
-                        <div className="tb-from--td">
-                            <div className="tb-from--checkbox">
-                                <label>
-                                    <input type="checkbox" name="checkbox" checked={isStartNow} onChange={handleStartNowCheck} />
-                                    <span></span>入社日から適用
-                                </label>
+                                </div>
                             </div>
-                            <div className="tb-from--checkbox">
-                                <label>
-                                    <input type="checkbox" name="checkbox" checked={isStartDate} onChange={handleStartDateCheck} />
-                                    <span></span>
-                                    <DatePicker className="tb-from--checkbox__date" onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY/MM/DD HH:mm:ss" />
-                                    <p>から適用</p>
-                                </label>
-
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
-                    <td>【時給制の場合】普通運賃の勤務日数分を支給　　【月給制の場合】1ヵ月分の定期券代金を支給</td>
-                </tr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
+                        <td>【時給制の場合】普通運賃の勤務日数分を支給　　【月給制の場合】1ヵ月分の定期券代金を支給</td>
+                    </tr>
+                </tbody>
             </table>
             <div className="table ">
                 <div className='tbl_custom--03 boder-input'>
@@ -317,7 +311,7 @@ export const TravelAllowance = (props: { id_table: any; }) => {
                                 <td>{totalMonthlyTicket !== 0 ? formatNumberWithCommas(totalMonthlyTicket) : '0'}</td>
                             </tr>
                             <tr>
-                                <td>{totalMonthlyTicket !== 0 ? formatNumberWithCommas(totalRoundtrip) : '0'}</td>
+                                <td>{totalRoundtrip !== 0 ? formatNumberWithCommas(totalRoundtrip) : '0'}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -274,6 +274,9 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
                 selectedFileName: selectedFileName,
                 inputDate: inputDate,
                 inputValue: inputValue,
+                calculatedPrice: calculatedPrice,
+                finalPayment: finalPayment,
+                finalTotalPrice: finalTotalPrice,
                 // Thêm các trường khác nếu cần
             };
             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu

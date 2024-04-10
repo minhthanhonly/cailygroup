@@ -137,6 +137,8 @@ export const TravelExpenses = (props: { id_table: any; }) => {
 
         try {
             const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
+            const formattedTotal = formatNumberWithCommas(total);
+
             const isValid = checkBeforeSave();
             if (isValid) {
                 // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
@@ -149,7 +151,8 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     alightingStation: row.alightingStation,
                     amount: row.amount,
                     mealExpense: row.mealExpense,
-                    note: row.note
+                    note: row.note,
+                    total: formattedTotal,
                 }));
 
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
