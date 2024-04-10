@@ -266,33 +266,37 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
 
         try {
             const additionalData = {
-                isDomestic: isDomestic,
-                isForeign: isForeign,
-                addressDomesticForeign: addressDomesticForeign, // giả sử bạn đã định nghĩa biến này trong phần state
+                遅刻: isDomestic,
+                早退: isForeign,
+                出張期間: addressDomesticForeign, // giả sử bạn đã định nghĩa biến này trong phần state
                 dateStart: dateStart,
                 dateEnd: dateEnd,
-                selectedFileName: selectedFileName,
+                領収書添付: selectedFileName,
                 inputDate: inputDate,
                 inputValue: inputValue,
-                calculatedPrice: calculatedPrice,
-                finalPayment: finalPayment,
-                finalTotalPrice: finalTotalPrice,
+                // calculatedPrice: calculatedPrice,
+                // finalPayment: finalPayment,
+                // finalTotalPrice: finalTotalPrice,
                 // Thêm các trường khác nếu cần
             };
             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
             const dataToSend = rows.map((row, index) => ({
-                date: date_form,
-                project: row.project,
-                priceTrain: row.priceTrain,
-                priceHouse: row.priceHouse,
-                priceCustomer: row.priceCustomer,
-                priceEat: row.priceEat,
-                priceOther: row.priceOther,
-                totalPrice: calculateRowSum(row),
+                日付: date_form,
+                項目: row.project,
+                交通費: row.priceTrain,
+                宿泊費: row.priceHouse,
+                交際費: row.priceCustomer,
+                食費: row.priceEat,
+                その他: row.priceOther,
+                合計: calculateRowSum(row),
 
                 // tax: row.tax,
                 // check: checkedState[index], // Trạng thái checkbox tại index tương ứng
-                note: row.note
+                備考: row.note,
+                owner: users.realname,
+                calculatedPrice: calculatedPrice,
+                finalPayment: finalPayment,
+                finalTotalPrice: finalTotalPrice,
             }));
 
             // Tạo đối tượng JSON chứa các mảng dữ liệu
