@@ -29,8 +29,8 @@
             global $conn;
             $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
             // Thực hiện truy vấn SELECT
-           // $sql = "SELECT * FROM table_json";
-           $sql= "SELECT table_json.*, table_register.name , table_json.name AS name
+           //$sql = "SELECT * FROM table_json";
+             $sql= "SELECT table_json.*, table_register.name 
            FROM table_json 
            LEFT JOIN table_register ON table_json.table_id = table_register.id";
             if ($statusFilter != -1) {
