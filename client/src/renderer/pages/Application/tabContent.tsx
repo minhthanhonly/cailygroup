@@ -353,11 +353,10 @@ export const TabContent = ({ id }) => {
           <div className="list-accordion__item__head" onClick={toggleAccordion}>
             <div className="list-accordion__item__head__title">
               <p className="list-accordion__item__head__title__title">
-                {accordionItems.name}
+                {accordionItems.tableName}
               </p>
               <span className="list-accordion__item__head__title__subtitle">
-                {accordionItems.realname}（{accordionItems.date}{' '}
-                {'\u00A0\u00A0'}
+                {accordionItems.owner}（{accordionItems.date} {'\u00A0\u00A0'}
                 {accordionItems.time}）
               </span>
             </div>

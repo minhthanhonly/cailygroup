@@ -12,6 +12,7 @@ export const Report = ({ id }) => {
 
         const data = response.data;
         const parsedTableJson = JSON.parse(data.tablejson);
+        //console.log(parsedTableJson);
         setAccordionItems(parsedTableJson.rows[0]);
       } catch (error) {
         console.error('Error fetching data:', error);
