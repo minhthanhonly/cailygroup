@@ -20,14 +20,15 @@ export const TravelExpenses = (props: { id_table: any; }) => {
 
     const { id_table } = props;
 
+
+
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
     const [date, setDate] = useState(new Date());
-    const [number, setNumber] = useState('');
     const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', boardingStation: '', alightingStation: '', mealExpense: 0, note: '' }]);
     const [total, setTotal] = useState(0);
-
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
+
 
     const validateInput = (value: string, fieldName: string, index: number) => {
         const newVisibleErrors = [...visibleErrors];
@@ -42,11 +43,6 @@ export const TravelExpenses = (props: { id_table: any; }) => {
 
         setVisibleErrors(newVisibleErrors);
     };
-
-
-
-    const selectedId = 7;
-
 
     const [mealExpenses, setMealExpenses] = useState<string[]>(new Array(rows.length).fill(''));
 
@@ -132,6 +128,27 @@ export const TravelExpenses = (props: { id_table: any; }) => {
         return isValid;
     };
 
+
+    const [tableName, setTableName] = useState(0);
+    useEffect(() => {
+        const getTables = async () => {
+            try {
+                const response = await axiosPrivate.get('estimate');
+                const { data } = response;
+                const { id_table } = props;
+
+                // Lặp qua mảng data để tìm name tương ứng với id_table
+                const matchedTable = data.find((data: { id: any; }) => data.id === id_table);
+                setTableName(matchedTable.name);
+
+            } catch (err) {
+                console.error('Lỗi khi lấy dữ liệu:', err);
+            }
+        }
+        getTables();
+    }, [id_table]);
+
+
     const saveExpense = async (status: number) => {
 
         try {
@@ -151,6 +168,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     mealExpense: row.mealExpense,
                     note: row.note,
                     total: formattedTotal,
+                    tableName: tableName,
                 }));
 
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
