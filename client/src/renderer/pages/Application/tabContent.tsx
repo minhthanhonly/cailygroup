@@ -39,6 +39,7 @@ export const TabContent = ({ id }) => {
     const Load = async () => {
       try {
         const response = await axiosPrivate.get('application/getforid/' + id);
+        console.log(response.data);
         setAccordionItems(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);

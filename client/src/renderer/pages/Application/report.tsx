@@ -36,7 +36,7 @@ export const Report = ({ id }) => {
               </span>
             </div>
           </li>
-          {/* <li>
+          <li>
             <div className="box-register__item">
               <span className="box-register__item__title">路線</span>
               <span className="box-register__item__content">
@@ -75,7 +75,7 @@ export const Report = ({ id }) => {
                 {accordionItems.note}
               </span>
             </div>
-          </li> */}
+          </li>
         </ul>
       </div>
     </>
