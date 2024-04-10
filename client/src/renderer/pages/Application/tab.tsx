@@ -22,7 +22,7 @@ export const Tab: React.FC<TabContentProps & { key: React.Key }> = ({
         });
         setItems(response.data);
       } catch (error) {
-        console.error('Lỗi khi cập nhật trạng thái:', error);
+        console.error('Lỗi khi cập nhật trạng thái :', error);
       }
     };
     Load();

@@ -26,7 +26,7 @@ export const Report = ({ id }) => {
     : '';
   return (
     <>
-      <div className="box-register">
+      <div className="box-register 1">
         <ul>
           <li>
             <div className="box-register__item">
