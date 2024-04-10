@@ -151,7 +151,8 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     alightingStation: row.alightingStation,
                     amount: row.amount,
                     mealExpense: row.mealExpense,
-                    note: row.note
+                    note: row.note,
+                    total: formattedTotal,
                 }));
 
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
@@ -159,8 +160,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     rows: rowData,
                     owner: users.realname,
                     table_id: id_table,
-                    id_status: status,
-                    total: formattedTotal,
+                    id_status: status
                 };
 
                 // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
