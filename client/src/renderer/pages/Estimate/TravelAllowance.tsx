@@ -149,6 +149,24 @@ export const TravelAllowance = (props: { id_table: any; }) => {
         setRows([...rows, newRow]);
     };
 
+    const [tableName, setTableName] = useState(0);
+    useEffect(() => {
+        const getTables = async () => {
+            try {
+                const response = await axiosPrivate.get('estimate');
+                const { data } = response;
+                const { id_table } = props;
+
+                // Lặp qua mảng data để tìm name tương ứng với id_table
+                const matchedTable = data.find((data: { id: any; }) => data.id === id_table);
+                setTableName(matchedTable.name);
+
+            } catch (err) {
+                console.error('Lỗi khi lấy dữ liệu:', err);
+            }
+        }
+        getTables();
+    }, [id_table]);
     const saveExpense = async (status: number) => {
         const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
         const fDateChanged = isStartDate === true ? formattedDate : "";
@@ -177,7 +195,8 @@ export const TravelAllowance = (props: { id_table: any; }) => {
                 monthlyticket: row.monthlyticket,
                 roundtrip: row.roundtrip,
                 owner: users.realname,
-                note: row.note
+                note: row.note,
+                tableName: tableName,
             }));
 
             // Tạo đối tượng JSON chứa các mảng dữ liệu
