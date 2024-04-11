@@ -20,6 +20,20 @@
     margin-top: 0;
     right: 0;
   }
+
+
+  .form-group > div{
+    width: 100%;
+  }
+  .group_box--title{
+    width: 15rem;
+  }
+  .group_box__insert{
+    width: calc(100% - 15rem);
+  }
+  .group_box--box{
+    width: calc(100% - 1.6rem);
+  }
 }
 
 .modal {
@@ -31,3 +45,26 @@
   max-height: 800px;
   overflow-y: auto
 }
+
+//
+.c-form{
+  &-wrapper{
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  &-item{
+    padding: 2rem;
+    border: 1px solid #d8d8d8;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    &.c-formContent{
+      width: 80%;
+    }
+    &.c-formSidebar{
+      width: 20%;
+    }
+  }
+}
+
+
