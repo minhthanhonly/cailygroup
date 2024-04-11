@@ -2736,3 +2736,15 @@ textarea {
   z-index: 9999;
 }
 
+
+.grid-flex { 
+  justify-content: space-between;
+
+  & h2{
+    width: 91%;
+  }
+}
+.class-img{
+  width: 25px;
+  height: 25px;
+}

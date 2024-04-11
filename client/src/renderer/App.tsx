@@ -24,6 +24,7 @@ import FluidLayout from './layouts/FluidLayout/FluidLayout';
 import Members from './pages/Members';
 import MemberAdd from './pages/Members/MemberAdd';
 import MemberEdit from './pages/Members/MemberEdit';
+import Search from './pages/Search/';
 import RequireAuth from './components/RequireAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -85,7 +86,7 @@ export default function App() {
 
               {/* Khu cua thịnh */}
 
-
+              <Route path="Search" element={<Search />} />
               <Route path="estimate" element={<Estimate />} />
 
 
