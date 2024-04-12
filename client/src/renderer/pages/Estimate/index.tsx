@@ -13,7 +13,7 @@ export const Estimate = () => {
     const [empty, setEmpty] = useState(false);
     const [listOfTable, setListOfTable] = useState<Table[]>([]); // Sử dụng kiểu dữ liệu Table
     const [selectedId, setSelectedId] = useState<number | null>(null); // Đặt kiểu dữ liệu cho selectedId là number | null
-
+    const [selectedname, setSelectedName] = useState('');
 
 
     useEffect(() => {
@@ -29,8 +29,9 @@ export const Estimate = () => {
         getTables();
     }, []);
 
-    const handleButtonClick = (id: number) => {
+    const handleButtonClick = (id: number, name: string) => {
         setSelectedId(id); // Cập nhật selectedId khi click vào button
+        setSelectedName(name); // Cập nhật selectedName khi click vào button
     }
 
     return (
@@ -41,7 +42,7 @@ export const Estimate = () => {
                     {listOfTable.map((data, index) => (
                         <tr key={data.id}>
                             <th>
-                                <NavLink to={`/estimate/${data.id}`} className="link" onClick={() => handleButtonClick(data.id)}>{data.name}</NavLink>
+                                <NavLink to={`/estimate/${data.id}`} className="link" onClick={() => handleButtonClick(data.id, data.name)}>{data.name}</NavLink>
                             </th>
                             <td>
                                 {data.content}
