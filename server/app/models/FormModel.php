@@ -63,7 +63,9 @@
 
 				// Lấy dữ liệu từ phần thân của yêu cầu
 				$form_name = $formPostData->form_name;
-                $form = file_get_contents("php://input");
+                // $form = json_encode($formPostData->reactFormData);
+				$form = file_get_contents("php://input");
+
 				$status = $formPostData->status;
 				$owner = $formPostData->owner;
 			
@@ -87,7 +89,7 @@
 			global $conn;
 
 			// Thực hiện truy vấn SELECT
-			$sql = "SELECT form FROM forms WHERE id='5'";
+			$sql = "SELECT form FROM forms WHERE id='9'";
 
 			$result = $conn->query($sql);
 
@@ -95,12 +97,13 @@
 			if ($result->num_rows > 0) {
 				// Duyệt qua từng dòng dữ liệu
 				while ($row = $result->fetch_assoc()) {
-					$data = $row;
+					$data[] = $row;
 				}
 			} else {
-				echo "Không có dữ liệu";
+				$data = [];
 			}
 
+			header('Content-Type: application/json');
 			echo json_encode($data);
 			return;
 
