@@ -9,9 +9,11 @@ export const Report = ({ id }) => {
       try {
         const response = await axiosPrivate.get('application/getforid/' + id);
         const data = response.data;
+        // Parse tablejson thành JSON
         const parsedTableJson = JSON.parse(data.tablejson);
-        //console.log(parsedTableJson.rows[0]);
-        setAccordionItems(parsedTableJson.rows[0]);
+        // Truy cập vào phần tử rows trong parsedTableJson
+        const rows = parsedTableJson.rows;
+        setAccordionItems(rows);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -20,9 +22,6 @@ export const Report = ({ id }) => {
     Load();
   }, [id]);
 
-  const formattedDate = accordionItems.date
-    ? new Date(accordionItems.date).toLocaleDateString('ja-JP')
-    : '';
   return (
     <>
       <div className="box-register 1">
@@ -31,7 +30,9 @@ export const Report = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">期間</span>
               <span className="box-register__item__content">
-                {formattedDate}
+                {accordionItems.length > 0 && accordionItems[0].date
+                  ? new Date(accordionItems[0].date).toLocaleDateString('ja-JP')
+                  : ''}
               </span>
             </div>
           </li>
@@ -39,7 +40,7 @@ export const Report = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">路線</span>
               <span className="box-register__item__content">
-                {accordionItems.route}
+                {accordionItems.length > 0 ? accordionItems[0].route : ''}
               </span>
             </div>
           </li>
@@ -47,7 +48,9 @@ export const Report = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">乗車駅</span>
               <span className="box-register__item__content">
-                {accordionItems.boardingStation}
+                {accordionItems.length > 0
+                  ? accordionItems[0].boardingStation
+                  : ''}
               </span>
             </div>
           </li>
@@ -55,7 +58,9 @@ export const Report = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">下車駅</span>
               <span className="box-register__item__content">
-                {accordionItems.alightingStation}
+                {accordionItems.length > 0
+                  ? accordionItems[0].alightingStation
+                  : ''}
               </span>
             </div>
           </li>
@@ -63,7 +68,7 @@ export const Report = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">金額</span>
               <span className="box-register__item__content">
-                {accordionItems.total}
+                {accordionItems.length > 0 ? accordionItems[0].total : ''}
               </span>
             </div>
           </li>
@@ -71,7 +76,7 @@ export const Report = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">備考</span>
               <span className="box-register__item__content">
-                {accordionItems.note}
+                {accordionItems.length > 0 ? accordionItems[0].note : ''}
               </span>
             </div>
           </li>

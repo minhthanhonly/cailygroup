@@ -361,6 +361,7 @@ export const TabContent = ({ id }) => {
     const second = ('0' + datetime.getSeconds()).slice(-2); // Thêm số 0 vào trước nếu giây < 10
     return `(${year} ${month} ${day} ${hour}:${minute}:${second})`;
   };
+
   return (
     <>
       <div className="list-accordion__parent">
@@ -438,7 +439,7 @@ export const TabContent = ({ id }) => {
                       </li>
                     </ul>
                   </div> */}
-                  <Report id={accordionItems.id} />
+                  <Report id={id} />
                   <div className="box-approves">
                     <div className="box-approves__inner">
                       <p className="box-approves__headding">承認状況</p>

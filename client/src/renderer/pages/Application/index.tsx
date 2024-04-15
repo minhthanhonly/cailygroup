@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 export const Application = () => {
   const axiosPrivate = useAxiosPrivate();
-  const [activeTab, setActiveTab] = useState('tab1');
+  const [activeTab, setActiveTab] = useState('tab2');
   const [statusCount, setStatusCount] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [statusTotal, setStatusTotal] = useState(0);
 
@@ -19,26 +19,29 @@ export const Application = () => {
 
   const Load = async () => {
     try {
-      setStatusCount([0, 0, 0, 0, 0, 0, 0]);
       const response = await axiosPrivate.get('application', {
         params: { id_status: -1 },
       });
-      let data = response.data;
+      const data = response.data;
       setStatusTotal(data.length);
+
+      // Tạo một bản sao của statusCount
+      let updatedStatusCount = [0, 0, 0, 0, 0, 0, 0];
+
+      // Cập nhật updatedStatusCount dựa trên dữ liệu mới
       data.forEach((item) => {
         const statusIndex = parseInt(item.id_status);
         if (
           !isNaN(statusIndex) &&
           statusIndex >= 0 &&
-          statusIndex < statusCount.length
+          statusIndex < updatedStatusCount.length
         ) {
-          setStatusCount((prevState) => {
-            const newState = [...prevState];
-            newState[statusIndex] += 1;
-            return newState;
-          });
+          updatedStatusCount[statusIndex] += 1;
         }
       });
+
+      // Cập nhật statusCount
+      setStatusCount(updatedStatusCount);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -53,14 +56,16 @@ export const Application = () => {
 
   return (
     <div>
-      <div className='grid-row grid-flex'>
+      <div className="grid-row grid-flex">
         <Heading2 text="申請状況" />
-        <Link to="/Search"> <img
-          src={require('../../../../assets/icn-search.png')}
-          alt=""
-          className="fluid-image class-img"
-        /> </Link>
-
+        <Link to="/Search">
+          {' '}
+          <img
+            src={require('../../../../assets/icn-search.png')}
+            alt=""
+            className="fluid-image class-img"
+          />{' '}
+        </Link>
       </div>
 
       <div className="box-application">

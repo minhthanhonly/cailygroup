@@ -67,16 +67,15 @@
 
         function getApplicationForId($id){
             global $conn;
-            $query = "SELECT table_json.*
-            FROM table_json 
-            WHERE table_json.id = $id";
-            $result = $conn->query($query);
+            $sql = "SELECT *
+                    FROM table_json 
+                    WHERE table_json.id = $id";
+            $result = $conn->query($sql);
             $register = null;
 
             if ($result && $result->num_rows > 0) {
                 $register = $result->fetch_assoc(); // Lấy ra đối tượng từ kết quả truy vấn
-            }
-            else {
+            } else {
                 // Nếu không có dòng nào khớp với id, trả về một đối tượng trống
                 $register = new stdClass();
             }
