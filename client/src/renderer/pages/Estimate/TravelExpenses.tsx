@@ -175,9 +175,12 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                 }));
 
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
+                const requestData = {
+                    rows: rowData,
+                };
 
                 // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-                const response = await axiosPrivate.post('travelexpenses/add', rowData, { headers: { 'Content-Type': 'application/json' } });
+                const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
 
                 if (response.status >= 200 && response.status < 300) {
                     if (status === 1) {
