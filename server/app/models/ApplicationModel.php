@@ -3,10 +3,10 @@
 
         // function getApplication(){
         //     global $conn;
-        //     $statusFilter = isset($_GET['status']) ? mysqli_real_escape_string($conn, $_GET['status']) : '-1';
+        //     $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
         //     $query = "SELECT *  FROM register";
         //     if ($statusFilter != -1) {
-        //         $query .= " WHERE status = $statusFilter";
+        //         $query .= " WHERE id_status = $statusFilter";
         //     }
         //     $allRegister = mysqli_query($conn, $query);
 
@@ -20,7 +20,7 @@
         //         echo json_encode($data,JSON_UNESCAPED_UNICODE);
         //     } else {
         //         http_response_code(500);
-        //         echo json_encode(['errCode' => 1, 'message' => 'không thể tìm thấy status']);
+        //         echo json_encode(['errCode' => 1, 'message' => 'không thể tìm thấy id_status']);
         //     }
         //     $conn->close();
         // }
@@ -28,30 +28,19 @@
         function getApplication(){
             global $conn;
             $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
-            // Thực hiện truy vấn SELECT
-           //$sql = "SELECT * FROM table_json";
-             $sql= "SELECT table_json.*, table_register.name
-           FROM table_json 
-           LEFT JOIN table_register ON table_json.table_id = table_register.id";
+            $sql = "SELECT * FROM table_json";
             if ($statusFilter != -1) {
-                $query .= " WHERE id_status = $statusFilter";
+                $sql .= " WHERE id_status = $statusFilter"; // Sửa từ $query thành $sql
             }
+           // echo $sql; // In ra câu truy vấn để kiểm tra
             $result = $conn->query($sql);
-
-            // Khởi tạo mảng để lưu trữ dữ liệu
             $data = array();
-
-            // Kiểm tra và hiển thị kết quả
             if ($result->num_rows > 0) {
-                // Duyệt qua từng dòng dữ liệu và thêm vào mảng
-                while ($row = $result->fetch_assoc()) {
+               while ($row = $result->fetch_assoc()) {
                     $data[] = $row;
                 }
             }
-
-            // Đóng kết nối
             $conn->close();
-
             // Trả về dữ liệu dưới dạng JSON
             header('Content-Type: application/json');
             echo json_encode($data);
@@ -75,9 +64,12 @@
         //     echo json_encode($register); // Trả về đối tượng JSON
         //     $conn->close();
         // }
+
         function getApplicationForId($id){
             global $conn;
-            $query = "SELECT * FROM table_json WHERE id = $id";
+            $query = "SELECT table_json.*
+            FROM table_json 
+            WHERE table_json.id = $id";
             $result = $conn->query($query);
             $register = null;
 

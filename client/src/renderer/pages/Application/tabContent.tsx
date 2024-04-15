@@ -34,17 +34,19 @@ export const TabContent = ({ id }) => {
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
-
   useEffect(() => {
     const Load = async () => {
       try {
         const response = await axiosPrivate.get('application/getforid/' + id);
-        // console.log(response.data);
-        // setAccordionItems(response.data);
         const data = response.data;
+        //console.log(data);
         const parsedTableJson = JSON.parse(data.tablejson);
-        console.log(parsedTableJson);
-        setAccordionItems(parsedTableJson.rows[0]);
+        const itemWithStatus = {
+          ...parsedTableJson.rows[0], // Giữ nguyên các trường từ dữ liệu cũ
+          id_status: data.id_status, // Thêm trường id_status vào dữ liệu
+        };
+        //console.log(itemWithStatus);
+        setAccordionItems(itemWithStatus);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -52,6 +54,19 @@ export const TabContent = ({ id }) => {
 
     Load();
   }, [id]);
+
+  // useEffect(() => {
+  //   const Load = async () => {
+  //     try {
+  //       const response = await axiosPrivate.get('application/getforid/' + id);
+  //       setAccordionItems(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   Load();
+  // }, [id]);
 
   const GetComment = async () => {
     try {
@@ -168,18 +183,18 @@ export const TabContent = ({ id }) => {
       });
     } else if (accordionItems.id_status == 3) {
       setApprove({
-        approveTexts: '下書き',
-        approveClass: 'lbl01 lbl-brown',
-      });
-    } else if (accordionItems.id_status == 4) {
-      setApprove({
         approveTexts: '却下',
         approveClass: 'lbl01 lbl-red',
       });
-    } else if (accordionItems.id_status == 5) {
+    } else if (accordionItems.id_status == 4) {
       setApprove({
         approveTexts: '完了',
         approveClass: 'lbl01 lbl-white',
+      });
+    } else if (accordionItems.id_status == 5) {
+      setApprove({
+        approveTexts: '下書き',
+        approveClass: 'lbl01 lbl-brown',
       });
     } else {
       setApprove({
@@ -190,22 +205,22 @@ export const TabContent = ({ id }) => {
   }, [accordionItems]);
 
   useEffect(() => {
-    if (accordionItems.status_attr == 0) {
+    if (accordionItems.status_attr == 1) {
       setStatusattr({
         statusattrTexts: '承認待ち',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
-    } else if (accordionItems.status_attr == 1) {
+    } else if (accordionItems.status_attr == 2) {
       setStatusattr({
         statusattrTexts: '差し戻し',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
-    } else if (accordionItems.status_attr == 2) {
+    } else if (accordionItems.status_attr == 3) {
       setStatusattr({
         statusattrTexts: '却下',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
-    } else if (accordionItems.status_attr == 3) {
+    } else if (accordionItems.status_attr == 4) {
       setStatusattr({
         statusattrTexts: '承認済み',
         statusattrClass: 'lbl01 lbc-blue lbbd-blue',
@@ -356,8 +371,7 @@ export const TabContent = ({ id }) => {
                 {accordionItems.tableName}
               </p>
               <span className="list-accordion__item__head__title__subtitle">
-                {accordionItems.owner}（{accordionItems.date} {'\u00A0\u00A0'}
-                {accordionItems.time}）
+                {accordionItems.owner}（{accordionItems.date} ）
               </span>
             </div>
             <div className="list-accordion__item__head__btn">
@@ -425,7 +439,6 @@ export const TabContent = ({ id }) => {
                     </ul>
                   </div> */}
                   <Report id={accordionItems.id} />
-
                   <div className="box-approves">
                     <div className="box-approves__inner">
                       <p className="box-approves__headding">承認状況</p>
@@ -540,7 +553,7 @@ export const TabContent = ({ id }) => {
                                 承認者名：{accordionItems.owner}（申請日時：
                                 {accordionItems.date}
                                 {'\u00A0\u00A0'}
-                                {accordionItems.time}）
+                                {/* {accordionItems.time}） */}
                               </p>
                               {commentSeCond.length > 0 && (
                                 <div className="box-approves__item__content__comment">

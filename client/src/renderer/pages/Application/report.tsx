@@ -4,18 +4,16 @@ import { useEffect, useState } from 'react';
 export const Report = ({ id }) => {
   const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);
-
   useEffect(() => {
     const Load = async () => {
       try {
         const response = await axiosPrivate.get('application/getforid/' + id);
-
         const data = response.data;
         const parsedTableJson = JSON.parse(data.tablejson);
-        //console.log(parsedTableJson);
+        //console.log(parsedTableJson.rows[0]);
         setAccordionItems(parsedTableJson.rows[0]);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data: ', error);
       }
     };
 
