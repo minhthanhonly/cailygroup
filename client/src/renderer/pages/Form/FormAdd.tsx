@@ -1,16 +1,16 @@
-import { ReactFormBuilder, ElementStore, Registry, ReactFormGenerator } from "react-form-builder2";
+import { ReactFormBuilder, Registry } from "react-form-builder2";
 import 'react-form-builder2/dist/app.css';
 import '@fortawesome/fontawesome-free/css/all.css';
-import './form.scss';
-import React, { useEffect, useState } from "react";
+import './Form.scss';
+import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import FormElementsEdit from "./form-elements-edit";
+// import { items } from "./items";
 import F_Text from "./Field/F_Text";
 import F_InputText from "./Field/F_InputText";
 import F_Checkbox from "./Field/F_Checkbox";
 import F_CheckboxGroup from "./Field/F_CheckboxGroup";
 import F_TextArea from "./Field/F_TextArea";
-
+import FormElementsEdit from "./FormElementsEdit";
 
 Registry.register('F_Text', F_Text);
 Registry.register('F_InputText', F_InputText);
@@ -28,8 +28,8 @@ const items = [
     name: 'Text',
     static: true,
     icon: 'fa fa-paragraph',
-    props: {text: "Placeholder Text..."},
-    content: 'Placeholder Text...'
+    props: {text: "期間"},
+    content: '期間'
   },
   {
     key: 'F_InputText',
@@ -40,7 +40,6 @@ const items = [
     name: 'Input Text',
     static: true,
     icon: 'fas fa-font',
-    content: 'Placeholder Text...'
   },
   {
     key: 'F_Checkbox',
@@ -50,7 +49,6 @@ const items = [
     name: 'Checkbox',
     static: true,
     icon: 'far fa-check-square',
-    content: 'Placeholder Text...'
   },
   {
     key: 'F_CheckboxGroup',
@@ -89,7 +87,6 @@ const items = [
 ];
 
 
-
 export default function FormAdd(){
   const axiosPrivate = useAxiosPrivate();
 	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'})
@@ -104,6 +101,8 @@ export default function FormAdd(){
     const formData = { form_name: formValue.form_name, reactFormData, status: formValue.status, owner: formValue.owner }
     const res = await axiosPrivate.post("form/add", formData);
   }
+
+  const [formElements, setFormElements] = useState<any[]>([]);
 
   return (
     <>
@@ -121,8 +120,9 @@ export default function FormAdd(){
         {/* <button className="btn btn-primary float-right" style={{ marginRight: '10px' }} onClick={showPreview}>Preview Form</button> */}
 
         <ReactFormBuilder
-          edit
           toolbarItems={items}
+          data={reactFormData}
+          onChange={setReactFormData}
           onSubmit={handleSubmit}
           renderEditForm={props => <FormElementsEdit {...props}/>}
         />

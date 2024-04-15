@@ -73,6 +73,10 @@
     $routes['estimate'] = 'estimate';
 
 
+        // dataseach
+    $routes['search'] = 'search';
+    $routes['search/data'] = 'search/data';
+
     $routes['travelexpenses'] = 'travelexpenses';
     $routes['travelexpenses/add'] = 'travelexpenses/add';
     

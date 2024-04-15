@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Heading2 } from '../../components/Heading';
 import { Tab } from './tab';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { log } from 'console';
+import { Link } from 'react-router-dom';
 
 export const Application = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -53,7 +53,16 @@ export const Application = () => {
 
   return (
     <div>
-      <Heading2 text="申請状況" />
+      <div className='grid-row grid-flex'>
+        <Heading2 text="申請状況" />
+        <Link to="/Search"> <img
+          src={require('../../../../assets/icn-search.png')}
+          alt=""
+          className="fluid-image class-img"
+        /> </Link>
+
+      </div>
+
       <div className="box-application">
         <p className="txt-lead">自分が行った申請の一覧です。</p>
         <div className="box-tab">

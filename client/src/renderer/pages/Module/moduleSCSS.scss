@@ -480,8 +480,14 @@
     &--flex{
         display: flex;
         flex-wrap: wrap;
+        & .dropdown{
+            width: 100%;
+        }
     }
 }
 .txt-red{
     color: #FF0000;
+}
+.hidden{
+    display: none ;
 }
