@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import DatePicker from 'react-multi-date-picker';
+import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { Heading2 } from '../../components/Heading';
 import { Tab } from '../Application/tab';
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -8,6 +8,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import editIcon from '../../../../assets/icn-edit.png';
 import closeIcon from '../../../../assets/icn-close.png';
 import { UserRole } from '../../components/UserRole';
+import moment from 'moment'; // Import moment.js
 
 
 
@@ -90,7 +91,6 @@ const Search = (id: unknown) => {
                 // console.log(response.data);
                 // setAccordionItems(response.data);
                 const data = response.data;
-
                 setListOflistOfDataBase(data);
 
                 // setIdStatusList(idStatusList);
@@ -105,16 +105,34 @@ const Search = (id: unknown) => {
 
 
     const [date, setDate] = useState(new Date());
-    const [dateRange, setDateRange] = useState<{ dateStart: Date | null, dateEnd: Date | null }>({
-        dateStart: date,
-        dateEnd: date
+
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 1); // Đặt giờ và phút thành 0:01
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59); // Đặt giờ và phút thành 23:59
+
+    const [dateRange, setDateRange] = useState<{ dateStart: Date, dateEnd: Date }>({
+        dateStart: startOfDay,
+        dateEnd: endOfDay
     });
 
-    const handleLeaveDateChange = (date: Date | null, type: 'start' | 'end') => {
-        setDateRange(prevState => ({
-            ...prevState,
-            [type === 'start' ? 'dateStart' : 'dateEnd']: date
-        }));
+    const handleLeaveDateChange = (_date: Date | moment.Moment | null, type: 'start' | 'end') => {
+        if (_date instanceof Date) {
+            const time = _date.toLocaleTimeString(); // Lấy thời gian từ _date
+            console.log(time); // In ra thời gian
+            setDateRange(prevState => ({
+                ...prevState,
+                [type === 'start' ? 'dateStart' : 'dateEnd']: _date
+            }));
+        } else if (_date instanceof moment) { // Sử dụng moment.Moment thay vì DateObject
+            const time = _date.format("HH:mm"); // Lấy thời gian từ _date
+            console.log(time); // In ra thời gian
+            setDateRange(prevState => ({
+                ...prevState,
+                [type === 'start' ? 'dateStart' : 'dateEnd']: _date.toDate() // Chuyển đổi sang đối tượng Date
+            }));
+        } else {
+            console.log('Date is null or not valid');
+        }
     };
 
 
@@ -220,11 +238,30 @@ const Search = (id: unknown) => {
     const handleSearch = () => {
         // Lấy id của mục được chọn từ dropdown
         const selectedOptionId = selectedId;
+        const startDate = dateRange.dateStart || startOfDay;
+        const endDate = dateRange.dateEnd || endOfDay;
 
-        console.log("selectedOptionId", selectedOptionId);
+        // Lấy ngày bắt đầu và ngày kết thúc từ state hoặc là ngày hôm nay nếu không có giá trị được chọn
 
-        // Tìm kiếm trong `listOfDataBase` dựa trên id
-        const matchedItems = listOfDataBase.filter(item => String(item.table_id) === String(selectedOptionId));
+        // Tìm kiếm trong `listOfDataBase` dựa trên id và khoảng thời gian
+        // const matchedItems = listOfDataBase.filter(item =>
+        //     String(item.table_id) === String(selectedOptionId)
+        // );
+
+        const matchedItems = listOfDataBase.filter(item => {
+            // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
+            const jsonData = JSON.parse(item.tablejson);
+            // Kiểm tra xem item có thuộc tính date không và có giá trị không
+            const itemDate = new Date(jsonData.rows[0].date); // Chuyển đổi ngày từ chuỗi sang đối tượng Date
+
+            if (itemDate && startDate && endDate) {
+                return String(item.table_id) === String(selectedOptionId) && itemDate >= startDate && itemDate <= endDate;
+            }
+            return false; // Thêm lệnh return false ở đây
+        });
+        console.log("matchedItems", matchedItems);
+
+
         setSearchResults(matchedItems);
 
 
@@ -273,9 +310,27 @@ const Search = (id: unknown) => {
                             <div className='tb-from--td'>
                                 <div className='tb-from--times'>
                                     <span>
-                                        <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateStart, 'start')} value={dateRange.dateStart} />
+                                        <DatePicker
+                                            onChange={(_date) => {
+                                                if (_date && !Array.isArray(_date)) { // Kiểm tra _date không phải null
+                                                    handleLeaveDateChange(_date.toDate(), 'start');
+                                                }
+                                            }}
+                                            value={dateRange.dateStart}
+                                            format="YYYY-MM-DD" // Định dạng ngày và thời gian
+                                        />
                                     </span>
-                                    <span> <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateEnd, 'end')} value={dateRange.dateEnd} /></span>
+                                    <span>
+                                        <DatePicker
+                                            onChange={(_date) => {
+                                                if (_date && !Array.isArray(_date)) { // Kiểm tra _date không phải null
+                                                    handleLeaveDateChange(_date.toDate(), 'end');
+                                                }
+                                            }}
+                                            value={dateRange.dateEnd}
+                                            format="YYYY-MM-DD" // Định dạng ngày và thời gian
+                                        />
+                                    </span>
                                 </div>
                             </div>
                         </td>
