@@ -177,6 +177,9 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
                 const requestData = {
                     rows: rowData,
+                    owner: users.realname,
+                    table_id: id_table,
+                    id_status: status,
                 };
 
                 // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu

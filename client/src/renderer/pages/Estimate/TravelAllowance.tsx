@@ -173,13 +173,13 @@ export const TravelAllowance = (props: { id_table: any; }) => {
 
         try {
             const additionalData = {
-                遅刻: isNew,
-                早退: isChange,
-                時間外勤務: isChangePrice,
-                現住所: address,
-                最寄り駅: station,
-                入社日から適用: isStartNow,
-                から適用: isStartDate,
+                isNew: isNew,
+                isChange: isChange,
+                isChangePrice: isChangePrice,
+                address: address,
+                station: station,
+                isStartNow: isStartNow,
+                isStartDate: isStartDate,
                 date_input: fDateChanged,
                 totalMonthlyTicket: totalMonthlyTicket,
                 totalRoundtrip: totalRoundtrip,
@@ -188,8 +188,8 @@ export const TravelAllowance = (props: { id_table: any; }) => {
             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
             const dataToSend = rows.map((row, index) => ({
 
-                鉄道名: row.railwayName,
-                路線名: row.router,
+                railwayName: row.railwayName,
+                router: row.router,
                 startroad: row.startroad,
                 endroad: row.endroad,
                 monthlyticket: row.monthlyticket,

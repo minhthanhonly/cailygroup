@@ -9,6 +9,13 @@ import editIcon from '../../../../assets/icn-edit.png';
 import closeIcon from '../../../../assets/icn-close.png';
 import { UserRole } from '../../components/UserRole';
 
+
+
+interface ListItem {
+    id: string;
+    name: string;
+    // Các trường khác nếu có
+}
 const Search = (id: unknown) => {
     const axiosPrivate = useAxiosPrivate();
     const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -18,7 +25,8 @@ const Search = (id: unknown) => {
 
     const [statusTotal, setStatusTotal] = useState(0);
 
-    const [listOfTable, setListOfTable] = useState([]); // Sử dụng kiểu dữ liệu Table
+    const [listOfTable, setListOfTable] = useState<{ id: string; name: string }[]>([]);
+
     const [listOfDataBase, setListOflistOfDataBase] = useState<any[]>([]);
 
     const statusCounts: { [key: number]: number } = {};
@@ -93,19 +101,10 @@ const Search = (id: unknown) => {
     }, []);
 
 
-
-
-
     listOfDataBase.map((item: { id_status: any; }) => {
         const idStatus = item.id_status;
         statusCounts[idStatus] = (statusCounts[idStatus] || 0) + 1;
     });
-
-
-
-
-
-
 
     const [date, setDate] = useState(new Date());
     const [dateRange, setDateRange] = useState<{ dateStart: Date | null, dateEnd: Date | null }>({
@@ -121,103 +120,118 @@ const Search = (id: unknown) => {
     };
 
 
-    const [accordionItems, setAccordionItems] = useState<any>([]);
+    // const handleDeleteComment = async (commentId: any, endpoint: string, getDataFunction: () => void) => {
+    //     try {
+    //         const response = await axiosPrivate.delete(`application/${endpoint}/${commentId}`);
+    //         if (response.status === 200) {
+    //             console.log('Comment deleted successfully');
+    //             getDataFunction();
+    //         } else {
+    //             console.error('Failed to delete comment:', response.statusText);
+    //         }
+    //     } catch (error) {
+    //         console.error('Error deleting comment:', error);
+    //     }
+    // };
+
+    // const handleSubmitComment = async (value: string, endpoint: string, getDataFunction: () => void, setValueFunction: { (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (arg0: string): void; }) => {
+    //     const note = value.trim();
+    //     if (note.length === 0) {
+    //         console.error('Không thể thêm comment: Nội dung trống');
+    //         return;
+    //     }
+    //     try {
+    //         const commentData = {
+    //             note: value,
+    //             user_id: users.id,
+    //             id_register: id,
+    //             authority: endpoint === 'addcomment' ? 1 : (endpoint === 'addcommentsecond' ? 2 : 3),
+    //         };
+    //         setValueFunction('');
+    //         const res = await axiosPrivate.post(`application/${endpoint}/`, commentData);
+    //         getDataFunction();
+    //     } catch (error) {
+    //         console.error('Lỗi khi thêm comment:', error);
+    //     }
+    // };
+
+    // const getCommentForUser = async (endpoint: string, setDataFunction: { (value: any): void; (value: any): void; (arg0: any[]): void; }) => {
+    //     try {
+    //         const response = await axiosPrivate.get(`application/${endpoint}/${id}`);
+    //         const commentData = response.data;
+    //         if (Array.isArray(commentData)) {
+    //             setDataFunction(commentData);
+    //         } else {
+    //             console.error('Error fetching data: Response data is not an array');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //     }
+    // };
+
+    // const handleDeleteFirst = async (commentId: any) => {
+    //     handleDeleteComment(commentId, 'deletecommentfirst', () => getCommentForUser('getcommentforuserfirst', setCommentFirst));
+    // };
+
+    // const handleDeleteSecond = async (commentId: any) => {
+    //     handleDeleteComment(commentId, 'deletecommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond));
+    // };
+
+    // const handleDeleteThird = async (commentId: any) => {
+    //     handleDeleteComment(commentId, 'deletecommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird));
+    // };
+
+    // const handleSubmitFirst = async () => {
+    //     handleSubmitComment(textValue, 'addcomment', () => getCommentForUser('getcommentforuserfirst', setCommentFirst), setTextValue);
+    // };
+
+    // const handleSubmitSecond = async () => {
+    //     handleSubmitComment(commentValue, 'addcommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond), setCommentValue);
+    // };
+
+    // const handleSubmitThird = async () => {
+    //     handleSubmitComment(commentValueThird, 'addcommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird), setCommentValueThird);
+    // };
+
+    // useEffect(() => {
+    //     getCommentForUser('getcommentforuserfirst', setCommentFirst);
+    //     getCommentForUser('getcommentforusersecond', setCommentSeCond);
+    //     getCommentForUser('getcommentforuserthird', setCommentThird);
+    // }, [id]);
+
+
+    const [selectedId, setSelectedId] = useState('');
+    const [searchResults, setSearchResults] = useState<ListItem[]>([]);
+
+
+    // useEffect để đặt giá trị mặc định cho selectedId khi component được tạo
     useEffect(() => {
-        const Load = async () => {
-            try {
-                const response = await axiosPrivate.get('application/getforid/' + id);
-                // console.log(response.data);
-                // setAccordionItems(response.data);
-                const data = response.data;
-                const parsedTableJson = JSON.parse(data.tablejson);
-                console.log(parsedTableJson);
-                setAccordionItems(parsedTableJson.rows[0]);
-            } catch (error) {
-                console.error('Error fetching data: ', error);
-            }
-        };
+        setSelectedId(listOfTable.length > 0 ? listOfTable[0].id : '');
+    }, []); // [] đảm bảo useEffect chỉ chạy một lần khi component được tạo
 
-        Load();
-    }, [id]);
+    // Hàm xử lý khi chọn một mục từ dropdown
+    const handleTableSelect = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setSelectedId(event.target.value);
+    };
 
-    const handleDeleteComment = async (commentId: any, endpoint: string, getDataFunction: () => void) => {
-        try {
-            const response = await axiosPrivate.delete(`application/${endpoint}/${commentId}`);
-            if (response.status === 200) {
-                console.log('Comment deleted successfully');
-                getDataFunction();
-            } else {
-                console.error('Failed to delete comment:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error deleting comment:', error);
+    // Hàm xử lý khi nhấn nút tìm kiếm
+    const handleSearch = () => {
+        // Lấy id của mục được chọn từ dropdown
+        const selectedOptionId = selectedId;
+
+        console.log("selectedOptionId", selectedOptionId);
+
+        // Tìm kiếm trong `listOfDataBase` dựa trên id
+        const matchedItems = listOfDataBase.filter(item => String(item.table_id) === String(selectedOptionId));
+        setSearchResults(matchedItems);
+
+        if (matchedItems.length > 0) {
+            console.log('Các mục trong listOfDataBase có cùng id:', matchedItems);
+            // Thực hiện tìm kiếm với thông tin của các mục tương ứng
+        } else {
+            console.log('Không tìm thấy mục nào trong listOfDataBase có id giống với id được chọn.');
         }
     };
-
-    const handleSubmitComment = async (value: string, endpoint: string, getDataFunction: () => void, setValueFunction: { (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (arg0: string): void; }) => {
-        const note = value.trim();
-        if (note.length === 0) {
-            console.error('Không thể thêm comment: Nội dung trống');
-            return;
-        }
-        try {
-            const commentData = {
-                note: value,
-                user_id: users.id,
-                id_register: id,
-                authority: endpoint === 'addcomment' ? 1 : (endpoint === 'addcommentsecond' ? 2 : 3),
-            };
-            setValueFunction('');
-            const res = await axiosPrivate.post(`application/${endpoint}/`, commentData);
-            getDataFunction();
-        } catch (error) {
-            console.error('Lỗi khi thêm comment:', error);
-        }
-    };
-
-    const getCommentForUser = async (endpoint: string, setDataFunction: { (value: any): void; (value: any): void; (arg0: any[]): void; }) => {
-        try {
-            const response = await axiosPrivate.get(`application/${endpoint}/${id}`);
-            const commentData = response.data;
-            if (Array.isArray(commentData)) {
-                setDataFunction(commentData);
-            } else {
-                console.error('Error fetching data: Response data is not an array');
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const handleDeleteFirst = async (commentId: any) => {
-        handleDeleteComment(commentId, 'deletecommentfirst', () => getCommentForUser('getcommentforuserfirst', setCommentFirst));
-    };
-
-    const handleDeleteSecond = async (commentId: any) => {
-        handleDeleteComment(commentId, 'deletecommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond));
-    };
-
-    const handleDeleteThird = async (commentId: any) => {
-        handleDeleteComment(commentId, 'deletecommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird));
-    };
-
-    const handleSubmitFirst = async () => {
-        handleSubmitComment(textValue, 'addcomment', () => getCommentForUser('getcommentforuserfirst', setCommentFirst), setTextValue);
-    };
-
-    const handleSubmitSecond = async () => {
-        handleSubmitComment(commentValue, 'addcommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond), setCommentValue);
-    };
-
-    const handleSubmitThird = async () => {
-        handleSubmitComment(commentValueThird, 'addcommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird), setCommentValueThird);
-    };
-
-    useEffect(() => {
-        getCommentForUser('getcommentforuserfirst', setCommentFirst);
-        getCommentForUser('getcommentforusersecond', setCommentSeCond);
-        getCommentForUser('getcommentforuserthird', setCommentThird);
-    }, [id]);
     return (
         <>
             <Heading2 text="申請状況" />
@@ -230,9 +244,9 @@ const Search = (id: unknown) => {
                         <div className="grid-row group_box--form ">
                             <div className="group_box--box">
                                 <div className="group_box--flex">
-                                    <select className="dropdown">
+                                    <select className="dropdown" onChange={handleTableSelect}>
                                         {listOfTable.map((data, index) => (
-                                            <option value={data.id}>{data.name}</option>
+                                            <option key={data.id} value={data.id}>{data.name}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -288,7 +302,7 @@ const Search = (id: unknown) => {
             </div>
 
             <div className="wrp-button">
-                <button className="btn btn--from btn--blue">検索する</button>
+                <button className="btn btn--from btn--blue" onClick={handleSearch}>検索する</button>
             </div>
 
 
@@ -313,6 +327,8 @@ const Search = (id: unknown) => {
                         <div className="list-accorditon__inner">
 
                             {tabs.map(tab => {
+
+
                                 const isJsonEmpty = (jsonData: {}) => {
                                     return Object.keys(jsonData).length === 0;
                                 };
@@ -339,7 +355,6 @@ const Search = (id: unknown) => {
                                                                 <div className="list-accordion__item__head__title">
                                                                     <p className="list-accordion__item__head__title__title">
                                                                         {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
-
                                                                     </p>
                                                                     <span className="list-accordion__item__head__title__subtitle">
                                                                         {jsonData.rows[0].owner}（{jsonData.rows[0].date} {'\u00A0\u00A0'}
@@ -362,321 +377,7 @@ const Search = (id: unknown) => {
                                                                     </p>
                                                                 </div>
                                                             </div>
-                                                            <div className="list-accordion__item__content">
-                                                                {isOpen && (
-                                                                    <div className="list-accordion__item__content__inner">
-                                                                        <div className="list-accordion__item__content__item">
 
-
-
-                                                                            <div className="box-approves">
-                                                                                <div className="box-approves__inner">
-                                                                                    <p className="box-approves__headding">承認状況</p>
-                                                                                    <ul>
-                                                                                        <li>
-                                                                                            <div className="box-approves__item">
-                                                                                                <div className="box-approves__item__title">
-                                                                                                    <span>申</span>
-                                                                                                </div>
-                                                                                                <div className="box-approves__item__content">
-                                                                                                    <p className="box-approves__item__content__text">
-                                                                                                        申請者名：{jsonData.rows[0].realname}（申請日時：
-                                                                                                        {jsonData.rows[0].date}
-                                                                                                        {'\u00A0\u00A0'}
-                                                                                                        {jsonData.rows[0].time}）
-                                                                                                    </p>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                        <li>
-                                                                                            <div className="box-approves__item">
-                                                                                                <div className="box-approves__item__title">
-                                                                                                    <span>1</span>
-                                                                                                </div>
-                                                                                                <div className="box-approves__item__content">
-                                                                                                    <p className="box-approves__item__content__text">
-                                                                                                        承認者名：{jsonData.rows[0].owner}（申請日時：
-                                                                                                        {jsonData.rows[0].date}
-                                                                                                        {'\u00A0\u00A0'}
-                                                                                                        {jsonData.rows[0].time}）
-                                                                                                    </p>
-                                                                                                    {commentFirst.length > 0 && (
-                                                                                                        <div className="box-approves__item__content__comment">
-                                                                                                            {commentFirst.map((commentItem: { realname: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; createdAt: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; id: any; note: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }, index: React.Key | null | undefined) => (
-                                                                                                                <div
-                                                                                                                    key={index}
-                                                                                                                    className="box-approves__item__content__comment__item"
-                                                                                                                >
-                                                                                                                    <p className="box-approves__item__content__comment__head">
-                                                                                                                        <span className="box-approves__item__content__comment__title">
-                                                                                                                            {commentItem.realname}
-                                                                                                                            ：（{commentItem.createdAt}）
-                                                                                                                        </span>
-
-                                                                                                                        {isAdmin ? (
-                                                                                                                            <>
-                                                                                                                                <span
-                                                                                                                                    className="btn-delete"
-                                                                                                                                    onClick={() =>
-                                                                                                                                        handleDeleteFirst(commentItem.id)
-                                                                                                                                    }
-                                                                                                                                >
-                                                                                                                                    <img
-                                                                                                                                        src={require('../../../../assets/close.png')}
-                                                                                                                                        alt="delete"
-                                                                                                                                        className="fluid-image"
-                                                                                                                                    />
-                                                                                                                                </span>
-                                                                                                                            </>
-                                                                                                                        ) : (
-                                                                                                                            <span></span>
-                                                                                                                        )}
-                                                                                                                    </p>
-                                                                                                                    <p className="box-approves__item__content__comment__text">
-                                                                                                                        {commentItem.note}
-                                                                                                                    </p>
-                                                                                                                </div>
-                                                                                                            ))}
-                                                                                                        </div>
-                                                                                                    )}
-                                                                                                    {isAdmin ? (
-                                                                                                        <>
-                                                                                                            <textarea
-                                                                                                                placeholder="ココメントを入力（任意1000文字以内）"
-                                                                                                                value={textValue}
-                                                                                                                onChange={(event) =>
-                                                                                                                    setTextValue(event.target.value)
-                                                                                                                }
-                                                                                                            />
-                                                                                                            <p className="box-approves__item__content__btn">
-                                                                                                                <span>
-                                                                                                                    <a
-                                                                                                                        className="btncomment btn02"
-                                                                                                                        onClick={handleSubmitFirst}
-                                                                                                                    >
-                                                                                                                        コメントする
-                                                                                                                    </a>
-                                                                                                                </span>
-                                                                                                            </p>
-                                                                                                        </>
-                                                                                                    ) : (
-                                                                                                        <div></div>
-                                                                                                    )}
-
-                                                                                                    <p className="list-btn">
-                                                                                                        <span className="list-btn__item">
-                                                                                                            <span className={statusattr.statusattrClass}>
-                                                                                                                {statusattr.statusattrTexts}
-                                                                                                            </span>
-                                                                                                        </span>
-                                                                                                    </p>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                        <li>
-                                                                                            <div className="box-approves__item">
-                                                                                                <div className="box-approves__item__title">
-                                                                                                    <span>2</span>
-                                                                                                </div>
-                                                                                                <div className="box-approves__item__content">
-                                                                                                    <p className="box-approves__item__content__text">
-                                                                                                        承認者名：{jsonData.rows[0].owner}（申請日時：
-                                                                                                        {jsonData.rows[0].date}
-                                                                                                        {'\u00A0\u00A0'}
-                                                                                                        {jsonData.rows[0].time}）
-                                                                                                    </p>
-                                                                                                    {commentSeCond.length > 0 && (
-                                                                                                        <div className="box-approves__item__content__comment">
-                                                                                                            {commentSeCond.map(
-                                                                                                                (commentItem: any, index: any) => (
-                                                                                                                    <div
-                                                                                                                        key={index}
-                                                                                                                        className="box-approves__item__content__comment__item"
-                                                                                                                    >
-                                                                                                                        <p className="box-approves__item__content__comment__head">
-                                                                                                                            <span className="box-approves__item__content__comment__title">
-                                                                                                                                {commentItem.realname}
-                                                                                                                                ：（{commentItem.createdAt}）
-                                                                                                                            </span>
-                                                                                                                            {isManager ? (
-                                                                                                                                <>
-                                                                                                                                    <span
-                                                                                                                                        className="btn-delete"
-                                                                                                                                        onClick={() =>
-                                                                                                                                            handleDeleteSecond(
-                                                                                                                                                commentItem.id,
-                                                                                                                                            )
-                                                                                                                                        }
-                                                                                                                                    >
-                                                                                                                                        <img
-                                                                                                                                            src={require('../../../../assets/close.png')}
-                                                                                                                                            alt="delete"
-                                                                                                                                            className="fluid-image"
-                                                                                                                                        />
-                                                                                                                                    </span>
-                                                                                                                                </>
-                                                                                                                            ) : (
-                                                                                                                                <span></span>
-                                                                                                                            )}
-                                                                                                                        </p>
-                                                                                                                        <p className="box-approves__item__content__comment__text">
-                                                                                                                            {commentItem.note}
-                                                                                                                        </p>
-                                                                                                                    </div>
-                                                                                                                ),
-                                                                                                            )}
-                                                                                                        </div>
-                                                                                                    )}
-                                                                                                    {isManager ? (
-                                                                                                        <>
-                                                                                                            <textarea
-                                                                                                                placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
-                                                                                                                value={commentValue}
-                                                                                                                onChange={(event) =>
-                                                                                                                    setCommentValue(event.target.value)
-                                                                                                                }
-                                                                                                            />
-                                                                                                            <p className="box-approves__item__content__btn">
-                                                                                                                <span>
-                                                                                                                    <a
-                                                                                                                        className="btncomment btn02"
-                                                                                                                        onClick={handleSubmitSecond}
-                                                                                                                    >
-                                                                                                                        コメントする
-                                                                                                                    </a>
-                                                                                                                </span>
-                                                                                                            </p>
-                                                                                                        </>
-                                                                                                    ) : (
-                                                                                                        <div></div>
-                                                                                                    )}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-
-                                                                                        <li>
-                                                                                            <div className="box-approves__item">
-                                                                                                <div className="box-approves__item__title">
-                                                                                                    <span className="active">3</span>
-                                                                                                </div>
-                                                                                                <div className="box-approves__item__content">
-                                                                                                    <p className="box-approves__item__content__text">
-                                                                                                        承認者名：{jsonData.rows[0].owner}（申請日時：
-                                                                                                        {jsonData.rows[0].date}
-                                                                                                        {'\u00A0\u00A0'}
-                                                                                                        {jsonData.rows[0].time}）
-                                                                                                    </p>
-                                                                                                    {commentThird.length > 0 && (
-                                                                                                        <div className="box-approves__item__content__comment">
-                                                                                                            {commentThird.map(
-                                                                                                                (commentItem: any, index: any) => (
-                                                                                                                    <div
-                                                                                                                        key={index}
-                                                                                                                        className="box-approves__item__content__comment__item"
-                                                                                                                    >
-                                                                                                                        <p className="box-approves__item__content__comment__head">
-                                                                                                                            <span className="box-approves__item__content__comment__title">
-                                                                                                                                {commentItem.realname}
-                                                                                                                                ：（{commentItem.createdAt}）
-                                                                                                                            </span>
-                                                                                                                            {isLeader ? (
-                                                                                                                                <>
-                                                                                                                                    <span
-                                                                                                                                        className="btn-delete"
-                                                                                                                                        onClick={() =>
-                                                                                                                                            handleDeleteThird(
-                                                                                                                                                commentItem.id,
-                                                                                                                                            )
-                                                                                                                                        }
-                                                                                                                                    >
-                                                                                                                                        <img
-                                                                                                                                            src={require('../../../../assets/close.png')}
-                                                                                                                                            alt="delete"
-                                                                                                                                            className="fluid-image"
-                                                                                                                                        />
-                                                                                                                                    </span>
-                                                                                                                                </>
-                                                                                                                            ) : (
-                                                                                                                                <span></span>
-                                                                                                                            )}
-                                                                                                                        </p>
-                                                                                                                        <p className="box-approves__item__content__comment__text">
-                                                                                                                            {commentItem.note}
-                                                                                                                        </p>
-                                                                                                                    </div>
-                                                                                                                ),
-                                                                                                            )}
-                                                                                                        </div>
-                                                                                                    )}
-                                                                                                    {isLeader ? (
-                                                                                                        <>
-                                                                                                            <textarea
-                                                                                                                placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
-                                                                                                                value={commentValueThird}
-                                                                                                                onChange={(event) =>
-                                                                                                                    setCommentValueThird(event.target.value)
-                                                                                                                }
-                                                                                                            />
-                                                                                                            <p className="box-approves__item__content__btn">
-                                                                                                                <span>
-                                                                                                                    <a
-                                                                                                                        className="btncomment btn02"
-                                                                                                                        onClick={handleSubmitThird}
-                                                                                                                    >
-                                                                                                                        コメントする
-                                                                                                                    </a>
-                                                                                                                </span>
-                                                                                                            </p>
-                                                                                                        </>
-                                                                                                    ) : (
-                                                                                                        <div></div>
-                                                                                                    )}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                        <li>
-                                                                                            <div className="box-approves__item">
-                                                                                                <div className="box-approves__item__title">
-                                                                                                    <span>未</span>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                        <li>
-                                                                                            <div className="box-approves__item box-approves__item--01">
-                                                                                                <div className="box-approves__item__title">
-                                                                                                    <span className="bg-blue01 color-white">完</span>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                        <li>
-                                                                                            <div className="box-approves__item box-approves__item--01">
-                                                                                                <div className="box-approves__item__title">
-                                                                                                    <span className="bg-red01 color-white">却</span>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                        <li>
-                                                                                            <div className="box-approves__item box-approves__item--01">
-                                                                                                <div className="box-approves__item__title">
-                                                                                                    <span className="bg-blue01 color-white">下</span>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                        <li>
-                                                                                            <div className="box-approves__item box-approves__item--01">
-                                                                                                <div className="box-approves__item__title">
-                                                                                                    <span className="bg-blue01 color-white">消</span>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                    </ul>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div >
-                                                                    </div>
-                                                                )
-                                                                }
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
