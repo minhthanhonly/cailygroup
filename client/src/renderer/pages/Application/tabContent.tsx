@@ -7,6 +7,7 @@ import { UserRole } from '../../components/UserRole';
 import { Report } from './report';
 import { Expense } from './expense';
 import { Business } from './business';
+import { Travelallowance } from './travelallowance';
 
 export const TabContent = ({ id }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -443,7 +444,8 @@ export const TabContent = ({ id }) => {
                   </div> */}
                   {/* <Report id={id} /> */}
                   {/* <Expense id={id} /> */}
-                  <Business id={id} />
+                  {/* <Business id={id} /> */}
+                  <Travelallowance id={id} />
                   <div className="box-approves">
                     <div className="box-approves__inner">
                       <p className="box-approves__headding">承認状況</p>
