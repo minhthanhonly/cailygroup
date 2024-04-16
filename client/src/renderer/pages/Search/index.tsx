@@ -15,6 +15,7 @@ interface ListItem {
     id: string;
     name: string;
     tablejson: string;
+    id_status: number;
     // Các trường khác nếu có
 }
 const Search = (id: unknown) => {
@@ -101,10 +102,7 @@ const Search = (id: unknown) => {
     }, []);
 
 
-    // listOfDataBase.map((item: { id_status: any; }) => {
-    //     const idStatus = item.id_status;
-    //     statusCounts[idStatus] = (statusCounts[idStatus] || 0) + 1;
-    // });
+
 
     const [date, setDate] = useState(new Date());
     const [dateRange, setDateRange] = useState<{ dateStart: Date | null, dateEnd: Date | null }>({
@@ -235,6 +233,7 @@ const Search = (id: unknown) => {
             const idStatus = item.id_status;
             newStatusCounts[idStatus] = (newStatusCounts[idStatus] || 0) + 1;
         });
+
         const totalStatus = matchedItems.length;
         setStatusTotal(totalStatus);
         setStatusCounts(newStatusCounts);
@@ -243,7 +242,6 @@ const Search = (id: unknown) => {
         // Kích hoạt việc render lại component bằng cách cập nhật lại activeTab
         setActiveTab('tab2'); // Đặt lại activeTab để kích hoạt việc render lại
     };
-
     return (
         <>
             <Heading2 text="申請状況" />
@@ -339,62 +337,28 @@ const Search = (id: unknown) => {
                             {tabs.map(tab => (
                                 <div key={tab.id} className={activeTab === tab.id ? "sss" : "hidden"}>
 
-                                    {searchResults.map((item, index) => {
-                                        try {
-                                            // Phân tích chuỗi JSON thành đối tượng JavaScript
-                                            const jsonData = JSON.parse(item.tablejson);
-
-                                            // Truy cập và hiển thị các trường dữ liệu cụ thể
-                                            return (
-                                                <div key={index}>
-                                                    <p>Table Name: {jsonData.rows[0].tableName}</p>
-                                                    <p>Owner: {jsonData.rows[0].owner}</p>
-                                                    {/* Thêm các trường dữ liệu khác tương tự */}
-                                                </div>
-                                            );
-                                        } catch (error) {
-                                            // Xử lý trường hợp chuỗi không hợp lệ
-                                            console.error(`Error parsing JSON at index ${index}:`, error);
-                                            return null; // Hoặc hiển thị một thông báo lỗi phù hợp
-                                        }
-                                    })}
-
-                                    {/* {searchResults.map((item, index) => (
-                                        <div key={index}>
-                                            <div className="list-accordion__parent">
-                                                <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
-                                                    <div className="list-accordion__item__head" onClick={toggleAccordion}>
-                                                        <div className="list-accordion__item__head__title">
-                                                            <p className="list-accordion__item__head__title__title">
-                                                                {item.rows && item.rows.length > 0 ? item.rows[0].tableName : 'No data available'}
-                                                            </p>
-                                                            <span className="list-accordion__item__head__title__subtitle">
-                                                                {item.rows[0].owner}（{item.rows[0].date} {'\u00A0\u00A0'}
-                                                                {item.rows[0].time}）
-                                                            </span>
-                                                        </div>
-                                                        <div className="list-accordion__item__head__btn">
-                                                            <p className="list-accordion__item__head__btn__btn">
-                                                                <span className={approve.approveClass}>
-                                                                    {approve.approveTexts}
-                                                                </span>
-                                                            </p>
-                                                            <p className="list-accordion__item__head__btn__icn">
-                                                                <span className="icn-item">
-                                                                    <img src={editIcon} alt="edit" className="fluid-image" />
-                                                                </span>
-                                                                <span className="icn-item">
-                                                                    <img src={closeIcon} alt="close" className="fluid-image" />
-                                                                </span>
-                                                            </p>
-                                                        </div>
+                                    {searchResults
+                                        .filter(item => tab.status !== -1 ? Number(item.id_status) === Number(tab.status) : true) // Lọc dữ liệu theo tab status
+                                        .map((item, index) => {
+                                            try {
+                                                // Phân tích chuỗi JSON thành đối tượng JavaScript
+                                                const jsonData = JSON.parse(item.tablejson);
+                                                // Hiển thị thông tin chỉ khi trạng thái phù hợp
+                                                return (
+                                                    <div key={index}>
+                                                        <p>Table Name: {jsonData.rows[0].tableName}</p>
+                                                        <p>Owner: {jsonData.rows[0].owner}</p>
+                                                        {/* Thêm các trường dữ liệu khác tương tự */}
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                 
-                                    <p>Số lượng: {searchResults.length}</p> */}
+                                                );
+                                            } catch (error) {
+                                                // Xử lý trường hợp chuỗi không hợp lệ
+                                                console.error(`Error parsing JSON at index ${index}:`, error);
+                                                return null; // Hoặc hiển thị một thông báo lỗi phù hợp
+                                            }
+                                        })}
+
+
                                 </div>
                             ))}
                         </div >
