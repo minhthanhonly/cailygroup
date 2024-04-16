@@ -14,6 +14,7 @@ import { UserRole } from '../../components/UserRole';
 interface ListItem {
     id: string;
     name: string;
+    tablejson: string;
     // Các trường khác nếu có
 }
 const Search = (id: unknown) => {
@@ -29,7 +30,7 @@ const Search = (id: unknown) => {
 
     const [listOfDataBase, setListOflistOfDataBase] = useState<any[]>([]);
 
-    const statusCounts: { [key: number]: number } = {};
+
 
     ////////////////////////////////////////////////
     const [isOpen, setIsOpen] = useState(false);
@@ -52,8 +53,8 @@ const Search = (id: unknown) => {
     };
 
     const tabs = [
-        { id: 'tab1', label: '進行中', status: -1 },
-        { id: 'tab2', label: 'すべて', status: 1 },
+        { id: 'tab1', label: '進行中', status: 1 },
+        { id: 'tab2', label: 'すべて', status: - 1 },
         { id: 'tab3', label: '差し戻し', status: 2 },
         { id: 'tab4', label: '却下', status: 3 },
         { id: 'tab5', label: '完了', status: 4 },
@@ -90,8 +91,7 @@ const Search = (id: unknown) => {
                 const data = response.data;
 
                 setListOflistOfDataBase(data);
-                const totalStatus = data.length;
-                setStatusTotal(totalStatus);
+
                 // setIdStatusList(idStatusList);
             } catch (err) {
                 console.error('Lỗi khi lấy dữ liệu:', err);
@@ -101,10 +101,10 @@ const Search = (id: unknown) => {
     }, []);
 
 
-    listOfDataBase.map((item: { id_status: any; }) => {
-        const idStatus = item.id_status;
-        statusCounts[idStatus] = (statusCounts[idStatus] || 0) + 1;
-    });
+    // listOfDataBase.map((item: { id_status: any; }) => {
+    //     const idStatus = item.id_status;
+    //     statusCounts[idStatus] = (statusCounts[idStatus] || 0) + 1;
+    // });
 
     const [date, setDate] = useState(new Date());
     const [dateRange, setDateRange] = useState<{ dateStart: Date | null, dateEnd: Date | null }>({
@@ -214,6 +214,10 @@ const Search = (id: unknown) => {
         setSelectedId(event.target.value);
     };
 
+
+    const [statusCounts, setStatusCounts] = useState<{ [key: number]: number }>({});
+    const [isSearched, setIsSearched] = useState(false);
+
     // Hàm xử lý khi nhấn nút tìm kiếm
     const handleSearch = () => {
         // Lấy id của mục được chọn từ dropdown
@@ -225,13 +229,21 @@ const Search = (id: unknown) => {
         const matchedItems = listOfDataBase.filter(item => String(item.table_id) === String(selectedOptionId));
         setSearchResults(matchedItems);
 
-        if (matchedItems.length > 0) {
-            console.log('Các mục trong listOfDataBase có cùng id:', matchedItems);
-            // Thực hiện tìm kiếm với thông tin của các mục tương ứng
-        } else {
-            console.log('Không tìm thấy mục nào trong listOfDataBase có id giống với id được chọn.');
-        }
+
+        const newStatusCounts: { [key: number]: number } = {};
+        matchedItems.forEach(item => {
+            const idStatus = item.id_status;
+            newStatusCounts[idStatus] = (newStatusCounts[idStatus] || 0) + 1;
+        });
+        const totalStatus = matchedItems.length;
+        setStatusTotal(totalStatus);
+        setStatusCounts(newStatusCounts);
+        setIsSearched(true);
+
+        // Kích hoạt việc render lại component bằng cách cập nhật lại activeTab
+        setActiveTab('tab2'); // Đặt lại activeTab để kích hoạt việc render lại
     };
+
     return (
         <>
             <Heading2 text="申請状況" />
@@ -305,8 +317,6 @@ const Search = (id: unknown) => {
                 <button className="btn btn--from btn--blue" onClick={handleSearch}>検索する</button>
             </div>
 
-
-
             <div className="box-tab">
                 <div className="tab01 tab-head">
                     <ul className="lst-branch">
@@ -316,7 +326,7 @@ const Search = (id: unknown) => {
                                     onClick={() => handleTabClick(tab.id)}
                                     className={activeTab === tab.id ? 'active' : ''}
                                 >
-                                    {tab.label} ({tab.status !== -1 ? (statusCounts[tab.status] || 0) : (statusTotal || 0)})
+                                    {tab.label} ({isSearched ? (tab.status !== -1 ? (statusCounts[tab.status] || 0) : (statusTotal || 0)) : 0})
                                 </a>
                             </li>
                         ))}
@@ -326,68 +336,67 @@ const Search = (id: unknown) => {
                     <div className="list-accordion">
                         <div className="list-accorditon__inner">
 
-                            {tabs.map(tab => {
+                            {tabs.map(tab => (
+                                <div key={tab.id} className={activeTab === tab.id ? "sss" : "hidden"}>
 
-
-                                const isJsonEmpty = (jsonData: {}) => {
-                                    return Object.keys(jsonData).length === 0;
-                                };
-
-                                const filteredData = tab.status !== -1 ?
-                                    listOfDataBase.filter(item => Number(item.id_status) === Number(tab.status)) :
-                                    listOfDataBase;
-
-
-                                return (
-                                    <div key={tab.id} className={activeTab === tab.id ? "sss" : "hidden"}>
-                                        {filteredData.map(item => {
-                                            // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
+                                    {searchResults.map((item, index) => {
+                                        try {
+                                            // Phân tích chuỗi JSON thành đối tượng JavaScript
                                             const jsonData = JSON.parse(item.tablejson);
 
-                                            // Truy cập và lưu trữ giá trị của trường statusTotal từ mỗi đối tượng JSON
-
-
+                                            // Truy cập và hiển thị các trường dữ liệu cụ thể
                                             return (
-                                                <div key={item.id}>
-                                                    <div className="list-accordion__parent">
-                                                        <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
-                                                            <div className="list-accordion__item__head" onClick={toggleAccordion}>
-                                                                <div className="list-accordion__item__head__title">
-                                                                    <p className="list-accordion__item__head__title__title">
-                                                                        {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
-                                                                    </p>
-                                                                    <span className="list-accordion__item__head__title__subtitle">
-                                                                        {jsonData.rows[0].owner}（{jsonData.rows[0].date} {'\u00A0\u00A0'}
-                                                                        {jsonData.rows[0].time}）
-                                                                    </span>
-                                                                </div>
-                                                                <div className="list-accordion__item__head__btn">
-                                                                    <p className="list-accordion__item__head__btn__btn">
-                                                                        <span className={approve.approveClass}>
-                                                                            {approve.approveTexts}
-                                                                        </span>
-                                                                    </p>
-                                                                    <p className="list-accordion__item__head__btn__icn">
-                                                                        <span className="icn-item">
-                                                                            <img src={editIcon} alt="edit" className="fluid-image" />
-                                                                        </span>
-                                                                        <span className="icn-item">
-                                                                            <img src={closeIcon} alt="close" className="fluid-image" />
-                                                                        </span>
-                                                                    </p>
-                                                                </div>
-                                                            </div>
+                                                <div key={index}>
+                                                    <p>Table Name: {jsonData.rows[0].tableName}</p>
+                                                    <p>Owner: {jsonData.rows[0].owner}</p>
+                                                    {/* Thêm các trường dữ liệu khác tương tự */}
+                                                </div>
+                                            );
+                                        } catch (error) {
+                                            // Xử lý trường hợp chuỗi không hợp lệ
+                                            console.error(`Error parsing JSON at index ${index}:`, error);
+                                            return null; // Hoặc hiển thị một thông báo lỗi phù hợp
+                                        }
+                                    })}
 
+                                    {/* {searchResults.map((item, index) => (
+                                        <div key={index}>
+                                            <div className="list-accordion__parent">
+                                                <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
+                                                    <div className="list-accordion__item__head" onClick={toggleAccordion}>
+                                                        <div className="list-accordion__item__head__title">
+                                                            <p className="list-accordion__item__head__title__title">
+                                                                {item.rows && item.rows.length > 0 ? item.rows[0].tableName : 'No data available'}
+                                                            </p>
+                                                            <span className="list-accordion__item__head__title__subtitle">
+                                                                {item.rows[0].owner}（{item.rows[0].date} {'\u00A0\u00A0'}
+                                                                {item.rows[0].time}）
+                                                            </span>
+                                                        </div>
+                                                        <div className="list-accordion__item__head__btn">
+                                                            <p className="list-accordion__item__head__btn__btn">
+                                                                <span className={approve.approveClass}>
+                                                                    {approve.approveTexts}
+                                                                </span>
+                                                            </p>
+                                                            <p className="list-accordion__item__head__btn__icn">
+                                                                <span className="icn-item">
+                                                                    <img src={editIcon} alt="edit" className="fluid-image" />
+                                                                </span>
+                                                                <span className="icn-item">
+                                                                    <img src={closeIcon} alt="close" className="fluid-image" />
+                                                                </span>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            );
-                                        })}
-                                        {/* Hiển thị tất cả các giá trị của trường statusTotal */}
-
-                                    </div>
-                                );
-                            })}
+                                            </div>
+                                        </div>
+                                    ))}
+                                 
+                                    <p>Số lượng: {searchResults.length}</p> */}
+                                </div>
+                            ))}
                         </div >
                     </div >
                 </div >
