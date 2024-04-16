@@ -206,9 +206,9 @@ export const ExpenseReport = (props: { id_table: any; }) => {
 
     const [checkedState, setCheckedState] = useState(new Array(rows.length).fill(0));
 
-    const handleCheckboxChange = (index: number) => {
+    const handleCheckboxChange = (index: number, isChecked: boolean) => {
         const newCheckedState = [...checkedState];
-        newCheckedState[index] = newCheckedState[index] === 1 ? 0 : 1;
+        newCheckedState[index] = isChecked ? 0 : 1;
         setCheckedState(newCheckedState);
     };
 
@@ -241,7 +241,7 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceNotax[index]} onChange={(e) => handleNumberChange(e, index, 'priceNotax')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={tax[index]} onChange={(e) => handleNumberChange(e, index, 'tax')} /></td>
                                     <td className='tdCheckbox'>
-                                        <input type="checkbox" id={`checkbox-${index}`} checked={checkedState[index] === 1} onChange={() => handleCheckboxChange(index)} />
+                                        <input type="checkbox" id={`checkbox-${index}`} checked={checkedState[index]} onChange={() => handleCheckboxChange(index)} />
                                         <label htmlFor={`checkbox-${index}`}></label>
                                     </td>
                                     <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'note')} /></td>
