@@ -6,6 +6,7 @@ import moment from 'moment';
 
 interface Row {
   id: number;
+  date: string;
   railwayName: string;
   router: string;
   startroad: string;
@@ -22,6 +23,7 @@ export const TravelAllowance = (props: { id_table: any }) => {
   const axiosPrivate = useAxiosPrivate();
   const [rows, setRows] = useState([
     {
+      date: '',
       id: 0,
       railwayName: '',
       router: '',
@@ -171,6 +173,7 @@ export const TravelAllowance = (props: { id_table: any }) => {
   const addRow = () => {
     const newRow = {
       id: rows.length,
+      date: '',
       railwayName: '',
       router: '',
       startroad: '',
@@ -201,6 +204,10 @@ export const TravelAllowance = (props: { id_table: any }) => {
     };
     getTables();
   }, [id_table]);
+
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const saveExpense = async (status: number) => {
     const formattedDate = moment(date).format('YYYY/MM/DD HH:mm:ss');
     const fDateChanged = isStartDate === true ? formattedDate : '';
@@ -218,6 +225,7 @@ export const TravelAllowance = (props: { id_table: any }) => {
       };
       // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
       const dataToSend = rows.map((row, index) => ({
+        date: formattedDate,
         railwayName: row.railwayName,
         router: row.router,
         startroad: row.startroad,
@@ -230,6 +238,8 @@ export const TravelAllowance = (props: { id_table: any }) => {
         isNew: isNew,
         station: station,
         tableName: tableName,
+        table_id: id_table,
+        id_status: status,
       }));
 
       // Tạo đối tượng JSON chứa các mảng dữ liệu
@@ -424,8 +434,16 @@ export const TravelAllowance = (props: { id_table: any }) => {
             </thead>
             <tbody>
               {rows.map((row, index) => (
+
                 <tr>
                   <td>
+                    {showDatePicker && (
+                      <DatePicker
+                        onChange={(_date) => handleLeaveDateChange(_date)}
+                        value={date}
+                        format="YYYY-MM-DD HH:mm:ss"
+                      />
+                    )}
                     <input
                       type="text"
                       value={row.railwayName}

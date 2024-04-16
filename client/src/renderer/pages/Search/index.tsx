@@ -310,15 +310,7 @@ const Search = (id: unknown) => {
                             <div className='tb-from--td'>
                                 <div className='tb-from--times'>
                                     <span>
-                                        <DatePicker
-                                            onChange={(_date) => {
-                                                if (_date && !Array.isArray(_date)) { // Kiểm tra _date không phải null
-                                                    handleLeaveDateChange(_date.toDate(), 'start');
-                                                }
-                                            }}
-                                            value={dateRange.dateStart}
-                                            format="YYYY-MM-DD" // Định dạng ngày và thời gian
-                                        />
+                                        <DatePicker onChange={(_date) => { if (_date && !Array.isArray(_date)) { handleLeaveDateChange(_date.toDate(), 'start'); } }} value={dateRange.dateStart} format="YYYY-MM-DD" />
                                     </span>
                                     <span>
                                         <DatePicker
