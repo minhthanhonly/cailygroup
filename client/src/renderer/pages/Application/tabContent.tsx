@@ -8,6 +8,7 @@ import { Report } from './report';
 import { Expense } from './expense';
 import { Business } from './business';
 import { Travelallowance } from './travelallowance';
+import { Register } from './register';
 
 export const TabContent = ({ id }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -398,50 +399,7 @@ export const TabContent = ({ id }) => {
             {isOpen && (
               <div className="list-accordion__item__content__inner">
                 <div className="list-accordion__item__content__item">
-                  {/* <div className="box-register">
-                    <ul>
-                      <li>
-                        <div className="box-register__item">
-                          <span className="box-register__item__title">
-                            期間
-                          </span>
-                          <span className="box-register__item__content">
-                            {accordionItems.date}
-                          </span>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="box-register__item">
-                          <span className="box-register__item__title">
-                            行先
-                          </span>
-                          <span className="box-register__item__content">
-                            {accordionItems.destination}
-                          </span>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="box-register__item">
-                          <span className="box-register__item__title">
-                            事由
-                          </span>
-                          <span className="box-register__item__content">
-                            {accordionItems.destination}
-                          </span>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="box-register__item">
-                          <span className="box-register__item__title">
-                            備考
-                          </span>
-                          <span className="box-register__item__content">
-                            {accordionItems.note}
-                          </span>
-                        </div>
-                      </li>
-                    </ul>
-                  </div> */}
+                  {/* <Register id={id} /> */}
                   {/* <Report id={id} /> */}
                   {/* <Expense id={id} /> */}
                   {/* <Business id={id} /> */}
