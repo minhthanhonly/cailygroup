@@ -1,12 +1,9 @@
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 
-export const Expense = ({ id }) => {
+export const Business = ({ id }) => {
   const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);
-  const [check, setCheck] = useState({
-    checkTexts: '',
-  });
 
   useEffect(() => {
     const Load = async () => {
@@ -26,18 +23,6 @@ export const Expense = ({ id }) => {
     Load();
   }, [id]);
 
-  useEffect(() => {
-    if (accordionItems.length > 0 && accordionItems[0].check === 1) {
-      setCheck({
-        checkTexts: 'Có',
-      });
-    } else {
-      setCheck({
-        checkTexts: 'Không',
-      });
-    }
-  }, [accordionItems]);
-
   return (
     <>
       <div className="box-register 1">
@@ -54,45 +39,59 @@ export const Expense = ({ id }) => {
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">内容</span>
+              <span className="box-register__item__title">項目</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 ? accordionItems[0].route : ''}
+                {accordionItems.length > 0 ? accordionItems[0].project : ''}
               </span>
             </div>
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">支払先</span>
+              <span className="box-register__item__title">交通費</span>
+              <span className="box-register__item__content">
+                {accordionItems.length > 0 ? accordionItems[0].priceTrain : ''}
+              </span>
+            </div>
+          </li>
+          <li>
+            <div className="box-register__item">
+              <span className="box-register__item__title">宿泊費</span>
+              <span className="box-register__item__content">
+                {accordionItems.length > 0 ? accordionItems[0].priceHouse : ''}
+              </span>
+            </div>
+          </li>
+          <li>
+            <div className="box-register__item">
+              <span className="box-register__item__title">交際費</span>
               <span className="box-register__item__content">
                 {accordionItems.length > 0
-                  ? accordionItems[0].paymentDestination
+                  ? accordionItems[0].priceCustomer
                   : ''}
               </span>
             </div>
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">金額（税抜）</span>
+              <span className="box-register__item__title">食費</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 ? accordionItems[0].priceNotax : ''}
+                {accordionItems.length > 0 ? accordionItems[0].priceEat : ''}
               </span>
             </div>
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">消費税</span>
+              <span className="box-register__item__title">その他</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0
-                  ? accordionItems[0].totalPriceTax
-                  : ''}
+                {accordionItems.length > 0 ? accordionItems[0].priceOther : ''}
               </span>
             </div>
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">軽減税率</span>
+              <span className="box-register__item__title">合計</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 ? check.checkTexts : ''}
+                {accordionItems.length > 0 ? accordionItems[0].totalPrice : ''}
               </span>
             </div>
           </li>

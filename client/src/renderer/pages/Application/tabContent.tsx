@@ -6,6 +6,7 @@ import { format, parse } from 'date-fns';
 import { UserRole } from '../../components/UserRole';
 import { Report } from './report';
 import { Expense } from './expense';
+import { Business } from './business';
 
 export const TabContent = ({ id }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -441,7 +442,8 @@ export const TabContent = ({ id }) => {
                     </ul>
                   </div> */}
                   {/* <Report id={id} /> */}
-                  <Expense id={id} />
+                  {/* <Expense id={id} /> */}
+                  <Business id={id} />
                   <div className="box-approves">
                     <div className="box-approves__inner">
                       <p className="box-approves__headding">承認状況</p>
