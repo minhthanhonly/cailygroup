@@ -38,7 +38,7 @@ export const Expense = ({ id }) => {
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">路線</span>
+              <span className="box-register__item__title">内容</span>
               <span className="box-register__item__content">
                 {accordionItems.length > 0 ? accordionItems[0].route : ''}
               </span>
@@ -46,7 +46,7 @@ export const Expense = ({ id }) => {
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">乗車駅</span>
+              <span className="box-register__item__title">支払先</span>
               <span className="box-register__item__content">
                 {accordionItems.length > 0
                   ? accordionItems[0].boardingStation
@@ -56,7 +56,7 @@ export const Expense = ({ id }) => {
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">下車駅</span>
+              <span className="box-register__item__title">金額（税抜）</span>
               <span className="box-register__item__content">
                 {accordionItems.length > 0
                   ? accordionItems[0].alightingStation
@@ -66,9 +66,17 @@ export const Expense = ({ id }) => {
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">金額</span>
+              <span className="box-register__item__title">消費税</span>
               <span className="box-register__item__content">
                 {accordionItems.length > 0 ? accordionItems[0].total : ''}
+              </span>
+            </div>
+          </li>
+          <li>
+            <div className="box-register__item">
+              <span className="box-register__item__title">軽減税率</span>
+              <span className="box-register__item__content">
+                {accordionItems.length > 0 ? accordionItems[0].note : ''}
               </span>
             </div>
           </li>
