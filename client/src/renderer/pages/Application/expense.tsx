@@ -4,6 +4,22 @@ import { useEffect, useState } from 'react';
 export const Expense = ({ id }) => {
   const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);
+  const [check, setCheck] = useState({
+    checkTexts: '',
+  });
+
+  useEffect(() => {
+    if (accordionItems.check == 1) {
+      setCheck({
+        checkTexts: 'Có',
+      });
+    } else {
+      setCheck({
+        checkTexts: 'Không',
+      });
+    }
+  }, [accordionItems]);
+
   useEffect(() => {
     const Load = async () => {
       try {
@@ -49,7 +65,7 @@ export const Expense = ({ id }) => {
               <span className="box-register__item__title">支払先</span>
               <span className="box-register__item__content">
                 {accordionItems.length > 0
-                  ? accordionItems[0].boardingStation
+                  ? accordionItems[0].paymentDestination
                   : ''}
               </span>
             </div>
@@ -58,9 +74,7 @@ export const Expense = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">金額（税抜）</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0
-                  ? accordionItems[0].alightingStation
-                  : ''}
+                {accordionItems.length > 0 ? accordionItems[0].priceNotax : ''}
               </span>
             </div>
           </li>
@@ -68,7 +82,9 @@ export const Expense = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">消費税</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 ? accordionItems[0].total : ''}
+                {accordionItems.length > 0
+                  ? accordionItems[0].totalPriceTax
+                  : ''}
               </span>
             </div>
           </li>
@@ -76,7 +92,7 @@ export const Expense = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">軽減税率</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 ? accordionItems[0].note : ''}
+                {accordionItems.length > 0 ? accordionItems[0].check : ''}
               </span>
             </div>
           </li>
