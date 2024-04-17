@@ -257,6 +257,24 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
     };
 
 
+    const [tableName, setTableName] = useState(0);
+    useEffect(() => {
+        const getTables = async () => {
+            try {
+                const response = await axiosPrivate.get('estimate');
+                const { data } = response;
+                const { id_table } = props;
+
+                // Lặp qua mảng data để tìm name tương ứng với id_table
+                const matchedTable = data.find((data: { id: any; }) => data.id === id_table);
+                setTableName(matchedTable.name);
+
+            } catch (err) {
+                console.error('Lỗi khi lấy dữ liệu:', err);
+            }
+        }
+        getTables();
+    }, [id_table]);
     const saveExpense = async (status: number) => {
 
 
@@ -281,21 +299,22 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
             };
             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
             const dataToSend = rows.map((row, index) => ({
-                日付: date_form,
-                項目: row.project,
-                交通費: row.priceTrain,
-                宿泊費: row.priceHouse,
-                交際費: row.priceCustomer,
-                食費: row.priceEat,
-                その他: row.priceOther,
-                合計: calculateRowSum(row),
+                date: date_form,
+                project: row.project,
+                priceTrain: row.priceTrain,
+                priceHouse: row.priceHouse,
+                priceCustomer: row.priceCustomer,
+                priceEat: row.priceEat,
+                priceOther: row.priceOther,
+                totalPrice: calculateRowSum(row),
 
                 // tax: row.tax,
                 // check: checkedState[index], // Trạng thái checkbox tại index tương ứng
-                備考: row.note,
+                note: row.note,
                 owner: users.realname,
                 calculatedPrice: calculatedPrice,
                 finalPayment: finalPayment,
+                tableName: tableName,
                 finalTotalPrice: finalTotalPrice,
             }));
 

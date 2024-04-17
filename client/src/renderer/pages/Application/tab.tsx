@@ -3,24 +3,26 @@ import { TabContent } from '../Application/tabContent';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 interface TabContentProps {
-  status: string | number;
+  id_status: string | number;
 }
 
 export const Tab: React.FC<TabContentProps & { key: React.Key }> = ({
-  status,
+  id_status,
   key,
 }) => {
   const axiosPrivate = useAxiosPrivate();
   const [items, setItems] = useState<any>([]);
+
   useEffect(() => {
     const Load = async () => {
       try {
         const response = await axiosPrivate.get('application', {
           params: {
-            status: status,
+            id_status: id_status,
           },
         });
-        setItems(response.data);
+        const data = response.data;
+        setItems(data);
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái :', error);
       }

@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom';
 
 export const Application = () => {
   const axiosPrivate = useAxiosPrivate();
-  const [activeTab, setActiveTab] = useState('tab1');
-  const [statusCount, setStatusCount] = useState([0, 0, 0, 0, 0, 0]);
+  const [activeTab, setActiveTab] = useState('tab2');
+  const [statusCount, setStatusCount] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [statusTotal, setStatusTotal] = useState(0);
 
-  const handleTabClick = (tab: string) => {
+  const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
   useEffect(() => {
@@ -19,30 +19,34 @@ export const Application = () => {
 
   const Load = async () => {
     try {
-      setStatusCount([0, 0, 0, 0, 0, 0]);
       const response = await axiosPrivate.get('application', {
-        params: { status: -1 },
+        params: { id_status: -1 },
       });
-      let data = response.data;
+      const data = response.data;
       setStatusTotal(data.length);
-      data.forEach((item: any) => {
-        const statusIndex = parseInt(item.status);
+
+      // Tạo một bản sao của statusCount
+      let updatedStatusCount = [0, 0, 0, 0, 0, 0, 0];
+
+      // Cập nhật updatedStatusCount dựa trên dữ liệu mới
+      data.forEach((item) => {
+        const statusIndex = parseInt(item.id_status);
         if (
           !isNaN(statusIndex) &&
           statusIndex >= 0 &&
-          statusIndex < statusCount.length
+          statusIndex < updatedStatusCount.length
         ) {
-          setStatusCount((prevState) => {
-            const newState = [...prevState];
-            newState[statusIndex] += 1;
-            return newState;
-          });
+          updatedStatusCount[statusIndex] += 1;
         }
       });
+
+      // Cập nhật statusCount
+      setStatusCount(updatedStatusCount);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
+
   useEffect(() => {
     Load();
   }, []);
@@ -52,14 +56,16 @@ export const Application = () => {
 
   return (
     <div>
-      <div className='grid-row grid-flex'>
+      <div className="grid-row grid-flex">
         <Heading2 text="申請状況" />
-        <Link to="/Search"> <img
-          src={require('../../../../assets/icn-search.png')}
-          alt=""
-          className="fluid-image class-img"
-        /> </Link>
-
+        <Link to="/Search">
+          {' '}
+          <img
+            src={require('../../../../assets/icn-search.png')}
+            alt=""
+            className="fluid-image class-img"
+          />{' '}
+        </Link>
       </div>
 
       <div className="box-application">
@@ -72,7 +78,7 @@ export const Application = () => {
                   onClick={() => handleTabClick('tab1')}
                   className={activeTab === 'tab1' ? 'active' : ''}
                 >
-                  進行中({statusCount[0]})
+                  進行中({statusCount[1]})
                 </a>
               </li>
               <li>
@@ -89,7 +95,7 @@ export const Application = () => {
                   onClick={() => handleTabClick('tab3')}
                   className={activeTab === 'tab3' ? 'active' : ''}
                 >
-                  差し戻し({statusCount[1]})
+                  差し戻し({statusCount[2]})
                 </a>
               </li>
               <li>
@@ -97,7 +103,7 @@ export const Application = () => {
                   onClick={() => handleTabClick('tab4')}
                   className={activeTab === 'tab4' ? 'active' : ''}
                 >
-                  却下({statusCount[2]})
+                  却下({statusCount[3]})
                 </a>
               </li>
               <li>
@@ -105,7 +111,7 @@ export const Application = () => {
                   onClick={() => handleTabClick('tab5')}
                   className={activeTab === 'tab5' ? 'active' : ''}
                 >
-                  完了({statusCount[3]})
+                  完了({statusCount[4]})
                 </a>
               </li>
               <li>
@@ -113,7 +119,7 @@ export const Application = () => {
                   onClick={() => handleTabClick('tab6')}
                   className={activeTab === 'tab6' ? 'active' : ''}
                 >
-                  下書き({statusCount[4]})
+                  下書き({statusCount[5]})
                 </a>
               </li>
               <li>
@@ -121,7 +127,7 @@ export const Application = () => {
                   onClick={() => handleTabClick('tab7')}
                   className={activeTab === 'tab7' ? 'active' : ''}
                 >
-                  取り消し({statusCount[5]})
+                  取り消し({statusCount[6]})
                 </a>
               </li>
             </ul>
@@ -129,13 +135,13 @@ export const Application = () => {
           <div className="tab01 tab-content">
             <div className="list-accordion">
               <div className="list-accorditon__inner">
-                {activeTab === 'tab1' && <Tab key="tab1" status={1} />}
-                {activeTab === 'tab2' && <Tab key="tab2" status={-1} />}
-                {activeTab === 'tab3' && <Tab key="tab3" status={2} />}
-                {activeTab === 'tab4' && <Tab key="tab4" status={3} />}
-                {activeTab === 'tab5' && <Tab key="tab5" status={4} />}
-                {activeTab === 'tab6' && <Tab key="tab6" status={5} />}
-                {activeTab === 'tab7' && <Tab key="tab7" status={6} />}
+                {activeTab === 'tab1' && <Tab key="tab1" id_status={1} />}
+                {activeTab === 'tab2' && <Tab key="tab2" id_status={-1} />}
+                {activeTab === 'tab3' && <Tab key="tab3" id_status={2} />}
+                {activeTab === 'tab4' && <Tab key="tab4" id_status={3} />}
+                {activeTab === 'tab5' && <Tab key="tab5" id_status={4} />}
+                {activeTab === 'tab6' && <Tab key="tab6" id_status={5} />}
+                {activeTab === 'tab7' && <Tab key="tab7" id_status={6} />}
               </div>
             </div>
           </div>

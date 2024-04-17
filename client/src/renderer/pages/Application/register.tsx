@@ -1,9 +1,10 @@
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 
-export const Report = ({ id }) => {
+export const Register = ({ id }) => {
   const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);
+
   useEffect(() => {
     const Load = async () => {
       try {
@@ -24,51 +25,29 @@ export const Report = ({ id }) => {
 
   return (
     <>
-      <div className="box-register 1">
+      <div className="box-register">
         <ul>
           <li>
             <div className="box-register__item">
               <span className="box-register__item__title">期間</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 && accordionItems[0].date
-                  ? new Date(accordionItems[0].date).toLocaleDateString('ja-JP')
-                  : ''}
+                {accordionItems.date}
               </span>
             </div>
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">路線</span>
+              <span className="box-register__item__title">行先</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 ? accordionItems[0].route : ''}
+                {accordionItems.destination}
               </span>
             </div>
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">乗車駅</span>
+              <span className="box-register__item__title">事由</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0
-                  ? accordionItems[0].boardingStation
-                  : ''}
-              </span>
-            </div>
-          </li>
-          <li>
-            <div className="box-register__item">
-              <span className="box-register__item__title">下車駅</span>
-              <span className="box-register__item__content">
-                {accordionItems.length > 0
-                  ? accordionItems[0].alightingStation
-                  : ''}
-              </span>
-            </div>
-          </li>
-          <li>
-            <div className="box-register__item">
-              <span className="box-register__item__title">金額</span>
-              <span className="box-register__item__content">
-                {accordionItems.length > 0 ? accordionItems[0].total : ''}
+                {accordionItems.destination}
               </span>
             </div>
           </li>
@@ -76,7 +55,7 @@ export const Report = ({ id }) => {
             <div className="box-register__item">
               <span className="box-register__item__title">備考</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 ? accordionItems[0].note : ''}
+                {accordionItems.note}
               </span>
             </div>
           </li>

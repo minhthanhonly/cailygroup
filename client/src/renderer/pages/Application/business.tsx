@@ -1,9 +1,10 @@
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 
-export const Report = ({ id }) => {
+export const Business = ({ id }) => {
   const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);
+
   useEffect(() => {
     const Load = async () => {
       try {
@@ -38,37 +39,59 @@ export const Report = ({ id }) => {
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">路線</span>
+              <span className="box-register__item__title">項目</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 ? accordionItems[0].route : ''}
+                {accordionItems.length > 0 ? accordionItems[0].project : ''}
               </span>
             </div>
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">乗車駅</span>
+              <span className="box-register__item__title">交通費</span>
+              <span className="box-register__item__content">
+                {accordionItems.length > 0 ? accordionItems[0].priceTrain : ''}
+              </span>
+            </div>
+          </li>
+          <li>
+            <div className="box-register__item">
+              <span className="box-register__item__title">宿泊費</span>
+              <span className="box-register__item__content">
+                {accordionItems.length > 0 ? accordionItems[0].priceHouse : ''}
+              </span>
+            </div>
+          </li>
+          <li>
+            <div className="box-register__item">
+              <span className="box-register__item__title">交際費</span>
               <span className="box-register__item__content">
                 {accordionItems.length > 0
-                  ? accordionItems[0].boardingStation
+                  ? accordionItems[0].priceCustomer
                   : ''}
               </span>
             </div>
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">下車駅</span>
+              <span className="box-register__item__title">食費</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0
-                  ? accordionItems[0].alightingStation
-                  : ''}
+                {accordionItems.length > 0 ? accordionItems[0].priceEat : ''}
               </span>
             </div>
           </li>
           <li>
             <div className="box-register__item">
-              <span className="box-register__item__title">金額</span>
+              <span className="box-register__item__title">その他</span>
               <span className="box-register__item__content">
-                {accordionItems.length > 0 ? accordionItems[0].total : ''}
+                {accordionItems.length > 0 ? accordionItems[0].priceOther : ''}
+              </span>
+            </div>
+          </li>
+          <li>
+            <div className="box-register__item">
+              <span className="box-register__item__title">合計</span>
+              <span className="box-register__item__content">
+                {accordionItems.length > 0 ? accordionItems[0].totalPrice : ''}
               </span>
             </div>
           </li>

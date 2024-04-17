@@ -132,6 +132,24 @@ export const ExpenseReport = (props: { id_table: any; }) => {
         return isValid;
     };
 
+    const [tableName, setTableName] = useState(0);
+    useEffect(() => {
+        const getTables = async () => {
+            try {
+                const response = await axiosPrivate.get('estimate');
+                const { data } = response;
+                const { id_table } = props;
+
+                // Lặp qua mảng data để tìm name tương ứng với id_table
+                const matchedTable = data.find((data: { id: any; }) => data.id === id_table);
+                setTableName(matchedTable.name);
+
+            } catch (err) {
+                console.error('Lỗi khi lấy dữ liệu:', err);
+            }
+        }
+        getTables();
+    }, [id_table]);
 
     const saveExpense = async (status: number) => {
         const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
@@ -142,17 +160,18 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                 // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
 
                 const dataToSend = rows.map((row, index) => ({
-                    日付: formattedDate,
-                    路線: row.route,
-                    支払先: row.paymentDestination,
-                    "金額（税抜)": row.priceNotax,
-                    消費税: row.tax,
-                    軽減税率: checkedState[index], // Trạng thái checkbox tại index tương ứng
-                    備考: row.note,
+                    date: formattedDate,
+                    route: row.route,
+                    paymentDestination: row.paymentDestination,
+                    priceNotax: row.priceNotax,
+                    tax: row.tax,
+                    check: checkedState[index], // Trạng thái checkbox tại index tương ứng
+                    note: row.note,
                     owner: users.realname,
                     totalPriceNotTax: totalPriceNotTax,
                     totalPriceTax: totalpriceTax,
                     total: totalTaxIncluded,
+                    tableName: tableName,
                 }));
 
                 // Tạo đối tượng JSON chứa các mảng dữ liệu
@@ -161,6 +180,7 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                     owner: users.realname,
                     table_id: id_table,
                     id_status: status,
+
                     // totalPriceNotTax: totalPriceNotTax,
                     // totalPriceTax: totalpriceTax,
                     // total: totalTaxIncluded,
@@ -186,9 +206,10 @@ export const ExpenseReport = (props: { id_table: any; }) => {
 
     const [checkedState, setCheckedState] = useState(new Array(rows.length).fill(0));
 
-    const handleCheckboxChange = (index: number) => {
+    const handleCheckboxChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = event.target.checked;
         const newCheckedState = [...checkedState];
-        newCheckedState[index] = newCheckedState[index] === 1 ? 0 : 1;
+        newCheckedState[index] = isChecked ? 0 : 1;
         setCheckedState(newCheckedState);
     };
 
@@ -221,7 +242,7 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceNotax[index]} onChange={(e) => handleNumberChange(e, index, 'priceNotax')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={tax[index]} onChange={(e) => handleNumberChange(e, index, 'tax')} /></td>
                                     <td className='tdCheckbox'>
-                                        <input type="checkbox" id={`checkbox-${index}`} checked={checkedState[index] === 1} onChange={() => handleCheckboxChange(index)} />
+                                        <input type="checkbox" id={`checkbox-${index}`} checked={checkedState[index]} onChange={(e) => handleCheckboxChange(index, e)} />
                                         <label htmlFor={`checkbox-${index}`}></label>
                                     </td>
                                     <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'note')} /></td>
