@@ -2,7 +2,7 @@ import { Registry } from "react-form-builder2";
 import F_Checkbox from "./Field/F_Checkbox";
 import F_CheckboxGroup from "./Field/F_CheckboxGroup";
 import F_InputText from "./Field/F_InputText";
-import F_Text from "./Field/F_Text";
+import F_Text from "./Field/F_Text_bk";
 import F_TextArea from "./Field/F_TextArea";
 
 Registry.register('F_Text', F_Text);
