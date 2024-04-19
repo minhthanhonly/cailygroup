@@ -9,6 +9,7 @@ import editIcon from '../../../../assets/icn-edit.png';
 import closeIcon from '../../../../assets/icn-close.png';
 import { UserRole } from '../../components/UserRole';
 import moment from 'moment'; // Import moment.js
+import { Travelallowance } from '../Application/travelallowance';
 
 
 
@@ -102,6 +103,8 @@ const Search = (id: unknown) => {
     }, []);
 
 
+    // const [accordionItems, setAccordionItems] = useState<any>([]);
+
 
 
     const [date, setDate] = useState(new Date());
@@ -136,84 +139,84 @@ const Search = (id: unknown) => {
     };
 
 
-    // const handleDeleteComment = async (commentId: any, endpoint: string, getDataFunction: () => void) => {
-    //     try {
-    //         const response = await axiosPrivate.delete(`application/${endpoint}/${commentId}`);
-    //         if (response.status === 200) {
-    //             console.log('Comment deleted successfully');
-    //             getDataFunction();
-    //         } else {
-    //             console.error('Failed to delete comment:', response.statusText);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error deleting comment:', error);
-    //     }
-    // };
+    const handleDeleteComment = async (commentId: any, endpoint: string, getDataFunction: () => void) => {
+        try {
+            const response = await axiosPrivate.delete(`application/${endpoint}/${commentId}`);
+            if (response.status === 200) {
+                console.log('Comment deleted successfully');
+                getDataFunction();
+            } else {
+                console.error('Failed to delete comment:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+        }
+    };
 
-    // const handleSubmitComment = async (value: string, endpoint: string, getDataFunction: () => void, setValueFunction: { (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (arg0: string): void; }) => {
-    //     const note = value.trim();
-    //     if (note.length === 0) {
-    //         console.error('Không thể thêm comment: Nội dung trống');
-    //         return;
-    //     }
-    //     try {
-    //         const commentData = {
-    //             note: value,
-    //             user_id: users.id,
-    //             id_register: id,
-    //             authority: endpoint === 'addcomment' ? 1 : (endpoint === 'addcommentsecond' ? 2 : 3),
-    //         };
-    //         setValueFunction('');
-    //         const res = await axiosPrivate.post(`application/${endpoint}/`, commentData);
-    //         getDataFunction();
-    //     } catch (error) {
-    //         console.error('Lỗi khi thêm comment:', error);
-    //     }
-    // };
+    const handleSubmitComment = async (value: string, endpoint: string, getDataFunction: () => void, setValueFunction: { (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (arg0: string): void; }) => {
+        const note = value.trim();
+        if (note.length === 0) {
+            console.error('Không thể thêm comment: Nội dung trống');
+            return;
+        }
+        try {
+            const commentData = {
+                note: value,
+                user_id: users.id,
+                id_register: id,
+                authority: endpoint === 'addcomment' ? 1 : (endpoint === 'addcommentsecond' ? 2 : 3),
+            };
+            setValueFunction('');
+            const res = await axiosPrivate.post(`application/${endpoint}/`, commentData);
+            getDataFunction();
+        } catch (error) {
+            console.error('Lỗi khi thêm comment:', error);
+        }
+    };
 
-    // const getCommentForUser = async (endpoint: string, setDataFunction: { (value: any): void; (value: any): void; (arg0: any[]): void; }) => {
-    //     try {
-    //         const response = await axiosPrivate.get(`application/${endpoint}/${id}`);
-    //         const commentData = response.data;
-    //         if (Array.isArray(commentData)) {
-    //             setDataFunction(commentData);
-    //         } else {
-    //             console.error('Error fetching data: Response data is not an array');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error fetching data:', error);
-    //     }
-    // };
+    const getCommentForUser = async (endpoint: string, setDataFunction: { (value: any): void; (value: any): void; (arg0: any[]): void; }) => {
+        try {
+            const response = await axiosPrivate.get(`application/${endpoint}/${id}`);
+            const commentData = response.data;
+            if (Array.isArray(commentData)) {
+                setDataFunction(commentData);
+            } else {
+                console.error('Error fetching data: Response data is not an array');
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
-    // const handleDeleteFirst = async (commentId: any) => {
-    //     handleDeleteComment(commentId, 'deletecommentfirst', () => getCommentForUser('getcommentforuserfirst', setCommentFirst));
-    // };
+    const handleDeleteFirst = async (commentId: any) => {
+        handleDeleteComment(commentId, 'deletecommentfirst', () => getCommentForUser('getcommentforuserfirst', setCommentFirst));
+    };
 
-    // const handleDeleteSecond = async (commentId: any) => {
-    //     handleDeleteComment(commentId, 'deletecommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond));
-    // };
+    const handleDeleteSecond = async (commentId: any) => {
+        handleDeleteComment(commentId, 'deletecommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond));
+    };
 
-    // const handleDeleteThird = async (commentId: any) => {
-    //     handleDeleteComment(commentId, 'deletecommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird));
-    // };
+    const handleDeleteThird = async (commentId: any) => {
+        handleDeleteComment(commentId, 'deletecommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird));
+    };
 
-    // const handleSubmitFirst = async () => {
-    //     handleSubmitComment(textValue, 'addcomment', () => getCommentForUser('getcommentforuserfirst', setCommentFirst), setTextValue);
-    // };
+    const handleSubmitFirst = async () => {
+        handleSubmitComment(textValue, 'addcomment', () => getCommentForUser('getcommentforuserfirst', setCommentFirst), setTextValue);
+    };
 
-    // const handleSubmitSecond = async () => {
-    //     handleSubmitComment(commentValue, 'addcommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond), setCommentValue);
-    // };
+    const handleSubmitSecond = async () => {
+        handleSubmitComment(commentValue, 'addcommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond), setCommentValue);
+    };
 
-    // const handleSubmitThird = async () => {
-    //     handleSubmitComment(commentValueThird, 'addcommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird), setCommentValueThird);
-    // };
+    const handleSubmitThird = async () => {
+        handleSubmitComment(commentValueThird, 'addcommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird), setCommentValueThird);
+    };
 
-    // useEffect(() => {
-    //     getCommentForUser('getcommentforuserfirst', setCommentFirst);
-    //     getCommentForUser('getcommentforusersecond', setCommentSeCond);
-    //     getCommentForUser('getcommentforuserthird', setCommentThird);
-    // }, [id]);
+    useEffect(() => {
+        getCommentForUser('getcommentforuserfirst', setCommentFirst);
+        getCommentForUser('getcommentforusersecond', setCommentSeCond);
+        getCommentForUser('getcommentforuserthird', setCommentThird);
+    }, [id]);
 
 
     const [selectedId, setSelectedId] = useState('');
@@ -259,7 +262,7 @@ const Search = (id: unknown) => {
             }
             return false; // Thêm lệnh return false ở đây
         });
-        console.log("matchedItems", matchedItems);
+
 
 
         setSearchResults(matchedItems);
@@ -393,8 +396,58 @@ const Search = (id: unknown) => {
                                                 // Hiển thị thông tin chỉ khi trạng thái phù hợp
                                                 return (
                                                     <div key={index}>
-                                                        <p>Table Name: {jsonData.rows[0].tableName}</p>
-                                                        <p>Owner: {jsonData.rows[0].owner}</p>
+                                                        <div className="list-accordion__parent">
+                                                            <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
+                                                                <div className="list-accordion__item__head" onClick={toggleAccordion}>
+                                                                    <div className="list-accordion__item__head__title">
+                                                                        <p className="list-accordion__item__head__title__title">
+                                                                            {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
+
+                                                                        </p>
+                                                                        <span className="list-accordion__item__head__title__subtitle">
+                                                                            {jsonData.rows[0].owner}（{jsonData.rows[0].date} {'\u00A0\u00A0'}
+                                                                            {jsonData.rows[0].time}）
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className="list-accordion__item__head__btn">
+                                                                        <p className="list-accordion__item__head__btn__btn">
+                                                                            <span className={`lbl01 ${(item.id_status && jsonData.rows[0].id_status) === 1 ? "lbl-blue" :
+                                                                                (item.id_status && jsonData.rows[0].id_status) === 2 ? "lbl-yellow" :
+                                                                                    (item.id_status && jsonData.rows[0].id_status) === 3 ? "lbl-red" :
+                                                                                        (item.id_status && jsonData.rows[0].id_status) === 4 ? "lbl-white" :
+                                                                                            (item.id_status && jsonData.rows[0].id_status) === 5 ? "lbl-brown" :
+                                                                                                "取り消し"
+                                                                                }`} >
+                                                                                {(item.id_status && jsonData.rows[0].id_status) === 1 ? "承認待ち" : (item.id_status && jsonData.rows[0].id_status) === 2 ? "差し戻し" : (item.id_status && jsonData.rows[0].id_status) === 3 ? "却下" : (item.id_status && jsonData.rows[0].id_status) === 4 ? "完了" : (item.id_status && jsonData.rows[0].id_status) === 5 ? "下書き" : "取り消し"}
+                                                                            </span>
+                                                                        </p>
+                                                                        <p className="list-accordion__item__head__btn__icn">
+                                                                            <span className="icn-item">
+                                                                                <img src={editIcon} alt="edit" className="fluid-image" />
+                                                                            </span>
+                                                                            <span className="icn-item">
+                                                                                <img src={closeIcon} alt="close" className="fluid-image" />
+                                                                            </span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="list-accordion__item__content">
+                                                                    {isOpen && (
+                                                                        <div className="list-accordion__item__content__inner">
+                                                                            <div className="list-accordion__item__content__item">
+
+                                                                                <Travelallowance id={id} />
+
+
+                                                                            </div >
+                                                                        </div>
+                                                                    )
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {/* <p>Table Name: {jsonData.rows[0].tableName}</p>
+                                                        <p>Owner: {jsonData.rows[0].owner}</p> */}
                                                         {/* Thêm các trường dữ liệu khác tương tự */}
                                                     </div>
                                                 );
