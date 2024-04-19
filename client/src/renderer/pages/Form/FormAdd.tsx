@@ -83,7 +83,7 @@ const items = [
     name: 'Textarea',
     static: true,
     icon: 'fas fa-text-height',
-    content: 'Placeholder Text...'
+    label: '行先',
   },
   {
     key: 'DatePicker',

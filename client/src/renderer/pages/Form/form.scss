@@ -10,6 +10,14 @@
     & .edit-form h4{
       font-size: 2.4rem;
     }
+    .edit-form .dynamic-option-list ul li {
+      input.form-control{
+        width: 100%;
+      }
+      .dynamic-options-actions-buttons{
+        margin-left: 0;
+      }
+    }
   }
   .react-form-builder-toolbar{
     margin-top: -25px;
