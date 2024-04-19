@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import F_Text from "./Field/F_Text";
 import F_InputText from "./Field/F_InputText";
 import F_Checkbox from "./Field/F_Checkbox";
-import F_CheckboxGroup from "./Field/F_CheckboxGroup";
 import F_TextArea from "./Field/F_TextArea";
 
 export default function FormDetail(){
@@ -42,8 +41,6 @@ export default function FormDetail(){
               return <F_InputText/>;
             case 'F_Checkbox':
               return <F_Checkbox/>;
-            case 'F_CheckboxGroup':
-              return <F_CheckboxGroup/>;
             case 'F_TextArea':
               return <F_TextArea/>;
             default:

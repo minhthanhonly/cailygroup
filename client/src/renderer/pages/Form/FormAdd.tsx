@@ -9,7 +9,6 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import F_Text from "./Field/F_Text";
 import F_InputText from "./Field/F_InputText";
 import F_Checkbox from "./Field/F_Checkbox";
-import F_CheckboxGroup from "./Field/F_CheckboxGroup";
 import F_TextArea from "./Field/F_TextArea";
 import FormElementsEdit from "./FormElementsEdit";
 import { Heading2 } from "../../components/Heading";
@@ -17,7 +16,6 @@ import { Heading2 } from "../../components/Heading";
 Registry.register('F_Text', F_Text);
 Registry.register('F_InputText', F_InputText);
 Registry.register('F_Checkbox', F_Checkbox);
-Registry.register('F_CheckboxGroup', F_CheckboxGroup);
 Registry.register('F_TextArea', F_TextArea);
 
 const items = [
@@ -52,16 +50,23 @@ const items = [
     static: true,
     icon: 'far fa-check-square',
     label: '行先',
-  },
-  {
-    key: 'F_CheckboxGroup',
-    element: 'CustomElement',
-    component: F_CheckboxGroup,
-    type: 'custom',
-    name: 'Checkbox Group',
-    static: true,
-    icon: 'far fa-check-square',
-    content: 'Placeholder Text...'
+    custom_options: [
+      {
+        value: 'checkbox_value_1',
+        text: '遅刻',
+        key: 'checkboxes_option_1',
+      },
+      {
+        value: 'checkbox_value_2',
+        text: '早退',
+        key: 'checkboxes_option_2',
+      },
+      {
+        value: 'checkbox_value_3',
+        text: '時間外勤務',
+        key: 'checkboxes_option_3',
+      },
+    ]
   },
   {
     key: 'RadioButtons',
@@ -89,6 +94,15 @@ const items = [
   },
 ];
 
+// const items = [
+//   {
+//     key: 'TextInput',
+//     icon: 'fas fa-font',
+//     static: true,
+//     label: '期間',
+//   }
+
+// ]
 export default function FormAdd(){
   const axiosPrivate = useAxiosPrivate();
 	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'})
@@ -121,6 +135,12 @@ export default function FormAdd(){
           onSubmit={handleSubmit}
           renderEditForm={props => <FormElementsEdit {...props}/>}
         />
+        {/* <ReactFormBuilder
+          toolbarItems={items}
+          data={reactFormData}
+          onChange={setReactFormData}
+          onSubmit={handleSubmit}
+        /> */}
         <div className="wrp-button">
           <button className="btn btn--from btn--gray">下書き保存</button>
           <button className="btn btn--from btn--blue" onClick={handleSubmit}>申請する</button>
