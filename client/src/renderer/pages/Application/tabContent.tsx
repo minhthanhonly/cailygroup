@@ -29,11 +29,15 @@ export const TabContent = ({ id }) => {
   const [approve, setApprove] = useState({
     approveTexts: '',
     approveClass: '',
-  });
-  const [statusattr, setStatusattr] = useState({
     statusattrTexts: '',
     statusattrClass: '',
   });
+
+  // const [statusattr, setStatusattr] = useState({
+  //   statusattrTexts: '',
+  //   statusattrClass: '',
+
+  // });
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -179,58 +183,70 @@ export const TabContent = ({ id }) => {
       setApprove({
         approveTexts: '承認待ち',
         approveClass: 'lbl01 lbl-blue',
+        statusattrTexts: '承認待ち',
+        statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else if (accordionItems.id_status == 2) {
       setApprove({
         approveTexts: '差し戻し',
         approveClass: 'lbl01 lbl-yellow',
+        statusattrTexts: '差し戻し',
+        statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else if (accordionItems.id_status == 3) {
       setApprove({
         approveTexts: '却下',
         approveClass: 'lbl01 lbl-red',
+        statusattrTexts: '却下',
+        statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else if (accordionItems.id_status == 4) {
       setApprove({
         approveTexts: '完了',
         approveClass: 'lbl01 lbl-white',
+        statusattrTexts: '承認済み',
+        statusattrClass: 'lbl01 lbc-blue lbbd-blue',
       });
     } else if (accordionItems.id_status == 5) {
       setApprove({
         approveTexts: '下書き',
         approveClass: 'lbl01 lbl-brown',
+        statusattrTexts: '下書き',
+        statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else {
       setApprove({
         approveTexts: '取り消し',
         approveClass: 'lbl01',
+        statusattrTexts: '取り消し',
+        statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     }
   }, [accordionItems]);
 
-  useEffect(() => {
-    if (accordionItems.status_attr == 1) {
-      setStatusattr({
-        statusattrTexts: '承認待ち',
-        statusattrClass: 'lbl01 lbc-red lbbd-red',
-      });
-    } else if (accordionItems.status_attr == 2) {
-      setStatusattr({
-        statusattrTexts: '差し戻し',
-        statusattrClass: 'lbl01 lbc-red lbbd-red',
-      });
-    } else if (accordionItems.status_attr == 3) {
-      setStatusattr({
-        statusattrTexts: '却下',
-        statusattrClass: 'lbl01 lbc-red lbbd-red',
-      });
-    } else if (accordionItems.status_attr == 4) {
-      setStatusattr({
-        statusattrTexts: '承認済み',
-        statusattrClass: 'lbl01 lbc-blue lbbd-blue',
-      });
-    }
-  }, [accordionItems]);
+  // useEffect(() => {
+  //   if (accordionItems.status_attr == 1) {
+  //     setStatusattr({
+  //       statusattrTexts: '承認待ち',
+  //       statusattrClass: 'lbl01 lbc-red lbbd-red',
+  //     });
+  //   } else if (accordionItems.status_attr == 2) {
+  //     setStatusattr({
+  //       statusattrTexts: '差し戻し',
+  //       statusattrClass: 'lbl01 lbc-red lbbd-red',
+  //     });
+  //   } else if (accordionItems.status_attr == 3) {
+  //     setStatusattr({
+  //       statusattrTexts: '却下',
+  //       statusattrClass: 'lbl01 lbc-red lbbd-red',
+  //     });
+  //   } else if (accordionItems.status_attr == 4) {
+  //     setStatusattr({
+  //       statusattrTexts: '承認済み',
+  //       statusattrClass: 'lbl01 lbc-blue lbbd-blue',
+  //     });
+  //   }
+  // }, [accordionItems]);
 
   const handDelete = async (commentId) => {
     try {
@@ -500,8 +516,8 @@ export const TabContent = ({ id }) => {
 
                               <p className="list-btn">
                                 <span className="list-btn__item">
-                                  <span className={statusattr.statusattrClass}>
-                                    {statusattr.statusattrTexts}
+                                  <span className={approve.statusattrClass}>
+                                    {approve.statusattrTexts}
                                   </span>
                                 </span>
                               </p>

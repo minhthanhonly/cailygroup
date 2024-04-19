@@ -1,6 +1,5 @@
 import { Registry } from "react-form-builder2";
 import F_Checkbox from "./Field/F_Checkbox";
-import F_CheckboxGroup from "./Field/F_CheckboxGroup";
 import F_InputText from "./Field/F_InputText";
 import F_Text from "./Field/F_Text";
 import F_TextArea from "./Field/F_TextArea";
@@ -8,7 +7,6 @@ import F_TextArea from "./Field/F_TextArea";
 Registry.register('F_Text', F_Text);
 Registry.register('F_InputText', F_InputText);
 Registry.register('F_Checkbox', F_Checkbox);
-Registry.register('F_CheckboxGroup', F_CheckboxGroup);
 Registry.register('F_TextArea', F_TextArea);
 
 export const items = [

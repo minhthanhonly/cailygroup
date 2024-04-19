@@ -1,10 +1,15 @@
 .react-form-builder{
+  margin: 3rem 0;
   & > div{
     display: flex;
     justify-content: space-between;
   }
   .react-form-builder-preview{
     width: 70%;
+    min-height: 60rem;
+    & .edit-form h4{
+      font-size: 2.4rem;
+    }
   }
   .react-form-builder-toolbar{
     margin-top: -25px;
@@ -17,13 +22,43 @@
     padding: 0 1rem;
   }
   .react-form-builder-preview .Sortable .rfb-item .toolbar-header .toolbar-header-buttons{
+    top: 1rem;
     margin-top: 0;
     right: 0;
   }
+  .edit-form .form-group{
+    display: block;
+  }
+  .badge-secondary {
+    color: #fff;
+    background-color: #6c757d;
+  }
+  .badge {
+    display: inline-block;
+    padding: .5em .4em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  }
 
 
+  .form-group{
+    width: 100%;
+    & > .form-label{
+      display: none!important;
+      height: 0;
+      width: 0;
+    }
+  }
   .form-group > div{
     width: 100%;
+  }
+  .group_box{
+    margin-top: 0;
   }
   .group_box--title{
     width: 15rem;
@@ -34,16 +69,73 @@
   .group_box--box{
     width: calc(100% - 1.6rem);
   }
-}
+  .rdw-editor-toolbar{
+    box-sizing: border-box;
+  }
+  .float-left{
+    float: left;
+  }
+  .float-right{
+    float: right;
+  }
+  .custom-control{
+    &.custom-checkbox{
+      display: flex;
+      align-items: center;
+    }
+    .custom-control-label{
+      margin-left: 0.5rem;
+    }
+  }
+  .dynamic-option-list {
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      div{
+        width: calc(33.33% - 2rem);
+        box-sizing: border-box;
+      }
+    }
+    .dynamic-options-actions-buttons{
+      display: flex;
+    }
+    .btn{
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      padding: 2rem;
+      border-radius: .25rem;
+    }
+    .btn-success {
+      background-color: #28a745;
+    }
+    .btn-danger {
+      background-color: #c82333;
+    }
+  }
 
-.modal {
-  background: rgba(0, 0, 0, 0.3);
-}
+  .form-control {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .3rem;
+  }
 
-.modal-content {
-  padding: 30px;
-  max-height: 800px;
-  overflow-y: auto
+  .control-label{
+    display: block;
+    margin-bottom: 2rem;
+  }
+
+
 }
 
 //
@@ -66,5 +158,3 @@
     }
   }
 }
-
-
