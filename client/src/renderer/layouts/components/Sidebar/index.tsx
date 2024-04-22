@@ -146,7 +146,7 @@ export const Sidebar = () => {
           </li>
           <li className="nav-global__item">
             {/* <NavLink to="/tabs/tab2"> */}
-            <NavLink to="/application">application </NavLink> <span className='boder_count'>{countIdStatusOne}</span>
+            <NavLink to="/application">申請状況</NavLink> <span className='boder_count'>{countIdStatusOne}</span>
           </li>
           <li className="nav-global__item">
             <NavLink to="/estimate">
