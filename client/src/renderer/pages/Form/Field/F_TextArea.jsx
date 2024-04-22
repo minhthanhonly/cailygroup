@@ -1,7 +1,7 @@
 import React from 'react';
 import ComponentLabel from './component-label';
 
-class F_InputText extends React.Component {
+class F_TextArea extends React.Component {
   constructor(props) {
     super(props);
     this.inputField = React.createRef();
@@ -9,8 +9,8 @@ class F_InputText extends React.Component {
 
   render() {
     const props = {};
-    props.type = 'text';
-    // props.className = 'form-control';
+    // props.type = 'text';
+    props.className = 'form-control';
     props.name = this.props.data.field_name;
     if (this.props.mutable) {
       props.defaultValue = this.props.defaultValue;
@@ -35,7 +35,7 @@ class F_InputText extends React.Component {
               <div className="grid-row group_box--form ">
                 <div className="group_box--box">
                   <div className="group_box--flex">
-                    <input {...props} />
+                    <textarea className="group_box--area"></textarea>
                   </div>
                 </div>
               </div>
@@ -47,4 +47,5 @@ class F_InputText extends React.Component {
   }
 }
 
-export default F_InputText;
+export default F_TextArea;
+

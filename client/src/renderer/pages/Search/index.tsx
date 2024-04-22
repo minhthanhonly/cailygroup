@@ -36,7 +36,7 @@ const Search = (id: unknown) => {
 
 
     ////////////////////////////////////////////////
-    const [isOpen, setIsOpen] = useState(false);
+    const [openTabId, setOpenTabId] = useState<string | null>(null);
     const [textValue, setTextValue] = useState('');
     const [commentValue, setCommentValue] = useState('');
     const [commentValueThird, setCommentValueThird] = useState('');
@@ -51,8 +51,8 @@ const Search = (id: unknown) => {
         statusattrTexts: '',
         statusattrClass: '',
     });
-    const toggleAccordion = () => {
-        setIsOpen(!isOpen);
+    const toggleAccordion = (id: string) => {
+        setOpenTabId(prevId => (prevId === id ? null : id));
     };
 
     const tabs = [
@@ -386,19 +386,19 @@ const Search = (id: unknown) => {
 
                             {tabs.map(tab => (
                                 <div key={tab.id} className={activeTab === tab.id ? "sss" : "hidden"}>
+                                    <div className='table_content'>
+                                        {searchResults
+                                            .filter(item => tab.status !== -1 ? Number(item.id_status) === Number(tab.status) : true) // Lọc dữ liệu theo tab status
+                                            .map((item, index) => {
+                                                try {
+                                                    // Phân tích chuỗi JSON thành đối tượng JavaScript
+                                                    const jsonData = JSON.parse(item.tablejson);
+                                                    // Hiển thị thông tin chỉ khi trạng thái phù hợp
+                                                    return (
 
-                                    {searchResults
-                                        .filter(item => tab.status !== -1 ? Number(item.id_status) === Number(tab.status) : true) // Lọc dữ liệu theo tab status
-                                        .map((item, index) => {
-                                            try {
-                                                // Phân tích chuỗi JSON thành đối tượng JavaScript
-                                                const jsonData = JSON.parse(item.tablejson);
-                                                // Hiển thị thông tin chỉ khi trạng thái phù hợp
-                                                return (
-                                                    <div key={index}>
                                                         <div className="list-accordion__parent">
-                                                            <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
-                                                                <div className="list-accordion__item__head" onClick={toggleAccordion}>
+                                                            <div key={index} className={`list-accordion__item ${openTabId === item.id ? 'open' : ''}`}>
+                                                                <div className="list-accordion__item__head" onClick={() => toggleAccordion(item.id)}>
                                                                     <div className="list-accordion__item__head__title">
                                                                         <p className="list-accordion__item__head__title__title">
                                                                             {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
@@ -432,7 +432,7 @@ const Search = (id: unknown) => {
                                                                     </div>
                                                                 </div>
                                                                 <div className="list-accordion__item__content">
-                                                                    {isOpen && (
+                                                                    {openTabId && (
                                                                         <div className="list-accordion__item__content__inner">
                                                                             <div className="list-accordion__item__content__item">
 
@@ -446,19 +446,17 @@ const Search = (id: unknown) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        {/* <p>Table Name: {jsonData.rows[0].tableName}</p>
-                                                        <p>Owner: {jsonData.rows[0].owner}</p> */}
-                                                        {/* Thêm các trường dữ liệu khác tương tự */}
-                                                    </div>
-                                                );
-                                            } catch (error) {
-                                                // Xử lý trường hợp chuỗi không hợp lệ
-                                                console.error(`Error parsing JSON at index ${index}:`, error);
-                                                return null; // Hoặc hiển thị một thông báo lỗi phù hợp
-                                            }
-                                        })}
 
 
+                                                    );
+                                                } catch (error) {
+                                                    // Xử lý trường hợp chuỗi không hợp lệ
+                                                    console.error(`Error parsing JSON at index ${index}:`, error);
+                                                    return null; // Hoặc hiển thị một thông báo lỗi phù hợp
+                                                }
+                                            })}
+
+                                    </div>
                                 </div>
                             ))}
                         </div >
