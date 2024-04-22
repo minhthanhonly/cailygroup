@@ -16,6 +16,7 @@ interface Row {
   note: string;
 }
 
+
 export const TravelAllowance = (props: { id_table: any }) => {
   const { id_table } = props;
 
