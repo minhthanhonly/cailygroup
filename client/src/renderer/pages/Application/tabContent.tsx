@@ -34,7 +34,6 @@ export const TabContent = ({ id }) => {
   });
 
   const [isChecked, setIsChecked] = useState(false);
-  const [activeTab, setActiveTab] = useState('tab2');
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
