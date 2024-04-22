@@ -80,7 +80,7 @@
         function updateStatus($id = '',$id_status='') {
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('ApplicationModel')->updateStatus($id,$id_status);
+                return $this->model('ApplicationModel')->updateStatus($id,$id_status,date('Y-m-d H:i:s'));
             }
         }
     }

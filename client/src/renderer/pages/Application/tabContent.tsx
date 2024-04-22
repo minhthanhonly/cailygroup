@@ -32,10 +32,9 @@ export const TabContent = ({ id }) => {
     statusattrTexts: '',
     statusattrClass: '',
   });
-  const [isTableUpdated, setIsTableUpdated] = useState(true);
 
   const [isChecked, setIsChecked] = useState(false);
-
+  const [activeTab, setActiveTab] = useState('tab2');
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
@@ -52,36 +51,13 @@ export const TabContent = ({ id }) => {
         };
         //console.log(itemWithStatus);
         setAccordionItems(itemWithStatus);
-        setIsTableUpdated(true);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
     };
 
     Load();
-  }, [id, isTableUpdated]);
-
-  // const handleStatusClick = async (event) => {
-  //   try {
-  //     const id_status = event.currentTarget.getAttribute('id_status');
-  //     const dataUpdate = { id, id_status };
-  //     const response = await axiosPrivate.put(
-  //       'application/updatestatus/',
-  //       dataUpdate,
-  //       { headers: { 'Content-Type': 'application/json' } },
-  //     );
-  //     console.log(response.data);
-  //     const newData = response.data;
-  //     const updatedRows = newData.rows.map((row) => ({
-  //       ...row,
-  //       id_status: newData.id_status,
-  //     }));
-  //     console.log(updatedRows); // Kiểm tra dữ liệu đã được cập nhật chính xác chưa
-  //     setIsTableUpdated(false);
-  //   } catch (error) {
-  //     console.error('Error updating id_status:', error);
-  //   }
-  // };
+  }, [id]);
 
   const handleStatusClick = async (event) => {
     try {
@@ -94,39 +70,25 @@ export const TabContent = ({ id }) => {
       );
 
       const responseData = response.data;
-      console.log(responseData);
-      // Kiểm tra xem phản hồi có chứa dữ liệu mới của hàng không và rows tồn tại
-      // if (responseData.updated_data && responseData.updated_data.rows) {
-      //   // Nếu có, cập nhật id_status trong mỗi hàng của rows
-      //   const updatedData = responseData.updated_data;
-      //   // const updatedRows = updatedData.rows.map((row) => ({
-      //   //   ...row,
-      //   //   id_status: id_status,
-      //   // }));
-      //   console.log(updatedRows);
-      //   setAccordionItems(updatedRows);
-      //   console.log('Status updated successfully:', updatedRows);
-      // } else {
-      //   // Nếu không, log thông báo từ phản hồi hoặc xử lý tùy thuộc vào trường hợp cụ thể
-      //   console.log(responseData.message);
-      // }
+      //console.log(responseData);
+      //Kiểm tra xem phản hồi có chứa dữ liệu mới của hàng không và rows tồn tại
+      if (responseData.updated_data && responseData.updated_data.rows) {
+        // Nếu có, cập nhật id_status trong mỗi hàng của rows
+        const updatedData = responseData.updated_data;
+        const updatedRows = updatedData.rows.map((row) => ({
+          ...row,
+          id_status: id_status,
+        }));
+        setAccordionItems(updatedRows);
+        console.log('Status updated successfully:', updatedRows);
+      } else {
+        // Nếu không, log thông báo từ phản hồi hoặc xử lý tùy thuộc vào trường hợp cụ thể
+        console.log(responseData.message);
+      }
     } catch (error) {
       console.error('Error updating id_status:', error);
     }
   };
-
-  // useEffect(() => {
-  //   const Load = async () => {
-  //     try {
-  //       const response = await axiosPrivate.get('application/getforid/' + id);
-  //       setAccordionItems(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
-  //   Load();
-  // }, [id]);
 
   const GetComment = async () => {
     try {
