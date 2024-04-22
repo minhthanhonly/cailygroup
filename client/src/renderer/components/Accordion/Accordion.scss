@@ -142,7 +142,6 @@
         width: 3.3rem;
         height: 3.3rem;
         border-radius: 50%;
-        background-color: #e3e3e3;
         font-size: 1.8rem;
         font-weight: bold;
         display: block;
@@ -161,6 +160,9 @@
           position: absolute;
           top: -1.7rem;
         }
+      }
+      .is-disible {
+        background-color: #e3e3e3;
       }
       .active {
         background-color: #038803 !important;

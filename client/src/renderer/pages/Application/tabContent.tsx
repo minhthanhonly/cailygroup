@@ -32,12 +32,9 @@ export const TabContent = ({ id }) => {
     statusattrTexts: '',
     statusattrClass: '',
   });
+  const [isTableUpdated, setIsTableUpdated] = useState(true);
 
-  // const [statusattr, setStatusattr] = useState({
-  //   statusattrTexts: '',
-  //   statusattrClass: '',
-
-  // });
+  const [isChecked, setIsChecked] = useState(false);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -55,13 +52,68 @@ export const TabContent = ({ id }) => {
         };
         //console.log(itemWithStatus);
         setAccordionItems(itemWithStatus);
+        setIsTableUpdated(true);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
     };
 
     Load();
-  }, [id]);
+  }, [id, isTableUpdated]);
+
+  // const handleStatusClick = async (event) => {
+  //   try {
+  //     const id_status = event.currentTarget.getAttribute('id_status');
+  //     const dataUpdate = { id, id_status };
+  //     const response = await axiosPrivate.put(
+  //       'application/updatestatus/',
+  //       dataUpdate,
+  //       { headers: { 'Content-Type': 'application/json' } },
+  //     );
+  //     console.log(response.data);
+  //     const newData = response.data;
+  //     const updatedRows = newData.rows.map((row) => ({
+  //       ...row,
+  //       id_status: newData.id_status,
+  //     }));
+  //     console.log(updatedRows); // Kiểm tra dữ liệu đã được cập nhật chính xác chưa
+  //     setIsTableUpdated(false);
+  //   } catch (error) {
+  //     console.error('Error updating id_status:', error);
+  //   }
+  // };
+
+  const handleStatusClick = async (event) => {
+    try {
+      const id_status = event.currentTarget.getAttribute('id_status');
+      const dataUpdate = { id, id_status };
+      const response = await axiosPrivate.put(
+        'application/updatestatus/',
+        dataUpdate,
+        { headers: { 'Content-Type': 'application/json' } },
+      );
+
+      const responseData = response.data;
+      console.log(responseData);
+      // Kiểm tra xem phản hồi có chứa dữ liệu mới của hàng không và rows tồn tại
+      // if (responseData.updated_data && responseData.updated_data.rows) {
+      //   // Nếu có, cập nhật id_status trong mỗi hàng của rows
+      //   const updatedData = responseData.updated_data;
+      //   // const updatedRows = updatedData.rows.map((row) => ({
+      //   //   ...row,
+      //   //   id_status: id_status,
+      //   // }));
+      //   console.log(updatedRows);
+      //   setAccordionItems(updatedRows);
+      //   console.log('Status updated successfully:', updatedRows);
+      // } else {
+      //   // Nếu không, log thông báo từ phản hồi hoặc xử lý tùy thuộc vào trường hợp cụ thể
+      //   console.log(responseData.message);
+      // }
+    } catch (error) {
+      console.error('Error updating id_status:', error);
+    }
+  };
 
   // useEffect(() => {
   //   const Load = async () => {
@@ -223,30 +275,6 @@ export const TabContent = ({ id }) => {
       });
     }
   }, [accordionItems]);
-
-  // useEffect(() => {
-  //   if (accordionItems.status_attr == 1) {
-  //     setStatusattr({
-  //       statusattrTexts: '承認待ち',
-  //       statusattrClass: 'lbl01 lbc-red lbbd-red',
-  //     });
-  //   } else if (accordionItems.status_attr == 2) {
-  //     setStatusattr({
-  //       statusattrTexts: '差し戻し',
-  //       statusattrClass: 'lbl01 lbc-red lbbd-red',
-  //     });
-  //   } else if (accordionItems.status_attr == 3) {
-  //     setStatusattr({
-  //       statusattrTexts: '却下',
-  //       statusattrClass: 'lbl01 lbc-red lbbd-red',
-  //     });
-  //   } else if (accordionItems.status_attr == 4) {
-  //     setStatusattr({
-  //       statusattrTexts: '承認済み',
-  //       statusattrClass: 'lbl01 lbc-blue lbbd-blue',
-  //     });
-  //   }
-  // }, [accordionItems]);
 
   const handDelete = async (commentId) => {
     try {
@@ -513,7 +541,6 @@ export const TabContent = ({ id }) => {
                               ) : (
                                 <div></div>
                               )}
-
                               <p className="list-btn">
                                 <span className="list-btn__item">
                                   <span className={approve.statusattrClass}>
@@ -686,37 +713,72 @@ export const TabContent = ({ id }) => {
                           </div>
                         </li>
                         <li>
-                          <div className="box-approves__item">
+                          <div
+                            className={`box-approves__item ${
+                              isChecked ? 'checked' : ''
+                            }`}
+                            onClick={handleStatusClick}
+                            id_status={1}
+                          >
                             <div className="box-approves__item__title">
-                              <span>未</span>
+                              {/* <span className="is-disible">未</span> */}
+                              <span className="is-disible">1</span>
                             </div>
                           </div>
                         </li>
                         <li>
-                          <div className="box-approves__item box-approves__item--01">
+                          <div
+                            className={`box-approves__item box-approves__item--01 ${
+                              isChecked ? 'checked' : ''
+                            }`}
+                            onClick={handleStatusClick}
+                            id_status={4}
+                          >
                             <div className="box-approves__item__title">
-                              <span className="bg-blue01 color-white">完</span>
+                              {/* <span className="bg-blue01 color-white">完</span> */}
+                              <span className="bg-blue01 color-white">4</span>
                             </div>
                           </div>
                         </li>
                         <li>
-                          <div className="box-approves__item box-approves__item--01">
+                          <div
+                            className={`box-approves__item box-approves__item--01 ${
+                              isChecked ? 'checked' : ''
+                            }`}
+                            onClick={handleStatusClick}
+                            id_status={2}
+                          >
                             <div className="box-approves__item__title">
-                              <span className="bg-red01 color-white">却</span>
+                              {/* <span className="bg-red01 color-white">却</span> */}
+                              <span className="bg-red01 color-white">2</span>
                             </div>
                           </div>
                         </li>
                         <li>
-                          <div className="box-approves__item box-approves__item--01">
+                          <div
+                            className={`box-approves__item box-approves__item--01 ${
+                              isChecked ? 'checked' : ''
+                            }`}
+                            onClick={handleStatusClick}
+                            id_status={5}
+                          >
                             <div className="box-approves__item__title">
-                              <span className="bg-blue01 color-white">下</span>
+                              {/* <span className="bg-blue01 color-white">下</span> */}
+                              <span className="bg-blue01 color-white">5</span>
                             </div>
                           </div>
                         </li>
                         <li>
-                          <div className="box-approves__item box-approves__item--01">
+                          <div
+                            className={`box-approves__item box-approves__item--01 ${
+                              isChecked ? 'checked' : ''
+                            }`}
+                            onClick={handleStatusClick}
+                            id_status={6}
+                          >
                             <div className="box-approves__item__title">
-                              <span className="bg-blue01 color-white">消</span>
+                              {/* <span className="bg-blue01 color-white">消</span> */}
+                              <span className="bg-blue01 color-white">6</span>
                             </div>
                           </div>
                         </li>

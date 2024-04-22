@@ -83,7 +83,51 @@
             echo json_encode($register); // Trả về đối tượng JSON
             $conn->close();
         }
+        
+        function updateStatus($id, $id_status) {
+            global $conn;
+            if ($_SERVER["REQUEST_METHOD"] === "PUT") {
+                $groupUpdateData = json_decode(file_get_contents("php://input"), true);
+                if (isset($groupUpdateData['id'], $groupUpdateData['id_status'])) {
+                    $id = mysqli_real_escape_string($conn, $groupUpdateData['id']);
+                    $id_status = mysqli_real_escape_string($conn, $groupUpdateData['id_status']);
+        
+                    // Lấy dữ liệu JSON từ cột tablejson
+                    $selectQuery = "SELECT JSON_EXTRACT(tablejson, '$.id_status') AS id_status FROM table_json WHERE id = '$id'";
 
+                    $result = mysqli_query($conn, $selectQuery);
+                    $row = mysqli_fetch_assoc($result);
+                   
+                    $current_json = json_decode($row['id_status'], true);
+                    
+                    // Cập nhật giá trị id_status trong mảng rows
+                    if (isset($current_json)) {
+                        $current_json = $id_status;
+                        // Chuyển đổi dữ liệu JSON mới thành chuỗi
+                        $new_json = json_encode($current_json);
+                        // Thực hiện câu lệnh UPDATE để cập nhật dữ liệu trong cột tablejson
+                        
+                        $updateQuery = "UPDATE table_json SET tablejson = JSON_SET(tablejson,'$.id_status',$new_json ),id_status = $new_json  WHERE id ='$id' ";
+
+                        if (mysqli_query($conn, $updateQuery)) {
+                            http_response_code(200);
+                            echo json_encode(["message" => "Dữ liệu được cập nhật thành công"]);
+                        } else {
+                            http_response_code(500);
+                            echo json_encode(["error" => "Không thể cập nhật dữ liệu"]);
+                        }
+                    } else {
+                        http_response_code(400);
+                        echo json_encode(["error" => "Dữ liệu không hợp lệ"]);
+                    }
+                } else {
+                    http_response_code(400);
+                    echo json_encode(["error" => "Dữ liệu không hợp lệ"]);
+                }
+                $conn->close();
+            }
+        }
+        
         function getComment($id){
             global $conn;
             $query = "SELECT comment.*,

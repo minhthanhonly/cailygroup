@@ -77,5 +77,11 @@
                 return $this->model('ApplicationModel')->addCommentThird($user_id,$id_register,$authority,$note, date('Y-m-d H:i:s'));
             }
         }
+        function updateStatus($id = '',$id_status='') {
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('ApplicationModel')->updateStatus($id,$id_status);
+            }
+        }
     }
 ?>
