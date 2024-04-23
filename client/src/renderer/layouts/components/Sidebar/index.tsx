@@ -17,13 +17,15 @@ import {
   faHouse,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import axios from '../../../api/axios';
 import { Button } from '../../../components/Button';
 import useAuth from '../../../hooks/useAuth';
 import { UserRole } from '../../../components/UserRole';
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 export const Sidebar = () => {
+  const axiosPrivate = useAxiosPrivate();
   const naviget = useNavigate();
   const { auth } = useAuth();
 
@@ -40,12 +42,40 @@ export const Sidebar = () => {
     naviget('/');
   }
 
+
   const [formValue, setFormValue] = useState({ realname: '', group_name: '' });
   useEffect(() => {
     axios.get('users/detail/' + users.userid).then((response) => {
       setFormValue(response.data);
     });
   }, []);
+
+
+  const [countIdStatusOne, setCountIdStatusOne] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosPrivate.get('search/data');
+        const data = response.data;
+        const countIdStatusOne = data.reduce((total: number, item: { id_status: any; }) => {
+          return Number(item.id_status) === 1 ? total + 1 : total;
+        }, 0);
+        setCountIdStatusOne(countIdStatusOne);
+      } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu:', error);
+      }
+    };
+
+    const interval = setInterval(() => {
+      fetchData();
+    }, 1000); // Cập nhật dữ liệu mỗi 5 giây
+
+    return () => {
+      clearInterval(interval); // Xóa interval khi component unmount
+    };
+  }, []);
+
 
   return (
     <div className="sidebar">
@@ -115,16 +145,9 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
-            <NavLink to="/tabs/tab2">申請状況</NavLink>
-          </li>
-          <li className="nav-global__item">
-            {/* <NavLink to="/tabs/tab2"> */}
-            <NavLink to="/application">application</NavLink>
-          </li>
-          <li className="nav-global__item">
             <NavLink to="/estimate">
               <span className="icn">
-                {/* <FontAwesomeIcon icon={faCalendarDays} /> */}
+                <FontAwesomeIcon icon={faCalendarDays} />
               </span>
               新規申請
             </NavLink>

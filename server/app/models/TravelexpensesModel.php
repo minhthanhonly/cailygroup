@@ -17,7 +17,7 @@ class TravelexpensesModel {
              $table_id =  $decode->table_id;
              $statusOne = $decode->id_status;
             
-            $insertQuery = "INSERT INTO table_json (tablejson, owner, table_id, id_status) VALUES (?, ?, ?, ?)";
+            $insertQuery = "INSERT INTO table_json (tablejson, owner, table_id, id_status, createdAt, updatedAt) VALUES (?, ?, ?, ?, NOW() , NOW())";
             $stmt = mysqli_prepare($conn, $insertQuery);
  
             // Kiểm tra và xử lý lỗi nếu có

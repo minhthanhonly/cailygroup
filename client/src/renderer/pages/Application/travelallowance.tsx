@@ -1,6 +1,11 @@
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 
+interface TravelAllowanceProps {
+  id: any;
+  id_status: any; // Thêm prop id_status
+}
+
 export const Travelallowance = ({ id }) => {
   const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);

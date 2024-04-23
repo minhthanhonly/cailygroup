@@ -36,7 +36,7 @@ const Search = (id: unknown) => {
 
 
     ////////////////////////////////////////////////
-    const [isOpen, setIsOpen] = useState(false);
+    const [openTabId, setOpenTabId] = useState<string | null>(null);
     const [textValue, setTextValue] = useState('');
     const [commentValue, setCommentValue] = useState('');
     const [commentValueThird, setCommentValueThird] = useState('');
@@ -51,8 +51,8 @@ const Search = (id: unknown) => {
         statusattrTexts: '',
         statusattrClass: '',
     });
-    const toggleAccordion = () => {
-        setIsOpen(!isOpen);
+    const toggleAccordion = (id: string) => {
+        setOpenTabId(prevId => (prevId === id ? null : id));
     };
 
     const tabs = [
@@ -89,12 +89,8 @@ const Search = (id: unknown) => {
             try {
 
                 const response = await axiosPrivate.get('search/data');
-                // console.log(response.data);
-                // setAccordionItems(response.data);
                 const data = response.data;
                 setListOflistOfDataBase(data);
-
-                // setIdStatusList(idStatusList);
             } catch (err) {
                 console.error('Lỗi khi lấy dữ liệu:', err);
             }
@@ -112,26 +108,33 @@ const Search = (id: unknown) => {
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 1); // Đặt giờ và phút thành 0:01
     const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59); // Đặt giờ và phút thành 23:59
+    const startOfDayUpdate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 1); // Đặt giờ và phút thành 0:01
+    const endOfDayUpdate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59); // Đặt giờ và phút thành 23:59
 
-    const [dateRange, setDateRange] = useState<{ dateStart: Date, dateEnd: Date }>({
+
+    const [dateRange, setDateRange] = useState<{ dateStart: Date, dateEnd: Date, dateStartUpdate: Date, dateEndUpdate: Date }>({
         dateStart: startOfDay,
-        dateEnd: endOfDay
+        dateEnd: endOfDay,
+        dateStartUpdate: startOfDayUpdate,
+        dateEndUpdate: endOfDayUpdate
     });
 
-    const handleLeaveDateChange = (_date: Date | moment.Moment | null, type: 'start' | 'end') => {
+
+
+    const handleLeaveDateChange = (_date: Date | moment.Moment | null, type: 'start' | 'end' | 'startUpdate' | 'endUpdate') => {
         if (_date instanceof Date) {
             const time = _date.toLocaleTimeString(); // Lấy thời gian từ _date
-            console.log(time); // In ra thời gian
+
             setDateRange(prevState => ({
                 ...prevState,
-                [type === 'start' ? 'dateStart' : 'dateEnd']: _date
+                [type === 'start' ? 'dateStart' : type === 'startUpdate' ? 'dateStartUpdate' : type === 'endUpdate' ? 'dateEndUpdate' : 'dateEnd']: _date
             }));
         } else if (_date instanceof moment) { // Sử dụng moment.Moment thay vì DateObject
             const time = _date.format("HH:mm"); // Lấy thời gian từ _date
-            console.log(time); // In ra thời gian
+
             setDateRange(prevState => ({
                 ...prevState,
-                [type === 'start' ? 'dateStart' : 'dateEnd']: _date.toDate() // Chuyển đổi sang đối tượng Date
+                [type === 'start' ? 'dateStart' : type === 'startUpdate' ? 'dateStartUpdate' : type === 'endUpdate' ? 'dateEndUpdate' : 'dateEnd']: _date.toDate() // Chuyển đổi sang đối tượng Date
             }));
         } else {
             console.log('Date is null or not valid');
@@ -139,84 +142,8 @@ const Search = (id: unknown) => {
     };
 
 
-    const handleDeleteComment = async (commentId: any, endpoint: string, getDataFunction: () => void) => {
-        try {
-            const response = await axiosPrivate.delete(`application/${endpoint}/${commentId}`);
-            if (response.status === 200) {
-                console.log('Comment deleted successfully');
-                getDataFunction();
-            } else {
-                console.error('Failed to delete comment:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error deleting comment:', error);
-        }
-    };
 
-    const handleSubmitComment = async (value: string, endpoint: string, getDataFunction: () => void, setValueFunction: { (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (arg0: string): void; }) => {
-        const note = value.trim();
-        if (note.length === 0) {
-            console.error('Không thể thêm comment: Nội dung trống');
-            return;
-        }
-        try {
-            const commentData = {
-                note: value,
-                user_id: users.id,
-                id_register: id,
-                authority: endpoint === 'addcomment' ? 1 : (endpoint === 'addcommentsecond' ? 2 : 3),
-            };
-            setValueFunction('');
-            const res = await axiosPrivate.post(`application/${endpoint}/`, commentData);
-            getDataFunction();
-        } catch (error) {
-            console.error('Lỗi khi thêm comment:', error);
-        }
-    };
 
-    const getCommentForUser = async (endpoint: string, setDataFunction: { (value: any): void; (value: any): void; (arg0: any[]): void; }) => {
-        try {
-            const response = await axiosPrivate.get(`application/${endpoint}/${id}`);
-            const commentData = response.data;
-            if (Array.isArray(commentData)) {
-                setDataFunction(commentData);
-            } else {
-                console.error('Error fetching data: Response data is not an array');
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const handleDeleteFirst = async (commentId: any) => {
-        handleDeleteComment(commentId, 'deletecommentfirst', () => getCommentForUser('getcommentforuserfirst', setCommentFirst));
-    };
-
-    const handleDeleteSecond = async (commentId: any) => {
-        handleDeleteComment(commentId, 'deletecommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond));
-    };
-
-    const handleDeleteThird = async (commentId: any) => {
-        handleDeleteComment(commentId, 'deletecommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird));
-    };
-
-    const handleSubmitFirst = async () => {
-        handleSubmitComment(textValue, 'addcomment', () => getCommentForUser('getcommentforuserfirst', setCommentFirst), setTextValue);
-    };
-
-    const handleSubmitSecond = async () => {
-        handleSubmitComment(commentValue, 'addcommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond), setCommentValue);
-    };
-
-    const handleSubmitThird = async () => {
-        handleSubmitComment(commentValueThird, 'addcommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird), setCommentValueThird);
-    };
-
-    useEffect(() => {
-        getCommentForUser('getcommentforuserfirst', setCommentFirst);
-        getCommentForUser('getcommentforusersecond', setCommentSeCond);
-        getCommentForUser('getcommentforuserthird', setCommentThird);
-    }, [id]);
 
 
     const [selectedId, setSelectedId] = useState('');
@@ -233,6 +160,38 @@ const Search = (id: unknown) => {
         setSelectedId(event.target.value);
     };
 
+    const formatNumberWithCommas = (value: number) => {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+
+
+    // Hàm xử lý sự kiện khi nội dung của trường input thay đổi
+    const handleTextChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        let inputValue = event.target.value;
+
+        // Xử lý trường hợp khi người dùng xoá giá trị
+        if (inputValue === "") {
+            setTextValue(""); // Đặt lại giá trị thành chuỗi trống
+            return;
+        }
+
+        // Loại bỏ tất cả các dấu phẩy khỏi giá trị nhập vào
+        inputValue = inputValue.toString();
+
+        // Loại bỏ tất cả các dấu phẩy khỏi giá trị nhập vào
+        inputValue = inputValue.replace(/,/g, '');
+
+        // Kiểm tra xem giá trị nhập vào có phải là số không
+        if (!isNaN(Number(inputValue))) {
+            // Nếu là số, áp dụng định dạng số
+            const formattedValue = formatNumberWithCommas(Number(inputValue));
+            setTextValue(formattedValue);
+        } else {
+            // Nếu không phải là số, chỉ cần cập nhật giá trị
+            setTextValue(inputValue);
+        }
+    };
+
 
     const [statusCounts, setStatusCounts] = useState<{ [key: number]: number }>({});
     const [isSearched, setIsSearched] = useState(false);
@@ -240,28 +199,111 @@ const Search = (id: unknown) => {
     // Hàm xử lý khi nhấn nút tìm kiếm
     const handleSearch = () => {
         // Lấy id của mục được chọn từ dropdown
+
+        const searchText = textValue.trim().toLowerCase();
         const selectedOptionId = selectedId;
         const startDate = dateRange.dateStart || startOfDay;
         const endDate = dateRange.dateEnd || endOfDay;
 
-        // Lấy ngày bắt đầu và ngày kết thúc từ state hoặc là ngày hôm nay nếu không có giá trị được chọn
-
-        // Tìm kiếm trong `listOfDataBase` dựa trên id và khoảng thời gian
-        // const matchedItems = listOfDataBase.filter(item =>
-        //     String(item.table_id) === String(selectedOptionId)
-        // );
+        const startDateUpdate = dateRange.dateStartUpdate || startOfDayUpdate;
+        const endDateUpdate = dateRange.dateEndUpdate || endOfDayUpdate;
+        console.log("searchText", searchText);
 
         const matchedItems = listOfDataBase.filter(item => {
             // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
             const jsonData = JSON.parse(item.tablejson);
-            // Kiểm tra xem item có thuộc tính date không và có giá trị không
-            const itemDate = new Date(jsonData.rows[0].date); // Chuyển đổi ngày từ chuỗi sang đối tượng Date
+            const itemDate = new Date(jsonData.rows[0].date);
+            const updateDate = new Date(item.updatedAt);
 
-            if (itemDate && startDate && endDate) {
-                return String(item.table_id) === String(selectedOptionId) && itemDate >= startDate && itemDate <= endDate;
+            if (jsonData && jsonData.rows && searchText !== '') {
+                // Thực hiện tìm kiếm khi có dữ liệu phù hợp
+                // console.log("jsonData.rows", jsonData.rows);
+
+                // console.log("aaaa", jsonData.rows.some((row: any) =>
+                //     Object.values(row).some(value =>
+                //         typeof value === 'string' && value.includes(searchText)
+                //     )
+                // ));
+                console.log("im here", String(item.table_id) === String(selectedOptionId) &&
+                    jsonData.rows.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
+
+                    && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate);
+                return (
+
+                    String(item.table_id) === String(selectedOptionId) &&
+                    jsonData.rows.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
+
+                    && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
+                );
+
+                // return (
+                //     String(item.table_id) === String(selectedOptionId) &&
+                //     jsonData.rows.some((row: any) => Object.values(row).some(value =>  typeof value === 'string' && value.includes(searchText)  ))
+                // );
+            } else if (jsonData && jsonData.rows && searchText === '') {
+                console.log("đang ở đây");
+
+                if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+                    console.log("đang ở đây nè");
+                    return String(item.table_id) === String(selectedOptionId)
+                        && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+                }
+                else {
+                    return false;
+                }
             }
+            else {
+
+                return false;
+            }
+
+            // if (searchText !== '') {
+            //     console.log("ở đây", String(item.table_id) === String(selectedOptionId) &&
+            //         jsonData.rows.map((row: any) => String(row)).some((row: string | string[]) => row.includes(searchText)))
+            //     //  && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate);
+            //     return (
+            //         String(item.table_id) === String(selectedOptionId) &&
+            //         jsonData.rows.map((row: any) => String(row)).some((row: string | string[]) => row.includes(searchText))
+
+            //         // && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
+            //     );
+            // } else {
+            //     if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+            //         return (
+            //             String(item.table_id) === String(selectedOptionId)
+            //             // && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
+            //         );
+            //     }
+            // }
+
+            // if (searchText !== '') {
+            //     return (
+            //         // Kiểm tra ID được chọn từ dropdown
+            //         String(item.table_id) === String(selectedOptionId) &&
+            //         // Kiểm tra từ khoá
+            //         jsonData.rows.some((row: string | string[]) => row.includes(searchText)) &&
+            //         // Kiểm tra ngày bắt đầu và kết thúc
+            //         itemDate >= startDate && itemDate <= endDate &&
+            //         // Kiểm tra ngày bắt đầu và kết thúc của update
+            //         updateDate >= startDateUpdate && updateDate <= endDateUpdate
+            //     );
+            // } else {
+            //     // Nếu từ khoá tìm kiếm rỗng, chỉ kiểm tra các thông tin khác như dropdown và ngày tháng
+            //     if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+            //         return String(item.table_id) === String(selectedOptionId)
+            //             && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+            //     }
+            // }
+
+            // if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+            //     return String(item.table_id) === String(selectedOptionId)
+            //         && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+            // }
+
+
             return false; // Thêm lệnh return false ở đây
         });
+
 
 
 
@@ -273,6 +315,8 @@ const Search = (id: unknown) => {
             const idStatus = item.id_status;
             newStatusCounts[idStatus] = (newStatusCounts[idStatus] || 0) + 1;
         });
+
+
 
         const totalStatus = matchedItems.length;
         setStatusTotal(totalStatus);
@@ -316,15 +360,7 @@ const Search = (id: unknown) => {
                                         <DatePicker onChange={(_date) => { if (_date && !Array.isArray(_date)) { handleLeaveDateChange(_date.toDate(), 'start'); } }} value={dateRange.dateStart} format="YYYY-MM-DD" />
                                     </span>
                                     <span>
-                                        <DatePicker
-                                            onChange={(_date) => {
-                                                if (_date && !Array.isArray(_date)) { // Kiểm tra _date không phải null
-                                                    handleLeaveDateChange(_date.toDate(), 'end');
-                                                }
-                                            }}
-                                            value={dateRange.dateEnd}
-                                            format="YYYY-MM-DD" // Định dạng ngày và thời gian
-                                        />
+                                        <DatePicker onChange={(_date) => { if (_date && !Array.isArray(_date)) { handleLeaveDateChange(_date.toDate(), 'end'); } }} value={dateRange.dateEnd} format="YYYY-MM-DD" />
                                     </span>
                                 </div>
                             </div>
@@ -335,10 +371,13 @@ const Search = (id: unknown) => {
                         <td>
                             <div className='tb-from--td'>
                                 <div className='tb-from--times'>
+
                                     <span>
-                                        <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateStart, 'start')} value={dateRange.dateStart} />
+                                        <DatePicker onChange={(_date) => { if (_date && !Array.isArray(_date)) { handleLeaveDateChange(_date.toDate(), 'startUpdate'); } }} value={dateRange.dateStartUpdate} format="YYYY-MM-DD" />
                                     </span>
-                                    <span> <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateEnd, 'end')} value={dateRange.dateEnd} /></span>
+                                    <span>
+                                        <DatePicker onChange={(_date) => { if (_date && !Array.isArray(_date)) { handleLeaveDateChange(_date.toDate(), 'endUpdate'); } }} value={dateRange.dateEndUpdate} format="YYYY-MM-DD" />
+                                    </span>
                                 </div>
                             </div>
                         </td>
@@ -353,7 +392,9 @@ const Search = (id: unknown) => {
                         <div className="grid-row group_box--form ">
                             <div className="group_box--box">
                                 <div className="group_box--flex">
-                                    <input type="text" className="" />
+                                    <input type="text" className="" value={textValue} // Giá trị của trường input được liên kết với state
+                                        onChange={handleTextChange} // Gọi hàm handleTextChange khi nội dung thay đổi
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -386,19 +427,18 @@ const Search = (id: unknown) => {
 
                             {tabs.map(tab => (
                                 <div key={tab.id} className={activeTab === tab.id ? "sss" : "hidden"}>
-
-                                    {searchResults
-                                        .filter(item => tab.status !== -1 ? Number(item.id_status) === Number(tab.status) : true) // Lọc dữ liệu theo tab status
-                                        .map((item, index) => {
-                                            try {
-                                                // Phân tích chuỗi JSON thành đối tượng JavaScript
-                                                const jsonData = JSON.parse(item.tablejson);
-                                                // Hiển thị thông tin chỉ khi trạng thái phù hợp
-                                                return (
-                                                    <div key={index}>
+                                    <div className='table_content'>
+                                        {searchResults
+                                            .filter(item => tab.status !== -1 ? Number(item.id_status) === Number(tab.status) : true) // Lọc dữ liệu theo tab status
+                                            .map((item, index) => {
+                                                try {
+                                                    // Phân tích chuỗi JSON thành đối tượng JavaScript
+                                                    const jsonData = JSON.parse(item.tablejson);
+                                                    // Hiển thị thông tin chỉ khi trạng thái phù hợp
+                                                    return (
                                                         <div className="list-accordion__parent">
-                                                            <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
-                                                                <div className="list-accordion__item__head" onClick={toggleAccordion}>
+                                                            <div key={index} className={`list-accordion__item ${openTabId === item.id ? 'open' : ''}`}>
+                                                                <div className="list-accordion__item__head" onClick={() => toggleAccordion(item.id)}>
                                                                     <div className="list-accordion__item__head__title">
                                                                         <p className="list-accordion__item__head__title__title">
                                                                             {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
@@ -432,7 +472,7 @@ const Search = (id: unknown) => {
                                                                     </div>
                                                                 </div>
                                                                 <div className="list-accordion__item__content">
-                                                                    {isOpen && (
+                                                                    {openTabId && (
                                                                         <div className="list-accordion__item__content__inner">
                                                                             <div className="list-accordion__item__content__item">
 
@@ -446,19 +486,17 @@ const Search = (id: unknown) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        {/* <p>Table Name: {jsonData.rows[0].tableName}</p>
-                                                        <p>Owner: {jsonData.rows[0].owner}</p> */}
-                                                        {/* Thêm các trường dữ liệu khác tương tự */}
-                                                    </div>
-                                                );
-                                            } catch (error) {
-                                                // Xử lý trường hợp chuỗi không hợp lệ
-                                                console.error(`Error parsing JSON at index ${index}:`, error);
-                                                return null; // Hoặc hiển thị một thông báo lỗi phù hợp
-                                            }
-                                        })}
 
 
+                                                    );
+                                                } catch (error) {
+                                                    // Xử lý trường hợp chuỗi không hợp lệ
+                                                    console.error(`Error parsing JSON at index ${index}:`, error);
+                                                    return null; // Hoặc hiển thị một thông báo lỗi phù hợp
+                                                }
+                                            })}
+
+                                    </div>
                                 </div>
                             ))}
                         </div >

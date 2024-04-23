@@ -100,6 +100,7 @@
     $routes['application/addcommentsecond'] = 'application/addcommentsecond';
     $routes['application/addcommentthird'] = 'application/addcommentthird';
     $routes['tabcontent'] = 'tabcontent';
+    $routes['application/updatestatus'] = 'application/updatestatus';
 
     // Form
     $routes['form/add'] = 'form/add';
