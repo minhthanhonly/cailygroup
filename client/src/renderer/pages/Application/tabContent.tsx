@@ -121,11 +121,17 @@ export const TabContent = ({ id }) => {
             {isOpen && (
               <div className="list-accordion__item__content__inner">
                 <div className="list-accordion__item__content__item">
-                  {/* <Register id={id} /> */}
-                  {/* <Report id={id} /> */}
-                  {/* <Expense id={id} /> */}
-                  {/* <Business id={id} /> */}
-                  <Travelallowance id={id} />
+                  {accordionItems.table_id === 6 ? (
+                    <Register id={id} />
+                  ) : accordionItems.table_id === 7 ? (
+                    <Expense id={id} />
+                  ) : accordionItems.table_id === 8 ? (
+                    <Report id={id} />
+                  ) : accordionItems.table_id === 9 ? (
+                    <Business id={id} />
+                  ) : (
+                    <Travelallowance id={id} />
+                  )}
                   <Approvalstatus id={id} />
                 </div>
               </div>

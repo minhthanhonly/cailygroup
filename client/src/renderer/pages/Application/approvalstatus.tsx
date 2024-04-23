@@ -1,28 +1,19 @@
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
-import editIcon from '../../../../assets/icn-edit.png';
-import closeIcon from '../../../../assets/icn-close.png';
-import { format, parse } from 'date-fns';
 import { UserRole } from '../../components/UserRole';
-import { Report } from './report';
-import { Expense } from './expense';
-import { Business } from './business';
-import { Travelallowance } from './travelallowance';
-import { Register } from './register';
 
 export const Approvalstatus = ({ id }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
   const isLeader = users.roles === UserRole.LEADER;
+  let id_status: number;
 
   const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);
-  const [comment, setComment] = useState<any>([]);
   const [commentFirst, setCommentFirst] = useState<any>([]);
   const [commentSeCond, setCommentSeCond] = useState<any>([]);
   const [commentThird, setCommentThird] = useState<any>([]);
-  const [isOpen, setIsOpen] = useState(false);
   const [textValue, setTextValue] = useState('');
   const [commentValue, setCommentValue] = useState('');
   const [commentValueThird, setCommentValueThird] = useState('');
@@ -32,11 +23,8 @@ export const Approvalstatus = ({ id }) => {
     statusattrTexts: '',
     statusattrClass: '',
   });
-
   const [isChecked, setIsChecked] = useState(false);
-  const toggleAccordion = () => {
-    setIsOpen(!isOpen);
-  };
+
   useEffect(() => {
     const Load = async () => {
       try {
@@ -56,9 +44,9 @@ export const Approvalstatus = ({ id }) => {
     Load();
   }, [id]);
 
-  const handleStatusClick = async (event) => {
+  const handleStatusClick = async (event: any) => {
     try {
-      const id_status = event.currentTarget.getAttribute('id_status');
+      const id_status = event.currentTarget.getAttribute('data-id_status');
       const dataUpdate = { id, id_status };
       const response = await axiosPrivate.put(
         'application/updatestatus/',
@@ -72,7 +60,7 @@ export const Approvalstatus = ({ id }) => {
       if (responseData.updated_data && responseData.updated_data.rows) {
         // Nếu có, cập nhật id_status trong mỗi hàng của rows
         const updatedData = responseData.updated_data;
-        const updatedRows = updatedData.rows.map((row) => ({
+        const updatedRows = updatedData.rows.map((row: any) => ({
           ...row,
           id_status: id_status,
         }));
@@ -184,7 +172,7 @@ export const Approvalstatus = ({ id }) => {
     }
   };
 
-  const handleDeleteCommentForUserFirst = async (commentId) => {
+  const handleDeleteCommentForUserFirst = async (commentId: any) => {
     try {
       const response = await axiosPrivate.delete(
         `application/deletecommentfirst/${commentId}`,
@@ -242,7 +230,7 @@ export const Approvalstatus = ({ id }) => {
     }
   };
 
-  const handleDeleteSeCond = async (commentId) => {
+  const handleDeleteSeCond = async (commentId: any) => {
     try {
       const response = await axiosPrivate.delete(
         `application/deletecommentsecond/${commentId}`,
@@ -308,7 +296,7 @@ export const Approvalstatus = ({ id }) => {
     }
   };
 
-  const handleDeleteThird = async (commentId) => {
+  const handleDeleteThird = async (commentId: any) => {
     try {
       const response = await axiosPrivate.delete(
         `application/deletecommentthird/${commentId}`,
@@ -322,17 +310,6 @@ export const Approvalstatus = ({ id }) => {
     } catch (error) {
       console.error('Error deleting comment:', error);
     }
-  };
-
-  const formatCreatedAt = (createdAt) => {
-    const datetime = new Date(createdAt);
-    const year = datetime.getFullYear();
-    const month = ('0' + (datetime.getMonth() + 1)).slice(-2); // Thêm số 0 vào trước nếu tháng < 10
-    const day = ('0' + datetime.getDate()).slice(-2); // Thêm số 0 vào trước nếu ngày < 10
-    const hour = ('0' + datetime.getHours()).slice(-2); // Thêm số 0 vào trước nếu giờ < 10
-    const minute = ('0' + datetime.getMinutes()).slice(-2); // Thêm số 0 vào trước nếu phút < 10
-    const second = ('0' + datetime.getSeconds()).slice(-2); // Thêm số 0 vào trước nếu giây < 10
-    return `(${year} ${month} ${day} ${hour}:${minute}:${second})`;
   };
 
   return (
@@ -370,7 +347,7 @@ export const Approvalstatus = ({ id }) => {
                   </p>
                   {commentFirst.length > 0 && (
                     <div className="box-approves__item__content__comment">
-                      {commentFirst.map((commentItem, index) => (
+                      {commentFirst.map((commentItem: any, index: any) => (
                         <div
                           key={index}
                           className="box-approves__item__content__comment__item"
@@ -595,7 +572,7 @@ export const Approvalstatus = ({ id }) => {
               <div
                 className={`box-approves__item ${isChecked ? 'checked' : ''}`}
                 onClick={handleStatusClick}
-                id_status={1}
+                data-id_status={1}
               >
                 <div className="box-approves__item__title">
                   <span className="is-disible">未</span>
@@ -608,7 +585,7 @@ export const Approvalstatus = ({ id }) => {
                   isChecked ? 'checked' : ''
                 }`}
                 onClick={handleStatusClick}
-                id_status={4}
+                data-id_status={4}
               >
                 <div className="box-approves__item__title">
                   <span className="bg-blue01 color-white">完</span>
@@ -621,7 +598,7 @@ export const Approvalstatus = ({ id }) => {
                   isChecked ? 'checked' : ''
                 }`}
                 onClick={handleStatusClick}
-                id_status={2}
+                data-id_status={2}
               >
                 <div className="box-approves__item__title">
                   <span className="bg-red01 color-white">却</span>
@@ -634,7 +611,7 @@ export const Approvalstatus = ({ id }) => {
                   isChecked ? 'checked' : ''
                 }`}
                 onClick={handleStatusClick}
-                id_status={5}
+                data-id_status={5}
               >
                 <div className="box-approves__item__title">
                   <span className="bg-blue01 color-white">下</span>
@@ -647,7 +624,7 @@ export const Approvalstatus = ({ id }) => {
                   isChecked ? 'checked' : ''
                 }`}
                 onClick={handleStatusClick}
-                id_status={6}
+                data-id_status={6}
               >
                 <div className="box-approves__item__title">
                   <span className="bg-blue01 color-white">消</span>
