@@ -160,6 +160,38 @@ const Search = (id: unknown) => {
         setSelectedId(event.target.value);
     };
 
+    const formatNumberWithCommas = (value: number) => {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+
+
+    // Hàm xử lý sự kiện khi nội dung của trường input thay đổi
+    const handleTextChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        let inputValue = event.target.value;
+
+        // Xử lý trường hợp khi người dùng xoá giá trị
+        if (inputValue === "") {
+            setTextValue(""); // Đặt lại giá trị thành chuỗi trống
+            return;
+        }
+
+        // Loại bỏ tất cả các dấu phẩy khỏi giá trị nhập vào
+        inputValue = inputValue.toString();
+
+        // Loại bỏ tất cả các dấu phẩy khỏi giá trị nhập vào
+        inputValue = inputValue.replace(/,/g, '');
+
+        // Kiểm tra xem giá trị nhập vào có phải là số không
+        if (!isNaN(Number(inputValue))) {
+            // Nếu là số, áp dụng định dạng số
+            const formattedValue = formatNumberWithCommas(Number(inputValue));
+            setTextValue(formattedValue);
+        } else {
+            // Nếu không phải là số, chỉ cần cập nhật giá trị
+            setTextValue(inputValue);
+        }
+    };
+
 
     const [statusCounts, setStatusCounts] = useState<{ [key: number]: number }>({});
     const [isSearched, setIsSearched] = useState(false);
@@ -167,39 +199,111 @@ const Search = (id: unknown) => {
     // Hàm xử lý khi nhấn nút tìm kiếm
     const handleSearch = () => {
         // Lấy id của mục được chọn từ dropdown
+
+        const searchText = textValue.trim().toLowerCase();
         const selectedOptionId = selectedId;
         const startDate = dateRange.dateStart || startOfDay;
         const endDate = dateRange.dateEnd || endOfDay;
 
         const startDateUpdate = dateRange.dateStartUpdate || startOfDayUpdate;
         const endDateUpdate = dateRange.dateEndUpdate || endOfDayUpdate;
-
-        // Lấy ngày bắt đầu và ngày kết thúc từ state hoặc là ngày hôm nay nếu không có giá trị được chọn
-
-        // Tìm kiếm trong `listOfDataBase` dựa trên id và khoảng thời gian
-        // const matchedItems = listOfDataBase.filter(item =>
-        //     String(item.table_id) === String(selectedOptionId)
-        // );
+        console.log("searchText", searchText);
 
         const matchedItems = listOfDataBase.filter(item => {
             // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
             const jsonData = JSON.parse(item.tablejson);
-            // Kiểm tra xem item có thuộc tính date không và có giá trị không
-            const itemDate = new Date(jsonData.rows[0].date); // Chuyển đổi ngày từ chuỗi sang đối tượng Date
+            const itemDate = new Date(jsonData.rows[0].date);
             const updateDate = new Date(item.updatedAt);
 
-            console.log("updateDate", updateDate);
-            console.log("startDateUpdate", startDateUpdate);
-            console.log("endDateUpdate", endDateUpdate);
+            if (jsonData && jsonData.rows && searchText !== '') {
+                // Thực hiện tìm kiếm khi có dữ liệu phù hợp
+                // console.log("jsonData.rows", jsonData.rows);
 
+                // console.log("aaaa", jsonData.rows.some((row: any) =>
+                //     Object.values(row).some(value =>
+                //         typeof value === 'string' && value.includes(searchText)
+                //     )
+                // ));
+                console.log("im here", String(item.table_id) === String(selectedOptionId) &&
+                    jsonData.rows.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
 
+                    && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate);
+                return (
 
-            if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
-                return String(item.table_id) === String(selectedOptionId)
-                    && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+                    String(item.table_id) === String(selectedOptionId) &&
+                    jsonData.rows.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
+
+                    && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
+                );
+
+                // return (
+                //     String(item.table_id) === String(selectedOptionId) &&
+                //     jsonData.rows.some((row: any) => Object.values(row).some(value =>  typeof value === 'string' && value.includes(searchText)  ))
+                // );
+            } else if (jsonData && jsonData.rows && searchText === '') {
+                console.log("đang ở đây");
+
+                if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+                    console.log("đang ở đây nè");
+                    return String(item.table_id) === String(selectedOptionId)
+                        && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+                }
+                else {
+                    return false;
+                }
             }
+            else {
+
+                return false;
+            }
+
+            // if (searchText !== '') {
+            //     console.log("ở đây", String(item.table_id) === String(selectedOptionId) &&
+            //         jsonData.rows.map((row: any) => String(row)).some((row: string | string[]) => row.includes(searchText)))
+            //     //  && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate);
+            //     return (
+            //         String(item.table_id) === String(selectedOptionId) &&
+            //         jsonData.rows.map((row: any) => String(row)).some((row: string | string[]) => row.includes(searchText))
+
+            //         // && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
+            //     );
+            // } else {
+            //     if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+            //         return (
+            //             String(item.table_id) === String(selectedOptionId)
+            //             // && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
+            //         );
+            //     }
+            // }
+
+            // if (searchText !== '') {
+            //     return (
+            //         // Kiểm tra ID được chọn từ dropdown
+            //         String(item.table_id) === String(selectedOptionId) &&
+            //         // Kiểm tra từ khoá
+            //         jsonData.rows.some((row: string | string[]) => row.includes(searchText)) &&
+            //         // Kiểm tra ngày bắt đầu và kết thúc
+            //         itemDate >= startDate && itemDate <= endDate &&
+            //         // Kiểm tra ngày bắt đầu và kết thúc của update
+            //         updateDate >= startDateUpdate && updateDate <= endDateUpdate
+            //     );
+            // } else {
+            //     // Nếu từ khoá tìm kiếm rỗng, chỉ kiểm tra các thông tin khác như dropdown và ngày tháng
+            //     if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+            //         return String(item.table_id) === String(selectedOptionId)
+            //             && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+            //     }
+            // }
+
+            // if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+            //     return String(item.table_id) === String(selectedOptionId)
+            //         && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+            // }
+
+
             return false; // Thêm lệnh return false ở đây
         });
+
 
 
 
@@ -211,6 +315,8 @@ const Search = (id: unknown) => {
             const idStatus = item.id_status;
             newStatusCounts[idStatus] = (newStatusCounts[idStatus] || 0) + 1;
         });
+
+
 
         const totalStatus = matchedItems.length;
         setStatusTotal(totalStatus);
@@ -286,7 +392,9 @@ const Search = (id: unknown) => {
                         <div className="grid-row group_box--form ">
                             <div className="group_box--box">
                                 <div className="group_box--flex">
-                                    <input type="text" className="" />
+                                    <input type="text" className="" value={textValue} // Giá trị của trường input được liên kết với state
+                                        onChange={handleTextChange} // Gọi hàm handleTextChange khi nội dung thay đổi
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -328,10 +436,57 @@ const Search = (id: unknown) => {
                                                     const jsonData = JSON.parse(item.tablejson);
                                                     // Hiển thị thông tin chỉ khi trạng thái phù hợp
                                                     return (
-                                                        <p className="list-accordion__item__head__title__title">
-                                                            {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
+                                                        <div className="list-accordion__parent">
+                                                            <div key={index} className={`list-accordion__item ${openTabId === item.id ? 'open' : ''}`}>
+                                                                <div className="list-accordion__item__head" onClick={() => toggleAccordion(item.id)}>
+                                                                    <div className="list-accordion__item__head__title">
+                                                                        <p className="list-accordion__item__head__title__title">
+                                                                            {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
 
-                                                        </p>
+                                                                        </p>
+                                                                        <span className="list-accordion__item__head__title__subtitle">
+                                                                            {jsonData.rows[0].owner}（{jsonData.rows[0].date} {'\u00A0\u00A0'}
+                                                                            {jsonData.rows[0].time}）
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className="list-accordion__item__head__btn">
+                                                                        <p className="list-accordion__item__head__btn__btn">
+                                                                            <span className={`lbl01 ${(item.id_status && jsonData.rows[0].id_status) === 1 ? "lbl-blue" :
+                                                                                (item.id_status && jsonData.rows[0].id_status) === 2 ? "lbl-yellow" :
+                                                                                    (item.id_status && jsonData.rows[0].id_status) === 3 ? "lbl-red" :
+                                                                                        (item.id_status && jsonData.rows[0].id_status) === 4 ? "lbl-white" :
+                                                                                            (item.id_status && jsonData.rows[0].id_status) === 5 ? "lbl-brown" :
+                                                                                                "取り消し"
+                                                                                }`} >
+                                                                                {(item.id_status && jsonData.rows[0].id_status) === 1 ? "承認待ち" : (item.id_status && jsonData.rows[0].id_status) === 2 ? "差し戻し" : (item.id_status && jsonData.rows[0].id_status) === 3 ? "却下" : (item.id_status && jsonData.rows[0].id_status) === 4 ? "完了" : (item.id_status && jsonData.rows[0].id_status) === 5 ? "下書き" : "取り消し"}
+                                                                            </span>
+                                                                        </p>
+                                                                        <p className="list-accordion__item__head__btn__icn">
+                                                                            <span className="icn-item">
+                                                                                <img src={editIcon} alt="edit" className="fluid-image" />
+                                                                            </span>
+                                                                            <span className="icn-item">
+                                                                                <img src={closeIcon} alt="close" className="fluid-image" />
+                                                                            </span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="list-accordion__item__content">
+                                                                    {openTabId && (
+                                                                        <div className="list-accordion__item__content__inner">
+                                                                            <div className="list-accordion__item__content__item">
+
+                                                                                <Travelallowance id={id} />
+
+
+                                                                            </div >
+                                                                        </div>
+                                                                    )
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
 
                                                     );
                                                 } catch (error) {
