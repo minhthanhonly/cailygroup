@@ -145,15 +145,19 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
-            {/* <NavLink to="/tabs/tab2"> */}
-            <NavLink to="/application">application </NavLink> <span className='boder_count'>{countIdStatusOne}</span>
-          </li>
-          <li className="nav-global__item">
             <NavLink to="/estimate">
               <span className="icn">
-                {/* <FontAwesomeIcon icon={faCalendarDays} /> */}
+                <FontAwesomeIcon icon={faCalendarDays} />
               </span>
               新規申請
+            </NavLink>
+          </li>
+          <li className="nav-global__item">
+            <NavLink to="/application">
+              <span className="icn">
+                <FontAwesomeIcon icon={faCalendarDays} />
+              </span>
+              申請状況 <span className='boder_count'>{countIdStatusOne}</span>
             </NavLink>
           </li>
           <li className="nav-global__item">

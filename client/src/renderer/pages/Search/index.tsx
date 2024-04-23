@@ -89,12 +89,8 @@ const Search = (id: unknown) => {
             try {
 
                 const response = await axiosPrivate.get('search/data');
-                // console.log(response.data);
-                // setAccordionItems(response.data);
                 const data = response.data;
                 setListOflistOfDataBase(data);
-
-                // setIdStatusList(idStatusList);
             } catch (err) {
                 console.error('Lỗi khi lấy dữ liệu:', err);
             }
@@ -112,26 +108,33 @@ const Search = (id: unknown) => {
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 1); // Đặt giờ và phút thành 0:01
     const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59); // Đặt giờ và phút thành 23:59
+    const startOfDayUpdate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 1); // Đặt giờ và phút thành 0:01
+    const endOfDayUpdate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59); // Đặt giờ và phút thành 23:59
 
-    const [dateRange, setDateRange] = useState<{ dateStart: Date, dateEnd: Date }>({
+
+    const [dateRange, setDateRange] = useState<{ dateStart: Date, dateEnd: Date, dateStartUpdate: Date, dateEndUpdate: Date }>({
         dateStart: startOfDay,
-        dateEnd: endOfDay
+        dateEnd: endOfDay,
+        dateStartUpdate: startOfDayUpdate,
+        dateEndUpdate: endOfDayUpdate
     });
 
-    const handleLeaveDateChange = (_date: Date | moment.Moment | null, type: 'start' | 'end') => {
+
+
+    const handleLeaveDateChange = (_date: Date | moment.Moment | null, type: 'start' | 'end' | 'startUpdate' | 'endUpdate') => {
         if (_date instanceof Date) {
             const time = _date.toLocaleTimeString(); // Lấy thời gian từ _date
-            console.log(time); // In ra thời gian
+
             setDateRange(prevState => ({
                 ...prevState,
-                [type === 'start' ? 'dateStart' : 'dateEnd']: _date
+                [type === 'start' ? 'dateStart' : type === 'startUpdate' ? 'dateStartUpdate' : type === 'endUpdate' ? 'dateEndUpdate' : 'dateEnd']: _date
             }));
         } else if (_date instanceof moment) { // Sử dụng moment.Moment thay vì DateObject
             const time = _date.format("HH:mm"); // Lấy thời gian từ _date
-            console.log(time); // In ra thời gian
+
             setDateRange(prevState => ({
                 ...prevState,
-                [type === 'start' ? 'dateStart' : 'dateEnd']: _date.toDate() // Chuyển đổi sang đối tượng Date
+                [type === 'start' ? 'dateStart' : type === 'startUpdate' ? 'dateStartUpdate' : type === 'endUpdate' ? 'dateEndUpdate' : 'dateEnd']: _date.toDate() // Chuyển đổi sang đối tượng Date
             }));
         } else {
             console.log('Date is null or not valid');
@@ -139,84 +142,8 @@ const Search = (id: unknown) => {
     };
 
 
-    const handleDeleteComment = async (commentId: any, endpoint: string, getDataFunction: () => void) => {
-        try {
-            const response = await axiosPrivate.delete(`application/${endpoint}/${commentId}`);
-            if (response.status === 200) {
-                console.log('Comment deleted successfully');
-                getDataFunction();
-            } else {
-                console.error('Failed to delete comment:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error deleting comment:', error);
-        }
-    };
 
-    const handleSubmitComment = async (value: string, endpoint: string, getDataFunction: () => void, setValueFunction: { (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (value: React.SetStateAction<string>): void; (arg0: string): void; }) => {
-        const note = value.trim();
-        if (note.length === 0) {
-            console.error('Không thể thêm comment: Nội dung trống');
-            return;
-        }
-        try {
-            const commentData = {
-                note: value,
-                user_id: users.id,
-                id_register: id,
-                authority: endpoint === 'addcomment' ? 1 : (endpoint === 'addcommentsecond' ? 2 : 3),
-            };
-            setValueFunction('');
-            const res = await axiosPrivate.post(`application/${endpoint}/`, commentData);
-            getDataFunction();
-        } catch (error) {
-            console.error('Lỗi khi thêm comment:', error);
-        }
-    };
 
-    const getCommentForUser = async (endpoint: string, setDataFunction: { (value: any): void; (value: any): void; (arg0: any[]): void; }) => {
-        try {
-            const response = await axiosPrivate.get(`application/${endpoint}/${id}`);
-            const commentData = response.data;
-            if (Array.isArray(commentData)) {
-                setDataFunction(commentData);
-            } else {
-                console.error('Error fetching data: Response data is not an array');
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const handleDeleteFirst = async (commentId: any) => {
-        handleDeleteComment(commentId, 'deletecommentfirst', () => getCommentForUser('getcommentforuserfirst', setCommentFirst));
-    };
-
-    const handleDeleteSecond = async (commentId: any) => {
-        handleDeleteComment(commentId, 'deletecommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond));
-    };
-
-    const handleDeleteThird = async (commentId: any) => {
-        handleDeleteComment(commentId, 'deletecommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird));
-    };
-
-    const handleSubmitFirst = async () => {
-        handleSubmitComment(textValue, 'addcomment', () => getCommentForUser('getcommentforuserfirst', setCommentFirst), setTextValue);
-    };
-
-    const handleSubmitSecond = async () => {
-        handleSubmitComment(commentValue, 'addcommentsecond', () => getCommentForUser('getcommentforusersecond', setCommentSeCond), setCommentValue);
-    };
-
-    const handleSubmitThird = async () => {
-        handleSubmitComment(commentValueThird, 'addcommentthird', () => getCommentForUser('getcommentforuserthird', setCommentThird), setCommentValueThird);
-    };
-
-    useEffect(() => {
-        getCommentForUser('getcommentforuserfirst', setCommentFirst);
-        getCommentForUser('getcommentforusersecond', setCommentSeCond);
-        getCommentForUser('getcommentforuserthird', setCommentThird);
-    }, [id]);
 
 
     const [selectedId, setSelectedId] = useState('');
@@ -244,6 +171,9 @@ const Search = (id: unknown) => {
         const startDate = dateRange.dateStart || startOfDay;
         const endDate = dateRange.dateEnd || endOfDay;
 
+        const startDateUpdate = dateRange.dateStartUpdate || startOfDayUpdate;
+        const endDateUpdate = dateRange.dateEndUpdate || endOfDayUpdate;
+
         // Lấy ngày bắt đầu và ngày kết thúc từ state hoặc là ngày hôm nay nếu không có giá trị được chọn
 
         // Tìm kiếm trong `listOfDataBase` dựa trên id và khoảng thời gian
@@ -256,9 +186,17 @@ const Search = (id: unknown) => {
             const jsonData = JSON.parse(item.tablejson);
             // Kiểm tra xem item có thuộc tính date không và có giá trị không
             const itemDate = new Date(jsonData.rows[0].date); // Chuyển đổi ngày từ chuỗi sang đối tượng Date
+            const updateDate = new Date(item.updatedAt);
 
-            if (itemDate && startDate && endDate) {
-                return String(item.table_id) === String(selectedOptionId) && itemDate >= startDate && itemDate <= endDate;
+            console.log("updateDate", updateDate);
+            console.log("startDateUpdate", startDateUpdate);
+            console.log("endDateUpdate", endDateUpdate);
+
+
+
+            if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+                return String(item.table_id) === String(selectedOptionId)
+                    && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
             }
             return false; // Thêm lệnh return false ở đây
         });
@@ -316,15 +254,7 @@ const Search = (id: unknown) => {
                                         <DatePicker onChange={(_date) => { if (_date && !Array.isArray(_date)) { handleLeaveDateChange(_date.toDate(), 'start'); } }} value={dateRange.dateStart} format="YYYY-MM-DD" />
                                     </span>
                                     <span>
-                                        <DatePicker
-                                            onChange={(_date) => {
-                                                if (_date && !Array.isArray(_date)) { // Kiểm tra _date không phải null
-                                                    handleLeaveDateChange(_date.toDate(), 'end');
-                                                }
-                                            }}
-                                            value={dateRange.dateEnd}
-                                            format="YYYY-MM-DD" // Định dạng ngày và thời gian
-                                        />
+                                        <DatePicker onChange={(_date) => { if (_date && !Array.isArray(_date)) { handleLeaveDateChange(_date.toDate(), 'end'); } }} value={dateRange.dateEnd} format="YYYY-MM-DD" />
                                     </span>
                                 </div>
                             </div>
@@ -335,10 +265,13 @@ const Search = (id: unknown) => {
                         <td>
                             <div className='tb-from--td'>
                                 <div className='tb-from--times'>
+
                                     <span>
-                                        <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateStart, 'start')} value={dateRange.dateStart} />
+                                        <DatePicker onChange={(_date) => { if (_date && !Array.isArray(_date)) { handleLeaveDateChange(_date.toDate(), 'startUpdate'); } }} value={dateRange.dateStartUpdate} format="YYYY-MM-DD" />
                                     </span>
-                                    <span> <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateEnd, 'end')} value={dateRange.dateEnd} /></span>
+                                    <span>
+                                        <DatePicker onChange={(_date) => { if (_date && !Array.isArray(_date)) { handleLeaveDateChange(_date.toDate(), 'endUpdate'); } }} value={dateRange.dateEndUpdate} format="YYYY-MM-DD" />
+                                    </span>
                                 </div>
                             </div>
                         </td>
@@ -395,58 +328,10 @@ const Search = (id: unknown) => {
                                                     const jsonData = JSON.parse(item.tablejson);
                                                     // Hiển thị thông tin chỉ khi trạng thái phù hợp
                                                     return (
+                                                        <p className="list-accordion__item__head__title__title">
+                                                            {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
 
-                                                        <div className="list-accordion__parent">
-                                                            <div key={index} className={`list-accordion__item ${openTabId === item.id ? 'open' : ''}`}>
-                                                                <div className="list-accordion__item__head" onClick={() => toggleAccordion(item.id)}>
-                                                                    <div className="list-accordion__item__head__title">
-                                                                        <p className="list-accordion__item__head__title__title">
-                                                                            {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
-
-                                                                        </p>
-                                                                        <span className="list-accordion__item__head__title__subtitle">
-                                                                            {jsonData.rows[0].owner}（{jsonData.rows[0].date} {'\u00A0\u00A0'}
-                                                                            {jsonData.rows[0].time}）
-                                                                        </span>
-                                                                    </div>
-                                                                    <div className="list-accordion__item__head__btn">
-                                                                        <p className="list-accordion__item__head__btn__btn">
-                                                                            <span className={`lbl01 ${(item.id_status && jsonData.rows[0].id_status) === 1 ? "lbl-blue" :
-                                                                                (item.id_status && jsonData.rows[0].id_status) === 2 ? "lbl-yellow" :
-                                                                                    (item.id_status && jsonData.rows[0].id_status) === 3 ? "lbl-red" :
-                                                                                        (item.id_status && jsonData.rows[0].id_status) === 4 ? "lbl-white" :
-                                                                                            (item.id_status && jsonData.rows[0].id_status) === 5 ? "lbl-brown" :
-                                                                                                "取り消し"
-                                                                                }`} >
-                                                                                {(item.id_status && jsonData.rows[0].id_status) === 1 ? "承認待ち" : (item.id_status && jsonData.rows[0].id_status) === 2 ? "差し戻し" : (item.id_status && jsonData.rows[0].id_status) === 3 ? "却下" : (item.id_status && jsonData.rows[0].id_status) === 4 ? "完了" : (item.id_status && jsonData.rows[0].id_status) === 5 ? "下書き" : "取り消し"}
-                                                                            </span>
-                                                                        </p>
-                                                                        <p className="list-accordion__item__head__btn__icn">
-                                                                            <span className="icn-item">
-                                                                                <img src={editIcon} alt="edit" className="fluid-image" />
-                                                                            </span>
-                                                                            <span className="icn-item">
-                                                                                <img src={closeIcon} alt="close" className="fluid-image" />
-                                                                            </span>
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="list-accordion__item__content">
-                                                                    {openTabId && (
-                                                                        <div className="list-accordion__item__content__inner">
-                                                                            <div className="list-accordion__item__content__item">
-
-                                                                                <Travelallowance id={id} />
-
-
-                                                                            </div >
-                                                                        </div>
-                                                                    )
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
+                                                        </p>
 
                                                     );
                                                 } catch (error) {
