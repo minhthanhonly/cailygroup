@@ -1,5 +1,5 @@
 import React from 'react';
-import ComponentLabel from './component-label';
+import ComponentLabel from '../Component/ComponentLabel';
 
 class F_TextArea extends React.Component {
   constructor(props) {
@@ -8,37 +8,13 @@ class F_TextArea extends React.Component {
   }
 
   render() {
-    const props = {};
-    // props.type = 'text';
-    props.className = 'form-control';
-    props.name = this.props.data.field_name;
-    if (this.props.mutable) {
-      props.defaultValue = this.props.defaultValue;
-      props.ref = this.inputField;
-    }
-
-    let baseClasses = 'SortableItem rfb-item';
-    if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
-
-    if (this.props.read_only) {
-      props.disabled = 'disabled';
-    }
-
     return (
-      <div style={{ ...this.props.style }} className={baseClasses}>
-        <div className="group_box">
-          <div className="grid-row group_box--grid">
-            <div className="group_box--title">
-              <ComponentLabel {...this.props} />
-            </div>
-            <div className="group_box__insert">
-              <div className="grid-row group_box--form ">
-                <div className="group_box--box">
-                  <div className="group_box--flex">
-                    <textarea className="group_box--area"></textarea>
-                  </div>
-                </div>
-              </div>
+      <div style={{ ...this.props.style }} className='SortableItem rfb-item'>
+        <div className="c-form">
+          <div className="c-form-inner">
+            <ComponentLabel {...this.props} />
+            <div className="c-form-content">
+              <textarea className="c-form-control" placeholder="入力してください"></textarea>
             </div>
           </div>
         </div>

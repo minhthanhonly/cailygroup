@@ -1,7 +1,10 @@
 import React from 'react';
 import ComponentLabel from '../Component/ComponentLabel';
+import ComponentDays from '../Component/ComponentDays';
+import ComponentTimes from '../Component/ComponentTimes';
+import ComponentTimesTo from '../Component/ComponentTimesTo';
 
-class F_Checkbox extends React.Component {
+class F_DatePicker extends React.Component {
   constructor(props) {
     super(props);
     this.options = {};
@@ -21,12 +24,12 @@ class F_Checkbox extends React.Component {
           <div className="c-form-inner">
             <ComponentLabel {...this.props} />
             <div className="c-form-content">
-              <div className="grid-row grid-row--02">
+              <div className="grid-row">
                 {this.props.data.custom_options.map((option) => {
                   const this_key = `preview_${option.key}`;
                   const props = {};
                   props.name = `option_${option.key}`;
-                  props.type = 'checkbox';
+                  props.type = 'text';
                   props.value = option.value;
                   if (self.props.mutable) {
                     props.defaultChecked = self.props.defaultValue !== undefined && self.props.defaultValue.indexOf(option.key) > -1;
@@ -35,19 +38,18 @@ class F_Checkbox extends React.Component {
                     props.disabled = 'disabled';
                   }
                   return (
-                    <div className={`${classNames} c-form-item--03`}key={this_key}>
-                      <label className="c-form-label--03">
-                        <input type='checkbox' className="c-form-control" id={`fid_${this_key}`} ref={c => {
-                          if (c && self.props.mutable) {
-                            self.options[`child_ref_${option.key}`] = c;
-                          }
-                        }} {...props} />
-                        <span className="checkmark"></span>
-                        {option.text}
-                      </label>
+                    <div className={`${classNames} c-form-item`}key={this_key}>
+                      <input type='text' className="c-form-control" placeholder='yyyy/mm/dd' id={`fid_${this_key}`} ref={c => {
+                        if (c && self.props.mutable) {
+                          self.options[`child_ref_${option.key}`] = c;
+                        }
+                      }} {...props} />
                     </div>
                   );
                 })}
+                <ComponentDays {...this.props} />
+                <ComponentTimes {...this.props} />
+                <ComponentTimesTo {...this.props} />
               </div>
             </div>
           </div>
@@ -57,4 +59,4 @@ class F_Checkbox extends React.Component {
   }
 }
 
-export default F_Checkbox;
+export default F_DatePicker;

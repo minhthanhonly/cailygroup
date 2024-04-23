@@ -1,7 +1,7 @@
 import React from 'react';
 import ComponentLabel from '../Component/ComponentLabel';
 
-class F_Checkbox extends React.Component {
+class F_RadioButtons extends React.Component {
   constructor(props) {
     super(props);
     this.options = {};
@@ -37,12 +37,12 @@ class F_Checkbox extends React.Component {
                   return (
                     <div className={`${classNames} c-form-item--03`}key={this_key}>
                       <label className="c-form-label--03">
-                        <input type='checkbox' className="c-form-control" id={`fid_${this_key}`} ref={c => {
+                        <input type='radio' name="radio_name_1" className="c-form-control" id={`fid_${this_key}`} ref={c => {
                           if (c && self.props.mutable) {
                             self.options[`child_ref_${option.key}`] = c;
                           }
                         }} {...props} />
-                        <span className="checkmark"></span>
+                        <span className="checkmark checkmark--oval"></span>
                         {option.text}
                       </label>
                     </div>
@@ -57,4 +57,4 @@ class F_Checkbox extends React.Component {
   }
 }
 
-export default F_Checkbox;
+export default F_RadioButtons;

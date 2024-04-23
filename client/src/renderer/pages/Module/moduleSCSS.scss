@@ -18,11 +18,11 @@
         border: 1px solid;
         text-align: center;
         & th{
-            background-color: #E2E2E2; 
+            background-color: #E2E2E2;
         }
-       
+
         & tr{
-            border: 1px solid; 
+            border: 1px solid;
         }
         & th, & td{
             border: 1px solid;
@@ -67,7 +67,7 @@
         & table input{
             border: 1px solid #9C9C9C;
         }
-        
+
         & .input_noboder {
             border: none;
             width: auto;
@@ -166,7 +166,7 @@
         cursor: pointer;
 
         &:before {
-            content: ''; 
+            content: '';
             background-color: transparent;
             border: 2px solid #0079bf;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
@@ -192,7 +192,7 @@
             box-sizing: border-box;
         }
     }
- 
+
 }
 
 .box_email{
@@ -235,7 +235,7 @@
 
 .search_icon {
     position: relative;
-  
+
 
     input {
             border-radius: 2rem;
@@ -274,7 +274,7 @@
     &--input {
             padding-left: 2rem;
             position: relative;
-    
+
             &::before {
                 content: "";
                 background: url("../../../../assets/icn-search.png") no-repeat;
@@ -333,7 +333,7 @@
         border: none;
         margin-right: 0;
     }
-   
+
 }
 
 
@@ -346,7 +346,7 @@
     &--box{
         width: 100%;
         input {
-          
+
             width: 100%;
             border: 1px solid #707070;
         }
@@ -365,7 +365,7 @@
         padding-right: 1rem;
         box-sizing: border-box;
        }
-       
+
     }
     &--title{
         width: 14%;
@@ -376,7 +376,7 @@
     &--form{
         border-left: 1px solid #707070;
             padding: 0 0 0 1.6rem;
-            
+
     }
     &--input{
         position: relative;
@@ -406,6 +406,15 @@
             font-size: 15px;
         }
     }
+    &--date{
+      &:last-of-type::before{
+        position: absolute;
+        content: "～";
+        left: -3rem;
+        top: 9px;
+        font-size: 15px;
+      }
+    }
     &--checkbox {
         vertical-align: middle;
         display: flex;
@@ -419,7 +428,7 @@
         }
         & label{
             display: flex;
-            
+
             align-items: center;
         }
         & input[type=checkbox]{
