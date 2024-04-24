@@ -7,7 +7,7 @@ import ComponentTimesTo from '../Component/ComponentTimesTo';
 class F_DatePicker extends React.Component {
   constructor(props) {
     super(props);
-    this.options = {};
+    this.custom_options = {};
     this.inputField = React.createRef();
   }
 
@@ -32,20 +32,11 @@ class F_DatePicker extends React.Component {
                   const props = {};
                   props.name = `option_${option.key}`;
                   props.type = 'text';
-                  props.value = option.value;
-                  if (self.props.mutable) {
-                    props.defaultChecked = self.props.defaultValue !== undefined && self.props.defaultValue.indexOf(option.key) > -1;
-                  }
-                  if (this.props.read_only) {
-                    props.disabled = 'disabled';
-                  }
+                  props.defaultValue = option.value;
+
                   return (
-                    <div className={`${classNames} c-form-item`}key={this_key}>
-                      <input type='text' className="c-form-control" placeholder='yyyy/mm/dd' id={`fid_${this_key}`} ref={c => {
-                        if (c && self.props.mutable) {
-                          self.options[`child_ref_${option.key}`] = c;
-                        }
-                      }} {...props} />
+                    <div className={`${classNames} c-form-item`} key={this_key}>
+                      <input className="c-form-control" placeholder='yyyy/mm/dd' id={`fid_${this_key}`} {...props} />
                     </div>
                   );
                 })}

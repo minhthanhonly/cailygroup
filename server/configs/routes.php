@@ -106,4 +106,8 @@
     // Form
     $routes['form/add'] = 'form/add';
     $routes['form/detail/.+-(\d+)'] = 'form/detail/$1';
+
+    // Newapplication
+    $routes['newapplication'] = 'newapplication';
+    $routes['newapplication/detail/.+-(\d+)'] = 'newapplication/detail/$1';
 ?>

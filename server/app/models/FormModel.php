@@ -1,32 +1,5 @@
 <?php
 	class FormModel extends Model{
-		// function getList(){
-		// 	global $conn;
-
-		// 	// Thực hiện truy vấn SELECT
-		// 	$sql = "SELECT users.*, groups.group_name, authority.authority_name FROM users 
-		// 	JOIN groups ON users.user_group = groups.id
-		// 	JOIN authority ON users.authority = authority.id";
-		// 	$result = $conn->query($sql);
-
-		// 	// Kiểm tra và hiển thị kết quả
-		// 	if ($result->num_rows > 0) {
-		// 		// Duyệt qua từng dòng dữ liệu
-		// 		while ($row = $result->fetch_assoc()) {
-		// 			$data[] = $row;
-		// 		}
-		// 	} else {
-		// 		$data = [];
-		// 	}
-			
-		// 	header('Content-Type: application/json');
-		// 	echo json_encode($data);
-		// 	return;
-
-		// 	// Đóng kết nối
-		// 	$conn->close();
-		// }
-
 		// function getDetail($userid){
 		// 	global $conn;
 

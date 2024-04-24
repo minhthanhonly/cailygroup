@@ -15,6 +15,7 @@ import {
   faFileLines,
   faGear,
   faHouse,
+  faNewspaper,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -157,7 +158,7 @@ export const Sidebar = () => {
           <li className="nav-global__item">
             <NavLink to="/newapplication">
               <span className="icn">
-                <FontAwesomeIcon icon={faCalendarDays} />
+                <FontAwesomeIcon icon={faNewspaper} />
               </span>
               New application
             </NavLink>

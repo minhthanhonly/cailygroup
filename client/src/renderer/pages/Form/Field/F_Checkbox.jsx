@@ -4,7 +4,7 @@ import ComponentLabel from '../Component/ComponentLabel';
 class F_Checkbox extends React.Component {
   constructor(props) {
     super(props);
-    this.options = {};
+    this.custom_options = {};
   }
 
   render() {
