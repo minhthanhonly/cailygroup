@@ -40,7 +40,7 @@ export const SearchData: React.FC<SearchDataProps> = ({ id, table }) => {
                 <ul>
                     {accordionItems.rows && accordionItems.rows.map((rowData: any, index: number) => {
                         try {
-                            console.log("rowData", rowData);
+
                             return (
                                 <li key={index}>
                                     <div className="box-register__item">
