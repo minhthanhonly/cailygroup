@@ -149,7 +149,7 @@ export const isValidGroup = ({...paraGroup}) => {
   if(!paraGroup.group_name) {
     toast.error(ERROR['require'] + groupName +  "!");
     return false;
-  } 
+  }
   return true;
 }
 
@@ -172,6 +172,27 @@ export const isValidTimecardsholidaysEdit = ({...paraTimecardsholidays}) => {
 export const isValidTimecardsholidays = ({...paraTimecardsholidays}) => {
   if(!paraTimecardsholidays.names) {
     toast.error(ERROR['require'] + names +  "!");
+    return false;
+  }
+  return true;
+}
+
+/* =======================================================================* */
+
+const FormName = "Tên Form";
+const FieldName = "các thuộc tính của Form";
+type paraForm = {
+  form_name: string;
+}
+
+export const isValidForm = ({...paraForm}, reactFormData: any) => {
+  if(!paraForm.form_name) {
+    toast.error(ERROR['require'] + FormName +  "!");
+    return false;
+  }
+
+  if(reactFormData.length === 0) {
+    toast.error(ERROR['require'] + FieldName +  "!");
     return false;
   }
   return true;

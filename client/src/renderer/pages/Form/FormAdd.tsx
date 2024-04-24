@@ -14,7 +14,15 @@ import F_TextArea from "./Field/F_TextArea";
 import F_DatePicker from "./Field/F_DatePicker";
 import F_RadioButtons from "./Field/F_RadioButtons";
 
+import { isValidForm } from "../../components/Validate";
+
 export default function FormAdd(){
+  const axiosPrivate = useAxiosPrivate();
+	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'})
+  const [reactFormData, setReactFormData] = useState<any>([]);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [error, setError] = useState('');
+
   const items = [
     {
       key: 'F_Text',
@@ -133,41 +141,23 @@ export default function FormAdd(){
     },
   ];
 
-  const axiosPrivate = useAxiosPrivate();
-	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'})
-  const [reactFormData, setReactFormData] = useState<any>([]);
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [error, setError] = useState('');
-
-  const [toolbarClicked, setToolbarClicked] = useState(false);
-
-  const handleToolbarClick = () => {
-    // Khi toolbar được click, cập nhật trạng thái
-    console.log('hello');
-    setToolbarClicked(true);
-  };
-
   const handleInput = (e) => {
 		setFormValue({ ...formValue, [e.target.name]: e.target.value })
 	}
 
-  // if(reactFormData.length > 0){
-  //   setIsDisabled(false);
-  // } else {
-  //   setIsDisabled(true);
-  // }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // const formData = { form_name: formValue.form_name, reactFormData, status: formValue.status, owner: formValue.owner }
-    // const res = await axiosPrivate.post("form/add", formData);
-
-    // console.log(reactFormData.length);
+    const validationErrors = isValidForm({ ...formValue }, reactFormData);
+    if (validationErrors === true) {
+      const formData = { form_name: formValue.form_name, reactFormData, status: formValue.status, owner: formValue.owner }
+      const res = await axiosPrivate.post("form/add", formData);
+    }
   }
 
-
-
+  const handleSubmitDraft = async (e) => {
+    e.preventDefault();
+    const validationErrors = isValidForm({ ...formValue }, reactFormData);
+  }
 
   return (
     <>
@@ -180,7 +170,6 @@ export default function FormAdd(){
           value={formValue.form_name} onChange={handleInput} placeholder="Enter name here"
         />
         <ReactFormBuilder
-          toolbarClick={handleToolbarClick}
           toolbarItems={items}
           data={reactFormData}
           onChange={setReactFormData}
@@ -188,8 +177,8 @@ export default function FormAdd(){
           renderEditForm={props => <FormElementsEdit {...props}/>}
         />
         <div className="wrp-button">
-          <button className="btn btn--from btn--gray" disabled={isDisabled}>下書き保存</button>
-          <button className="btn btn--from btn--blue" onClick={handleSubmit} disabled={isDisabled}>申請する</button>
+          <button className="btn btn--from btn--gray" onClick={handleSubmitDraft}>下書き保存</button>
+          <button className="btn btn--from btn--blue" onClick={handleSubmit}>申請する</button>
         </div>
         {/* <div className="c-form">
           <div className="c-form-inner">

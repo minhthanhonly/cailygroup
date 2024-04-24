@@ -155,6 +155,14 @@ export const Sidebar = () => {
             </NavLink>
           </li>
           <li className="nav-global__item">
+            <NavLink to="/newapplication">
+              <span className="icn">
+                <FontAwesomeIcon icon={faCalendarDays} />
+              </span>
+              New application
+            </NavLink>
+          </li>
+          <li className="nav-global__item">
             <NavLink to="/application">
               <span className="icn">
                 <FontAwesomeIcon icon={faCalendarDays} />

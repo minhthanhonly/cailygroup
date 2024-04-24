@@ -8,6 +8,7 @@ class F_DatePicker extends React.Component {
   constructor(props) {
     super(props);
     this.options = {};
+    this.inputField = React.createRef();
   }
 
   render() {
@@ -25,6 +26,7 @@ class F_DatePicker extends React.Component {
             <ComponentLabel {...this.props} />
             <div className="c-form-content">
               <div className="grid-row">
+
                 {this.props.data.custom_options.map((option) => {
                   const this_key = `preview_${option.key}`;
                   const props = {};

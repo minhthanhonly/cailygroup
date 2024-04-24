@@ -30,6 +30,8 @@ export default class FormElementsEdit extends React.Component {
     };
   }
 
+
+
   toggleRequired() {
     // const this_element = this.state.element;
   }
