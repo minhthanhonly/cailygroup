@@ -1,9 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { Heading2 } from '../../components/Heading';
 import { Tab } from '../Application/tab';
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 import editIcon from '../../../../assets/icn-edit.png';
 import closeIcon from '../../../../assets/icn-close.png';
@@ -11,8 +10,6 @@ import { UserRole } from '../../components/UserRole';
 import moment from 'moment'; // Import moment.js
 import { Travelallowance } from '../Application/travelallowance';
 import { SearchData } from './SearchData';
-
-
 
 interface ListItem {
     id: string;

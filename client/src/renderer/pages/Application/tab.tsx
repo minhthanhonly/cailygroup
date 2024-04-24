@@ -31,7 +31,7 @@ export const Tab: React.FC<TabContentProps & { key: React.Key }> = ({
   }, []);
 
   return (
-    <div className='table_content'>
+    <div className="table_content">
       {items.length > 0 && (
         <div>
           {items.map(

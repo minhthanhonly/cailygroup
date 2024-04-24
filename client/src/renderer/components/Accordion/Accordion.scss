@@ -149,6 +149,7 @@
         text-align: center;
         line-height: 3.3rem;
         position: relative;
+        background-color: #e3e3e3;
         cursor: pointer;
         &::before {
           content: '';
@@ -278,6 +279,9 @@
         top: 0;
       }
     }
+  }
+  textarea {
+    border: 1px solid #707070;
   }
 }
 .btncomment {

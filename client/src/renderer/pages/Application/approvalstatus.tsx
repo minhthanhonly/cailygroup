@@ -18,31 +18,50 @@ export const Approvalstatus = ({ id }) => {
   const [commentValue, setCommentValue] = useState('');
   const [commentValueThird, setCommentValueThird] = useState('');
   const [approve, setApprove] = useState({
-    approveTexts: '',
-    approveClass: '',
     statusattrTexts: '',
     statusattrClass: '',
   });
   const [isChecked, setIsChecked] = useState(false);
+  const [isTableUpdated, setIsTableUpdated] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [info, setInfo] = useState('');
+  const [idStatus, setIdStatus] = useState('');
 
-  useEffect(() => {
-    const Load = async () => {
-      try {
-        const response = await axiosPrivate.get('application/getforid/' + id);
-        const data = response.data;
-        const parsedTableJson = JSON.parse(data.tablejson);
-        const itemWithStatus = {
-          ...parsedTableJson.rows[0], // Giữ nguyên các trường từ dữ liệu cũ
-          id_status: data.id_status, // Thêm trường id_status vào dữ liệu
-        };
-        setAccordionItems(itemWithStatus);
-      } catch (error) {
-        console.error('Error fetching data: ', error);
-      }
-    };
+  // const Load = async () => {
+  //   try {
+  //     const response = await axiosPrivate.get('application/getforid/' + id);
+  //     const data = response.data;
+  //     const parsedTableJson = JSON.parse(data.tablejson);
+  //     const itemWithStatus = {
+  //       ...parsedTableJson.rows[0], // Giữ nguyên các trường từ dữ liệu cũ
+  //       id_status: data.id_status, // Thêm trường id_status vào dữ liệu
+  //     };
+  //     setAccordionItems(itemWithStatus);
+  //   } catch (error) {
+  //     console.error('Error fetching data: ', error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   Load();
+  //   console.log('isTableUpdated in useEffect:', isTableUpdated);
+  // }, [id, isTableUpdated]);
 
-    Load();
-  }, [id]);
+  // Load();
+
+  // useEffect(() => {
+  //   if (isTableUpdated) {
+  //     const LoadAndUpdateAccordion = async () => {
+  //       try {
+  //         // Gọi lại hàm Load để tải dữ liệu mới
+  //         await Load();
+  //         // Thực hiện các bước cần thiết để cập nhật tab accordion
+  //       } catch (error) {
+  //         console.error('Error updating accordion:', error);
+  //       }
+  //     };
+  //     LoadAndUpdateAccordion();
+  //   }
+  // }, [isTableUpdated]);
 
   const handleStatusClick = async (event: any) => {
     try {
@@ -53,23 +72,46 @@ export const Approvalstatus = ({ id }) => {
         dataUpdate,
         { headers: { 'Content-Type': 'application/json' } },
       );
+      // console.log(response.data);
 
-      const responseData = response.data;
+      const idStatusCurrent = response.data.info.id_status;
+
+      const response2 = await axiosPrivate.get(
+        'application/getapplicationbyidstatus/' + idStatusCurrent,
+        { headers: { 'Content-Type': 'application/json' } },
+      );
+
+      console.log(response2.data);
+
+      // setTimeout(() => {
+      //   const response2 = axiosPrivate.get(
+      //     'application/getapplicationbyidstatus/' + idStatus,
+      //   );
+      //   console.log(response2.data);
+      // }, 1000);
+
+      // console.log('Status updated successfully:', updatedRows);
+
+      // const responseData = response.data;
       //console.log(responseData);
       //Kiểm tra xem phản hồi có chứa dữ liệu mới của hàng không và rows tồn tại
-      if (responseData.updated_data && responseData.updated_data.rows) {
-        // Nếu có, cập nhật id_status trong mỗi hàng của rows
-        const updatedData = responseData.updated_data;
-        const updatedRows = updatedData.rows.map((row: any) => ({
-          ...row,
-          id_status: id_status,
-        }));
-        setAccordionItems(updatedRows);
-        console.log('Status updated successfully:', updatedRows);
-      } else {
-        // Nếu không, log thông báo từ phản hồi hoặc xử lý tùy thuộc vào trường hợp cụ thể
-        console.log(responseData.message);
-      }
+      // if (responseData.updated_data && responseData.updated_data.rows) {
+      //   // Nếu có, cập nhật id_status trong mỗi hàng của rows
+      //   const updatedData = responseData.updated_data;
+      //   const updatedRows = updatedData.rows.map((row: any) => ({
+      //     ...row,
+      //     id_status: id_status,
+      //   }));
+      //   setAccordionItems(updatedRows);
+      //   // console.log('Status updated successfully:', updatedRows);
+      //   setIsTableUpdated(true);
+      //   console.log(isTableUpdated);
+      // } else {
+      //   // Nếu không, log thông báo từ phản hồi hoặc xử lý tùy thuộc vào trường hợp cụ thể
+      //   console.log(responseData.message);
+      // }
+      // const updatedIsTableUpdated = !isTableUpdated;
+      // console.log('isTableUpdated:', updatedIsTableUpdated);
     } catch (error) {
       console.error('Error updating id_status:', error);
     }
@@ -78,43 +120,31 @@ export const Approvalstatus = ({ id }) => {
   useEffect(() => {
     if (accordionItems.id_status == 1) {
       setApprove({
-        approveTexts: '承認待ち',
-        approveClass: 'lbl01 lbl-blue',
         statusattrTexts: '承認待ち',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else if (accordionItems.id_status == 2) {
       setApprove({
-        approveTexts: '差し戻し',
-        approveClass: 'lbl01 lbl-yellow',
         statusattrTexts: '差し戻し',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else if (accordionItems.id_status == 3) {
       setApprove({
-        approveTexts: '却下',
-        approveClass: 'lbl01 lbl-red',
         statusattrTexts: '却下',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else if (accordionItems.id_status == 4) {
       setApprove({
-        approveTexts: '完了',
-        approveClass: 'lbl01 lbl-white',
         statusattrTexts: '承認済み',
         statusattrClass: 'lbl01 lbc-blue lbbd-blue',
       });
     } else if (accordionItems.id_status == 5) {
       setApprove({
-        approveTexts: '下書き',
-        approveClass: 'lbl01 lbl-brown',
         statusattrTexts: '下書き',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else {
       setApprove({
-        approveTexts: '取り消し',
-        approveClass: 'lbl01',
         statusattrTexts: '取り消し',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
@@ -611,7 +641,7 @@ export const Approvalstatus = ({ id }) => {
                   isChecked ? 'checked' : ''
                 }`}
                 onClick={handleStatusClick}
-                data-id_status={5}
+                data-id_status={3}
               >
                 <div className="box-approves__item__title">
                   <span className="bg-blue01 color-white">下</span>
