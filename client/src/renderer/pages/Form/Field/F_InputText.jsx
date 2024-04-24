@@ -1,5 +1,5 @@
 import React from 'react';
-import ComponentLabel from './component-label';
+import ComponentLabel from '../Component/ComponentLabel';
 
 class F_InputText extends React.Component {
   constructor(props) {
@@ -26,19 +26,11 @@ class F_InputText extends React.Component {
 
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
-        <div className="group_box">
-          <div className="grid-row group_box--grid">
-            <div className="group_box--title">
-              <ComponentLabel {...this.props} />
-            </div>
-            <div className="group_box__insert">
-              <div className="grid-row group_box--form ">
-                <div className="group_box--box">
-                  <div className="group_box--flex">
-                    <input {...props} />
-                  </div>
-                </div>
-              </div>
+        <div className="c-form">
+          <div className="c-form-inner">
+            <ComponentLabel {...this.props} />
+            <div className="c-form-content">
+              <input className="c-form-control" placeholder="入力してください" {...props} />
             </div>
           </div>
         </div>

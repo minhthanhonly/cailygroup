@@ -152,22 +152,14 @@ export const Sidebar = () => {
               新規申請
             </NavLink>
           </li>
-          <li className="nav-global__item">
-            <NavLink to="/application">
-              <span className="icn">
-                <FontAwesomeIcon icon={faCalendarDays} />
-              </span>
-              申請状況 <span className='boder_count'>{countIdStatusOne}</span>
-            </NavLink>
-          </li>
-          <li className="nav-global__item">
+          {/* <li className="nav-global__item">
             <NavLink to="/field">
               <span className="icn">
                 <FontAwesomeIcon icon={faCalendarDays} />
               </span>
               Field
             </NavLink>
-          </li>
+          </li> */}
           <li className="nav-global__item">
             <NavLink to="/form/add">
               <span className="icn">
@@ -176,14 +168,14 @@ export const Sidebar = () => {
               Add New Form
             </NavLink>
           </li>
-          <li className="nav-global__item">
+          {/* <li className="nav-global__item">
             <NavLink to="/form/detail/2">
               <span className="icn">
                 <FontAwesomeIcon icon={faFileLines} />
               </span>
               Form Detail
             </NavLink>
-          </li>
+          </li> */}
         </ul>
       </nav>
       <div className="acount">
