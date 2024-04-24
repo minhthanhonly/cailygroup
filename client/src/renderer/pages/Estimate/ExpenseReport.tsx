@@ -37,6 +37,7 @@ export const ExpenseReport = (props: { id_table: any; }) => {
 
 
 
+
     const [priceNotax, setPriceNotax] = useState<string[]>(new Array(rows.length).fill(''));
     const [tax, setTax] = useState<string[]>(new Array(rows.length).fill(''));
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceNotax' | 'tax') => {
@@ -151,6 +152,9 @@ export const ExpenseReport = (props: { id_table: any; }) => {
         getTables();
     }, [id_table]);
 
+    const formatNumberWithCommas = (value: number) => {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
     const saveExpense = async (status: number) => {
         const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
         try {
@@ -163,14 +167,14 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                     date: formattedDate,
                     route: row.route,
                     paymentDestination: row.paymentDestination,
-                    priceNotax: row.priceNotax,
-                    tax: row.tax,
+                    priceNotax: formatNumberWithCommas(row.priceNotax),
+                    tax: formatNumberWithCommas(row.tax),
                     check: checkedState[index], // Trạng thái checkbox tại index tương ứng
                     note: row.note,
                     owner: users.realname,
-                    totalPriceNotTax: totalPriceNotTax,
-                    totalPriceTax: totalpriceTax,
-                    total: totalTaxIncluded,
+                    totalPriceNotTax: formatNumberWithCommas(totalPriceNotTax),
+                    totalPriceTax: formatNumberWithCommas(totalpriceTax),
+                    total: formatNumberWithCommas(totalTaxIncluded),
                     tableName: tableName,
                 }));
 

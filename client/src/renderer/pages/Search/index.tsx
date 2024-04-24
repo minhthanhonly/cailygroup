@@ -224,10 +224,7 @@ const Search = (id: unknown) => {
                 //         typeof value === 'string' && value.includes(searchText)
                 //     )
                 // ));
-                console.log("im here", String(item.table_id) === String(selectedOptionId) &&
-                    jsonData.rows.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
 
-                    && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate);
                 return (
 
                     String(item.table_id) === String(selectedOptionId) &&
@@ -241,10 +238,7 @@ const Search = (id: unknown) => {
                 //     jsonData.rows.some((row: any) => Object.values(row).some(value =>  typeof value === 'string' && value.includes(searchText)  ))
                 // );
             } else if (jsonData && jsonData.rows && searchText === '') {
-                console.log("đang ở đây");
-
                 if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
-                    console.log("đang ở đây nè");
                     return String(item.table_id) === String(selectedOptionId)
                         && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
                 }
@@ -304,11 +298,7 @@ const Search = (id: unknown) => {
             return false; // Thêm lệnh return false ở đây
         });
 
-
-
-
         setSearchResults(matchedItems);
-
 
         const newStatusCounts: { [key: number]: number } = {};
         matchedItems.forEach(item => {
@@ -434,6 +424,9 @@ const Search = (id: unknown) => {
                                                 try {
                                                     // Phân tích chuỗi JSON thành đối tượng JavaScript
                                                     const jsonData = JSON.parse(item.tablejson);
+                                                    const numberStatus = (Number(item.id_status));
+
+
                                                     // Hiển thị thông tin chỉ khi trạng thái phù hợp
                                                     return (
                                                         <div className="list-accordion__parent">
@@ -451,14 +444,8 @@ const Search = (id: unknown) => {
                                                                     </div>
                                                                     <div className="list-accordion__item__head__btn">
                                                                         <p className="list-accordion__item__head__btn__btn">
-                                                                            <span className={`lbl01 ${(item.id_status && jsonData.rows[0].id_status) === 1 ? "lbl-blue" :
-                                                                                (item.id_status && jsonData.rows[0].id_status) === 2 ? "lbl-yellow" :
-                                                                                    (item.id_status && jsonData.rows[0].id_status) === 3 ? "lbl-red" :
-                                                                                        (item.id_status && jsonData.rows[0].id_status) === 4 ? "lbl-white" :
-                                                                                            (item.id_status && jsonData.rows[0].id_status) === 5 ? "lbl-brown" :
-                                                                                                "取り消し"
-                                                                                }`} >
-                                                                                {(item.id_status && jsonData.rows[0].id_status) === 1 ? "承認待ち" : (item.id_status && jsonData.rows[0].id_status) === 2 ? "差し戻し" : (item.id_status && jsonData.rows[0].id_status) === 3 ? "却下" : (item.id_status && jsonData.rows[0].id_status) === 4 ? "完了" : (item.id_status && jsonData.rows[0].id_status) === 5 ? "下書き" : "取り消し"}
+                                                                            <span className={`lbl01 ${numberStatus === 1 ? "lbl-blue" : numberStatus === 2 ? "lbl-yellow" : numberStatus === 3 ? "lbl-red" : numberStatus === 4 ? "lbl-white" : numberStatus === 5 ? "lbl-brown" : ""}`} >
+                                                                                {numberStatus === 1 ? "承認待ち" : numberStatus === 2 ? "差し戻し" : numberStatus === 3 ? "却下" : numberStatus === 4 ? "完了" : numberStatus === 5 ? "下書き" : "取り消し"}
                                                                             </span>
                                                                         </p>
                                                                         <p className="list-accordion__item__head__btn__icn">
@@ -477,7 +464,6 @@ const Search = (id: unknown) => {
                                                                             <div className="list-accordion__item__content__item">
 
                                                                                 <Travelallowance id={id} />
-
 
                                                                             </div >
                                                                         </div>
