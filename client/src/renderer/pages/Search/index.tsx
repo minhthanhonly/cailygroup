@@ -166,12 +166,13 @@ export const Search = () => {
 
         const startDateUpdate = dateRange.dateStartUpdate || startOfDayUpdate;
         const endDateUpdate = dateRange.dateEndUpdate || endOfDayUpdate;
-        console.log("searchText", searchText);
+
 
         const matchedItems = listOfDataBase.filter(item => {
             // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
             const jsonData = JSON.parse(item.tablejson);
             const itemDate = new Date(jsonData.rows[0].date);
+
             const updateDate = new Date(item.updatedAt);
 
             if (jsonData && jsonData.rows && searchText !== '') {
