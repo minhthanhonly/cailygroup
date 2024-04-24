@@ -25,7 +25,7 @@ export const Approvalstatus = ({ id }) => {
   const [isTableUpdated, setIsTableUpdated] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [info, setInfo] = useState('');
-  const [idStatus, setIdStatus] = useState(0);
+  const [idStatus, setIdStatus] = useState('');
 
   // const Load = async () => {
   //   try {
@@ -74,15 +74,21 @@ export const Approvalstatus = ({ id }) => {
       );
       // console.log(response.data);
 
-      setIdStatus(response.data.info.id_status);
-      console.log(response.data.info.id_status);
+      const idStatusCurrent = response.data.info.id_status;
 
-      setTimeout(() => {
-        const response2 = axiosPrivate.get(
-          'application/getapplicationbyidstatus/' + idStatus,
-        );
-        console.log(response2.data);
-      }, 1000);
+      const response2 = await axiosPrivate.get(
+        'application/getapplicationbyidstatus/' + idStatusCurrent,
+        { headers: { 'Content-Type': 'application/json' } },
+      );
+
+      console.log(response2.data);
+
+      // setTimeout(() => {
+      //   const response2 = axiosPrivate.get(
+      //     'application/getapplicationbyidstatus/' + idStatus,
+      //   );
+      //   console.log(response2.data);
+      // }, 1000);
 
       // console.log('Status updated successfully:', updatedRows);
 

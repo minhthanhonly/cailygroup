@@ -26,27 +26,21 @@
 
         function getApplicationByIdStatus($idStatus){
             global $conn;
-            echo 'Hello';
-            echo $idStatus;
 
-            // $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
-        //     $sql = "SELECT * FROM table_json WHERE id_status = '$idStatus'";
-        //     // if ($statusFilter != -1) {
-        //     //     $sql .= " WHERE id_status = $statusFilter"; // Sửa từ $query thành $sql
-        //     // }
-        //    // echo $sql; // In ra câu truy vấn để kiểm tra
-        //     $result = $conn->query($sql);
-        //     $data = array();
-        //     if ($result->num_rows > 0) {
-        //        while ($row = $result->fetch_assoc()) {
-        //             $data[] = $row;
-        //         }
-        //     }
-        //     $conn->close();
-        //     // Trả về dữ liệu dưới dạng JSON
-        //     header('Content-Type: application/json');
-        //     echo json_encode($data);
-        //     return;
+            $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
+            $sql = "SELECT * FROM table_json WHERE id_status = '$idStatus'";
+            $result = $conn->query($sql);
+            $data = array();
+            if ($result->num_rows > 0) {
+               while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
+                }
+            }
+            $conn->close();
+            // Trả về dữ liệu dưới dạng JSON
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            return;
         }
 
         function getApplicationForId($id){
