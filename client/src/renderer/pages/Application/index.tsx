@@ -3,6 +3,7 @@ import { Heading2 } from '../../components/Heading';
 import { Tab } from './tab';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Link } from 'react-router-dom';
+import { Search } from '../Search/index';
 
 export const Application = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -56,15 +57,15 @@ export const Application = () => {
 
   return (
     <div>
+
       <div className="grid-row grid-flex">
         <Heading2 text="申請状況" />
-        <Link to="/Search">
-          {' '}
+        <Link to="/search">
           <img
             src={require('../../../../assets/icn-search.png')}
             alt=""
             className="fluid-image class-img"
-          />{' '}
+          />
         </Link>
       </div>
 

@@ -53,28 +53,28 @@ export const Sidebar = () => {
 
   const [countIdStatusOne, setCountIdStatusOne] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosPrivate.get('search/data');
-        const data = response.data;
-        const countIdStatusOne = data.reduce((total: number, item: { id_status: any; }) => {
-          return Number(item.id_status) === 1 ? total + 1 : total;
-        }, 0);
-        setCountIdStatusOne(countIdStatusOne);
-      } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axiosPrivate.get('search/data');
+  //       const data = response.data;
+  //       const countIdStatusOne = data.reduce((total: number, item: { id_status: any; }) => {
+  //         return Number(item.id_status) === 1 ? total + 1 : total;
+  //       }, 0);
+  //       setCountIdStatusOne(countIdStatusOne);
+  //     } catch (error) {
+  //       console.error('Lỗi khi lấy dữ liệu:', error);
+  //     }
+  //   };
 
-    const interval = setInterval(() => {
-      fetchData();
-    }, 1000); // Cập nhật dữ liệu mỗi 5 giây
+  //   const interval = setInterval(() => {
+  //     fetchData();
+  //   }, 1000); // Cập nhật dữ liệu mỗi 5 giây
 
-    return () => {
-      clearInterval(interval); // Xóa interval khi component unmount
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(interval); // Xóa interval khi component unmount
+  //   };
+  // }, []);
 
 
   return (
