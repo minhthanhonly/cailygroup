@@ -165,7 +165,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     route: row.route,
                     boardingStation: row.boardingStation,
                     alightingStation: row.alightingStation,
-                    mealExpense: row.mealExpense,
+                    mealExpense: formatNumberWithCommas(row.mealExpense),
                     note: row.note,
                     total: formattedTotal,
                     tableName: tableName,

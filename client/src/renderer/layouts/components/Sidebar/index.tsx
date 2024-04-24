@@ -74,6 +74,11 @@ export const Sidebar = () => {
   //   };
   // }, []);
 
+  //   return () => {
+  //     clearInterval(interval); // Xóa interval khi component unmount
+  //   };
+  // }, []);
+
   return (
     <div className="sidebar">
       <h1 className="logo">
