@@ -90,7 +90,7 @@ export default function App() {
 
               {/* Khu cua thịnh */}
 
-              {/* <Route path="Search" element={<Search />} /> */}
+              <Route path="Search" element={<Search />} />
               <Route path="estimate" element={<Estimate />} />
 
               <Route
