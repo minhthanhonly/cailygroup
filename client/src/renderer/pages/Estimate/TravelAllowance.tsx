@@ -209,6 +209,10 @@ export const TravelAllowance = (props: { id_table: any }) => {
 
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  const formatNumberWithCommass = (value: number) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   const saveExpense = async (status: number) => {
     const formattedDate = moment(date).format('YYYY/MM/DD HH:mm:ss');
     const fDateChanged = isStartDate === true ? formattedDate : '';
@@ -220,8 +224,8 @@ export const TravelAllowance = (props: { id_table: any }) => {
         isStartNow: isStartNow,
         isStartDate: isStartDate,
         date_input: fDateChanged,
-        totalMonthlyTicket: totalMonthlyTicket,
-        totalRoundtrip: totalRoundtrip,
+        totalMonthlyTicket: formatNumberWithCommass(totalMonthlyTicket),
+        totalRoundtrip: formatNumberWithCommass(totalRoundtrip),
         // Thêm các trường khác nếu cần
       };
       // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
@@ -231,8 +235,8 @@ export const TravelAllowance = (props: { id_table: any }) => {
         router: row.router,
         startroad: row.startroad,
         endroad: row.endroad,
-        monthlyticket: row.monthlyticket,
-        roundtrip: row.roundtrip,
+        monthlyticket: formatNumberWithCommass(row.monthlyticket),
+        roundtrip: formatNumberWithCommass(row.roundtrip),
         owner: users.realname,
         note: row.note,
         address: address,

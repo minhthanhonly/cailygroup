@@ -301,21 +301,21 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
             const dataToSend = rows.map((row, index) => ({
                 date: date_form,
                 project: row.project,
-                priceTrain: row.priceTrain,
-                priceHouse: row.priceHouse,
-                priceCustomer: row.priceCustomer,
-                priceEat: row.priceEat,
-                priceOther: row.priceOther,
-                totalPrice: calculateRowSum(row),
+                priceTrain: formatNumberWithCommas(row.priceTrain),
+                priceHouse: formatNumberWithCommas(row.priceHouse),
+                priceCustomer: formatNumberWithCommas(row.priceCustomer),
+                priceEat: formatNumberWithCommas(row.priceEat),
+                priceOther: formatNumberWithCommas(row.priceOther),
+                totalPrice: formatNumberWithCommas(calculateRowSum(row)),
 
                 // tax: row.tax,
                 // check: checkedState[index], // Trạng thái checkbox tại index tương ứng
                 note: row.note,
                 owner: users.realname,
-                calculatedPrice: calculatedPrice,
-                finalPayment: finalPayment,
+                calculatedPrice: formatNumberWithCommas(calculatedPrice),
+                finalPayment: formatNumberWithCommas(finalPayment),
                 tableName: tableName,
-                finalTotalPrice: finalTotalPrice,
+                finalTotalPrice: formatNumberWithCommas(finalTotalPrice),
             }));
 
             // Tạo đối tượng JSON chứa các mảng dữ liệu

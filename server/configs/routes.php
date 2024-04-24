@@ -101,6 +101,7 @@
     $routes['application/addcommentthird'] = 'application/addcommentthird';
     $routes['tabcontent'] = 'tabcontent';
     $routes['application/updatestatus'] = 'application/updatestatus';
+    $routes['application/getapplicationbyidstatus/.+-(\d+)'] = 'application/getapplicationbyidstatus/$1';
 
     // Form
     $routes['form/add'] = 'form/add';
