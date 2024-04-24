@@ -43,6 +43,7 @@ import { Tab6Content } from './components/Tabs/Tab6Content';
 import { Tab7Content } from './components/Tabs/Tab7Content';
 import FormAdd from './pages/Form/FormAdd';
 import FormDetail from './pages/Form/FormDetail';
+import NewApplication from './pages/NewApplication';
 
 export default function App() {
   const { id } = useParams<{ id: string }>();
@@ -125,6 +126,8 @@ export default function App() {
 
               <Route path="form/add" element={<FormAdd />} />
               <Route path="form/detail/:id" element={<FormDetail />} />
+
+              <Route path="newapplication" element={<NewApplication />} />
             </Route>
           </Route>
           <Route path="/login" element={<FluidLayout />}>
