@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import moment from 'moment';
 import DatePicker from 'react-multi-date-picker';
 
+import '../../Module/moduleSCSS.scss';
+
 interface Row {
     date: Date;
     id: number;
@@ -34,9 +36,6 @@ const C_TravelExpenses = () => {
 
         setVisibleErrors(newVisibleErrors);
     };
-
-
-
 
     const [mealExpenses, setMealExpenses] = useState<string[]>(new Array(rows.length).fill(''));
 
@@ -104,34 +103,38 @@ const C_TravelExpenses = () => {
     };
     return (
         <>
-            <table>
-                <thead>
-                    <tr>
-                        <th>日付</th>
-                        <th>路線</th>
-                        <th>乗車駅</th>
-                        <th>下車駅</th>
-                        <th>金額</th>
-                        <th>備考</th>
+            <div className="table tbl_custom">
+                <div className='tbl_custom--03'>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>日付</th>
+                                <th>路線</th>
+                                <th>乗車駅</th>
+                                <th>下車駅</th>
+                                <th>金額</th>
+                                <th>備考</th>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((row, index) => (
-                        <tr key={row.id}>
-                            <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY/MM/DD HH:mm:ss" /></td>
-                            <td><input type="text" value={row.route} onChange={(e) => handleInputChange(e, index, 'route')} placeholder='入力してください' /></td>
-                            <td><input type="text" value={row.boardingStation} onChange={(e) => handleInputChange(e, index, 'boardingStation')} placeholder='入力してください' /></td>
-                            <td><input type="text" value={row.alightingStation} onChange={(e) => handleInputChange(e, index, 'alightingStation')} placeholder='入力してください' /></td>
-                            <td><input className="numberInput" type="text" value={mealExpenses[index]} onChange={(e) => handleNumberChange(e, index)} placeholder='0' /></td>
-                            <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
-                        </tr>
-                    ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map((row, index) => (
+                                <tr key={row.id}>
+                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY/MM/DD HH:mm:ss" /></td>
+                                    <td><input type="text" value={row.route} onChange={(e) => handleInputChange(e, index, 'route')} placeholder='入力してください' /></td>
+                                    <td><input type="text" value={row.boardingStation} onChange={(e) => handleInputChange(e, index, 'boardingStation')} placeholder='入力してください' /></td>
+                                    <td><input type="text" value={row.alightingStation} onChange={(e) => handleInputChange(e, index, 'alightingStation')} placeholder='入力してください' /></td>
+                                    <td><input className="numberInput" type="text" value={mealExpenses[index]} onChange={(e) => handleNumberChange(e, index)} placeholder='0' /></td>
+                                    <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
+                                </tr>
+                            ))}
 
 
-                </tbody>
-            </table>
-            <p onClick={addRow} className='plus-row'> 行を追加する</p>
+                        </tbody>
+                    </table>
+                    <p onClick={addRow} className='plus-row'> 行を追加する</p>
+                </div>
+            </div>
         </>
     );
 };

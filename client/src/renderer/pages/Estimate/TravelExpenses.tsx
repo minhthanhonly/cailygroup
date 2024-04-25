@@ -6,6 +6,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import moment from 'moment';
 import { toast } from "react-toastify";
 import C_TravelExpenses from './Components/C_TravelExpenses';
+import C_TotalTravelExpenses from './Components/C_TotalTravelExpenses';
 
 
 
@@ -135,23 +136,11 @@ export const TravelExpenses = (props: { id_table: any; }) => {
             <h2 className="hdglv2"><span>交通費清算書</span></h2>
             <p className="txt-lead">下記の通り申請致します。</p>
 
-            <div className="table tbl_custom">
-                <div className='tbl_custom--03'>
-                    <C_TravelExpenses />
 
-                </div>
 
-                <div className='tbl_custom--04 tbl_width tbl_right'>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <th>合計金額</th>
-                                <td>{formatNumberWithCommas(total)}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <C_TravelExpenses />
+            <C_TotalTravelExpenses />
+
 
             <div className='box-router'>
                 <div className='box-router__title'>承認ルート</div>
