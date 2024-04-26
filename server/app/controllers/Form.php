@@ -6,10 +6,10 @@
             return $getBearerToken;
         }
 
-        function add($form_name='', $reactFormData='', $status='', $owner=''){
+        function add($form_name='', $formDescription='', $reactFormData='', $status='', $owner=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('FormModel')->postAdd($form_name, $reactFormData, $status, $owner);
+                return $this->model('FormModel')->postAdd($form_name, $formDescription, $reactFormData, $status, $owner);
             }
         }
 

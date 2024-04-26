@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate } from "../../api/axios";
-import F_Text from "../Form/Field/F_Text";
+import ComponentInputText from "../Form/Component/ComponentInputText";
+import ComponentText from "../Form/Component/ComponentText";
+import C_TravelExpenses from "../Estimate/Components/C_TravelExpenses";
+import ComponentDatePicker from "../Form/Component/ComponentDatePicker";
+import ComponentTextArea from "../Form/Component/ComponentTextArea";
+import { Heading2 } from "../../components/Heading";
+import { ButtonBack } from "../../components/Button/ButtonBack";
+import ComponentCheckbox from "../Form/Component/ComponentCheckbox";
 
 export default function NewApplicationDetail(){
   const { id } = useParams();
+  const [formName, setFormName] = useState('');
   const [formData, setFormData] = useState<any>([]);
+  const navigate = useNavigate();
 
   const fetchNewApplicationById = async () => {
     try {
@@ -16,37 +25,63 @@ export default function NewApplicationDetail(){
         ...parsedFormJson.reactFormData, // Giữ nguyên các trường từ dữ liệu cũ
       ];
       setFormData(field);
-      console.log(field);
+      setFormName(data[0].form_name);
     } catch (error) {
       console.error('Error fetching data: ', error);
     }
   };
-
+0
   useEffect(() => {
     fetchNewApplicationById();
   },[])
 
+  const handleBackIndex = () => {
+    navigate('/newapplication');
+  }
+
   let formHTML: any = "";
+
   return (
     <>
-      <h1>NewApplicationDetail</h1>
+      <Heading2 text={formName} />
       {
         formData.map((item, index) => {
           switch(item.key){
             case 'F_Text':
-              return <F_Text/>;
-            // case 'F_InputText':
-            //   return <F_InputText/>;
-            // case 'F_Checkbox':
-            //   return <F_Checkbox/>;
-            // case 'F_TextArea':
-            //   return <F_TextArea/>;
+              return <div className="c-row" key={index}><ComponentText text={item.content}/></div>;
+            case 'F_InputText':
+              return <div className="c-row" key={index}><ComponentInputText label={item.label} required={item.required}/></div>;
+            case 'F_DatePicker':
+              return <div className="c-row" key={index}><ComponentDatePicker label={item.label} required={item.required} customOptions={item.custom_options} days={item.props[0].days} timesto={item.props[0].timesto} /></div>;
+            case 'F_TextArea':
+              return <div className="c-row" key={index}><ComponentTextArea label={item.label} required={item.required}/></div>;
+            case 'F_Checkbox':
+              return <div className="c-row" key={index}><ComponentCheckbox label={item.label} required={item.required} customOptions={item.custom_options}/></div>
             default:
               formHTML+= "";
               break;
           }
         })
       }
+      <div className="box-router">
+        <div className="box-router__title">承認ルート</div>
+          <div className="grid-row box-router__grid">
+            <div className="box-router__name">
+              <p>承認者: </p> <p>齋藤社長</p>
+            </div>
+            <div className="box-router__name">
+              <p>共有者: </p> <p>総務</p>
+            </div>
+          </div>
+          <div className="box-router__edit">
+            <p className="plus-row">承認ルートを編集</p>
+          </div>
+      </div>
+      <div className="wrp-button mt50">
+        <button className="btn btn--from btn--gray">下書き保存</button>
+        <button className="btn btn--from btn--blue">申請する</button>
+      </div>
+      <ButtonBack onHandle={handleBackIndex}/>
     </>
   )
 }
