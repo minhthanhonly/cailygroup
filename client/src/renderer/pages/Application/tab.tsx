@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { TabContent } from '../Application/tabContent';
+import TabContent from '../Application/tabContent';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-
 interface TabContentProps {
   id_status: string | number;
 }
@@ -12,6 +11,7 @@ export const Tab: React.FC<TabContentProps & { key: React.Key }> = ({
 }) => {
   const axiosPrivate = useAxiosPrivate();
   const [items, setItems] = useState<any>([]);
+  const [infoStatus, setInfoStatus] = useState<any>([]);
 
   useEffect(() => {
     const Load = async () => {

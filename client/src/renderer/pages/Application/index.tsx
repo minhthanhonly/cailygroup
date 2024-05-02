@@ -1,15 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { Heading2 } from '../../components/Heading';
-import { Tab } from './tab';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Link } from 'react-router-dom';
 import { Search } from '../Search/index';
+import TabContent from '../Application/tabContent';
+import { UserRole } from '../../components/UserRole';
+import { emitter } from '../../layouts/components/Sidebar/index';
+import editIcon from '../../../../assets/icn-edit.png';
+import closeIcon from '../../../../assets/icn-close.png';
+import { Travelallowance } from './travelallowance';
+import { Report } from './report';
+import { Expense } from './expense';
+import { Business } from './business';
+import { Register } from './register';
 
+interface TabContentProps {
+  id_status: string | number;
+  id: string | number;
+}
+interface AccordionItem {
+  id: string | number;
+}
 export const Application = () => {
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const isAdmin = users.roles === UserRole.ADMIN;
+  const isManager = users.roles === UserRole.MANAGER;
+  const isLeader = users.roles === UserRole.LEADER;
   const axiosPrivate = useAxiosPrivate();
-  const [activeTab, setActiveTab] = useState('tab2');
+  const [activeTab, setActiveTab] = useState('tab1');
   const [statusCount, setStatusCount] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [statusTotal, setStatusTotal] = useState(0);
+  const [infoStatus, setInfoStatus] = useState('');
+  const [idStatus, setIdStatus] = useState('');
+
+  ////////////////////////////
+  const [items, setItems] = useState<any>([]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -47,17 +72,50 @@ export const Application = () => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
-
   useEffect(() => {
     Load();
   }, []);
   useEffect(() => {
     Load();
   }, [activeTab]);
+  //  tab
+
+  useEffect(() => {
+    const LoadTab = async () => {
+      try {
+        let idStatus;
+        if (activeTab === 'tab1') {
+          idStatus = 1;
+        } else if (activeTab === 'tab2') {
+          idStatus = -1;
+        } else if (activeTab === 'tab3') {
+          idStatus = 2;
+        } else if (activeTab === 'tab4') {
+          idStatus = 3;
+        } else if (activeTab === 'tab5') {
+          idStatus = 4;
+        } else if (activeTab === 'tab6') {
+          idStatus = 5;
+        } else if (activeTab === 'tab7') {
+          idStatus = 6;
+        }
+        // console.log('id_status:', idStatus);
+        const response = await axiosPrivate.get('application', {
+          params: {
+            id_status: idStatus,
+          },
+        });
+        const data = response.data;
+        setItems(data);
+      } catch (error) {
+        console.error('Lỗi khi cập nhật trạng thái :', error);
+      }
+    };
+    LoadTab();
+  }, [activeTab, idStatus]); // Thêm id_status vào mảng dependency để useEffect chạy lại khi id_status thay đổi
 
   return (
     <div>
-
       <div className="grid-row grid-flex">
         <Heading2 text="申請状況" />
         <Link to="/search">
@@ -136,13 +194,83 @@ export const Application = () => {
           <div className="tab01 tab-content">
             <div className="list-accordion">
               <div className="list-accorditon__inner">
-                {activeTab === 'tab1' && <Tab key="tab1" id_status={1} />}
-                {activeTab === 'tab2' && <Tab key="tab2" id_status={-1} />}
-                {activeTab === 'tab3' && <Tab key="tab3" id_status={2} />}
-                {activeTab === 'tab4' && <Tab key="tab4" id_status={3} />}
-                {activeTab === 'tab5' && <Tab key="tab5" id_status={4} />}
-                {activeTab === 'tab6' && <Tab key="tab6" id_status={5} />}
-                {activeTab === 'tab7' && <Tab key="tab7" id_status={6} />}
+                {activeTab === 'tab1' && (
+                  <div className="table_content">
+                    {Array.isArray(items) && items.length > 0 && (
+                      <div>
+                        {items.map((item, index) => (
+                          <TabContent key={index} id={item.id} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {activeTab === 'tab2' && (
+                  <div className="table_content">
+                    {Array.isArray(items) && items.length > 0 && (
+                      <div>
+                        {items.map((item, index) => (
+                          <TabContent key={index} id={item.id} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {activeTab === 'tab3' && (
+                  <div className="table_content">
+                    {Array.isArray(items) && items.length > 0 && (
+                      <div>
+                        {items.map((item, index) => (
+                          <TabContent key={index} id={item.id} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {activeTab === 'tab4' && (
+                  <div className="table_content">
+                    {Array.isArray(items) && items.length > 0 && (
+                      <div>
+                        {items.map((item, index) => (
+                          <TabContent key={index} id={item.id} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {activeTab === 'tab5' && (
+                  <div className="table_content">
+                    {Array.isArray(items) && items.length > 0 && (
+                      <div>
+                        {items.map((item, index) => (
+                          <TabContent key={index} id={item.id} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {activeTab === 'tab6' && (
+                  <div className="table_content">
+                    {Array.isArray(items) && items.length > 0 && (
+                      <div>
+                        {items.map((item, index) => (
+                          <TabContent key={index} id={item.id} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {activeTab === 'tab7' && (
+                  <div className="table_content">
+                    {Array.isArray(items) && items.length > 0 && (
+                      <div>
+                        {items.map((item, index) => (
+                          <TabContent key={index} id={item.id} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
