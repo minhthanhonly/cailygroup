@@ -41,20 +41,70 @@ export default function NewApplicationDetail(){
 
   let formHTML: any = "";
 
+  const [formValue, setFormValue] = useState({});
+  const [dateValue, setDateValue] = useState({});
+  const [message, setMessage] = useState('');
+
+  // Receive data from children
+  const callbackFunction = (label, childData) => {
+    setFormValue({ ...formValue, [label]: childData})
+  }
+
+  // console.log(formValue);
+
+  const callbackFunctionDate = (label, childData) => {
+    setDateValue({ ...dateValue, [label]: childData})
+  }
+
+  console.log(dateValue);
+
+
+
   return (
     <>
       <Heading2 text={formName} />
+      {/* <p> {formValue.tablejson} </p> */}
+      <div className="c-row"><p className="txt-lead">下記の通り申請致します。 </p></div>
       {
         formData.map((item, index) => {
           switch(item.key){
             case 'F_Text':
               return <div className="c-row" key={index}><ComponentText text={item.content}/></div>;
             case 'F_InputText':
-              return <div className="c-row" key={index}><ComponentInputText label={item.label} required={item.required}/></div>;
+              return(
+                <div className="c-row" key={index}>
+                  <ComponentInputText
+                    name={item.id}
+                    label={item.label}
+                    required={item.required}
+                    parentCallback={callbackFunction}
+                  />
+                </div>
+              )
             case 'F_DatePicker':
-              return <div className="c-row" key={index}><ComponentDatePicker label={item.label} required={item.required} customOptions={item.custom_options} days={item.props[0].days} timesto={item.props[0].timesto} /></div>;
+              return (
+                <div className="c-row" key={index}>
+                  <ComponentDatePicker
+                    label={item.label}
+                    required={item.required}
+                    customOptions={item.custom_options}
+                    days={item.props[0].days}
+                    times={item.props[0].times}
+                    timesto={item.props[0].timesto}
+                    parentCallback={callbackFunctionDate}
+                  />
+                </div>
+              )
             case 'F_TextArea':
-              return <div className="c-row" key={index}><ComponentTextArea label={item.label} required={item.required}/></div>;
+              return (
+                <div className="c-row" key={index}>
+                  <ComponentTextArea
+                    label={item.label}
+                    required={item.required}
+                    parentCallback={callbackFunction}
+                  />
+                </div>
+              )
             case 'F_Checkbox':
               return <div className="c-row" key={index}><ComponentCheckbox label={item.label} required={item.required} customOptions={item.custom_options}/></div>
             default:

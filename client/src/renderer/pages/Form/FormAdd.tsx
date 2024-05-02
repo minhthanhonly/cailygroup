@@ -15,14 +15,16 @@ import F_DatePicker from "./Field/F_DatePicker";
 import F_RadioButtons from "./Field/F_RadioButtons";
 
 import { isValidForm } from "../../components/Validate";
+import { useNavigate } from "react-router-dom";
 
 export default function FormAdd(){
   const axiosPrivate = useAxiosPrivate();
 	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'});
   const [formDescription, setFormDescription] = useState('');
   const [reactFormData, setReactFormData] = useState<any>([]);
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [msg, setMsg] = useState('');
 
   const items = [
     {
@@ -110,7 +112,7 @@ export default function FormAdd(){
       name: 'Textarea',
       static: true,
       icon: 'fas fa-text-height',
-      label: '行先',
+      label: '事由',
     },
     {
       key: 'F_DatePicker',
@@ -156,6 +158,14 @@ export default function FormAdd(){
     if (validationErrors === true) {
       const formData = { form_name: formValue.form_name, formDescription, reactFormData, status: formValue.status, owner: formValue.owner }
       const res = await axiosPrivate.post("form/add", formData);
+      if(res.data.success === 'error'){
+        setError('Bị lỗi khi thêm Form mới');
+      } else {
+        setMsg('Thêm Form mới thành công');
+        setTimeout(() => {
+					navigate('/newapplication');
+				}, 2000);
+      }
     }
   }
 
@@ -166,9 +176,9 @@ export default function FormAdd(){
 
   return (
     <>
-    {/* {error=='' ? '' : <div className="box-bg mb20"><p className="bg bg-red">{error}</p></div>}
-            {msg=='' ? '' : <div className="box-bg mb20"><p className="bg bg-green">{msg}</p></div>} */}
       <Heading2 text="Add New Form" />
+      {error=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
+      {msg=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
       <div className="c-form">
         <input
           className="c-form-control"
