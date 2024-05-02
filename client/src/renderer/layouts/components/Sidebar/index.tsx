@@ -33,6 +33,7 @@ export const emitter = mitt();
 export const Sidebar = () => {
   const axiosPrivate = useAxiosPrivate();
   const naviget = useNavigate();
+  const [firstLoad, setFirstLoad] = useState(true);
   const { auth } = useAuth();
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -59,11 +60,15 @@ export const Sidebar = () => {
 
 
   useEffect(() => {
+    if (firstLoad) {
+      reloadSidebar(); // Gọi reloadSidebar khi render lần đầu tiên
+      setFirstLoad(false); // Đánh dấu đã render lần đầu tiên
+    }
     emitter.on('reloadSidebar', reloadSidebar);
     return () => {
       emitter.off('reloadSidebar', reloadSidebar);
     };
-  }, []);
+  }, [firstLoad]);
 
   const reloadSidebar = async () => {
     try {
