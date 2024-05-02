@@ -5,6 +5,7 @@ import { Heading2 } from "../../components/Heading";
 
 export default function NewApplication(){
   type FieldNewApplication = {
+    form_description: string;
     id: number,
     form_name: string,
   };
@@ -17,7 +18,6 @@ export default function NewApplication(){
   useEffect(() => {
     fetchNewApplication();
   },[])
-
   return (
     <>
       <Heading2 text="申請書一覧" />
@@ -26,7 +26,7 @@ export default function NewApplication(){
           {listNewApplication.map((value, index) => (
             <tr key={index}>
               <th><NavLink to={"detail/" + value.id} className="link">{value.form_name}</NavLink></th>
-              <td>NewApplication</td>
+              <td>{value.form_description}</td>
             </tr>
           ))}
         </tbody>

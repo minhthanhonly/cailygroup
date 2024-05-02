@@ -10,13 +10,9 @@ class F_Text extends React.Component {
     let baseClasses = 'SortableItem rfb-item';
     // if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
 
-
-    console.log(this);
-
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
-        <p>Hi</p>
-        {/* <p className={`${classNames} txt-lead`} dangerouslySetInnerHTML={{ __html: this.props.data.content }}/> */}
+        <p className={`${classNames} txt-lead`} dangerouslySetInnerHTML={{ __html: this.props.data.content }}/>
       </div>
     );
   }
