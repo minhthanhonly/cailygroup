@@ -111,4 +111,5 @@
     // Newapplication
     $routes['newapplication'] = 'newapplication';
     $routes['newapplication/detail/.+-(\d+)'] = 'newapplication/detail/$1';
+    $routes['newapplication/delete'] = 'newapplication/delete';
 ?>

@@ -50,5 +50,28 @@
 			// Đóng kết nối
 			$conn->close();
 		}
+
+		function delete(){
+			global $conn;
+			$formPostData = json_decode(file_get_contents("php://input"));
+
+			// Lấy dữ liệu từ phần thân của yêu cầu
+			$id = $formPostData->id;
+
+			// Thực hiện truy vấn SELECT
+			$sql = "DELETE FROM forms WHERE id='$id'";
+			$result = $conn->query($sql);
+
+			header('Content-Type: application/json');
+			if($result) {
+				$result = "ok";
+				echo json_encode(['success' => $result]);
+				return;
+			} else {
+				$result = "error";
+				echo json_encode(['success' => $result]);
+				return;
+			}
+		}
 	}
 ?>

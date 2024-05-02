@@ -15,13 +15,16 @@ import F_DatePicker from "./Field/F_DatePicker";
 import F_RadioButtons from "./Field/F_RadioButtons";
 
 import { isValidForm } from "../../components/Validate";
+import { useNavigate } from "react-router-dom";
 
 export default function FormAdd(){
   const axiosPrivate = useAxiosPrivate();
-	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'})
+	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'});
+  const [formDescription, setFormDescription] = useState('');
   const [reactFormData, setReactFormData] = useState<any>([]);
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [msg, setMsg] = useState('');
 
   const items = [
     {
@@ -109,7 +112,7 @@ export default function FormAdd(){
       name: 'Textarea',
       static: true,
       icon: 'fas fa-text-height',
-      label: '行先',
+      label: '事由',
     },
     {
       key: 'F_DatePicker',
@@ -144,13 +147,25 @@ export default function FormAdd(){
   const handleInput = (e) => {
 		setFormValue({ ...formValue, [e.target.name]: e.target.value })
 	}
+  const handleTextareaChange = (e) => {
+    const newValue = e.target.value.replace(/\n/g, ''); // Xóa tất cả các ký tự '\n'
+    setFormDescription(newValue);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = isValidForm({ ...formValue }, reactFormData);
     if (validationErrors === true) {
-      const formData = { form_name: formValue.form_name, reactFormData, status: formValue.status, owner: formValue.owner }
+      const formData = { form_name: formValue.form_name, formDescription, reactFormData, status: formValue.status, owner: formValue.owner }
       const res = await axiosPrivate.post("form/add", formData);
+      if(res.data.success === 'error'){
+        setError('Bị lỗi khi thêm Form mới');
+      } else {
+        setMsg('Thêm Form mới thành công');
+        setTimeout(() => {
+					navigate('/newapplication');
+				}, 2000);
+      }
     }
   }
 
@@ -161,14 +176,21 @@ export default function FormAdd(){
 
   return (
     <>
+      <Heading2 text="Add New Form" />
+      {error=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
+      {msg=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
       <div className="c-form">
-        <Heading2 text="Add New Form" />
         <input
           className="c-form-control"
           type="text"
           name="form_name"
           value={formValue.form_name} onChange={handleInput} placeholder="Enter name here"
         />
+      </div>
+      <div className="c-form">
+        <textarea className="c-form-control" name="form_description" placeholder="Enter description here" value={formDescription} onChange={handleTextareaChange}></textarea>
+      </div>
+      <div className="c-form mt50">
         <ReactFormBuilder
           toolbarItems={items}
           data={reactFormData}
@@ -176,126 +198,69 @@ export default function FormAdd(){
           onSubmit={handleSubmit}
           renderEditForm={props => <FormElementsEdit {...props}/>}
         />
-        <div className="wrp-button">
-          <button className="btn btn--from btn--gray" onClick={handleSubmitDraft}>下書き保存</button>
-          <button className="btn btn--from btn--blue" onClick={handleSubmit}>申請する</button>
-        </div>
-        {/* <div className="c-form">
-          <div className="c-form-inner">
-            <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
-            <div className="c-form-content">
-              <div className="grid-row">
-                <div className="c-form-item">
-                  <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
-                </div>
-                <div className="c-form-item">
-                  <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
-                </div>
+      </div>
+      <div className="wrp-button">
+        <button className="btn btn--from btn--gray" onClick={handleSubmitDraft}>下書き保存</button>
+        <button className="btn btn--from btn--blue" onClick={handleSubmit}>申請する</button>
+      </div>
+      {/*
+      <div className="c-form">
+        <div className="c-form-inner">
+          <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
+          <div className="c-form-content">
+            <div className="grid-row">
+              <div className="c-form-item">
+                <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
+              </div>
+              <div className="c-form-item">
+                <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
+              </div>
+              <div className="c-form-item">
+                <input type="text" className="c-form-control c-form-control--02" />
+                <label className="c-form-label--02">日間</label>
               </div>
             </div>
           </div>
         </div>
-        <div className="c-form">
-          <div className="c-form-inner">
-            <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
-            <div className="c-form-content">
-              <div className="grid-row">
-                <div className="c-form-item">
-                  <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
-                </div>
-                <div className="c-form-item">
-                  <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
-                </div>
-                <div className="c-form-item">
-                  <input type="text" className="c-form-control c-form-control--02" />
-                  <label className="c-form-label--02">日間</label>
-                </div>
+      </div>
+      <div className="c-form">
+        <div className="c-form-inner">
+          <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
+          <div className="c-form-content">
+            <div className="grid-row">
+              <div className="c-form-item">
+                <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="c-form">
-          <div className="c-form-inner">
-            <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
-            <div className="c-form-content">
-              <div className="grid-row">
-                <div className="c-form-item">
-                  <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
+              <div className="c-form-inner">
+                <div className="c-form-item--02">
+                  <input type="text" className="c-form-control" placeholder="hh:mm" />
                 </div>
-                <div className="c-form-inner">
-                  <div className="c-form-item--02">
-                    <input type="text" className="c-form-control" placeholder="hh:mm" />
-                  </div>
-                  <div className="c-form-item--02">
-                    <input type="text" className="c-form-control" placeholder="hh:mm" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="c-form">
-          <div className="c-form-inner">
-            <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
-            <div className="c-form-content">
-              <div className="grid-row">
-                <div className="c-form-item">
-                  <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
-                </div>
-                <div className="c-form-item">
+                <div className="c-form-item--02">
                   <input type="text" className="c-form-control" placeholder="hh:mm" />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="c-form">
-          <div className="c-form-inner">
-            <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
-            <div className="c-form-content">
-              <div className="grid-row grid-row--02">
-                <div className="c-form-item--03">
-                  <label className="c-form-label--03"><input type="checkbox" className="c-form-control" /><span className="checkmark"></span>出社</label>
-                </div>
-                <div className="c-form-item--03">
-                  <label className="c-form-label--03"><input type="checkbox" className="c-form-control" /><span className="checkmark"></span>出社</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="c-form">
-          <div className="c-form-inner">
-            <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
-            <div className="c-form-content">
-              <div className="grid-row grid-row--02">
-                <div className="c-form-item--03">
-                  <label className="c-form-label--03"><input type="radio" name="radio_name_1" className="c-form-control" /><span className="checkmark checkmark--oval"></span>出社</label>
-                </div>
-                <div className="c-form-item--03">
-                  <label className="c-form-label--03"><input type="radio" name="radio_name_1" className="c-form-control" /><span className="checkmark checkmark--oval"></span>出社</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="c-form">
-          <div className="c-form-inner">
-            <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
-            <div className="c-form-content">
-              <input type="text" className="c-form-control" placeholder="入力してください" />
-            </div>
-          </div>
-        </div>
-        <div className="c-form">
-          <div className="c-form-inner">
-            <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
-            <div className="c-form-content">
-              <textarea className="c-form-control" placeholder="入力してください"></textarea>
-            </div>
-          </div>
-        </div> */}
       </div>
+      <div className="c-form">
+        <div className="c-form-inner">
+          <label className="c-form-label"><span>期間</span><span className="c-form-label--required txt-red">（必須）</span></label>
+          <div className="c-form-content">
+            <div className="grid-row">
+              <div className="c-form-item">
+                <input type="text" className="c-form-control" placeholder="yyyy/mm/dd" />
+              </div>
+              <div className="c-form-item">
+                <input type="text" className="c-form-control" placeholder="hh:mm" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      */}
     </>
   )
 }
