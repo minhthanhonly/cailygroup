@@ -4,39 +4,20 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Link } from 'react-router-dom';
 import { Search } from '../Search/index';
 import TabContent from '../Application/tabContent';
-import { UserRole } from '../../components/UserRole';
-import { emitter } from '../../layouts/components/Sidebar/index';
-import editIcon from '../../../../assets/icn-edit.png';
-import closeIcon from '../../../../assets/icn-close.png';
-import { Travelallowance } from './travelallowance';
-import { Report } from './report';
-import { Expense } from './expense';
-import { Business } from './business';
-import { Register } from './register';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { toast } from 'react-toastify';
 
-interface TabContentProps {
-  id_status: string | number;
-  id: string | number;
-}
-interface AccordionItem {
-  id: string | number;
-}
 export const Application = () => {
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
-  const isAdmin = users.roles === UserRole.ADMIN;
-  const isManager = users.roles === UserRole.MANAGER;
-  const isLeader = users.roles === UserRole.LEADER;
   const axiosPrivate = useAxiosPrivate();
-  const [activeTab, setActiveTab] = useState('tab1');
+  const [activeTab, setActiveTab] = useState('tab2');
   const [statusCount, setStatusCount] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [statusTotal, setStatusTotal] = useState(0);
   const [infoStatus, setInfoStatus] = useState('');
   const [idStatus, setIdStatus] = useState('');
-
-  ////////////////////////////
+  const [id_status, setIdstatus] = useState('');
   const [items, setItems] = useState<any>([]);
 
-  const handleTabClick = (tab) => {
+  const handleTabClick = (tab: any) => {
     setActiveTab(tab);
   };
   useEffect(() => {
@@ -65,21 +46,12 @@ export const Application = () => {
           updatedStatusCount[statusIndex] += 1;
         }
       });
-
       // Cập nhật statusCount
       setStatusCount(updatedStatusCount);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
-  useEffect(() => {
-    Load();
-  }, []);
-  useEffect(() => {
-    Load();
-  }, [activeTab]);
-  //  tab
-
   useEffect(() => {
     const LoadTab = async () => {
       try {
@@ -112,7 +84,19 @@ export const Application = () => {
       }
     };
     LoadTab();
-  }, [activeTab, idStatus]); // Thêm id_status vào mảng dependency để useEffect chạy lại khi id_status thay đổi
+  }, [activeTab]); // Thêm id_status vào mảng dependency để useEffect chạy lại khi id_status thay đổi
+
+  const handleDataFromChild = (id_status: any) => {
+    setIdstatus(id_status);
+    setActiveTab('tab2');
+    //console.log(id_status);
+    toast.success('Bạn đã cập nhật trạng thái thành công !');
+    Load();
+  };
+  useEffect(() => {
+    Load();
+  }, [activeTab]);
+  //  tab
 
   return (
     <div>
@@ -199,7 +183,11 @@ export const Application = () => {
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
                         {items.map((item, index) => (
-                          <TabContent key={index} id={item.id} />
+                          <TabContent
+                            key={index}
+                            id={item.id}
+                            sendDataToParent={handleDataFromChild}
+                          />
                         ))}
                       </div>
                     )}
@@ -210,7 +198,11 @@ export const Application = () => {
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
                         {items.map((item, index) => (
-                          <TabContent key={index} id={item.id} />
+                          <TabContent
+                            key={index}
+                            id={item.id}
+                            sendDataToParent={handleDataFromChild}
+                          />
                         ))}
                       </div>
                     )}
@@ -221,7 +213,11 @@ export const Application = () => {
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
                         {items.map((item, index) => (
-                          <TabContent key={index} id={item.id} />
+                          <TabContent
+                            key={index}
+                            id={item.id}
+                            sendDataToParent={handleDataFromChild}
+                          />
                         ))}
                       </div>
                     )}
@@ -232,7 +228,11 @@ export const Application = () => {
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
                         {items.map((item, index) => (
-                          <TabContent key={index} id={item.id} />
+                          <TabContent
+                            key={index}
+                            id={item.id}
+                            sendDataToParent={handleDataFromChild}
+                          />
                         ))}
                       </div>
                     )}
@@ -243,7 +243,11 @@ export const Application = () => {
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
                         {items.map((item, index) => (
-                          <TabContent key={index} id={item.id} />
+                          <TabContent
+                            key={index}
+                            id={item.id}
+                            sendDataToParent={handleDataFromChild}
+                          />
                         ))}
                       </div>
                     )}
@@ -254,7 +258,11 @@ export const Application = () => {
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
                         {items.map((item, index) => (
-                          <TabContent key={index} id={item.id} />
+                          <TabContent
+                            key={index}
+                            id={item.id}
+                            sendDataToParent={handleDataFromChild}
+                          />
                         ))}
                       </div>
                     )}
@@ -265,7 +273,11 @@ export const Application = () => {
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
                         {items.map((item, index) => (
-                          <TabContent key={index} id={item.id} />
+                          <TabContent
+                            key={index}
+                            id={item.id}
+                            sendDataToParent={handleDataFromChild}
+                          />
                         ))}
                       </div>
                     )}
