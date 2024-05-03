@@ -26,7 +26,6 @@ const TabContent = ({ id, sendDataToParent }) => {
   const [commentValue, setCommentValue] = useState('');
   const [commentValueThird, setCommentValueThird] = useState('');
   const [isChecked, setIsChecked] = useState(false);
-  const [infoStatus, setInfoStatus] = useState('');
   const [approve, setApprove] = useState({
     approveTexts: '',
     approveClass: '',
@@ -74,8 +73,6 @@ const TabContent = ({ id, sendDataToParent }) => {
       );
       //console.log(idStatusCurrent);
       sendDataToParent(idStatusCurrent);
-
-      Load();
     } catch (error) {
       console.error('Error updating id_status:', error);
     }

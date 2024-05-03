@@ -91,7 +91,7 @@ export const Application = () => {
     setActiveTab('tab2');
     //console.log(id_status);
     toast.success('Bạn đã cập nhật trạng thái thành công !');
-    Load();
+    //Load();
   };
   useEffect(() => {
     Load();
