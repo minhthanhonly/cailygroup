@@ -76,19 +76,34 @@ export default function NewApplicationDetail(){
     return filtered as Pick<T, K>;
   }
 
+  const fData = formData;
+  console.log();
+
   const [inputText, setInputText] = useState({});
+  const [formItemData, setFormItemData] = useState(fData);
+  console.log(formItemData);
   const callbackFunction = (id, childData) => {
     // formData.map((item, index) => {
-    //   // switch(item.key){
-    //   //   case 'F_InputText': setFormValue(...formData[index], value: childData);
-    //   //   case 'F_TextArea': setFormValue(...formData[index], value: childData);
-    //   // }
-    //   // (item.key === "F_InputText") ? setFormValue({ ...formData[index], value: childData}) : '';
-    //   (item.key === "F_TextArea" && item.id === id) ? setInputText({ ...inputText, value: childData}) : '';
-
+    //   switch(item.key){
+    //     case 'F_InputText':
+    //       return {setFormItemData({ ...formData[index], value: childData})};
+    //       break;
+    //     case 'F_TextArea':
+    //       return {setFormItemData({ ...formData[index], value: childData})};
+    //       break;
+    //   }
     // })
 
-    console.log(formData[0]);
+
+    setFormItemData(prevData =>
+      prevData.map(item => {
+        console.log(item);
+        // switch(item.key){
+        //   case 'F_InputText':
+        //     return { ...item, value: childData};
+        // }
+      })
+    )
 
 
 
@@ -102,7 +117,7 @@ export default function NewApplicationDetail(){
     e.preventDefault();
     // const filteredForm = filterObject(inputText, ["key", "label", "value", "custom_options"]);
     // console.log(filteredForm);
-    console.log(inputText);
+    console.log(formItemData);
 
   }
 
