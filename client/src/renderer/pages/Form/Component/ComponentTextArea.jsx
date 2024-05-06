@@ -1,6 +1,6 @@
 export default function ComponentTextArea(props){
   const handleInput = (e) => {
-    props.parentCallback(props.label, e.target.value);
+    props.parentCallback(props.name, e.target.value);
   }
   return (
   <div className="c-form">
