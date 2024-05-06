@@ -89,9 +89,8 @@ export const Application = () => {
   const handleDataFromChild = (id_status: any) => {
     setIdstatus(id_status);
     setActiveTab('tab2');
-    //console.log(id_status);
     toast.success('Bạn đã cập nhật trạng thái thành công !');
-    //Load();
+    Load();
   };
   useEffect(() => {
     Load();

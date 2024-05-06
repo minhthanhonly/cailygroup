@@ -73,6 +73,7 @@ const TabContent = ({ id, sendDataToParent }) => {
       );
       //console.log(idStatusCurrent);
       sendDataToParent(idStatusCurrent);
+      Load();
     } catch (error) {
       console.error('Error updating id_status:', error);
     }
