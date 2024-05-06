@@ -11,7 +11,7 @@ import { Approvalstatus } from './approvalstatus';
 import { UserRole } from '../../components/UserRole';
 import { emitter } from '../../layouts/components/Sidebar/index';
 
-const TabContent = ({ id }) => {
+const TabContent = ({ id, sendDataToParent }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
@@ -26,7 +26,6 @@ const TabContent = ({ id }) => {
   const [commentValue, setCommentValue] = useState('');
   const [commentValueThird, setCommentValueThird] = useState('');
   const [isChecked, setIsChecked] = useState(false);
-  const [infoStatus, setInfoStatus] = useState('');
   const [approve, setApprove] = useState({
     approveTexts: '',
     approveClass: '',
@@ -72,6 +71,8 @@ const TabContent = ({ id }) => {
         'application/getapplicationbyidstatus/' + idStatusCurrent,
         { headers: { 'Content-Type': 'application/json' } },
       );
+      //console.log(idStatusCurrent);
+      sendDataToParent(idStatusCurrent);
       Load();
     } catch (error) {
       console.error('Error updating id_status:', error);
