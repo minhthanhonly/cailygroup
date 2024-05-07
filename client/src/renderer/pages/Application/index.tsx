@@ -6,16 +6,18 @@ import { Search } from '../Search/index';
 import TabContent from '../Application/tabContent';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { toast } from 'react-toastify';
+import { PaginationJp } from '../../components/PaginationJp';
 
 export const Application = () => {
   const axiosPrivate = useAxiosPrivate();
   const [activeTab, setActiveTab] = useState('tab2');
-  const [statusCount, setStatusCount] = useState([0, 0, 0, 0, 0, 0, 0]);
-  const [statusTotal, setStatusTotal] = useState(0);
   const [infoStatus, setInfoStatus] = useState('');
   const [idStatus, setIdStatus] = useState('');
   const [id_status, setIdstatus] = useState('');
   const [items, setItems] = useState<any>([]);
+  const [statusCount, setStatusCount] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [statusTotal, setStatusTotal] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleTabClick = (tab: any) => {
     setActiveTab(tab);
@@ -52,6 +54,7 @@ export const Application = () => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
+
   useEffect(() => {
     const LoadTab = async () => {
       try {
@@ -79,12 +82,25 @@ export const Application = () => {
         });
         const data = response.data;
         setItems(data);
+        setCurrentPage(1);
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái :', error);
       }
     };
     LoadTab();
   }, [activeTab]); // Thêm id_status vào mảng dependency để useEffect chạy lại khi id_status thay đổi
+
+  const itemsPerPage = 20;
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const currentItems = items.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   const handleDataFromChild = (id_status: any) => {
     setIdstatus(id_status);
@@ -181,7 +197,7 @@ export const Application = () => {
                   <div className="table_content">
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
-                        {items.map((item, index) => (
+                        {currentItems.map((item, index) => (
                           <TabContent
                             key={index}
                             id={item.id}
@@ -196,7 +212,7 @@ export const Application = () => {
                   <div className="table_content">
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
-                        {items.map((item, index) => (
+                        {currentItems.map((item, index) => (
                           <TabContent
                             key={index}
                             id={item.id}
@@ -211,7 +227,7 @@ export const Application = () => {
                   <div className="table_content">
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
-                        {items.map((item, index) => (
+                        {currentItems.map((item, index) => (
                           <TabContent
                             key={index}
                             id={item.id}
@@ -226,7 +242,7 @@ export const Application = () => {
                   <div className="table_content">
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
-                        {items.map((item, index) => (
+                        {currentItems.map((item, index) => (
                           <TabContent
                             key={index}
                             id={item.id}
@@ -241,7 +257,7 @@ export const Application = () => {
                   <div className="table_content">
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
-                        {items.map((item, index) => (
+                        {currentItems.map((item, index) => (
                           <TabContent
                             key={index}
                             id={item.id}
@@ -256,7 +272,7 @@ export const Application = () => {
                   <div className="table_content">
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
-                        {items.map((item, index) => (
+                        {currentItems.map((item, index) => (
                           <TabContent
                             key={index}
                             id={item.id}
@@ -271,7 +287,7 @@ export const Application = () => {
                   <div className="table_content">
                     {Array.isArray(items) && items.length > 0 && (
                       <div>
-                        {items.map((item, index) => (
+                        {currentItems.map((item, index) => (
                           <TabContent
                             key={index}
                             id={item.id}
@@ -287,6 +303,11 @@ export const Application = () => {
           </div>
         </div>
       </div>
+      <PaginationJp
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };
