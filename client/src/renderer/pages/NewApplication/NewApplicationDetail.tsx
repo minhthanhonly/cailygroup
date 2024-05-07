@@ -42,21 +42,84 @@ export default function NewApplicationDetail(){
   let formHTML: any = "";
 
   const [formValue, setFormValue] = useState({});
+  const [startDate, setStartDate] = useState({});
+  const [endDate, setEndDate] = useState({});
   const [dateValue, setDateValue] = useState({});
   const [message, setMessage] = useState('');
 
   // Receive data from children
-  const callbackFunction = (label, childData) => {
-    setFormValue({ ...formValue, [label]: childData})
+  // const callbackFunction = (label, childData) => {
+  //   setFormValue({ ...formValue, [label]: childData});
+  // }
+
+
+
+
+  // const callbackFunctionStartDate = (label, childData) => {
+  //   setDateValue({ ...dateValue, [label]: childData});
+  //   // setStartDate({ ...startDate, [label]: childData});
+  // }
+
+  // const callbackFunctionEndDate = (label, childData) => {
+  //   setDateValue({ ...dateValue, [label]: childData});
+  //   // setEndDate({ ...endDate, [label]: childData});
+  // }
+
+
+  function filterObject<T, K extends keyof T>(obj: T, keysToKeep: K[]): Pick<T, K> {
+    const filtered: Partial<T> = {};
+    keysToKeep.forEach(key => {
+      if (obj.hasOwnProperty(key)) {
+        filtered[key] = obj[key];
+      }
+    });
+    return filtered as Pick<T, K>;
   }
 
-  // console.log(formValue);
+  const fData = formData;
+  console.log();
 
-  const callbackFunctionDate = (label, childData) => {
-    setDateValue({ ...dateValue, [label]: childData})
+  const [inputText, setInputText] = useState({});
+  const [formItemData, setFormItemData] = useState(fData);
+  console.log(formItemData);
+  const callbackFunction = (id, childData) => {
+    // formData.map((item, index) => {
+    //   switch(item.key){
+    //     case 'F_InputText':
+    //       return {setFormItemData({ ...formData[index], value: childData})};
+    //       break;
+    //     case 'F_TextArea':
+    //       return {setFormItemData({ ...formData[index], value: childData})};
+    //       break;
+    //   }
+    // })
+
+
+    setFormItemData(prevData =>
+      prevData.map(item => {
+        console.log(item);
+        // switch(item.key){
+        //   case 'F_InputText':
+        //     return { ...item, value: childData};
+        // }
+      })
+    )
+
+
+
+
   }
 
-  console.log(dateValue);
+  // const [formData, setFormData] = useState<any>([{}]);
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // const filteredForm = filterObject(inputText, ["key", "label", "value", "custom_options"]);
+    // console.log(filteredForm);
+    console.log(formItemData);
+
+  }
 
 
 
@@ -71,7 +134,8 @@ export default function NewApplicationDetail(){
             case 'F_Text':
               return <div className="c-row" key={index}><ComponentText text={item.content}/></div>;
             case 'F_InputText':
-              return(
+
+              return (
                 <div className="c-row" key={index}>
                   <ComponentInputText
                     name={item.id}
@@ -91,7 +155,6 @@ export default function NewApplicationDetail(){
                     days={item.props[0].days}
                     times={item.props[0].times}
                     timesto={item.props[0].timesto}
-                    parentCallback={callbackFunctionDate}
                   />
                 </div>
               )
@@ -99,6 +162,7 @@ export default function NewApplicationDetail(){
               return (
                 <div className="c-row" key={index}>
                   <ComponentTextArea
+                    name={item.id}
                     label={item.label}
                     required={item.required}
                     parentCallback={callbackFunction}
@@ -129,7 +193,7 @@ export default function NewApplicationDetail(){
       </div>
       <div className="wrp-button mt50">
         <button className="btn btn--from btn--gray">下書き保存</button>
-        <button className="btn btn--from btn--blue">申請する</button>
+        <button className="btn btn--from btn--blue" onClick={handleSubmit}>申請する</button>
       </div>
       <ButtonBack onHandle={handleBackIndex}/>
     </>
