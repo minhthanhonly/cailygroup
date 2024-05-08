@@ -12,7 +12,7 @@ export default function ComponentCheckbox(props){
               props.customOptions.map((option, index) => {
                 return (
                   <div className="c-form-item--03" key={index}>
-                    <label className="c-form-label--03"><input type="checkbox" className="c-form-control" /><span className="checkmark"></span>{option.text}</label>
+                    <label className="c-form-label--03"><input type="checkbox" className="c-form-control" value={option.text} /><span className="checkmark"></span>{option.text}</label>
                   </div>
                 )
               })

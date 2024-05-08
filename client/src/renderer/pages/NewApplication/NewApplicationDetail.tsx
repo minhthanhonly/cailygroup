@@ -15,6 +15,8 @@ export default function NewApplicationDetail(){
   const [formName, setFormName] = useState('');
   const [formData, setFormData] = useState<any>([]);
   const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [msg, setMsg] = useState('');
 
   const fetchNewApplicationById = async () => {
     try {
@@ -41,6 +43,12 @@ export default function NewApplicationDetail(){
 
   let formHTML: any = "";
 
+  // Lấy giá trị label của thành phần trong Form
+  const [label, setLabel] = useState('');
+  const callBackFunction = (childData) => {
+    setLabel(childData);
+  }
+
   const formRef = useRef<HTMLFormElement>(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,10 +68,18 @@ export default function NewApplicationDetail(){
 
         // Lấy các thuộc tính của đối tượng
         if (element.value) {
-          newObj = {
-            id: element.name,
-            label: element.ariaLabel,
-            value: element.value,
+          if(element.ariaLabel === null){
+            newObj = {
+              id: element.name,
+              label: label,
+              value: element.value,
+            }
+          } else {
+            newObj = {
+              id: element.name,
+              label: element.ariaLabel,
+              value: element.value,
+            }
           }
           formData.push(newObj);
         }
@@ -81,24 +97,25 @@ export default function NewApplicationDetail(){
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
+      console.log(appJsonString);
 
-			const res = await axiosPrivate.post("newapplication/add", appJsonString);
-			// if (res.data.success) {
-			// 	setMessage(res.data.success);
-			// 	setTimeout(() => {
-			// 		navigate('/members');
+			// const res = await axiosPrivate.post("newapplication/add", appJsonString);
+			// if(res.data.success === 'error'){
+      //   setError('Bị lỗi khi đăng ký');
+      // } else {
+      //   setMsg('Bạn đã đăng ký thành công');
+      //   setTimeout(() => {
+			// 		navigate('/newapplication');
 			// 	}, 2000);
-			// }
-
+      // }
     }
   }
-
-
 
   return (
     <>
       <Heading2 text={formName} />
-      {/* <p> {formValue.tablejson} </p> */}
+      {error=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
+      {msg=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
       <div className="c-row"><p className="txt-lead">下記の通り申請致します。 </p></div>
       <form ref={formRef}>
         {
@@ -107,7 +124,6 @@ export default function NewApplicationDetail(){
               case 'F_Text':
                 return <div className="c-row" key={index}><ComponentText text={item.content}/></div>;
               case 'F_InputText':
-
                 return (
                   <div className="c-row" key={index}>
                     <ComponentInputText
@@ -122,12 +138,14 @@ export default function NewApplicationDetail(){
                 return (
                   <div className="c-row" key={index}>
                     <ComponentDatePicker
+                      id={item.id}
                       label={item.label}
                       required={item.required}
                       customOptions={item.custom_options}
                       days={item.props[0].days}
                       times={item.props[0].times}
                       timesto={item.props[0].timesto}
+                      parentCallback={callBackFunction}
                     />
                   </div>
                 )
