@@ -18,13 +18,13 @@ export default function ComponentDatePicker(props){
   };
 
   const handleStartDateChange = (date) => {
-    const dateObjects = new Date(date);
-    props.parentCallbackStartDate('StartDate', dateObjects);
+    // const dateObjects = new Date(date);
+    // props.parentCallbackStartDate('StartDate', dateObjects);
   };
 
   const handleEndDateChange = (date) => {
-    const dateObjects = new Date(date);
-    props.parentCallbackEndDate('EndDate', dateObjects);
+    // const dateObjects = new Date(date);
+    // props.parentCallbackEndDate('EndDate', dateObjects);
   };
 
   return (

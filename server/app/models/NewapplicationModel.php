@@ -51,6 +51,31 @@
 			$conn->close();
 		}
 
+		function postAdd($appJsonString){
+			global $conn;
+			
+			if ($_SERVER["REQUEST_METHOD"] === "POST") {
+				$appJsonString = file_get_contents("php://input");
+				$createdAt = date('Y-m-d H:i:s');
+			
+				// Thêm dữ liệu vào cơ sở dữ liệu
+				$sql = "INSERT INTO application_details (datajson, owner, id_status, createdAt) 
+				VALUES ('$appJsonString', 'Admin', 1, NOW())";
+
+				$result = $conn->query($sql);
+
+				if($result) {
+					$result = "ok";
+					echo json_encode(['success' => $result]);
+					return;
+				} else {
+					$result = "error";
+					echo json_encode(['success' => $result]);
+					return;
+				}
+			}
+		}
+
 		function delete(){
 			global $conn;
 			$formPostData = json_decode(file_get_contents("php://input"));
