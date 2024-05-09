@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import DatePicker, { DateObject } from 'react-multi-date-picker';
+import DatePicker from 'react-multi-date-picker';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-
-import C_TravelAllowance from './Components/C_TravelAllowance';
-import C_TotalTravelAllowance from './Components/C_TotalTravelAllowance';
 
 interface Row {
   id: number;
@@ -425,8 +422,131 @@ export const TravelAllowance = (props: { id_table: any }) => {
           </tr>
         </tbody>
       </table>
-      <C_TravelAllowance />
-      <C_TotalTravelAllowance />
+      <div className="table ">
+        <div className="tbl_custom--03 boder-input">
+          <table>
+            <thead>
+              <tr>
+                <th>鉄道名</th>
+                <th>路線名</th>
+                <th className="w500">利用区間</th>
+                <th>
+                  1ヵ月の定期代 <br />
+                  (普通運賃往復の場合)
+                </th>
+                <th>備考</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, index) => (
+
+                <tr>
+                  <td>
+                    {showDatePicker && (
+                      <DatePicker
+                        onChange={(_date) => handleLeaveDateChange(_date)}
+                        value={date}
+                        format="YYYY-MM-DD HH:mm:ss"
+                      />
+                    )}
+                    <input
+                      type="text"
+                      value={row.railwayName}
+                      onChange={(e) =>
+                        handleInputChange(e, index, 'railwayName')
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={row.router}
+                      onChange={(e) => handleInputChange(e, index, 'router')}
+                    />
+                  </td>
+                  <td>
+                    {' '}
+                    <p className="grid-row grid--flex">
+                      {' '}
+                      <input
+                        className="width_auto"
+                        type="text"
+                        value={row.startroad}
+                        onChange={(e) =>
+                          handleInputChange(e, index, 'startroad')
+                        }
+                      />{' '}
+                      ↔{' '}
+                      <input
+                        className="width_auto"
+                        type="text"
+                        value={row.endroad}
+                        onChange={(e) => handleInputChange(e, index, 'endroad')}
+                      />
+                    </p>
+                  </td>
+                  <td>
+                    <input
+                      className="numberInput"
+                      type="text"
+                      placeholder="税率を入力"
+                      value={monthlyticket[index]}
+                      onChange={(e) =>
+                        handleNumberChange(e, index, 'monthlyticket')
+                      }
+                    />
+                    <input
+                      className="numberInput"
+                      type="text"
+                      placeholder="税率を入力"
+                      value={roundtrip[index]}
+                      onChange={(e) =>
+                        handleNumberChange(e, index, 'roundtrip')
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      className="input_noboder "
+                      value={row.note}
+                      onChange={(e) => handleInputChange(e, index, 'note')}
+                      placeholder="入力してください"
+                      type="text"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p onClick={addRow} className="plus-row">
+            {' '}
+            行を追加する
+          </p>
+        </div>
+        <div className="tbl_custom--04 tbl_width tbl_right">
+          <table>
+            <tbody>
+              <tr>
+                <th className="rowspan" rowSpan={2}>
+                  合計
+                </th>
+                <td>
+                  {totalMonthlyTicket !== 0
+                    ? formatNumberWithCommas(totalMonthlyTicket)
+                    : '0'}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  {totalRoundtrip !== 0
+                    ? formatNumberWithCommas(totalRoundtrip)
+                    : '0'}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <div className="box-router">
         <div className="box-router__title">承認ルート</div>
