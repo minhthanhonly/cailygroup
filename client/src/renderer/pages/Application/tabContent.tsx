@@ -369,10 +369,8 @@ const TabContent = ({ id, sendDataToParent }) => {
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
-                                申請者名：{accordionItems.realname}（申請日時：
-                                {accordionItems.date}
-                                {'\u00A0\u00A0'}
-                                {accordionItems.time}）
+                                申請者名：{Items.owner}（申請日時：
+                                {Items.createdAt}）
                               </p>
                             </div>
                           </div>

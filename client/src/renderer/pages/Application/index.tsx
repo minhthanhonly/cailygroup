@@ -85,7 +85,7 @@ export const Application = () => {
     };
     LoadTab();
   }, [activeTab]);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
