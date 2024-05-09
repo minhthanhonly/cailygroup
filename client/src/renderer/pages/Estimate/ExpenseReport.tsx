@@ -3,8 +3,6 @@ import DatePicker from 'react-multi-date-picker';
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { toast } from "react-toastify";
 import moment from 'moment';
-import C_ExpenseReport from "./Components/C_ExpenseReport";
-import C_TotalExpenseReport from "./Components/C_TotalExpenseReport";
 
 
 interface Params {
@@ -224,8 +222,59 @@ export const ExpenseReport = (props: { id_table: any; }) => {
             <h2 className="hdglv2"><span>交通費清算書</span></h2>
             <p className="txt-lead">下記の通り申請致します。</p>
 
-            <C_ExpenseReport />
-            <C_TotalExpenseReport />
+            <div className="table tbl_custom">
+                <div className='tbl_custom--03'>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>日付</th>
+                                <th>路線</th>
+                                <th>支払先</th>
+                                <th>金額（税抜）</th>
+                                <th>消費税</th>
+                                <th>軽減税率</th>
+                                <th>備考</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map((row, index) => (
+                                <tr key={row.id}>
+                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY-MM-DD HH:mm:ss" /></td>
+                                    <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'route')} /></td>
+                                    <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'paymentDestination')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceNotax[index]} onChange={(e) => handleNumberChange(e, index, 'priceNotax')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={tax[index]} onChange={(e) => handleNumberChange(e, index, 'tax')} /></td>
+                                    <td className='tdCheckbox'>
+                                        <input type="checkbox" id={`checkbox-${index}`} checked={checkedState[index]} onChange={(e) => handleCheckboxChange(index, e)} />
+                                        <label htmlFor={`checkbox-${index}`}></label>
+                                    </td>
+                                    <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'note')} /></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <p onClick={addRow} className='plus-row'> 行を追加する</p>
+                </div>
+
+
+                <div className='tbl_custom--04 table_custom'>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th className='rowspan'>小計</th>
+                                <td>{totalPriceNotTax.toLocaleString()}</td>
+                                <td>{totalpriceTax.toLocaleString()}</td>
+                            </tr>
+                            <tr>
+                                <th className='rowspan'>合計（税込）</th>
+                                <td colSpan={2}>{(totalPriceNotTax + totalpriceTax).toLocaleString()}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
 
             <div className='box-router'>
                 <div className='box-router__title'>承認ルート</div>

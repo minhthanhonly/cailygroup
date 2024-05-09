@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import moment from "moment";
 
 import { DateObject } from 'react-multi-date-picker';
-import C_PriceBusinessReport from "./Components/C_PriceBusinessReport";
-import C_TotalPriceBusinessReport from "./Components/C_TotalPriceBusinessReport";
 
 
 interface Row {
@@ -349,7 +347,7 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
     return (
         <>
             <h2 className="hdglv2"><span>出張旅費清算書</span></h2>
-            <p className="txt-lead">下記の通り申請致します。ss11s</p>
+            <p className="txt-lead">下記の通り申請致します。</p>
 
             <table className='tb-from'>
                 <tbody>
@@ -402,10 +400,71 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
                 </tbody>
             </table>
 
+            <div className="table tbl_custom">
+                <div className='tbl_custom--03'>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>日付</th>
+                                <th>項目</th>
+                                <th>交通費</th>
+                                <th>宿泊費</th>
+                                <th>交際費</th>
+                                <th>食費</th>
+                                <th>その他</th>
+                                <th>合計</th>
+                                <th>備考</th>
 
-            <C_PriceBusinessReport />
-            <C_TotalPriceBusinessReport />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map((row, index) => (
+                                <tr key={row.id}>
+                                    <td><DatePicker onChange={(_date) => handleLeaveDateChange02(_date, index)} value={date} format="YYYY/MM/DD HH:mm:ss" /> </td>
+                                    <td><input type="text" value={row.project} onChange={(e) => handleInputChange(e, index, 'project')} placeholder='入力してください' /></td>
 
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceTrain[index]} onChange={(e) => handleNumberChange(e, index, 'priceTrain')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceHouse[index]} onChange={(e) => handleNumberChange(e, index, 'priceHouse')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceCustomer[index]} onChange={(e) => handleNumberChange(e, index, 'priceCustomer')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceEat[index]} onChange={(e) => handleNumberChange(e, index, 'priceEat')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceOther[index]} onChange={(e) => handleNumberChange(e, index, 'priceOther')} /></td>
+
+                                    <td>{formatNumberWithCommas(calculateRowSum(row))}</td>
+
+                                    <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
+                                </tr>
+                            ))}
+
+
+                        </tbody>
+                    </table>
+                    <p onClick={addRow} className='plus-row'> 行を追加する</p>
+                </div>
+
+                <div className='tbl_custom--04 tbl_width tbl_right'>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>仮払金差引合計</th>
+                                <td>{formatNumberWithCommas(finalPayment)}</td>
+
+                            </tr>
+                            <tr>
+                                <th>仮払金</th>
+                                <td><input className='input_noboder numberInput' type="text" placeholder='金額を入力' value={formatNumberWithCommas(inputValue)} onChange={handleInputValueChange} /></td>
+                            </tr>
+                            <tr>
+                                <th>出張手当</th>
+                                <td><span>日当 3,000 × </span><input className='input_noboder w100 numberInput' type="text" placeholder='日数を入力' value={inputDate} onChange={handleInputPrice} /><span>日</span><span className="price">{formatNumberWithCommas(calculatedPrice)}</span> </td>
+                            </tr>
+                            <tr>
+                                <th>精算額</th>
+                                <td>{formatNumberWithCommas(finalTotalPrice)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
             <div className='box-router'>
                 <div className='box-router__title'>承認ルート</div>

@@ -10,55 +10,62 @@ export const Register = ({ id }) => {
       try {
         const response = await axiosPrivate.get('application/getforid/' + id);
         const data = response.data;
-        // Parse tablejson thành JSON
-        const parsedTableJson = JSON.parse(data.tablejson);
-        // Truy cập vào phần tử rows trong parsedTableJson
-        const rows = parsedTableJson.rows;
-        setAccordionItems(rows);
+        const parsedDataJson = JSON.parse(data.datajson);
+        let periodValue = [];
+        if (Array.isArray(parsedDataJson.formData)) {
+          for (const item of parsedDataJson.formData) {
+            if (item.label === '期間') {
+              periodValue.push(item.value);
+            }
+          }
+        } else {
+          console.log('formData không phải là mảng');
+        }
+        parsedDataJson.periodValues = periodValue;
+        setAccordionItems(parsedDataJson);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
     };
-
     Load();
   }, [id]);
-
+  let isPeriodDisplayed = false;
   return (
     <>
       <div className="box-register">
         <ul>
-          <li>
-            <div className="box-register__item">
-              <span className="box-register__item__title">期間</span>
-              <span className="box-register__item__content">
-                {accordionItems.date}
-              </span>
-            </div>
-          </li>
-          <li>
-            <div className="box-register__item">
-              <span className="box-register__item__title">行先</span>
-              <span className="box-register__item__content">
-                {accordionItems.destination}
-              </span>
-            </div>
-          </li>
-          <li>
-            <div className="box-register__item">
-              <span className="box-register__item__title">事由</span>
-              <span className="box-register__item__content">
-                {accordionItems.destination}
-              </span>
-            </div>
-          </li>
-          <li>
-            <div className="box-register__item">
-              <span className="box-register__item__title">備考</span>
-              <span className="box-register__item__content">
-                {accordionItems.note}
-              </span>
-            </div>
-          </li>
+          {accordionItems &&
+            accordionItems.formData &&
+            accordionItems.formData.map((formDataItem: any, index: any) => {
+              if (formDataItem.label === '期間' && isPeriodDisplayed) {
+                return null;
+              }
+
+              if (formDataItem.label === '期間') {
+                isPeriodDisplayed = true;
+              }
+
+              if (!formDataItem.label) {
+                return null;
+              }
+
+              return (
+                <li key={index}>
+                  <div className="box-register__item">
+                    <span className="box-register__item__title">
+                      {formDataItem.label}
+                    </span>
+                    <span className="box-register__item__content">
+                      {formDataItem.label === '期間' && index > 0
+                        ? null
+                        : formDataItem.label === '期間'
+                        ? accordionItems.periodValues.join(' ~ ')
+                        : formDataItem.value}
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
         </ul>
       </div>
     </>
