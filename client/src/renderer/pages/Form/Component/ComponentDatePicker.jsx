@@ -5,26 +5,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-multi-date-picker';
 
 export default function ComponentDatePicker(props){
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
-
-  const [dateValue, setDateValue] = useState({StartDate: '', EndDate: ''});
-
-  const handleDateChange = (date) => {
-    if (date !== null) {
-      const dateObjects = new Date(date);
-      props.parentCallback(props.label, [...dateValue, dateObjects]);
-    }
-  };
-
-  const handleStartDateChange = (date) => {
-    const dateObjects = new Date(date);
-    props.parentCallbackStartDate('StartDate', dateObjects);
-  };
-
-  const handleEndDateChange = (date) => {
-    const dateObjects = new Date(date);
-    props.parentCallbackEndDate('EndDate', dateObjects);
+  const handleChange = () => {
+    props.parentCallback(props.label);
   };
 
   return (
@@ -36,50 +18,19 @@ export default function ComponentDatePicker(props){
         </label>
         <div className="c-form-content">
           <div className="grid-row">
-            {/* {
+            {
               props.customOptions.map((option, index) => (
                 <div className="c-form-item" key={index}>
                   <DatePicker
-                    onChange={(date) => handleDateChange(date)}
-                    value={option.key}
+                    onChange={handleChange}
                     format="YYYY-MM-DD"
                     inputClass="c-form-control"
                     placeholder="yyyy/mm/dd"
-                    name={option.key}
+                    name={props.id}
+                    inputMode={props.label}
                   />
                 </div>
               ))
-            } */}
-            {
-              (props.customOptions.length > 1) ?
-                <>
-                  <div className="c-form-item">
-                    <DatePicker
-                      onChange={handleStartDateChange}
-                      value={startDate}
-                      format="YYYY-MM-DD"
-                      inputClass="c-form-control"
-                      placeholder="yyyy/mm/dd"
-                    />
-                  </div>
-                  <div className="c-form-item">
-                    <DatePicker
-                      onChange={handleEndDateChange}
-                      value={endDate}
-                      format="YYYY-MM-DD"
-                      inputClass="c-form-control"
-                      placeholder="yyyy/mm/dd"
-                    />
-                  </div>
-                </>
-              :
-              <DatePicker
-                onChange={(date) => handleDateChange(date)}
-                format="YYYY-MM-DD"
-                inputClass="c-form-control"
-                placeholder="yyyy/mm/dd"
-                onPropsChange={(key, date) => handleDateChange(key, date)}
-              />
             }
             {props.timesto === true ?
               <div className="c-form-inner">
@@ -93,8 +44,8 @@ export default function ComponentDatePicker(props){
               : ''
             }
             {props.days === true ?
-              <div className="c-form-item">
-                <input type="text" className="c-form-control c-form-control--02" />
+              <div className="c-form-item ml0">
+                <input type="text" name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" aria-label="日間" />
                 <label className="c-form-label--02">日間</label>
               </div>
               : ''

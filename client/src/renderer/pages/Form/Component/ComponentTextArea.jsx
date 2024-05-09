@@ -1,6 +1,6 @@
 export default function ComponentTextArea(props){
   const handleInput = (e) => {
-    props.parentCallback(props.name, e.target.value);
+    props.parentCallback(props.keys, props.id, props.label, e.target.value);
   }
   return (
   <div className="c-form">
@@ -10,7 +10,7 @@ export default function ComponentTextArea(props){
         {props.required === true ? <span className="c-form-label--required txt-red">（必須）</span> : ''}
       </label>
       <div className="c-form-content">
-        <textarea className="c-form-control" placeholder="入力してください" name={props.name} onChange={handleInput}></textarea>
+        <textarea className="c-form-control" placeholder="入力してください" name={props.id} onChange={props.onHandle} aria-label={props.label}></textarea>
       </div>
     </div>
   </div>
