@@ -21,12 +21,6 @@ export const PaginationJp: React.FC<PaginationJpProps> = (props) => {
     onPageChange(nextPage > totalPages ? 1 : nextPage);
   };
 
-  const handlePreviousClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const previousPage = currentPage - 1;
-    onPageChange(previousPage < 1 ? totalPages : previousPage);
-  };
-
   return (
     <ul className="box-page">
       {pageNumbers.map((pageNumber) => (
@@ -45,7 +39,7 @@ export const PaginationJp: React.FC<PaginationJpProps> = (props) => {
           </a>
         </li>
       ))}
-      {totalPages === 1 || currentPage === totalPages ? null : (
+      {totalPages > 1 && (
         <li>
           <a href="#" onClick={(e) => handleNextClick(e)}>
             最後のページ

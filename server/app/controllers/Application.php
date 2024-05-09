@@ -29,10 +29,10 @@
                 return $this->model('ApplicationModel')->getComment($id);
             }
         }
-        function addComment($user_id='',$id_tablejson='',$table_id='',$authority='',$note=''){
+        function addComment($user_id='',$aplication_id='',$authority_id='', $note=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('ApplicationModel')->addComment($user_id,$id_tablejson,$table_id,$authority,$note, date('Y-m-d H:i:s'));
+                return $this->model('ApplicationModel')->addComment($user_id,$aplication_id,$authority_id, $note, date('Y-m-d H:i:s'));
             }
         }
         function getCommentForUserFirst($id=''){
@@ -41,10 +41,10 @@
                 return $this->model('ApplicationModel')->getCommentForUserFirst($id);
             }
         }
-        function addCommentSeCond($user_id='',$id_tablejson='',$table_id='',$authority='',$note=''){
+        function addCommentSeCond($user_id='',$aplication_id='',$authority_id='', $note=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('ApplicationModel')->addCommentSeCond($user_id,$id_tablejson,$table_id,$authority,$note, date('Y-m-d H:i:s'));
+                return $this->model('ApplicationModel')->addCommentSeCond($user_id,$aplication_id,$authority_id, $note, date('Y-m-d H:i:s'));
             }
         }
         function getCommentForUserSecond($id=''){
@@ -78,10 +78,10 @@
             }
         }
         
-        function addCommentThird($user_id='',$id_tablejson='',$table_id='',$authority='',$note=''){
+        function addCommentThird($user_id='',$aplication_id='',$authority_id='', $note=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('ApplicationModel')->addCommentThird($user_id,$id_tablejson,$table_id,$authority,$note, date('Y-m-d H:i:s'));
+                return $this->model('ApplicationModel')->addCommentThird($user_id,$aplication_id,$authority_id, $note, date('Y-m-d H:i:s'));
             }
         }
         function updateStatus($id = '',$id_status='') {

@@ -7,9 +7,9 @@ import { Expense } from './expense';
 import { Business } from './business';
 import { Travelallowance } from './travelallowance';
 import { Register } from './register';
-import { Approvalstatus } from './approvalstatus';
 import { UserRole } from '../../components/UserRole';
 import { emitter } from '../../layouts/components/Sidebar/index';
+import './Accordion.scss';
 
 const TabContent = ({ id, sendDataToParent }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -18,6 +18,7 @@ const TabContent = ({ id, sendDataToParent }) => {
   const isLeader = users.roles === UserRole.LEADER;
   const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);
+  const [Items, setItems] = useState<any>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [commentFirst, setCommentFirst] = useState<any>([]);
   const [commentSeCond, setCommentSeCond] = useState<any>([]);
@@ -41,11 +42,10 @@ const TabContent = ({ id, sendDataToParent }) => {
     try {
       const response = await axiosPrivate.get('application/getforid/' + id);
       const data = response.data;
-      //console.log(data);
-      const parsedTableJson = JSON.parse(data.tablejson);
+      setItems(response.data);
       const itemWithStatus = {
-        ...parsedTableJson.rows[0], // Giữ nguyên các trường từ dữ liệu cũ
-        id_status: data.id_status, // Thêm trường id_status vào dữ liệu
+        ...JSON.parse(data.datajson), // Sử dụng data.datajson trực tiếp
+        id_status: data.id_status,
       };
       setAccordionItems(itemWithStatus);
     } catch (error) {
@@ -71,7 +71,6 @@ const TabContent = ({ id, sendDataToParent }) => {
         'application/getapplicationbyidstatus/' + idStatusCurrent,
         { headers: { 'Content-Type': 'application/json' } },
       );
-      //console.log(idStatusCurrent);
       sendDataToParent(idStatusCurrent);
       Load();
     } catch (error) {
@@ -95,11 +94,11 @@ const TabContent = ({ id, sendDataToParent }) => {
         statusattrTexts: '差し戻し',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
-    } else if (accordionItems.id_status == 5) {
+    } else if (accordionItems.id_status == 3) {
       setApprove({
-        approveTexts: '下書き',
-        approveClass: 'lbl01 lbl-brown',
-        statusattrTexts: '却下',
+        approveTexts: '却下',
+        approveClass: 'lbl01 lbl-red',
+        statusattrTexts: '下書き',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else if (accordionItems.id_status == 4) {
@@ -109,11 +108,11 @@ const TabContent = ({ id, sendDataToParent }) => {
         statusattrTexts: '承認済み',
         statusattrClass: 'lbl01 lbc-blue lbbd-blue',
       });
-    } else if (accordionItems.id_status == 3) {
+    } else if (accordionItems.id_status == 5) {
       setApprove({
-        approveTexts: '却下',
-        approveClass: 'lbl01 lbl-red',
-        statusattrTexts: '下書き',
+        approveTexts: '下書き',
+        approveClass: 'lbl01 lbl-brown',
+        statusattrTexts: '却下',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else {
@@ -162,10 +161,10 @@ const TabContent = ({ id, sendDataToParent }) => {
       const comment_data = {
         note: textValue,
         user_id: users.id,
-        id_tablejson: id,
-        table_id: accordionItems.table_id,
-        authority: 1,
+        aplication_id: id,
+        authority_id: 1,
       };
+
       setTextValue('');
       const res = await axiosPrivate.post(
         'application/addcomment/',
@@ -220,9 +219,8 @@ const TabContent = ({ id, sendDataToParent }) => {
       const comment_data = {
         note: commentValue,
         user_id: users.id,
-        id_tablejson: id,
-        table_id: accordionItems.table_id,
-        authority: 2,
+        aplication_id: id,
+        authority_id: 2,
       };
       setCommentValue('');
       const res = await axiosPrivate.post(
@@ -286,9 +284,8 @@ const TabContent = ({ id, sendDataToParent }) => {
       const comment_data = {
         note: commentValueThird,
         user_id: users.id,
-        id_tablejson: id,
-        table_id: accordionItems.table_id,
-        authority: 3,
+        aplication_id: id,
+        authority_id: 3,
       };
       setCommentValueThird('');
       const res = await axiosPrivate.post(
@@ -324,10 +321,10 @@ const TabContent = ({ id, sendDataToParent }) => {
           <div className="list-accordion__item__head" onClick={toggleAccordion}>
             <div className="list-accordion__item__head__title">
               <p className="list-accordion__item__head__title__title">
-                {accordionItems.tableName}
+                {accordionItems.appName}
               </p>
               <span className="list-accordion__item__head__title__subtitle">
-                {accordionItems.owner}（{accordionItems.date} ）
+                髙崎: {Items.owner}（{Items.createdAt} ）
               </span>
             </div>
             <div className="list-accordion__item__head__btn">
@@ -359,7 +356,7 @@ const TabContent = ({ id, sendDataToParent }) => {
                   ) : accordionItems.table_id === 9 ? (
                     <Business id={id} />
                   ) : (
-                    <Travelallowance id={id} />
+                    <Register id={id} />
                   )}
                   <div className="box-approves">
                     <div className="box-approves__inner">
