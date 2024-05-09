@@ -9,6 +9,7 @@ import ComponentTextArea from "../Form/Component/ComponentTextArea";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentCheckbox from "../Form/Component/ComponentCheckbox";
+import { isValidInputText, isValidTextArea } from "../../components/Validate/";
 
 export default function NewApplicationDetail(){
   const { id } = useParams();
@@ -61,25 +62,35 @@ export default function NewApplicationDetail(){
         label: '',
         value: '',
       };
+      let validInputTextErrors = false;
+      let validTextAreaErrors = false;
 
       // Lấy tất cả các đối tượng trong Form
       for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i] as HTMLInputElement;
 
+        //Bắt lỗi Validate
+        if(element.type === 'text' && element.required) {
+          validInputTextErrors = isValidInputText(element.value, element.title);
+        } else if(element.type === 'textarea' && element.required) {
+          validTextAreaErrors = isValidTextArea(element.value, element.title);
+        }
+
         // Lấy các thuộc tính của đối tượng
-        if (element.value) {
-          if(element.ariaLabel === null){
-            newObj = {
-              id: element.name,
-              label: label,
-              value: element.value,
-            }
-          } else {
-            newObj = {
-              id: element.name,
-              label: element.ariaLabel,
-              value: element.value,
-            }
+        if (element.value && element.type != 'checkbox') {
+          newObj = {
+            id: element.name,
+            label: element.title,
+            value: element.value,
+          }
+          formData.push(newObj);
+        }
+
+        if(element.type === 'checkbox' && element.checked === true) {
+          newObj = {
+            id: element.name,
+            label: element.title,
+            value: element.value,
           }
           formData.push(newObj);
         }
@@ -97,7 +108,9 @@ export default function NewApplicationDetail(){
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      console.log(appJsonString);
+      if(validInputTextErrors === true && validTextAreaErrors === true){
+        console.log(appJsonString);
+      }
 
 			// const res = await axiosPrivate.post("newapplication/add", appJsonString);
 			// if(res.data.success === 'error'){
@@ -145,7 +158,6 @@ export default function NewApplicationDetail(){
                       days={item.props[0].days}
                       times={item.props[0].times}
                       timesto={item.props[0].timesto}
-                      parentCallback={callBackFunction}
                     />
                   </div>
                 )
@@ -161,7 +173,16 @@ export default function NewApplicationDetail(){
                   </div>
                 )
               case 'F_Checkbox':
-                return <div className="c-row" key={index}><ComponentCheckbox label={item.label} required={item.required} customOptions={item.custom_options}/></div>
+                return (
+                  <div className="c-row" key={index}>
+                    <ComponentCheckbox
+                      id={item.id}
+                      label={item.label}
+                      required={item.required}
+                      customOptions={item.custom_options}
+                    />
+                  </div>
+                )
               default:
                 formHTML+= "";
                 break;

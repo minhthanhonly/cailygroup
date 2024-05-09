@@ -16,6 +16,7 @@ import F_RadioButtons from "./Field/F_RadioButtons";
 
 import { isValidForm } from "../../components/Validate";
 import { useNavigate } from "react-router-dom";
+import C_TravelExpenses from "../Estimate/Components/C_TravelExpenses";
 
 export default function FormAdd(){
   const axiosPrivate = useAxiosPrivate();
@@ -141,6 +142,34 @@ export default function FormAdd(){
         { times: false },
         { timesto: false },
       ]
+    },
+    {
+      key: 'T_Table',
+      element: 'CustomElement',
+      component: C_TravelExpenses,
+      type: 'custom',
+      field_name: 'caily_table_',
+      name: 'Table',
+      static: true,
+      icon: 'fas fa-table',
+      // label: '期間',
+      // custom_options: [
+      //   {
+      //     value: '',
+      //     text: '期間 (From)',
+      //     key: 'datepicker_option_1',
+      //   },
+      //   {
+      //     value: '',
+      //     text: '期間 (To)',
+      //     key: 'datepicker_option_2',
+      //   },
+      // ],
+      // props: [
+      //   { days: false },
+      //   { times: false },
+      //   { timesto: false },
+      // ]
     },
   ];
 

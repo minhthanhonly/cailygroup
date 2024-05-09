@@ -5,8 +5,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-multi-date-picker';
 
 export default function ComponentDatePicker(props){
-  const handleChange = () => {
-    props.parentCallback(props.label);
+  const [time, setTime] = useState('');
+
+  const handleTimeChange = (e) => {
+    const { value } = e.target;
+    // Đảm bảo giá trị nhập vào có định dạng HH:MM và không vượt quá 24 giờ và 59 phút
+    if (/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value)) {
+      setTime(value);
+    }
   };
 
   return (
@@ -22,12 +28,12 @@ export default function ComponentDatePicker(props){
               props.customOptions.map((option, index) => (
                 <div className="c-form-item" key={index}>
                   <DatePicker
-                    onChange={handleChange}
                     format="YYYY-MM-DD"
                     inputClass="c-form-control"
                     placeholder="yyyy/mm/dd"
                     name={props.id}
-                    inputMode={props.label}
+                    required={props.required}
+                    title={option.text}
                   />
                 </div>
               ))
@@ -35,10 +41,10 @@ export default function ComponentDatePicker(props){
             {props.timesto === true ?
               <div className="c-form-inner">
                 <div className="c-form-item--02">
-                  <input type="text" className="c-form-control" placeholder="hh:mm" />
+                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} aria-label={props.label} />
                 </div>
                 <div className="c-form-item--02">
-                  <input type="text" className="c-form-control" placeholder="hh:mm" />
+                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} aria-label={props.label} />
                 </div>
               </div>
               : ''

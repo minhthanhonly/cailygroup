@@ -1,11 +1,17 @@
 import { toast } from "react-toastify";
 
-const ERROR: {[key: string]: any} = {
+export const ERROR: {[key: string]: any} = {
   require: "Vui lòng nhập ",
   choose: "Vui lòng chọn ",
   illegal: "Giá trị nhập vào không hợp lệ",
   indispensable:"Tên nhóm là bắt buộc",
   obligatory:"Tên ngày lễ là bắt buộc"
+};
+
+export const ERROR_JP: {[key: string]: any} = {
+  require: "を正しく入力してください。",
+  choose: "を選択してください。",
+  illegal: "不正な値が入力されています。",
 };
 
 function validateEmail(email: string) {
@@ -193,6 +199,24 @@ export const isValidForm = ({...paraForm}, reactFormData: any) => {
 
   if(reactFormData.length === 0) {
     toast.error(ERROR['require'] + FieldName +  "!");
+    return false;
+  }
+  return true;
+}
+
+/* =======================================================================* */
+
+export const isValidInputText = ( InputText: string, Label: string ) => {
+  if(!InputText) {
+    toast.error(Label + ERROR_JP['require'] + "!");
+    return false;
+  }
+  return true;
+}
+
+export const isValidTextArea = ( TextArea: string, Label: string ) => {
+  if(!TextArea) {
+    toast.error(Label + ERROR_JP['require'] + "!");
     return false;
   }
   return true;

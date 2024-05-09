@@ -518,7 +518,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   const fetchHolidays = async () => {
     try {
       const response = await axiosPrivate.get('holidays');
-      console.log(response.data)
       if (response.data && Array.isArray(response.data)) {
         setHolidays(response.data);
       }
@@ -583,9 +582,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
   };
   const updateDayoffs = async (id: number) => {
     try {
-      const response = await axiosPrivate.post('dayoffs/update/' + id); 
+      const response = await axiosPrivate.post('dayoffs/update/' + id);
 
-      
+
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
