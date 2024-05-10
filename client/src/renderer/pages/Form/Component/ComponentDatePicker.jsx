@@ -15,6 +15,10 @@ export default function ComponentDatePicker(props){
     }
   };
 
+  const handleChange = () => {
+    props.parentCallback(props.label);
+  };
+
   return (
     <div className="c-form">
       <div className="c-form-inner">
@@ -28,6 +32,7 @@ export default function ComponentDatePicker(props){
               props.customOptions.map((option, index) => (
                 <div className="c-form-item" key={index}>
                   <DatePicker
+                    onChange={handleChange}
                     format="YYYY-MM-DD"
                     inputClass="c-form-control"
                     placeholder="yyyy/mm/dd"
@@ -41,17 +46,17 @@ export default function ComponentDatePicker(props){
             {props.timesto === true ?
               <div className="c-form-inner">
                 <div className="c-form-item--02">
-                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} aria-label={props.label} />
+                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} title={props.label} aria-label={props.label} />
                 </div>
                 <div className="c-form-item--02">
-                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} aria-label={props.label} />
+                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} title={props.label} aria-label={props.label} />
                 </div>
               </div>
               : ''
             }
             {props.days === true ?
               <div className="c-form-item ml0">
-                <input type="text" name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" aria-label="日間" />
+                <input type="text" name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleTimeChange} title="日間" aria-label="日間" />
                 <label className="c-form-label--02">日間</label>
               </div>
               : ''
@@ -59,7 +64,7 @@ export default function ComponentDatePicker(props){
             {props.times === true ?
               <div className="c-form-inner">
                 <div className="c-form-item--02">
-                  <input type="text" className="c-form-control" placeholder="hh:mm　修正後の時間" />
+                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm　修正後の時間" onChange={handleTimeChange} title={props.label} aria-label={props.label} />
                 </div>
               </div>
               : ''

@@ -10,7 +10,7 @@ export default function ComponentTextArea(props){
         {props.required === true ? <span className="c-form-label--required txt-red">（必須）</span> : ''}
       </label>
       <div className="c-form-content">
-        <textarea className="c-form-control" placeholder="入力してください" name={props.id} onChange={props.onHandle} title={props.label} required={props.required}></textarea>
+        <textarea className="c-form-control" placeholder="入力してください" name={props.id} onChange={props.onHandle} aria-label={props.label} title={props.label} required={props.required}></textarea>
       </div>
     </div>
   </div>

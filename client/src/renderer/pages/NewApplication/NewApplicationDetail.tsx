@@ -78,10 +78,19 @@ export default function NewApplicationDetail(){
 
         // Lấy các thuộc tính của đối tượng
         if (element.value && element.type != 'checkbox') {
-          newObj = {
-            id: element.name,
-            label: element.title,
-            value: element.value,
+
+          if(element.ariaLabel === null){
+            newObj = {
+              id: element.name,
+              label: label,
+              value: element.value,
+            }
+          } else {
+            newObj = {
+              id: element.name,
+              label: element.title,
+              value: element.value,
+            }
           }
           formData.push(newObj);
         }
@@ -96,6 +105,60 @@ export default function NewApplicationDetail(){
         }
       }
 
+
+      const dupeObjs: any = [];
+      const uniqObjs: any = [];
+      // Lọc và gom nhóm các đối tượng
+      formData.forEach(obj => [uniqObjs,dupeObjs][+(formData.map(obj => obj.id).filter(id => id === obj.id).length > 1)].push(obj));
+
+      // Lấy giá trị của các đối tượng trùng lặp id và thêm vào mảng
+      const dupeObjs_2: any = [];
+      const uniqObjs_2: any = [];
+      if(dupeObjs.length > 1){
+        dupeObjs.forEach(obj => [uniqObjs_2,dupeObjs_2][+(dupeObjs.map(obj => obj.label).filter(label => label === obj.label).length > 1)].push(obj));
+        let mergedValue: any = [];
+        let objHaveDifLabel: any = {label: '', value: ''};
+
+        if(uniqObjs_2.length > 0){
+          for(let i = 0; i < uniqObjs_2.length; i++){
+            objHaveDifLabel = { label: uniqObjs_2[i].label, value: uniqObjs_2[i].value }
+          }
+        } else {
+          for(let i = 0; i < dupeObjs.length; i++){
+            mergedValue.push(dupeObjs[i].value);
+          }
+        }
+
+        if(dupeObjs_2.length > 1 && uniqObjs_2.length > 0){
+          for(let i = 0; i < dupeObjs_2.length; i++){
+            mergedValue.push(dupeObjs_2[i].value);
+          }
+          mergedValue.push(objHaveDifLabel);
+        }
+
+        console.log(mergedValue);
+
+        // for(let i = 0; i < dupeObjs.length; i++){
+        //   mergedValue.push(dupeObjs[i].value);
+        //   console.log(dupeObjs[i]);
+        // }
+
+        // Gom các đối tượng trùng lặp id thành 1 đối tượng
+        var resultObject = dupeObjs.reduce(function(result, currentObject) {
+          for(var key in currentObject) {
+            if (currentObject.hasOwnProperty(key)) {
+                result[key] = currentObject[key];
+            }
+          }
+          return result;
+        }, {});
+
+        resultObject.value = mergedValue;
+
+        // Kết xuất lại kết quả từ Form sau khi hợp nhất các đối tượng trùng lặp id
+        uniqObjs.unshift(resultObject);
+      }
+
       // Tạo đối tượng JSON
       const appJSON: { [key: string]: any } = {
         appName: '',
@@ -104,13 +167,16 @@ export default function NewApplicationDetail(){
         id_status: 1,
       };
       appJSON.appName = formName;
-      appJSON.formData = formData;
+      // appJSON.formData = formData;
+      (uniqObjs.length > 1) ? appJSON.formData = uniqObjs : appJSON.formData = formData;
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      if(validInputTextErrors === true && validTextAreaErrors === true){
-        console.log(appJsonString);
-      }
+      console.log(appJsonString);
+
+      // if(validInputTextErrors === true && validTextAreaErrors === true){
+      //   console.log(appJsonString);
+      // }
 
 			// const res = await axiosPrivate.post("newapplication/add", appJsonString);
 			// if(res.data.success === 'error'){
@@ -158,6 +224,7 @@ export default function NewApplicationDetail(){
                       days={item.props[0].days}
                       times={item.props[0].times}
                       timesto={item.props[0].timesto}
+                      parentCallback={callBackFunction}
                     />
                   </div>
                 )
