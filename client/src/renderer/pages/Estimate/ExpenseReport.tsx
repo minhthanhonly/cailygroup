@@ -219,8 +219,8 @@ export const ExpenseReport = (props: { id_table: any; }) => {
 
     return (
         <>
-            <h2 className="hdglv2"><span>交通費清算書</span></h2>
-            <p className="txt-lead">下記の通り申請致します。</p>
+            {/* <h2 className="hdglv2"><span>交通費清算書</span></h2>
+            <p className="txt-lead">下記の通り申請致します。</p> */}
 
             <div className="table tbl_custom">
                 <div className='tbl_custom--03'>
@@ -276,7 +276,7 @@ export const ExpenseReport = (props: { id_table: any; }) => {
 
             </div>
 
-            <div className='box-router'>
+            {/* <div className='box-router'>
                 <div className='box-router__title'>承認ルート</div>
                 <div className='grid-row box-router__grid'>
                     <div className='box-router__name'>
@@ -294,7 +294,7 @@ export const ExpenseReport = (props: { id_table: any; }) => {
             <div className="wrp-button">
                 <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
                 <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
-            </div>
+            </div> */}
         </>
     )
 

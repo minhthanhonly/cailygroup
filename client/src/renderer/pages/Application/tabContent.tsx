@@ -382,7 +382,10 @@ const TabContent = ({ id, sendDataToParent }) => {
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
-                                承認者名：{accordionItems.owner}（申請日時：
+                                承認者名：
+                                {commentFirst.length > 0 &&
+                                  commentFirst[0].realname}
+                                （申請日時：
                                 {accordionItems.date}
                                 {'\u00A0\u00A0'}
                                 {accordionItems.time}）
@@ -470,9 +473,13 @@ const TabContent = ({ id, sendDataToParent }) => {
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
-                                承認者名：{accordionItems.owner}（申請日時：
+                                承認者名：
+                                {commentSeCond.length > 0 &&
+                                  commentSeCond[0].realname}
+                                （申請日時：
                                 {accordionItems.date}
                                 {'\u00A0\u00A0'}
+                                {accordionItems.time}）
                               </p>
                               {commentSeCond.length > 0 && (
                                 <div className="box-approves__item__content__comment">
@@ -549,7 +556,10 @@ const TabContent = ({ id, sendDataToParent }) => {
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
-                                承認者名：{accordionItems.owner}（申請日時：
+                                承認者名：
+                                {commentThird.length > 0 &&
+                                  commentThird[0].realname}
+                                （申請日時：
                                 {accordionItems.date}
                                 {'\u00A0\u00A0'}
                                 {accordionItems.time}）

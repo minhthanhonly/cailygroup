@@ -35,7 +35,7 @@ class SearchModel {
          global $conn;
 
         // Thực hiện truy vấn SELECT
-        $sql = "SELECT * FROM table_json";
+        $sql = "SELECT * FROM application_details";
         $result = $conn->query($sql);
 
         // Khởi tạo mảng để lưu trữ dữ liệu
@@ -43,7 +43,7 @@ class SearchModel {
 
         // Kiểm tra và hiển thị kết quả
         if ($result->num_rows > 0) {
-            // Duyệt qua từng dòng dữ liệu và thêm vào mảng
+            // Duyệt qua từng dòng dữ liệu và thêm vào mảng 
             while ($row = $result->fetch_assoc()) {
                 $data[] = $row;
             }
