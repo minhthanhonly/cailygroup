@@ -281,10 +281,10 @@ export const TravelAllowance = (props: { id_table: any }) => {
   };
   return (
     <>
-      <h2 className="hdglv2">
+      {/* <h2 className="hdglv2">
         <span>通勤手当申請書</span>
       </h2>
-      <p className="txt-lead">下記の通り申請致します。</p>
+      <p className="txt-lead">下記の通り申請致します。</p> */}
 
       <table className="tb-from">
         <tbody>
@@ -548,7 +548,7 @@ export const TravelAllowance = (props: { id_table: any }) => {
         </div>
       </div>
 
-      <div className="box-router">
+      {/* <div className="box-router">
         <div className="box-router__title">承認ルート</div>
         <div className="grid-row box-router__grid">
           <div className="box-router__name">
@@ -572,7 +572,7 @@ export const TravelAllowance = (props: { id_table: any }) => {
         >
           申請する
         </button>
-      </div>
+      </div> */}
     </>
   );
 };

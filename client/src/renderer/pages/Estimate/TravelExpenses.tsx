@@ -311,8 +311,8 @@ export const TravelExpenses = (props: { id_table: any; }) => {
             {visibleErrors.map((error, index) => (
                 <div key={index}>{error} is required.</div>
             ))}
-            <h2 className="hdglv2"><span>交通費清算書</span></h2>
-            <p className="txt-lead">下記の通り申請致します。</p>
+            {/* <h2 className="hdglv2"><span>交通費清算書</span></h2>
+            <p className="txt-lead">下記の通り申請致します。</p> */}
 
             <div className="table tbl_custom">
                 <div className='tbl_custom--03'>
@@ -357,7 +357,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     </table>
                 </div>
             </div>
-
+            {/* 
             <div className='box-router'>
                 <div className='box-router__title'>承認ルート</div>
                 <div className='grid-row box-router__grid'>
@@ -372,11 +372,11 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                 <div className='box-router__edit'>
                     <p className='plus-row box-router__edit--content' >承認ルートを編集</p>
                 </div>
-            </div>
-            <div className="wrp-button">
+            </div> */}
+            {/* <div className="wrp-button">
                 <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
                 <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
-            </div>
+            </div> */}
         </>
     )
 
