@@ -16,7 +16,8 @@ import F_RadioButtons from "./Field/F_RadioButtons";
 
 import { isValidForm } from "../../components/Validate";
 import { useNavigate } from "react-router-dom";
-import C_TravelExpenses from "../Estimate/Components/C_TravelExpenses";
+import { TravelExpenses } from "../Estimate/TravelExpenses";
+import F_TitleAndCheckbox from "./Field/F_TitleAndCheckbox";
 
 export default function FormAdd(){
   const axiosPrivate = useAxiosPrivate();
@@ -76,6 +77,37 @@ export default function FormAdd(){
           key: 'checkboxes_option_3',
         },
       ]
+    },
+    {
+      key: 'F_TitleAndCheckbox',
+      element: 'CustomElement',
+      component: F_TitleAndCheckbox,
+      type: 'custom',
+      field_name: 'my_checkbox_',
+      name: 'Title and Checkbox',
+      static: true,
+      icon: 'far fa-check-square',
+      label: '休暇区分',
+      props: [
+        { title: '有給休暇' },
+      ],
+      custom_options: [
+        {
+          value: 'checkbox_value_1',
+          text: '全休',
+          key: 'checkboxes_option_1',
+        },
+        {
+          value: 'checkbox_value_2',
+          text: '午前休',
+          key: 'checkboxes_option_2',
+        },
+        {
+          value: 'checkbox_value_3',
+          text: '午後休',
+          key: 'checkboxes_option_3',
+        },
+      ],
     },
     {
       key: 'F_RadioButtons',
@@ -144,32 +176,14 @@ export default function FormAdd(){
       ]
     },
     {
-      key: 'T_Table',
+      key: 'T_TableTravelExpenses',
       element: 'CustomElement',
-      component: C_TravelExpenses,
+      component: TravelExpenses,
       type: 'custom',
       field_name: 'caily_table_',
-      name: 'Table',
+      name: 'Table Travel Expenses',
       static: true,
       icon: 'fas fa-table',
-      // label: '期間',
-      // custom_options: [
-      //   {
-      //     value: '',
-      //     text: '期間 (From)',
-      //     key: 'datepicker_option_1',
-      //   },
-      //   {
-      //     value: '',
-      //     text: '期間 (To)',
-      //     key: 'datepicker_option_2',
-      //   },
-      // ],
-      // props: [
-      //   { days: false },
-      //   { times: false },
-      //   { timesto: false },
-      // ]
     },
   ];
 

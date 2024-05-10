@@ -30,8 +30,6 @@ export default class FormElementsEdit extends React.Component {
     };
   }
 
-
-
   toggleRequired() {
     // const this_element = this.state.element;
   }
@@ -54,6 +52,7 @@ export default class FormElementsEdit extends React.Component {
     // elemProperty could be content or label
     // targProperty could be value or checked
     let this_element = this.state.element;
+    let this_element_add_tittle_and_checkbox = false;
     this_element[elemProperty].map((option) => {
       switch (propsProperty){
         case 'days':
@@ -65,12 +64,17 @@ export default class FormElementsEdit extends React.Component {
         case 'timesto':
           option.timesto = e.target[targProperty];
           break;
+        case 'title':
+          option.timesto = e.target[targProperty];
+          this_element_add_tittle_and_checkbox = option.timesto;
+          break;
       }
     });
 
     this.setState({
       element: this_element,
       dirty: true,
+      // this_element_add_tittle_and_checkbox: true,
     }, () => {
       if (targProperty === 'checked') { this.updateElement(); }
     });
@@ -82,6 +86,22 @@ export default class FormElementsEdit extends React.Component {
       .replace(/(?:\r\n|\r|\n)/g, ' ');
     const this_element = this.state.element;
     this_element[property] = html;
+
+    this.setState({
+      element: this_element,
+      dirty: true,
+    });
+  }
+
+  onEditorHavePropStateChange(elemProperty, propsProperty, targProperty, editorContent) {
+    const html = draftToHtml(convertToRaw(editorContent.getCurrentContent())).replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/&nbsp;/g, ' ')
+      .replace(/(?:\r\n|\r|\n)/g, ' ');
+    // elemProperty could be content or label
+    // targProperty could be value or checked
+    let this_element = this.state.element;
+    this_element[elemProperty].map((option) => {
+      option.title = html;
+    })
 
     this.setState({
       element: this_element,
@@ -137,6 +157,7 @@ export default class FormElementsEdit extends React.Component {
     const this_props_days = this.props.element.hasOwnProperty('props') ? this.props.element.props[0].days : false;
     const this_props_times = this.props.element.hasOwnProperty('props') ? this.props.element.props[0].times : false;
     const this_props_timesto = this.props.element.hasOwnProperty('props') ? this.props.element.props[0].timesto : false;
+    const this_props_title = this.props.element.hasOwnProperty('props') ? this.props.element.props[0].title : false;
     const this_read_only = this.props.element.hasOwnProperty('readOnly') ? this.props.element.readOnly : false;
     const this_default_today = this.props.element.hasOwnProperty('defaultToday') ? this.props.element.defaultToday : false;
     const this_show_time_select = this.props.element.hasOwnProperty('showTimeSelect') ? this.props.element.showTimeSelect : false;
@@ -167,6 +188,15 @@ export default class FormElementsEdit extends React.Component {
       editorState = this.convertFromHTML(this.props.element.label);
     }
 
+    let editorPropsState;
+    if (this.props.element.hasOwnProperty('props')) {
+      if(this.props.element.props[0].hasOwnProperty('title')) {
+        this.props.element.props.map((ele) => {
+          editorPropsState = this.convertFromHTML(ele.title);
+        })
+      }
+    }
+
     return (
       <div>
         <div className="clearfix">
@@ -179,7 +209,7 @@ export default class FormElementsEdit extends React.Component {
             <Editor
               toolbar={toolbar}
               defaultEditorState={editorState}
-              onBlur={this.updateElement.bind(this)}
+              // onBlur={this.updateElement.bind(this)}
               onEditorStateChange={this.onEditorStateChange.bind(this, 0, 'content')}
               stripPastedStyles={true} />
           </div>
@@ -190,7 +220,7 @@ export default class FormElementsEdit extends React.Component {
             <Editor
               toolbar={toolbar}
               defaultEditorState={editorState}
-              onBlur={this.updateElement.bind(this)}
+              // onBlur={this.updateElement.bind(this)}
               onEditorStateChange={this.onEditorStateChange.bind(this, 0, 'label')}
               stripPastedStyles={true} />
             <div className="custom-control custom-checkbox mt30">
@@ -205,6 +235,18 @@ export default class FormElementsEdit extends React.Component {
             }
           </div>
         }
+        {
+          this.props.element.props[0].hasOwnProperty('title') &&
+          <div className="form-group mt30">
+            <label className="control-label">Display Title:</label>
+            <Editor
+              toolbar={toolbar}
+              defaultEditorState={editorPropsState}
+              // onBlur={this.updateElement.bind(this)}
+              onEditorStateChange={this.onEditorHavePropStateChange.bind(this, 'props', 'title', 'checked')}
+              stripPastedStyles={true} />
+          </div>
+        }
         { this.props.element.hasOwnProperty('custom_options') &&
           <DynamicOptionList
             // showCorrectColumn={this.props.showCorrectColumn}
@@ -217,7 +259,7 @@ export default class FormElementsEdit extends React.Component {
             key={this.props.element.custom_options.length} />
         }
         {
-          this.props.element.hasOwnProperty('props') &&
+          this.props.element.props[0].hasOwnProperty('days') &&
           <div className="form-group mt30">
             <div className="custom-control custom-checkbox">
               <input id="is-days" className="custom-control-input" type="checkbox" value={true} checked={this_props_days} onChange={this.editElementHaveProp.bind(this, 'props', 'days', 'checked')}/>
@@ -226,7 +268,7 @@ export default class FormElementsEdit extends React.Component {
           </div>
         }
         {
-          this.props.element.hasOwnProperty('props') &&
+          this.props.element.props.length > 1 && this.props.element.props[1].hasOwnProperty('times') &&
           <div className="form-group mt10">
             <div className="custom-control custom-checkbox">
               <input id="is-times" className="custom-control-input" type="checkbox" value={true} checked={this_props_times} onChange={this.editElementHaveProp.bind(this, 'props', 'times', 'checked')}/>
@@ -235,13 +277,28 @@ export default class FormElementsEdit extends React.Component {
           </div>
         }
         {
-          this.props.element.hasOwnProperty('props') &&
+          this.props.element.props.length > 1 && this.props.element.props[2].hasOwnProperty('timesto') &&
           <div className="form-group mt10">
+            {/* <p>{this_props_timesto}</p> */}
             <div className="custom-control custom-checkbox">
               <input id="is-timesto" className="custom-control-input" type="checkbox" value={true} checked={this_props_timesto} onChange={this.editElementHaveProp.bind(this, 'props', 'timesto', 'checked')}/>
               <label className="custom-control-label" htmlFor="is-timesto">Time (from~to)</label>
             </div>
           </div>
+
+        }
+        {
+          this.props.element.props[0].hasOwnProperty('title') &&
+          <div className="form-group mt10">
+            <div className="custom-control custom-checkbox">
+              <input id="is-title" className="custom-control-input" type="checkbox" value={true} onChange={this.editElementHaveProp.bind(this, 'props', 'title', 'checked')}/>
+              <label className="custom-control-label" htmlFor="is-title">Add Title and Checkbox</label>
+            </div>
+          </div>
+        }
+
+        {
+          // this_element_add_tittle_and_checkbox && <p>Hello</p>
         }
       </div>
     );
