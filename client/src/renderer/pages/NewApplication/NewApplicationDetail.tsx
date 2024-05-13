@@ -172,21 +172,21 @@ export default function NewApplicationDetail(){
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      console.log(appJsonString);
+      // console.log(appJsonString);
 
-      // if(validInputTextErrors === true && validTextAreaErrors === true){
-      //   console.log(appJsonString);
-      // }
+      if(validInputTextErrors === true && validTextAreaErrors === true){
+        const res = await axiosPrivate.post("newapplication/add", appJsonString);
+        if(res.data.success === 'error'){
+          setError('Bị lỗi khi đăng ký');
+        } else {
+          setMsg('Bạn đã đăng ký thành công');
+          setTimeout(() => {
+        		navigate('/newapplication');
+        	}, 2000);
+        }
+      }
 
-			// const res = await axiosPrivate.post("newapplication/add", appJsonString);
-			// if(res.data.success === 'error'){
-      //   setError('Bị lỗi khi đăng ký');
-      // } else {
-      //   setMsg('Bạn đã đăng ký thành công');
-      //   setTimeout(() => {
-			// 		navigate('/newapplication');
-			// 	}, 2000);
-      // }
+
     }
   }
 
