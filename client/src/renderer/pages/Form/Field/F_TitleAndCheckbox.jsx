@@ -16,10 +16,6 @@ class F_Checkbox extends React.Component {
     if (this.props.data.pageBreakBefore) { baseClasses += ' alwaysbreak'; }
 
     let cusProps = self.props.data.props;
-    let cusPropsTitle = '';
-    cusProps.map((prop) => {
-      cusPropsTitle = prop.title;
-    })
 
     return (
       <div style={{ ...this.props.style }} className={baseClasses}>
@@ -27,35 +23,33 @@ class F_Checkbox extends React.Component {
           <div className="c-form-inner">
             <ComponentLabel {...this.props} />
             <div className="c-form-content">
-              <p className="c-form-title">{cusPropsTitle}</p>
-              <div className="grid-row grid-row--02">
-                {this.props.data.custom_options.map((option) => {
-                  const this_key = `preview_${option.key}`;
-                  const props = {};
-                  props.name = `option_${option.key}`;
-                  props.type = 'checkbox';
-                  props.value = option.value;
-                  if (self.props.mutable) {
-                    props.defaultChecked = self.props.defaultValue !== undefined && self.props.defaultValue.indexOf(option.key) > -1;
-                  }
-                  if (this.props.read_only) {
-                    props.disabled = 'disabled';
-                  }
+              {
+                cusProps.map((item, index) => {
                   return (
-                    <div className={`${classNames} c-form-item--03`}key={this_key}>
-                      <label className="c-form-label--03">
-                        <input type='checkbox' className="c-form-control" id={`fid_${this_key}`} ref={c => {
-                          if (c && self.props.mutable) {
-                            self.options[`child_ref_${option.key}`] = c;
-                          }
-                        }} {...props} />
-                        <span className="checkmark"></span>
-                        {option.text}
-                      </label>
+                    <div className='c-form-row' key={index}>
+                      <p className="c-form-title">{item.title}</p>
+                      <div className="grid-row grid-row--02">
+                        {
+                          item.checkboxOptions.map((option, index) => {
+                            const this_key = `preview_${option.key}`;
+                            const this_name = `option_${option.key}`;
+                            const this_value = option.value;
+                            return (
+                              <div className={`${classNames} c-form-item--03`} key={index}>
+                                <label className="c-form-label--03">
+                                <input type='checkbox' className="c-form-control" id={`fid_${this_key}`} name={this_name} value={this_value} />
+                                  <span className="checkmark"></span>
+                                  {option.text}
+                                </label>
+                              </div>
+                            )
+                          })
+                        }
+                      </div>
                     </div>
-                  );
-                })}
-              </div>
+                  )
+                })
+              }
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TextAreaAutosize from 'react-textarea-autosize';
 import {
   ContentState, EditorState, convertFromHTML, convertToRaw,
@@ -87,6 +87,8 @@ export default class FormElementsEdit extends React.Component {
     const this_element = this.state.element;
     this_element[property] = html;
 
+    console.log(this_element);
+
     this.setState({
       element: this_element,
       dirty: true,
@@ -102,6 +104,8 @@ export default class FormElementsEdit extends React.Component {
     this_element[elemProperty].map((option) => {
       option.title = html;
     })
+
+    console.log(this_element);
 
     this.setState({
       element: this_element,
@@ -189,12 +193,18 @@ export default class FormElementsEdit extends React.Component {
     }
 
     let editorPropsState;
+    let titlePropsState = [];
     if (this.props.element.hasOwnProperty('props')) {
-      if(this.props.element.props[0].hasOwnProperty('title')) {
+      if(this.props.element.props.some(item => item["title"] !== undefined)){
         this.props.element.props.map((ele) => {
-          editorPropsState = this.convertFromHTML(ele.title);
+          titlePropsState.push(ele.title);
         })
       }
+      // if(this.props.element.props[0].hasOwnProperty('title')) {
+      //   this.props.element.props.map((ele) => {
+      //     editorPropsState = this.convertFromHTML(ele.title);
+      //   })
+      // }
     }
 
     return (
@@ -236,9 +246,11 @@ export default class FormElementsEdit extends React.Component {
           </div>
         }
         {
-          this.props.element.props[0].hasOwnProperty('title') &&
+          this.props.element.props.some(item => item["title"] !== undefined) &&
           <div className="form-group mt30">
             <label className="control-label">Display Title:</label>
+            {/* titlePropsState */}
+
             <Editor
               toolbar={toolbar}
               defaultEditorState={editorPropsState}
@@ -259,7 +271,7 @@ export default class FormElementsEdit extends React.Component {
             key={this.props.element.custom_options.length} />
         }
         {
-          this.props.element.props[0].hasOwnProperty('days') &&
+          this.props.element.props.some(item => item["days"] !== undefined) &&
           <div className="form-group mt30">
             <div className="custom-control custom-checkbox">
               <input id="is-days" className="custom-control-input" type="checkbox" value={true} checked={this_props_days} onChange={this.editElementHaveProp.bind(this, 'props', 'days', 'checked')}/>
@@ -268,37 +280,22 @@ export default class FormElementsEdit extends React.Component {
           </div>
         }
         {
-          this.props.element.props.length > 1 && this.props.element.props[1].hasOwnProperty('times') &&
-          <div className="form-group mt10">
-            <div className="custom-control custom-checkbox">
-              <input id="is-times" className="custom-control-input" type="checkbox" value={true} checked={this_props_times} onChange={this.editElementHaveProp.bind(this, 'props', 'times', 'checked')}/>
-              <label className="custom-control-label" htmlFor="is-times">Time</label>
-            </div>
+          this.props.element.props.some(item => item["times"] !== undefined) &&
+            <div className="form-group mt10">
+              <div className="custom-control custom-checkbox">
+                <input id="is-times" className="custom-control-input" type="checkbox" value={true} checked={this_props_times} onChange={this.editElementHaveProp.bind(this, 'props', 'times', 'checked')}/>
+                <label className="custom-control-label" htmlFor="is-times">Time</label>
+              </div>
           </div>
         }
         {
-          this.props.element.props.length > 1 && this.props.element.props[2].hasOwnProperty('timesto') &&
+          this.props.element.props.some(item => item["timesto"] !== undefined) &&
           <div className="form-group mt10">
-            {/* <p>{this_props_timesto}</p> */}
             <div className="custom-control custom-checkbox">
               <input id="is-timesto" className="custom-control-input" type="checkbox" value={true} checked={this_props_timesto} onChange={this.editElementHaveProp.bind(this, 'props', 'timesto', 'checked')}/>
               <label className="custom-control-label" htmlFor="is-timesto">Time (from~to)</label>
             </div>
           </div>
-
-        }
-        {
-          this.props.element.props[0].hasOwnProperty('title') &&
-          <div className="form-group mt10">
-            <div className="custom-control custom-checkbox">
-              <input id="is-title" className="custom-control-input" type="checkbox" value={true} onChange={this.editElementHaveProp.bind(this, 'props', 'title', 'checked')}/>
-              <label className="custom-control-label" htmlFor="is-title">Add Title and Checkbox</label>
-            </div>
-          </div>
-        }
-
-        {
-          // this_element_add_tittle_and_checkbox && <p>Hello</p>
         }
       </div>
     );

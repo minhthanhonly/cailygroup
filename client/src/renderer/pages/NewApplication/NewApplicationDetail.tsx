@@ -51,6 +51,10 @@ export default function NewApplicationDetail(){
     setLabel(childData);
   }
 
+  const callBackFunction2 = (childData) => {
+    console.log(childData);
+  }
+
   const formRef = useRef<HTMLFormElement>(null);
   const formRefHaveTable = useRef<HTMLFormElement>(null);
 
@@ -175,7 +179,7 @@ export default function NewApplicationDetail(){
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      console.log(appJsonString);
+      // console.log(appJsonString);
 
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
@@ -192,7 +196,7 @@ export default function NewApplicationDetail(){
 
 
     if(formRefHaveTable.current){
-      // TEST TABLE
+      console.log("Table");
     }
 
   }
@@ -257,6 +261,12 @@ export default function NewApplicationDetail(){
                     />
                   </div>
                 )
+              // case 'T_TableTravelExpenses':
+              //   return (
+              //     <div className="c-row" key={index}>
+              //       <TravelExpenses id_table={undefined}/>
+              //     </div>
+              //   )
               default:
                 formHTML+= "";
                 break;
@@ -271,7 +281,7 @@ export default function NewApplicationDetail(){
               case 'T_TableTravelExpenses':
                 return (
                   <div className="c-row" key={index}>
-                    <TravelExpenses id_table={undefined}/>
+                    <TravelExpenses id_table={undefined} parentCallback={callBackFunction2}/>
                   </div>
                 )
               default:

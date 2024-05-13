@@ -1,4 +1,4 @@
-import { ReactFormBuilder, Registry } from "react-form-builder2";
+import { ReactFormBuilder } from "react-form-builder2";
 import 'react-form-builder2/dist/app.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './Form.scss';
@@ -92,25 +92,47 @@ export default function FormAdd(){
       icon: 'far fa-check-square',
       label: '休暇区分',
       props: [
-        { title: '有給休暇' },
-      ],
-      custom_options: [
         {
-          value: 'checkbox_value_1',
-          text: '全休',
-          key: 'checkboxes_option_1',
+          title: '有給休暇',
+          checkboxOptions: [
+            {
+              value: 'checkbox_value_1',
+              text: '全休',
+              key: 'checkboxes_option_1',
+            },
+            {
+              value: 'checkbox_value_2',
+              text: '午前休',
+              key: 'checkboxes_option_2',
+            },
+            {
+              value: 'checkbox_value_3',
+              text: '午後休',
+              key: 'checkboxes_option_3',
+            },
+          ],
         },
         {
-          value: 'checkbox_value_2',
-          text: '午前休',
-          key: 'checkboxes_option_2',
+          title: '無給休暇',
+          checkboxOptions: [
+            {
+              value: 'checkbox_value_1',
+              text: '全休',
+              key: 'checkboxes_option_1',
+            },
+            {
+              value: 'checkbox_value_2',
+              text: '午前休',
+              key: 'checkboxes_option_2',
+            },
+            {
+              value: 'checkbox_value_3',
+              text: '午後休',
+              key: 'checkboxes_option_3',
+            },
+          ],
         },
-        {
-          value: 'checkbox_value_3',
-          text: '午後休',
-          key: 'checkboxes_option_3',
-        },
-      ],
+      ]
     },
     {
       key: 'F_RadioButtons',
@@ -187,6 +209,7 @@ export default function FormAdd(){
       name: 'Table Travel Expenses',
       static: true,
       icon: 'fas fa-table',
+      group_name: 'Table',
     },
     {
       key: 'T_TableExpenseReport',
@@ -197,6 +220,7 @@ export default function FormAdd(){
       name: 'Table Expense Report',
       static: true,
       icon: 'fas fa-table',
+      group_name: 'Table',
     },
     {
       key: 'T_TablePriceBusinessReport',
@@ -207,6 +231,7 @@ export default function FormAdd(){
       name: 'Table Price Business Report',
       static: true,
       icon: 'fas fa-table',
+      group_name: 'Table',
     },
     {
       key: 'T_TableTravelAllowance',
@@ -217,6 +242,7 @@ export default function FormAdd(){
       name: 'Table Travel Allowance',
       static: true,
       icon: 'fas fa-table',
+      group_name: 'Table',
     },
   ];
 
