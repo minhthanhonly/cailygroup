@@ -284,18 +284,21 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                             id_status: status
                         };
 
-                        // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-                        const response = await axiosPrivate.post('travelexpenses/add', rowsObject, { headers: { 'Content-Type': 'application/json' } });
+                        console.log("rowsObject", rowsObject);
 
-                        if (response && response.status >= 200 && response.status < 300) {
-                            if (status === 1) {
-                                toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-                            } else {
-                                toast.success('Bạn Lưu vào bản nháp thành công');
-                            }
-                        } else {
-                            console.error('Yêu cầu POST không thành công.');
-                        }
+
+                        // // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
+                        // const response = await axiosPrivate.post('travelexpenses/add', rowsObject, { headers: { 'Content-Type': 'application/json' } });
+
+                        // if (response && response.status >= 200 && response.status < 300) {
+                        //     if (status === 1) {
+                        //         toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
+                        //     } else {
+                        //         toast.success('Bạn Lưu vào bản nháp thành công');
+                        //     }
+                        // } else {
+                        //     console.error('Yêu cầu POST không thành công.');
+                        // }
                     } catch (error) {
                         console.error('Error saving expense:', error);
                     }
@@ -357,7 +360,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     </table>
                 </div>
             </div>
-            {/* 
+
             <div className='box-router'>
                 <div className='box-router__title'>承認ルート</div>
                 <div className='grid-row box-router__grid'>
@@ -372,11 +375,11 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                 <div className='box-router__edit'>
                     <p className='plus-row box-router__edit--content' >承認ルートを編集</p>
                 </div>
-            </div> */}
-            {/* <div className="wrp-button">
+            </div>
+            <div className="wrp-button">
                 <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
                 <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
-            </div> */}
+            </div>
         </>
     )
 
