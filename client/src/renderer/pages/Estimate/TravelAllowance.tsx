@@ -288,7 +288,7 @@ export const TravelAllowance = (props: { id_table: any }) => {
       </h2>
       <p className="txt-lead">下記の通り申請致します。</p> */}
 
-      <table className="tb-from">
+      {/* <table className="tb-from">
         <tbody>
           <tr>
             <th>
@@ -423,7 +423,7 @@ export const TravelAllowance = (props: { id_table: any }) => {
             </td>
           </tr>
         </tbody>
-      </table>
+      </table> */}
       <div className="table ">
         <div className="tbl_custom--03 boder-input">
           <table>
@@ -550,7 +550,7 @@ export const TravelAllowance = (props: { id_table: any }) => {
         </div>
       </div>
 
-      <div className="box-router">
+      {/* <div className="box-router">
         <div className="box-router__title">承認ルート</div>
         <div className="grid-row box-router__grid">
           <div className="box-router__name">
@@ -574,7 +574,7 @@ export const TravelAllowance = (props: { id_table: any }) => {
         >
           申請する
         </button>
-      </div>
+      </div> */}
     </>
   );
 };
