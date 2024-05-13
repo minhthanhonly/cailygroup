@@ -10,9 +10,9 @@ import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentCheckbox from "../Form/Component/ComponentCheckbox";
 import { isValidInputText, isValidTextArea } from "../../components/Validate/";
-import { TravelExpenses } from "../Estimate/TravelExpenses";
+import TravelExpenses from "../Estimate/TravelExpenses";
 
-export default function NewApplicationDetail(){
+export default function NewApplicationDetail() {
   const { id } = useParams();
   const [formName, setFormName] = useState('');
   const [formData, setFormData] = useState<any>([]);
@@ -34,10 +34,10 @@ export default function NewApplicationDetail(){
       console.error('Error fetching data: ', error);
     }
   };
-0
+  0
   useEffect(() => {
     fetchNewApplicationById();
-  },[])
+  }, [])
 
   const handleBackIndex = () => {
     navigate('/newapplication');
@@ -52,8 +52,10 @@ export default function NewApplicationDetail(){
   }
 
   const callBackFunction2 = (childData) => {
-    console.log(childData);
+    console.log("childData2", childData);
   }
+
+
 
   const formRef = useRef<HTMLFormElement>(null);
   const formRefHaveTable = useRef<HTMLFormElement>(null);
@@ -77,16 +79,16 @@ export default function NewApplicationDetail(){
         const element = formElements[i] as HTMLInputElement;
 
         //Bắt lỗi Validate
-        if(element.type === 'text' && element.required) {
+        if (element.type === 'text' && element.required) {
           validInputTextErrors = isValidInputText(element.value, element.title);
-        } else if(element.type === 'textarea' && element.required) {
+        } else if (element.type === 'textarea' && element.required) {
           validTextAreaErrors = isValidTextArea(element.value, element.title);
         }
 
         // Lấy các thuộc tính của đối tượng
         if (element.value && element.type != 'checkbox') {
 
-          if(element.ariaLabel === null){
+          if (element.ariaLabel === null) {
             newObj = {
               id: element.name,
               label: label,
@@ -102,7 +104,7 @@ export default function NewApplicationDetail(){
           formData.push(newObj);
         }
 
-        if(element.type === 'checkbox' && element.checked === true) {
+        if (element.type === 'checkbox' && element.checked === true) {
           newObj = {
             id: element.name,
             label: element.title,
@@ -116,28 +118,28 @@ export default function NewApplicationDetail(){
       const dupeObjs: any = [];
       const uniqObjs: any = [];
       // Lọc và gom nhóm các đối tượng
-      formData.forEach(obj => [uniqObjs,dupeObjs][+(formData.map(obj => obj.id).filter(id => id === obj.id).length > 1)].push(obj));
+      formData.forEach(obj => [uniqObjs, dupeObjs][+(formData.map(obj => obj.id).filter(id => id === obj.id).length > 1)].push(obj));
 
       // Lấy giá trị của các đối tượng trùng lặp id và thêm vào mảng
       const dupeObjs_2: any = [];
       const uniqObjs_2: any = [];
-      if(dupeObjs.length > 1){
-        dupeObjs.forEach(obj => [uniqObjs_2,dupeObjs_2][+(dupeObjs.map(obj => obj.label).filter(label => label === obj.label).length > 1)].push(obj));
+      if (dupeObjs.length > 1) {
+        dupeObjs.forEach(obj => [uniqObjs_2, dupeObjs_2][+(dupeObjs.map(obj => obj.label).filter(label => label === obj.label).length > 1)].push(obj));
         let mergedValue: any = [];
-        let objHaveDifLabel: any = {label: '', value: ''};
+        let objHaveDifLabel: any = { label: '', value: '' };
 
-        if(uniqObjs_2.length > 0){
-          for(let i = 0; i < uniqObjs_2.length; i++){
+        if (uniqObjs_2.length > 0) {
+          for (let i = 0; i < uniqObjs_2.length; i++) {
             objHaveDifLabel = { label: uniqObjs_2[i].label, value: uniqObjs_2[i].value }
           }
         } else {
-          for(let i = 0; i < dupeObjs.length; i++){
+          for (let i = 0; i < dupeObjs.length; i++) {
             mergedValue.push(dupeObjs[i].value);
           }
         }
 
-        if(dupeObjs_2.length > 1 && uniqObjs_2.length > 0){
-          for(let i = 0; i < dupeObjs_2.length; i++){
+        if (dupeObjs_2.length > 1 && uniqObjs_2.length > 0) {
+          for (let i = 0; i < dupeObjs_2.length; i++) {
             mergedValue.push(dupeObjs_2[i].value);
           }
           mergedValue.push(objHaveDifLabel);
@@ -151,10 +153,10 @@ export default function NewApplicationDetail(){
         // }
 
         // Gom các đối tượng trùng lặp id thành 1 đối tượng
-        var resultObject = dupeObjs.reduce(function(result, currentObject) {
-          for(var key in currentObject) {
+        var resultObject = dupeObjs.reduce(function (result, currentObject) {
+          for (var key in currentObject) {
             if (currentObject.hasOwnProperty(key)) {
-                result[key] = currentObject[key];
+              result[key] = currentObject[key];
             }
           }
           return result;
@@ -195,7 +197,7 @@ export default function NewApplicationDetail(){
     }
 
 
-    if(formRefHaveTable.current){
+    if (formRefHaveTable.current) {
       console.log("Table");
     }
 
@@ -204,15 +206,15 @@ export default function NewApplicationDetail(){
   return (
     <>
       <Heading2 text={formName} />
-      {error=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
-      {msg=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
+      {error == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
+      {msg == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
       <div className="c-row"><p className="txt-lead">下記の通り申請致します。 </p></div>
       <form ref={formRef}>
         {
           formData.map((item, index) => {
-            switch(item.key){
+            switch (item.key) {
               case 'F_Text':
-                return <div className="c-row" key={index}><ComponentText text={item.content}/></div>;
+                return <div className="c-row" key={index}><ComponentText text={item.content} /></div>;
               case 'F_InputText':
                 return (
                   <div className="c-row" key={index}>
@@ -268,7 +270,7 @@ export default function NewApplicationDetail(){
               //     </div>
               //   )
               default:
-                formHTML+= "";
+                formHTML += "";
                 break;
             }
           })
@@ -277,15 +279,15 @@ export default function NewApplicationDetail(){
       <form ref={formRefHaveTable}>
         {
           formData.map((item, index) => {
-            switch(item.key){
+            switch (item.key) {
               case 'T_TableTravelExpenses':
                 return (
                   <div className="c-row" key={index}>
-                    <TravelExpenses id_table={undefined} parentCallback={callBackFunction2}/>
+                    <TravelExpenses id_table={undefined} parentCallback={callBackFunction2} />
                   </div>
                 )
               default:
-                formHTML+= "";
+                formHTML += "";
                 break;
             }
           })
@@ -293,23 +295,23 @@ export default function NewApplicationDetail(){
       </form>
       <div className="box-router">
         <div className="box-router__title">承認ルート</div>
-          <div className="grid-row box-router__grid">
-            <div className="box-router__name">
-              <p>承認者: </p> <p>齋藤社長</p>
-            </div>
-            <div className="box-router__name">
-              <p>共有者: </p> <p>総務</p>
-            </div>
+        <div className="grid-row box-router__grid">
+          <div className="box-router__name">
+            <p>承認者: </p> <p>齋藤社長</p>
           </div>
-          <div className="box-router__edit">
-            <p className="plus-row">承認ルートを編集</p>
+          <div className="box-router__name">
+            <p>共有者: </p> <p>総務</p>
           </div>
+        </div>
+        <div className="box-router__edit">
+          <p className="plus-row">承認ルートを編集</p>
+        </div>
       </div>
       <div className="wrp-button mt50">
         <button className="btn btn--from btn--gray">下書き保存</button>
         <button className="btn btn--from btn--blue" onClick={handleSubmit}>申請する</button>
       </div>
-      <ButtonBack onHandle={handleBackIndex}/>
+      <ButtonBack onHandle={handleBackIndex} />
     </>
   )
 }

@@ -19,7 +19,7 @@ import { GroupEdit } from './pages/Group/GroupEdit';
 import { Module } from './pages/Module';
 import { Application } from './pages/Application';
 import { Estimate } from './pages/Estimate';
-import { TravelExpenses } from './pages/Estimate/TravelExpenses';
+import TravelExpenses from './pages/Estimate/TravelExpenses';
 import { ExpenseReport } from './pages/Estimate/ExpenseReport';
 import { PriceBusinessReport } from './pages/Estimate/PriceBusinessReport';
 import { TravelAllowance } from './pages/Estimate/TravelAllowance';
@@ -87,11 +87,11 @@ export default function App() {
               <Route path="Search" element={<Search />} />
               <Route path="estimate" element={<Estimate />} />
 
-              <Route
+              {/* <Route
                 path="estimate/7"
-                element={<TravelExpenses id_table="7" />}
-              />
-              <Route
+                element={<TravelExpenses parentCallback={props} />}
+              /> */}
+              {/* <Route
                 path="estimate/8"
                 element={<ExpenseReport id_table="8" />}
               />
@@ -102,7 +102,7 @@ export default function App() {
               <Route
                 path="estimate/10"
                 element={<TravelAllowance id_table="10" />}
-              />
+              /> */}
               {/* Khu cua thịnh */}
 
               <Route path="field" element={<Field />} />

@@ -17,8 +17,7 @@ interface Row {
 }
 
 
-export const TravelAllowance = (props: { id_table: any }) => {
-  const { id_table } = props;
+export default function TravelAllowance(props) {
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const axiosPrivate = useAxiosPrivate();
@@ -135,28 +134,17 @@ export const TravelAllowance = (props: { id_table: any }) => {
     }
   };
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-    field: keyof Row,
-  ) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
     const { value } = event.target;
-    setRows((prevRows) => {
+    setRows((prevRows: Row[]) => {
       const newRows = [...prevRows];
       newRows[index] = { ...newRows[index], [field]: value };
-      return newRows;
+      props.parentCallback(newRows); // callback props ve cha
+      return newRows; // Trả về một giá trị từ hàm setRows
     });
-
-    //   validateInput(value, field, index); // Truyền index vào hàm validateInput
   };
 
-  const saveAsDraft = async () => {
-    await saveExpense(3); // Trạng thái cho bản nháp
-  };
 
-  const saveAsAwaitingApproval = async () => {
-    await saveExpense(1); // Trạng thái cho đang chờ duyệt
-  };
 
   const calculateTotalSum = (array: number[]) => {
     const validValues = array.filter((value) => !isNaN(value)); // Lọc các giá trị không phải là số
@@ -186,26 +174,6 @@ export const TravelAllowance = (props: { id_table: any }) => {
     setRows([...rows, newRow]);
   };
 
-  const [tableName, setTableName] = useState(0);
-  useEffect(() => {
-    const getTables = async () => {
-      try {
-        const response = await axiosPrivate.get('estimate');
-        const { data } = response;
-        const { id_table } = props;
-
-        // Lặp qua mảng data để tìm name tương ứng với id_table
-        const matchedTable = data.find(
-          (data: { id: any }) => data.id === id_table,
-        );
-        setTableName(matchedTable.name);
-      } catch (err) {
-        console.error('Lỗi khi lấy dữ liệu:', err);
-      }
-    };
-    getTables();
-  }, [id_table]);
-
 
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -213,217 +181,10 @@ export const TravelAllowance = (props: { id_table: any }) => {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const saveExpense = async (status: number) => {
-    const formattedDate = moment(date).format('YYYY/MM/DD HH:mm:ss');
-    const fDateChanged = isStartDate === true ? formattedDate : '';
 
-    try {
-      const additionalData = {
-        isChange: isChange,
-        isChangePrice: isChangePrice,
-        isStartNow: isStartNow,
-        isStartDate: isStartDate,
-        date_input: fDateChanged,
-        totalMonthlyTicket: formatNumberWithCommass(totalMonthlyTicket),
-        totalRoundtrip: formatNumberWithCommass(totalRoundtrip),
-        // Thêm các trường khác nếu cần
-      };
-      // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
-      const dataToSend = rows.map((row, index) => ({
-        date: formattedDate,
-        railwayName: row.railwayName,
-        router: row.router,
-        startroad: row.startroad,
-        endroad: row.endroad,
-        monthlyticket: formatNumberWithCommass(row.monthlyticket),
-        roundtrip: formatNumberWithCommass(row.roundtrip),
-        owner: users.realname,
-        note: row.note,
-        address: address,
-        isNew: isNew,
-        station: station,
-        tableName: tableName,
-        table_id: id_table,
-        id_status: status,
-      }));
-
-      // Tạo đối tượng JSON chứa các mảng dữ liệu
-      const requestData = {
-        rows: dataToSend,
-        owner: users.realname,
-        table_id: id_table,
-        id_status: status,
-        ...additionalData,
-      };
-
-      console.log("rowsObject", requestData);
-
-      // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-      // const response = await axiosPrivate.post(
-      //   'travelexpenses/add',
-      //   requestData,
-      //   { headers: { 'Content-Type': 'application/json' } },
-      // );
-
-      // if (response.status >= 200 && response.status < 300) {
-      //   if (status === 1) {
-      //     toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-      //   } else {
-      //     toast.success('Bạn Lưu vào bản nháp thành công');
-      //   }
-      // } else {
-      //   console.error(
-      //     'Yêu cầu POST không thành công. Mã lỗi:',
-      //     response.status,
-      //   );
-      // }
-    } catch (error) {
-      console.error('Error saving expenses:', error);
-    }
-  };
   return (
     <>
-      {/* <h2 className="hdglv2">
-        <span>通勤手当申請書</span>
-      </h2>
-      <p className="txt-lead">下記の通り申請致します。</p> */}
 
-      {/* <table className="tb-from">
-        <tbody>
-          <tr>
-            <th>
-              <div className="tb-from--th">
-                用途<span className="txt-red">（必須）</span>
-              </div>
-            </th>
-            <td>
-              <div className="tb-from--td">
-                <div className="tb-from--checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="checkbox"
-                      checked={isNew}
-                      onChange={handleNewCheck}
-                    />
-                    <span></span>遅刻
-                  </label>
-                </div>
-                <div className="tb-from--checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="checkbox"
-                      checked={isChange}
-                      onChange={handleisChangeCheck}
-                    />
-                    <span></span>早退
-                  </label>
-                </div>
-                <div className="tb-from--checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="checkbox"
-                      checked={isChangePrice}
-                      onChange={handleChangePriceCheck}
-                    />
-                    <span></span>時間外勤務
-                  </label>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th>
-              <div className="tb-from--th">
-                行先<span className="txt-red">（必須）</span>
-              </div>
-            </th>
-            <td>
-              <div className="tb-from--td">
-                <input
-                  type="text"
-                  className="tb-from--input"
-                  name="address"
-                  value={address}
-                  onChange={handleInputChange02}
-                />
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th>
-              <div className="tb-from--th">
-                行先<span className="txt-red">（必須）</span>
-              </div>
-            </th>
-            <td>
-              <div className="tb-from--td">
-                <input
-                  type="text"
-                  className="tb-from--input"
-                  name="station"
-                  value={station}
-                  onChange={handleInputChange02}
-                />
-              </div>
-            </td>
-          </tr>
-          <tr>
-            {' '}
-            <th>
-              {' '}
-              <div className="tb-from--th">
-                適用開始年月日<span className="txt-red">（必須）</span>{' '}
-              </div>{' '}
-            </th>
-            <td>
-              <div className="tb-from--td">
-                <div className="tb-from--checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="checkbox"
-                      checked={isStartNow}
-                      onChange={handleStartNowCheck}
-                    />
-                    <span></span>入社日から適用
-                  </label>
-                </div>
-                <div className="tb-from--checkbox">
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="checkbox"
-                      checked={isStartDate}
-                      onChange={handleStartDateCheck}
-                    />
-                    <span></span>
-                    <DatePicker
-                      className="tb-from--checkbox__date"
-                      onChange={(_date) => handleLeaveDateChange()}
-                      value={date}
-                      format="YYYY/MM/DD HH:mm:ss"
-                    />
-                    <p>から適用</p>
-                  </label>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th>
-              <div className="tb-from--th">
-                行先<span className="txt-red">（必須）</span>
-              </div>
-            </th>
-            <td>
-              【時給制の場合】普通運賃の勤務日数分を支給　　【月給制の場合】1ヵ月分の定期券代金を支給
-            </td>
-          </tr>
-        </tbody>
-      </table> */}
       <div className="table ">
         <div className="tbl_custom--03 boder-input">
           <table>

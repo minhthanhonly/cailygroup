@@ -16,7 +16,10 @@ interface Row {
     note: string;
 }
 
-export const TravelExpenses = (props) => {
+
+
+
+export default function TravelExpenses(props) {
 
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
@@ -95,86 +98,14 @@ export const TravelExpenses = (props) => {
     };
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
         const { value } = event.target;
-        setRows(prevRows => {
+        setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
-
-            console.log("newRows", newRows);
-
-
-            props.parentCallback(newRows);
-
+            props.parentCallback(newRows); // callback props ve cha
+            return newRows; // Trả về một giá trị từ hàm setRows
         });
-
-
-
-
     };
 
-
-    const checkBeforeSave = (): boolean => {
-        // Kiểm tra xem mỗi hàng có đầy đủ dữ liệu không
-        const isValid = rows.every(row => (
-            row.route && row.boardingStation && row.alightingStation && row.mealExpense && row.note
-        ));
-
-        if (!isValid) {
-            toast.error('Vui lòng nhập đầy đủ các thông tin mỗi hàng.');
-        }
-
-        return isValid;
-    };
-
-
-    const [tableName, setTableName] = useState(0);
-
-
-
-    const saveExpense = async (status: number) => {
-        try {
-            const isValid = checkBeforeSave();
-            if (isValid) {
-                const formattedTotal = formatNumberWithCommas(total);
-
-                // Lặp qua mỗi dòng và gửi mỗi dòng dữ liệu là một yêu cầu POST riêng biệt
-                await Promise.all(rows.map(async (row) => {
-                    try {
-                        const formattedDate = moment(row.date).format("YYYY/MM/DD HH:mm:ss");
-                        const rowData = {
-                            date: formattedDate,
-                            route: row.route,
-                            boardingStation: row.boardingStation,
-                            alightingStation: row.alightingStation,
-                            mealExpense: formatNumberWithCommas(row.mealExpense),
-                            note: row.note,
-                            total: formattedTotal,
-                            tableName: tableName,
-                            owner: users.realname,
-
-                            id_status: status,
-                        };
-
-                        // Tạo object chứa key "rows" và mảng dữ liệu hàng
-                        const rowsObject = {
-                            rows: [rowData],
-                            owner: users.realname,
-
-                            id_status: status
-                        };
-
-                        console.log("rowsObject", rowsObject);
-
-
-
-                    } catch (error) {
-                        console.error('Error saving expense:', error);
-                    }
-                }));
-            }
-        } catch (error) {
-            console.error('Error saving expenses:', error);
-        }
-    };
 
     return (
         <>
