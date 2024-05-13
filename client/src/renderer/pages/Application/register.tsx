@@ -41,22 +41,18 @@ export const Register = ({ id }) => {
               if (formDataItem.label === '期間' && isPeriodDisplayed) {
                 return null;
               }
-
               if (formDataItem.label === '期間') {
                 isPeriodDisplayed = true;
               }
-
               if (!formDataItem.label) {
                 return null;
               }
-
               let valueToDisplay = formDataItem.value;
-
               // Kiểm tra nếu label là "日間"
               if (formDataItem.label === '日間') {
                 let duration = formDataItem.value.pop(); // Lấy giá trị "日間" ra khỏi mảng
                 valueToDisplay = formDataItem.value.join(' ~ '); // Nối giá trị còn lại
-                valueToDisplay += `  ${duration.value} ${duration.label}`; // Thêm "日間" vào cuối
+                valueToDisplay += `  ${duration.value}   ${duration.label}  `; // Thêm "日間" vào cuối
               } else if (
                 Array.isArray(formDataItem.value) &&
                 formDataItem.value.length >= 2 // Kiểm tra nếu có ít nhất 2 phần tử
