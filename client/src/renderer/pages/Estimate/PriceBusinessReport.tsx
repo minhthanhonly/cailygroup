@@ -99,7 +99,7 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
         if (isDomestic === 1) setDomestic(0); // Deselect late if early leave is selected
     };
 
-    // thêm 
+    // thêm
 
     const updateRow = (updatedRow: Row) => {
         // Tìm chỉ mục của dòng được cập nhật trong mảng rows
@@ -350,7 +350,7 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
             {/* <h2 className="hdglv2"><span>出張旅費清算書</span></h2>
             <p className="txt-lead">下記の通り申請致します。</p> */}
 
-            <table className='tb-from'>
+            {/* <table className='tb-from'>
                 <tbody>
                     <tr>
                         <th><div className='tb-from--th'>用途<span className='txt-red'>（必須）</span></div></th>
@@ -399,7 +399,7 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
                         </td>
                     </tr>
                 </tbody>
-            </table>
+            </table> */}
 
             <div className="table tbl_custom">
                 <div className='tbl_custom--03'>
@@ -467,7 +467,7 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
                 </div>
             </div>
 
-            <div className='box-router'>
+            {/* <div className='box-router'>
                 <div className='box-router__title'>承認ルート</div>
                 <div className='grid-row box-router__grid'>
                     <div className='box-router__name'>
@@ -485,7 +485,7 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
             <div className="wrp-button">
                 <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
                 <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
-            </div>
+            </div> */}
         </>
     )
 

@@ -17,12 +17,7 @@ interface Row {
 }
 
 export const TravelExpenses = (props: { id_table: any; }) => {
-
-
     const { id_table } = props;
-
-
-
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
     const [date, setDate] = useState(new Date());
@@ -361,7 +356,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                 </div>
             </div>
 
-            <div className='box-router'>
+            {/* <div className='box-router'>
                 <div className='box-router__title'>承認ルート</div>
                 <div className='grid-row box-router__grid'>
                     <div className='box-router__name'>
@@ -379,7 +374,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
             <div className="wrp-button">
                 <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
                 <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
-            </div>
+            </div> */}
         </>
     )
 

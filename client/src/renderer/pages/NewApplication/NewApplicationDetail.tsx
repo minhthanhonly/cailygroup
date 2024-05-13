@@ -10,6 +10,7 @@ import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentCheckbox from "../Form/Component/ComponentCheckbox";
 import { isValidInputText, isValidTextArea } from "../../components/Validate/";
+import { TravelExpenses } from "../Estimate/TravelExpenses";
 
 export default function NewApplicationDetail(){
   const { id } = useParams();
@@ -51,6 +52,8 @@ export default function NewApplicationDetail(){
   }
 
   const formRef = useRef<HTMLFormElement>(null);
+  const formRefHaveTable = useRef<HTMLFormElement>(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -172,20 +175,26 @@ export default function NewApplicationDetail(){
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      // console.log(appJsonString);
+      console.log(appJsonString);
 
-      if(validInputTextErrors === true && validTextAreaErrors === true){
-        const res = await axiosPrivate.post("newapplication/add", appJsonString);
-        if(res.data.success === 'error'){
-          setError('Bị lỗi khi đăng ký');
-        } else {
-          setMsg('Bạn đã đăng ký thành công');
-          setTimeout(() => {
-        		navigate('/newapplication');
-        	}, 2000);
-        }
-      }
+      // if(validInputTextErrors === true && validTextAreaErrors === true){
+      //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      //   if(res.data.success === 'error'){
+      //     setError('Bị lỗi khi đăng ký');
+      //   } else {
+      //     setMsg('Bạn đã đăng ký thành công');
+      //     setTimeout(() => {
+      //   		navigate('/newapplication');
+      //   	}, 2000);
+      //   }
+      // }
     }
+
+
+    if(formRefHaveTable.current){
+      // TEST TABLE
+    }
+
   }
 
   return (
@@ -246,6 +255,23 @@ export default function NewApplicationDetail(){
                       required={item.required}
                       customOptions={item.custom_options}
                     />
+                  </div>
+                )
+              default:
+                formHTML+= "";
+                break;
+            }
+          })
+        }
+      </form>
+      <form ref={formRefHaveTable}>
+        {
+          formData.map((item, index) => {
+            switch(item.key){
+              case 'T_TableTravelExpenses':
+                return (
+                  <div className="c-row" key={index}>
+                    <TravelExpenses id_table={undefined}/>
                   </div>
                 )
               default:

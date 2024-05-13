@@ -18,6 +18,9 @@ import { isValidForm } from "../../components/Validate";
 import { useNavigate } from "react-router-dom";
 import { TravelExpenses } from "../Estimate/TravelExpenses";
 import F_TitleAndCheckbox from "./Field/F_TitleAndCheckbox";
+import { ExpenseReport } from "../Estimate/ExpenseReport";
+import { PriceBusinessReport } from "../Estimate/PriceBusinessReport";
+import { TravelAllowance } from "../Estimate/TravelAllowance";
 
 export default function FormAdd(){
   const axiosPrivate = useAxiosPrivate();
@@ -180,8 +183,38 @@ export default function FormAdd(){
       element: 'CustomElement',
       component: TravelExpenses,
       type: 'custom',
-      field_name: 'caily_table_',
+      field_name: 'caily_table_travel_expenses',
       name: 'Table Travel Expenses',
+      static: true,
+      icon: 'fas fa-table',
+    },
+    {
+      key: 'T_TableExpenseReport',
+      element: 'CustomElement',
+      component: ExpenseReport,
+      type: 'custom',
+      field_name: 'caily_table_expense_report',
+      name: 'Table Expense Report',
+      static: true,
+      icon: 'fas fa-table',
+    },
+    {
+      key: 'T_TablePriceBusinessReport',
+      element: 'CustomElement',
+      component: PriceBusinessReport,
+      type: 'custom',
+      field_name: 'caily_table_price_business_report',
+      name: 'Table Price Business Report',
+      static: true,
+      icon: 'fas fa-table',
+    },
+    {
+      key: 'T_TableTravelAllowance',
+      element: 'CustomElement',
+      component: TravelAllowance,
+      type: 'custom',
+      field_name: 'caily_table_travel_allowance',
+      name: 'Table Travel Allowance',
       static: true,
       icon: 'fas fa-table',
     },
@@ -200,6 +233,7 @@ export default function FormAdd(){
     const validationErrors = isValidForm({ ...formValue }, reactFormData);
     if (validationErrors === true) {
       const formData = { form_name: formValue.form_name, formDescription, reactFormData, status: formValue.status, owner: formValue.owner }
+
       const res = await axiosPrivate.post("form/add", formData);
       if(res.data.success === 'error'){
         setError('Bị lỗi khi thêm Form mới');
