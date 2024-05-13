@@ -1,7 +1,4 @@
 export default function ComponentTextArea(props){
-  const handleInput = (e) => {
-    props.parentCallback(props.keys, props.id, props.label, e.target.value);
-  }
   return (
   <div className="c-form">
     <div className="c-form-inner">

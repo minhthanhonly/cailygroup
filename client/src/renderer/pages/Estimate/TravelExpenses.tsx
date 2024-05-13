@@ -16,7 +16,7 @@ interface Row {
     note: string;
 }
 
-export const TravelExpenses = () => {
+export const TravelExpenses = (props) => {
 
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
@@ -100,9 +100,13 @@ export const TravelExpenses = () => {
             newRows[index] = { ...newRows[index], [field]: value };
 
             console.log("newRows", newRows);
-            return newRows;
+
+
+            props.parentCallback(newRows);
 
         });
+
+
 
 
     };
