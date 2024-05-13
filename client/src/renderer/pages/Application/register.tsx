@@ -49,13 +49,20 @@ export const Register = ({ id }) => {
               if (!formDataItem.label) {
                 return null;
               }
-              let valueToDisplay = formDataItem.value;
 
-              if (formDataItem.label === '日時 ') {
-                const [date, time] = formDataItem.value;
-                valueToDisplay = `${date}    ${time}`;
-              } else if (formDataItem.label === '期間') {
-                valueToDisplay = formDataItem.value.join(' ~ ');
+              let valueToDisplay;
+              if (Array.isArray(formDataItem.value)) {
+                // Xác định một cách riêng biệt cho mảng value
+                valueToDisplay = formDataItem.value
+                  .map((item: any) => {
+                    if (typeof item === 'object') {
+                      return `${item.label}: ${item.value}`;
+                    }
+                    return item;
+                  })
+                  .join(' ~ ');
+              } else {
+                valueToDisplay = formDataItem.value;
               }
               return (
                 <li key={index}>
