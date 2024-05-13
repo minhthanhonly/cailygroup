@@ -57,10 +57,24 @@ export const Register = ({ id }) => {
                 let duration = formDataItem.value.pop(); // Lấy giá trị "日間" ra khỏi mảng
                 valueToDisplay = formDataItem.value.join(' ~ '); // Nối giá trị còn lại
                 valueToDisplay += `  ${duration.value} ${duration.label}`; // Thêm "日間" vào cuối
+              } else if (
+                Array.isArray(formDataItem.value) &&
+                formDataItem.value.length >= 2 // Kiểm tra nếu có ít nhất 2 phần tử
+              ) {
+                // Kiểm tra nếu cả hai phần tử đều là ngày
+                if (
+                  !isNaN(Date.parse(formDataItem.value[0])) &&
+                  !isNaN(Date.parse(formDataItem.value[1]))
+                ) {
+                  valueToDisplay = formDataItem.value.join(' ~ '); // Nếu cả hai đều là ngày, nối chúng với dấu "~"
+                } else {
+                  let [date, ...times] = formDataItem.value; // Tách ngày và thời gian
+                  let timeRange = times.join(' ~ '); // Nối các phần tử thời gian
+                  valueToDisplay = `${date} ${timeRange}`; // Hiển thị ngày và khoảng thời gian
+                }
               } else if (Array.isArray(formDataItem.value)) {
                 valueToDisplay = formDataItem.value.join('  '); // Nối giá trị với dấu cách
               }
-
               return (
                 <li key={index}>
                   <div className="box-register__item">
