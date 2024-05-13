@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { Heading2 } from '../../components/Heading';
-import { Tab } from '../Application/tab';
+
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 import editIcon from '../../../../assets/icn-edit.png';
@@ -14,7 +14,7 @@ import { SearchData } from './SearchData';
 interface ListItem {
     id: string;
     name: string;
-    tablejson: string;
+    datajson: string;
     id_status: number;
     table_id: number;
     // Các trường khác nếu có
@@ -84,6 +84,7 @@ export const Search = () => {
         }
         getTables();
     }, []);
+
 
     const [date, setDate] = useState(new Date());
     const today = new Date();
@@ -170,20 +171,21 @@ export const Search = () => {
 
         const matchedItems = listOfDataBase.filter(item => {
             // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
-            const jsonData = JSON.parse(item.tablejson);
-            const itemDate = new Date(jsonData.rows[0].date);
+            const jsonData = JSON.parse(item.datajson);
+            const itemDate = new Date(item.createdAt);
+            const updateDate = new Date(item.createdAt);
 
-            const updateDate = new Date(item.updatedAt);
-
-            if (jsonData && jsonData.rows && searchText !== '') {
+            if (jsonData && jsonData.appName && searchText !== '') {
                 return (
                     String(item.table_id) === String(selectedOptionId) &&
-                    jsonData.rows.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
+                    jsonData.appName.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
 
                     && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
                 );
-            } else if (jsonData && jsonData.rows && searchText === '') {
+            } else if (jsonData && jsonData.appName && searchText === '') {
+
                 if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+
                     return String(item.table_id) === String(selectedOptionId)
                         && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
                 }
@@ -194,6 +196,8 @@ export const Search = () => {
             return false;
         });
 
+        console.log("matchedItems", matchedItems);
+
         setSearchResults(matchedItems);
 
         const newStatusCounts: { [key: number]: number } = {};
@@ -201,7 +205,6 @@ export const Search = () => {
             const idStatus = item.id_status;
             newStatusCounts[idStatus] = (newStatusCounts[idStatus] || 0) + 1;
         });
-
 
 
         const totalStatus = matchedItems.length;
@@ -318,53 +321,51 @@ export const Search = () => {
                                         {searchResults.filter(item => tab.status !== -1 ? Number(item.id_status) === Number(tab.status) : true).map((item, index) => {
                                             try {
                                                 // Phân tích chuỗi JSON thành đối tượng JavaScript
-                                                let jsonData = JSON.parse(item.tablejson);
+                                                let jsonData = JSON.parse(item.datajson);
                                                 let numberStatus = (Number(item.id_status));
                                                 let table = item.table_id;
                                                 let id = Number(item.id);
 
-
-
-
                                                 // Hiển thị thông tin chỉ khi trạng thái phù hợp
                                                 return (
-                                                    <div className="list-accordion__parent">
-                                                        <div key={index} className={`list-accordion__item ${openTabId === item.id ? 'open' : ''}`}>
-                                                            <div className="list-accordion__item__head" onClick={() => toggleAccordion(item.id)}>
-                                                                <div className="list-accordion__item__head__title">
-                                                                    <p className="list-accordion__item__head__title__title">
-                                                                        {jsonData.rows && jsonData.rows.length > 0 ? jsonData.rows[0].tableName : 'No data available'}
+                                                    <>
+                                                        <div className="list-accordion__parent">
+                                                            <div key={index} className={`list-accordion__item ${openTabId === item.id ? 'open' : ''}`}>
+                                                                <div className="list-accordion__item__head" onClick={() => toggleAccordion(item.id)}>
+                                                                    <div className="list-accordion__item__head__title">
+                                                                        <p className="list-accordion__item__head__title__title">
+                                                                            {jsonData.appName && jsonData.appName.length > 0 ? jsonData.appName[0].tableName : 'No data available'}
 
-                                                                    </p>
-                                                                    <span className="list-accordion__item__head__title__subtitle">
-                                                                        {jsonData.rows[0].owner}（{jsonData.rows[0].date} {'\u00A0\u00A0'}
-                                                                        {jsonData.rows[0].time}）
-                                                                    </span>
-                                                                </div>
-                                                                <div className="list-accordion__item__head__btn">
-                                                                    <p className="list-accordion__item__head__btn__btn">
-                                                                        <span className={`lbl01 ${["lbl-blue", "lbl-yellow", "lbl-red", "lbl-white", "lbl-brown"][numberStatus - 1]}`}>
-                                                                            {["承認待ち", "差し戻し", "却下", "完了", "下書き", "取り消し"][numberStatus - 1]}
+                                                                        </p>
+                                                                        <span className="list-accordion__item__head__title__subtitle">
+                                                                            {jsonData.appName[0].owner}（{jsonData.appName[0].date} {'\u00A0\u00A0'}
+                                                                            {jsonData.appName[0].time}）
                                                                         </span>
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                            <div className="list-accordion__item__content">
-                                                                {openTabId && (
-                                                                    <div className="list-accordion__item__content__inner">
-                                                                        <div className="list-accordion__item__content__item">
-
-                                                                            <SearchData id={id} table={table} />
-
-                                                                        </div >
                                                                     </div>
-                                                                )
-                                                                }
+                                                                    <div className="list-accordion__item__head__btn">
+                                                                        <p className="list-accordion__item__head__btn__btn">
+                                                                            <span className={`lbl01 ${["lbl-blue", "lbl-yellow", "lbl-red", "lbl-white", "lbl-brown"][numberStatus - 1]}`}>
+                                                                                {["承認待ち", "差し戻し", "却下", "完了", "下書き", "取り消し"][numberStatus - 1]}
+                                                                            </span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="list-accordion__item__content">
+                                                                    {openTabId && (
+                                                                        <div className="list-accordion__item__content__inner">
+                                                                            <div className="list-accordion__item__content__item">
+                                                                                ssss
+                                                                                <SearchData id={id} table={table} />
+
+                                                                            </div >
+                                                                        </div>
+                                                                    )
+                                                                    }
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-
+                                                    </>
                                                 );
                                             } catch (error) {
                                                 // Xử lý trường hợp chuỗi không hợp lệ
@@ -381,8 +382,6 @@ export const Search = () => {
                 </div >
             </div >
         </>
-
     )
-
 
 }

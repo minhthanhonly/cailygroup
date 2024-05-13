@@ -185,8 +185,6 @@ export default function NewApplicationDetail(){
         	}, 2000);
         }
       }
-
-
     }
   }
 

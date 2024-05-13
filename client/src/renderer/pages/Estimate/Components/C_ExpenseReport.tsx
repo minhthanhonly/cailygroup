@@ -86,7 +86,7 @@ const C_ExpenseReport = () => {
         setCheckedState(newCheckedState);
     };
 
-    // thêm 
+    // thêm
     const addRow = () => {
         const newRow: Row = { id: rows.length, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: 0, note: '' };
         setRows(prevRows => [...prevRows, newRow]);
@@ -99,7 +99,7 @@ const C_ExpenseReport = () => {
                         <thead>
                             <tr>
                                 <th>日付</th>
-                                <th>路線</th>
+                                <th>内容</th>
                                 <th>支払先</th>
                                 <th>金額（税抜）</th>
                                 <th>消費税</th>

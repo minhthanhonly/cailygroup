@@ -327,18 +327,19 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
                 ...additionalData,
             };
 
+            console.log("rowsObject", requestData);
             // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-            const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
+            // const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
 
-            if (response.status >= 200 && response.status < 300) {
-                if (status === 1) {
-                    toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-                } else {
-                    toast.success('Bạn Lưu vào bản nháp thành công');
-                }
-            } else {
-                console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
-            }
+            // if (response.status >= 200 && response.status < 300) {
+            //     if (status === 1) {
+            //         toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
+            //     } else {
+            //         toast.success('Bạn Lưu vào bản nháp thành công');
+            //     }
+            // } else {
+            //     console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
+            // }
 
         } catch (error) {
             console.error('Error saving expenses:', error);
@@ -466,7 +467,7 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
                 </div>
             </div>
 
-            {/* <div className='box-router'>
+            <div className='box-router'>
                 <div className='box-router__title'>承認ルート</div>
                 <div className='grid-row box-router__grid'>
                     <div className='box-router__name'>
@@ -484,7 +485,7 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
             <div className="wrp-button">
                 <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
                 <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
-            </div> */}
+            </div>
         </>
     )
 
