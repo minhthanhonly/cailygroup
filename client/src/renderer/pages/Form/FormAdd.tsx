@@ -16,15 +16,15 @@ import F_RadioButtons from "./Field/F_RadioButtons";
 
 import { isValidForm } from "../../components/Validate";
 import { useNavigate } from "react-router-dom";
-import { TravelExpenses } from "../Estimate/TravelExpenses";
+import TravelExpenses from "../Estimate/TravelExpenses";
 import F_TitleAndCheckbox from "./Field/F_TitleAndCheckbox";
 import { ExpenseReport } from "../Estimate/ExpenseReport";
 import { PriceBusinessReport } from "../Estimate/PriceBusinessReport";
-import { TravelAllowance } from "../Estimate/TravelAllowance";
+import TravelAllowance from "../Estimate/TravelAllowance";
 
-export default function FormAdd(){
+export default function FormAdd() {
   const axiosPrivate = useAxiosPrivate();
-	const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin'});
+  const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin' });
   const [formDescription, setFormDescription] = useState('');
   const [reactFormData, setReactFormData] = useState<any>([]);
   const navigate = useNavigate();
@@ -247,8 +247,8 @@ export default function FormAdd(){
   ];
 
   const handleInput = (e) => {
-		setFormValue({ ...formValue, [e.target.name]: e.target.value })
-	}
+    setFormValue({ ...formValue, [e.target.name]: e.target.value })
+  }
   const handleTextareaChange = (e) => {
     const newValue = e.target.value.replace(/\n/g, ''); // Xóa tất cả các ký tự '\n'
     setFormDescription(newValue);
@@ -261,13 +261,13 @@ export default function FormAdd(){
       const formData = { form_name: formValue.form_name, formDescription, reactFormData, status: formValue.status, owner: formValue.owner }
 
       const res = await axiosPrivate.post("form/add", formData);
-      if(res.data.success === 'error'){
+      if (res.data.success === 'error') {
         setError('Bị lỗi khi thêm Form mới');
       } else {
         setMsg('Thêm Form mới thành công');
         setTimeout(() => {
-					navigate('/newapplication');
-				}, 2000);
+          navigate('/newapplication');
+        }, 2000);
       }
     }
   }
@@ -280,8 +280,8 @@ export default function FormAdd(){
   return (
     <>
       <Heading2 text="Add New Form" />
-      {error=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
-      {msg=='' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
+      {error == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
+      {msg == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
       <div className="c-form">
         <input
           className="c-form-control"
@@ -299,7 +299,7 @@ export default function FormAdd(){
           data={reactFormData}
           onChange={setReactFormData}
           onSubmit={handleSubmit}
-          renderEditForm={props => <FormElementsEdit {...props}/>}
+          renderEditForm={props => <FormElementsEdit {...props} />}
         />
       </div>
       <div className="wrp-button">
