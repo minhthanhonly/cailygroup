@@ -16,8 +16,8 @@ interface Row {
     note: string;
 }
 
-export const TravelExpenses = (props: { id_table: any; }) => {
-    const { id_table } = props;
+export const TravelExpenses = () => {
+
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
     const [date, setDate] = useState(new Date());
@@ -98,19 +98,16 @@ export const TravelExpenses = (props: { id_table: any; }) => {
         setRows(prevRows => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
+
+            console.log("newRows", newRows);
             return newRows;
+
         });
 
-        validateInput(value, field, index); // Truyền index vào hàm validateInput
+
     };
 
-    const saveAsDraft = async () => {
-        await saveExpense(3); // Trạng thái cho bản nháp
-    };
 
-    const saveAsAwaitingApproval = async () => {
-        await saveExpense(1); // Trạng thái cho đang chờ duyệt
-    };
     const checkBeforeSave = (): boolean => {
         // Kiểm tra xem mỗi hàng có đầy đủ dữ liệu không
         const isValid = rows.every(row => (
@@ -126,125 +123,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
 
 
     const [tableName, setTableName] = useState(0);
-    useEffect(() => {
-        const getTables = async () => {
-            try {
-                const response = await axiosPrivate.get('estimate');
-                const { data } = response;
-                const { id_table } = props;
 
-                // Lặp qua mảng data để tìm name tương ứng với id_table
-                const matchedTable = data.find((data: { id: any; }) => data.id === id_table);
-                setTableName(matchedTable.name);
-
-            } catch (err) {
-                console.error('Lỗi khi lấy dữ liệu:', err);
-            }
-        }
-        getTables();
-    }, [id_table]);
-
-
-    // const saveExpense = async (status: number) => {
-
-    //     try {
-    //         const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
-    //         const formattedTotal = formatNumberWithCommas(total);
-
-    //         const isValid = checkBeforeSave();
-    //         if (isValid) {
-    //             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
-    //             // const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
-
-    //             const rowData = rows.map(row => ({
-    //                 date: formattedDate,
-    //                 route: row.route,
-    //                 boardingStation: row.boardingStation,
-    //                 alightingStation: row.alightingStation,
-    //                 mealExpense: formatNumberWithCommas(row.mealExpense),
-    //                 note: row.note,
-    //                 total: formattedTotal,
-    //                 tableName: tableName,
-    //                 owner: users.realname,
-    //                 table_id: id_table,
-    //                 id_status: status,
-    //             }));
-
-    //             // Tạo đối tượng JSON chứa các mảng dữ liệu
-    //             const requestData = {
-    //                 rows: rowData,
-    //                 owner: users.realname,
-    //                 table_id: id_table,
-    //                 id_status: status,
-    //             };
-
-    //             // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-    //             const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
-
-    //             if (response.status >= 200 && response.status < 300) {
-    //                 if (status === 1) {
-    //                     toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-    //                 } else {
-    //                     toast.success('Bạn Lưu vào bản nháp thành công');
-    //                 }
-    //             } else {
-    //                 console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error('Error saving expenses:', error);
-    //     }
-    // };
-
-    // const saveExpense = async (status: number) => {
-    //     try {
-    //         const isValid = checkBeforeSave();
-    //         if (isValid) {
-    //             const formattedTotal = formatNumberWithCommas(total);
-
-    //             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
-    //             const rowsData = rows.map(row => {
-    //                 const formattedDate = moment(row.date).format("YYYY/MM/DD HH:mm:ss");
-    //                 return {
-    //                     date: formattedDate,
-    //                     route: row.route,
-    //                     boardingStation: row.boardingStation,
-    //                     alightingStation: row.alightingStation,
-    //                     mealExpense: formatNumberWithCommas(row.mealExpense),
-    //                     note: row.note,
-    //                     total: formattedTotal,
-    //                     tableName: tableName,
-    //                     owner: users.realname,
-    //                     table_id: id_table,
-    //                     id_status: status,
-    //                 };
-    //             });
-
-    //             // Tạo đối tượng JSON chứa tên "rows" và mảng dữ liệu
-    //             const requestData = {
-    //                 rows: rowsData, // Thêm key "rows" vào đây
-    //                 owner: users.realname,
-    //                 table_id: id_table,
-    //                 id_status: status,
-    //             };
-
-    //             // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-    //             const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
-
-    //             if (response && response.status >= 200 && response.status < 300) {
-    //                 if (status === 1) {
-    //                     toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-    //                 } else {
-    //                     toast.success('Bạn Lưu vào bản nháp thành công');
-    //                 }
-    //             } else {
-    //                 console.error('Yêu cầu POST không thành công.');
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error('Error saving expenses:', error);
-    //     }
-    // };
 
 
     const saveExpense = async (status: number) => {
@@ -267,7 +146,7 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                             total: formattedTotal,
                             tableName: tableName,
                             owner: users.realname,
-                            table_id: id_table,
+
                             id_status: status,
                         };
 
@@ -275,25 +154,14 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                         const rowsObject = {
                             rows: [rowData],
                             owner: users.realname,
-                            table_id: id_table,
+
                             id_status: status
                         };
 
                         console.log("rowsObject", rowsObject);
 
 
-                        // // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-                        // const response = await axiosPrivate.post('travelexpenses/add', rowsObject, { headers: { 'Content-Type': 'application/json' } });
 
-                        // if (response && response.status >= 200 && response.status < 300) {
-                        //     if (status === 1) {
-                        //         toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-                        //     } else {
-                        //         toast.success('Bạn Lưu vào bản nháp thành công');
-                        //     }
-                        // } else {
-                        //     console.error('Yêu cầu POST không thành công.');
-                        // }
                     } catch (error) {
                         console.error('Error saving expense:', error);
                     }
@@ -355,26 +223,6 @@ export const TravelExpenses = (props: { id_table: any; }) => {
                     </table>
                 </div>
             </div>
-
-            {/* <div className='box-router'>
-                <div className='box-router__title'>承認ルート</div>
-                <div className='grid-row box-router__grid'>
-                    <div className='box-router__name'>
-                        <p>承認者: </p> <p>齋藤社長</p>
-                    </div>
-                    <div className='box-router__name'>
-                        <p>共有者: </p> <p>総務</p>
-                    </div>
-
-                </div>
-                <div className='box-router__edit'>
-                    <p className='plus-row box-router__edit--content' >承認ルートを編集</p>
-                </div>
-            </div>
-            <div className="wrp-button">
-                <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
-                <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
-            </div> */}
         </>
     )
 
