@@ -50,20 +50,17 @@ export const Register = ({ id }) => {
                 return null;
               }
 
-              let valueToDisplay;
-              if (Array.isArray(formDataItem.value)) {
-                // Xác định một cách riêng biệt cho mảng value
-                valueToDisplay = formDataItem.value
-                  .map((item: any) => {
-                    if (typeof item === 'object') {
-                      return `${item.label}: ${item.value}`;
-                    }
-                    return item;
-                  })
-                  .join(' ~ ');
-              } else {
-                valueToDisplay = formDataItem.value;
+              let valueToDisplay = formDataItem.value;
+
+              // Kiểm tra nếu label là "日間"
+              if (formDataItem.label === '日間') {
+                let duration = formDataItem.value.pop(); // Lấy giá trị "日間" ra khỏi mảng
+                valueToDisplay = formDataItem.value.join(' ~ '); // Nối giá trị còn lại
+                valueToDisplay += `  ${duration.value} ${duration.label}`; // Thêm "日間" vào cuối
+              } else if (Array.isArray(formDataItem.value)) {
+                valueToDisplay = formDataItem.value.join('  '); // Nối giá trị với dấu cách
               }
+
               return (
                 <li key={index}>
                   <div className="box-register__item">
