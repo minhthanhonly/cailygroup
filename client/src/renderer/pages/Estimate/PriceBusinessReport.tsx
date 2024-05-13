@@ -23,11 +23,10 @@ interface Row {
 
 
 
-export const PriceBusinessReport = (props: { id_table: any; }) => {
+export default function PriceBusinessReport(props) {
 
-    const { id_table } = props;
+
     const users = JSON.parse(localStorage.getItem('users') || '{}');
-    const axiosPrivate = useAxiosPrivate();
 
 
     const [rows, setRows] = useState<Row[]>([{ id: 0, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' }]);
@@ -79,13 +78,12 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
         const { value } = event.target;
-        setRows(prevRows => {
+        setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
-            return newRows;
+            props.parentCallback(newRows); // callback props ve cha
+            return newRows; // Trả về một giá trị từ hàm setRows
         });
-
-        validateInput(value, field, index); // Truyền index vào hàm validateInput
     };
 
 
@@ -240,16 +238,6 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
         calculateTotalSum();
     }, [rows]); // Lắng nghe sự thay đổi của mảng rows
 
-
-    const saveAsDraft = async () => {
-        await saveExpense(3); // Trạng thái cho bản nháp
-    };
-
-    const saveAsAwaitingApproval = async () => {
-        await saveExpense(1); // Trạng thái cho đang chờ duyệt
-    };
-
-
     const addRow = () => {
         const newRow = { id: rows.length, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' };
         setRows([...rows, newRow]);
@@ -257,100 +245,12 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
     };
 
 
-    const [tableName, setTableName] = useState(0);
-    useEffect(() => {
-        const getTables = async () => {
-            try {
-                const response = await axiosPrivate.get('estimate');
-                const { data } = response;
-                const { id_table } = props;
-
-                // Lặp qua mảng data để tìm name tương ứng với id_table
-                const matchedTable = data.find((data: { id: any; }) => data.id === id_table);
-                setTableName(matchedTable.name);
-
-            } catch (err) {
-                console.error('Lỗi khi lấy dữ liệu:', err);
-            }
-        }
-        getTables();
-    }, [id_table]);
-    const saveExpense = async (status: number) => {
-
-
-        const dateStart = moment(dateRange.dateStart).format("YYYY/MM/DD HH:mm:ss");
-        const dateEnd = moment(dateRange.dateEnd).format("YYYY/MM/DD HH:mm:ss");
-        const date_form = moment(date).format("YYYY/MM/DD HH:mm:ss");
-
-        try {
-            const additionalData = {
-                遅刻: isDomestic,
-                早退: isForeign,
-                出張期間: addressDomesticForeign, // giả sử bạn đã định nghĩa biến này trong phần state
-                dateStart: dateStart,
-                dateEnd: dateEnd,
-                領収書添付: selectedFileName,
-                inputDate: inputDate,
-                inputValue: inputValue,
-                // calculatedPrice: calculatedPrice,
-                // finalPayment: finalPayment,
-                // finalTotalPrice: finalTotalPrice,
-                // Thêm các trường khác nếu cần
-            };
-            // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
-            const dataToSend = rows.map((row, index) => ({
-                date: date_form,
-                project: row.project,
-                priceTrain: formatNumberWithCommas(row.priceTrain),
-                priceHouse: formatNumberWithCommas(row.priceHouse),
-                priceCustomer: formatNumberWithCommas(row.priceCustomer),
-                priceEat: formatNumberWithCommas(row.priceEat),
-                priceOther: formatNumberWithCommas(row.priceOther),
-                totalPrice: formatNumberWithCommas(calculateRowSum(row)),
-
-                // tax: row.tax,
-                // check: checkedState[index], // Trạng thái checkbox tại index tương ứng
-                note: row.note,
-                owner: users.realname,
-                calculatedPrice: formatNumberWithCommas(calculatedPrice),
-                finalPayment: formatNumberWithCommas(finalPayment),
-                tableName: tableName,
-                finalTotalPrice: formatNumberWithCommas(finalTotalPrice),
-            }));
-
-            // Tạo đối tượng JSON chứa các mảng dữ liệu
-            const requestData = {
-                rows: dataToSend,
-                owner: users.realname,
-                table_id: id_table,
-                id_status: status,
-                ...additionalData,
-            };
-
-            console.log("rowsObject", requestData);
-            // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-            // const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
-
-            // if (response.status >= 200 && response.status < 300) {
-            //     if (status === 1) {
-            //         toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-            //     } else {
-            //         toast.success('Bạn Lưu vào bản nháp thành công');
-            //     }
-            // } else {
-            //     console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
-            // }
-
-        } catch (error) {
-            console.error('Error saving expenses:', error);
-        }
-    };
     return (
         <>
             {/* <h2 className="hdglv2"><span>出張旅費清算書</span></h2>
             <p className="txt-lead">下記の通り申請致します。</p> */}
 
-            {/* <table className='tb-from'>
+            <table className='tb-from'>
                 <tbody>
                     <tr>
                         <th><div className='tb-from--th'>用途<span className='txt-red'>（必須）</span></div></th>
@@ -399,7 +299,7 @@ export const PriceBusinessReport = (props: { id_table: any; }) => {
                         </td>
                     </tr>
                 </tbody>
-            </table> */}
+            </table>
 
             <div className="table tbl_custom">
                 <div className='tbl_custom--03'>
