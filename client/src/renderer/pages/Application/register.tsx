@@ -30,6 +30,7 @@ export const Register = ({ id }) => {
     Load();
   }, [id]);
   let isPeriodDisplayed = false;
+
   return (
     <>
       <div className="box-register">
@@ -48,7 +49,14 @@ export const Register = ({ id }) => {
               if (!formDataItem.label) {
                 return null;
               }
+              let valueToDisplay = formDataItem.value;
 
+              if (formDataItem.label === '日時 ') {
+                const [date, time] = formDataItem.value;
+                valueToDisplay = `${date}    ${time}`;
+              } else if (formDataItem.label === '期間') {
+                valueToDisplay = formDataItem.value.join(' ~ ');
+              }
               return (
                 <li key={index}>
                   <div className="box-register__item">
@@ -56,11 +64,7 @@ export const Register = ({ id }) => {
                       {formDataItem.label}
                     </span>
                     <span className="box-register__item__content">
-                      {formDataItem.label === '期間' && index > 0
-                        ? null
-                        : formDataItem.label === '期間'
-                        ? accordionItems.periodValues.join(' ~ ')
-                        : formDataItem.value}
+                      {valueToDisplay}
                     </span>
                   </div>
                 </li>
