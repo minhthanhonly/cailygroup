@@ -179,7 +179,7 @@ export default function NewApplicationDetail(){
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      // console.log(appJsonString);
+      console.log(appJsonString);
 
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);

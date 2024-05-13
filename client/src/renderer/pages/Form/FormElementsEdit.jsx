@@ -87,25 +87,17 @@ export default class FormElementsEdit extends React.Component {
     const this_element = this.state.element;
     this_element[property] = html;
 
-    console.log(this_element);
-
     this.setState({
       element: this_element,
       dirty: true,
     });
   }
 
-  onEditorHavePropStateChange(elemProperty, propsProperty, targProperty, editorContent) {
-    const html = draftToHtml(convertToRaw(editorContent.getCurrentContent())).replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/&nbsp;/g, ' ')
-      .replace(/(?:\r\n|\r|\n)/g, ' ');
+  onEditorHavePropStateChange(elemProperty, propsProperty, targProperty, index, e) {
     // elemProperty could be content or label
     // targProperty could be value or checked
     let this_element = this.state.element;
-    this_element[elemProperty].map((option) => {
-      option.title = html;
-    })
-
-    console.log(this_element);
+    this_element[elemProperty][index].title = e.target.value;
 
     this.setState({
       element: this_element,
@@ -200,11 +192,6 @@ export default class FormElementsEdit extends React.Component {
           titlePropsState.push(ele.title);
         })
       }
-      // if(this.props.element.props[0].hasOwnProperty('title')) {
-      //   this.props.element.props.map((ele) => {
-      //     editorPropsState = this.convertFromHTML(ele.title);
-      //   })
-      // }
     }
 
     return (
@@ -249,14 +236,33 @@ export default class FormElementsEdit extends React.Component {
           this.props.element.props.some(item => item["title"] !== undefined) &&
           <div className="form-group mt30">
             <label className="control-label">Display Title:</label>
-            {/* titlePropsState */}
+            {
+              titlePropsState.map((title, index) => {
+                return (
+                  <div className="custom-control mt10" key={index}>
+                    <input type="text" name={`title_${index}`} className="custom-control-input c-form-control" defaultValue={title} onChange={this.onEditorHavePropStateChange.bind(this, 'props', `title_${index}`, 'checked', index)} />
+                  </div>
+                )
+              })
+            }
+            {
 
-            <Editor
-              toolbar={toolbar}
-              defaultEditorState={editorPropsState}
-              // onBlur={this.updateElement.bind(this)}
-              onEditorStateChange={this.onEditorHavePropStateChange.bind(this, 'props', 'title', 'checked')}
-              stripPastedStyles={true} />
+            }
+            {/* {
+              titlePropsState.map((title) => {
+                return <Editor
+                toolbar={toolbar}
+                defaultEditorState={title}
+                // onBlur={this.updateElement.bind(this)}
+                onEditorStateChange={this.onEditorHavePropStateChange.bind(this, 'props', 'title', 'checked')}
+                stripPastedStyles={true} />
+              })
+
+            } */}
+
+
+
+
           </div>
         }
         { this.props.element.hasOwnProperty('custom_options') &&
