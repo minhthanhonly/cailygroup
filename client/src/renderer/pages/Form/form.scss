@@ -199,7 +199,7 @@
     display: flex;
     align-items: center;
     padding-right: 2rem;
-    width: 12rem;
+    width: 13rem;
     font-size: 1.6rem;
     box-sizing: border-box;
     &--required{
@@ -253,7 +253,7 @@
   &-content{
     margin: 0;
     padding-left: 2.5rem;
-    width: calc(100% - 12rem);
+    width: calc(100% - 13rem);
     border-left: 1px solid #d8d8d8;
     box-sizing: border-box;
     & .grid-row{
