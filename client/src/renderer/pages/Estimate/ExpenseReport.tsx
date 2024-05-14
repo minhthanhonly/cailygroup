@@ -14,7 +14,8 @@ interface Row {
     paymentDestination: string;
     priceNotax: number;
     tax: number;
-    check: number;
+    check: boolean;
+    total: number;
     note: string;
 }
 
@@ -26,7 +27,7 @@ export default function ExpenseReport(props) {
 
     const [date, setDate] = useState(new Date());
     // const [rows, setRows] = useState([{ id: 0, values: ['', ''] }]);
-    const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: 0, note: '' }]);
+    const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: false, note: '', total: 0 }]);
     const [total, setTotal] = useState(0);
     const [totalPriceNotTax, setTotalPriceNotTax] = useState<number>(0);
     const [totalpriceTax, setTotalPriceTax] = useState(0);
@@ -37,16 +38,16 @@ export default function ExpenseReport(props) {
 
     const [priceNotax, setPriceNotax] = useState<string[]>(new Array(rows.length).fill(''));
     const [tax, setTax] = useState<string[]>(new Array(rows.length).fill(''));
-    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceNotax' | 'tax') => {
-        let inputValue = event.target.value;
-        // Loại bỏ các ký tự không phải số
-        inputValue = inputValue.replace(/[^0-9]/g, '');
 
-        // Kiểm tra xem giá trị sau khi loại bỏ ký tự không phải số có là chuỗi rỗng không
-        if (inputValue === '') {
-            // Nếu là chuỗi rỗng, có thể gán giá trị là 0 hoặc bất kỳ giá trị mặc định khác tùy theo yêu cầu của bạn
-            inputValue = '0';
-        }
+
+    // useEffect(() => {
+    //     const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
+    //     props.parentCallback({ rows, total: totalTaxIncluded.toLocaleString() });
+    // }, [rows, totalPriceNotTax, totalpriceTax]);
+
+    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceNotax' | 'tax') => {
+        let inputValue = event.target.value.replace(/[^0-9]/g, '');
+        inputValue = inputValue === '' ? '0' : inputValue;
 
         const newValue = parseInt(inputValue, 10);
         const formattedValue = newValue.toLocaleString();
@@ -55,6 +56,7 @@ export default function ExpenseReport(props) {
         const rowToUpdate = newRows[index];
         if (rowToUpdate) {
             rowToUpdate[field] = newValue;
+            rowToUpdate.total = rowToUpdate.priceNotax + rowToUpdate.tax;
             setRows(newRows);
         }
 
@@ -72,6 +74,9 @@ export default function ExpenseReport(props) {
         const total2 = newRows.reduce((acc, row) => acc + row.tax, 0);
         setTotalPriceNotTax(total);
         setTotalPriceTax(total2);
+
+        const totalTaxIncluded = total + total2;
+        //props.parentCallback({ rows: newRows, total: totalTaxIncluded.toLocaleString() });
     };
 
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
@@ -96,7 +101,7 @@ export default function ExpenseReport(props) {
     };
     // thêm
     const addRow = () => {
-        const newRow: Row = { id: rows.length, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: 0, note: '' };
+        const newRow: Row = { id: rows.length, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: false, note: '', total: 0 };
         setRows(prevRows => [...prevRows, newRow]);
     };
 
@@ -106,6 +111,9 @@ export default function ExpenseReport(props) {
         setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
+
+            const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
+            // props.parentCallback(newRows, total: totalTaxIncluded.toLocaleString() });
             props.parentCallback(newRows); // callback props ve cha
             return newRows; // Trả về một giá trị từ hàm setRows
         });
@@ -177,8 +185,14 @@ export default function ExpenseReport(props) {
     const handleCheckboxChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = event.target.checked;
         const newCheckedState = [...checkedState];
-        newCheckedState[index] = isChecked ? 0 : 1;
+        newCheckedState[index] = isChecked;
+
         setCheckedState(newCheckedState);
+        const newRows = [...rows];
+        newRows[index] = { ...newRows[index], check: isChecked };
+        setRows(newRows);
+
+        console.log("Checked state updated: ", newCheckedState);
     };
 
     return (
@@ -209,8 +223,15 @@ export default function ExpenseReport(props) {
                                     <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'paymentDestination')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceNotax[index]} onChange={(e) => handleNumberChange(e, index, 'priceNotax')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={tax[index]} onChange={(e) => handleNumberChange(e, index, 'tax')} /></td>
-                                    <td className='tdCheckbox'>
-                                        <input type="checkbox" id={`checkbox-${index}`} checked={checkedState[index]} onChange={(e) => handleCheckboxChange(index, e)} />
+                                    <td className='tdCheckbox form-checkbox'>
+                                        {/* <input type="checkbox" name="checkbox" id="checkbox" onChange={(e) => handleCheckboxChange(index, e)} checked={checkedState[index]} /> */}
+                                        <input
+                                            className="custom-check-box"
+                                            type="checkbox"
+                                            id={`checkbox-${index}`}
+                                            checked={checkedState[index]}
+                                            onChange={(e) => handleCheckboxChange(index, e)}
+                                        />
                                         <label htmlFor={`checkbox-${index}`}></label>
                                     </td>
                                     <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'note')} /></td>
