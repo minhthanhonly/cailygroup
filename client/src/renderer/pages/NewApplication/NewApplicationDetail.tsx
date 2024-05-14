@@ -11,6 +11,9 @@ import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentCheckbox from "../Form/Component/ComponentCheckbox";
 import { isValidInputText, isValidTextArea } from "../../components/Validate/";
 import TravelExpenses from "../Estimate/TravelExpenses";
+import ExpenseReport from "../Estimate/ExpenseReport";
+import PriceBusinessReport from "../Estimate/PriceBusinessReport";
+import TravelAllowance from "../Estimate/TravelAllowance";
 
 export default function NewApplicationDetail() {
   const { id } = useParams();
@@ -180,7 +183,8 @@ export default function NewApplicationDetail() {
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      console.log(appJSON);
+      // const res = await axiosPrivate.post("newapplication/add", appJsonString);
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
       //   if(res.data.success === 'error'){
@@ -270,6 +274,24 @@ export default function NewApplicationDetail() {
                 return (
                   <div className="c-row" key={index}>
                     <TravelExpenses id_table={undefined} parentCallback={callBackFunction2} />
+                  </div>
+                )
+              case 'T_TableExpenseReport':
+                return (
+                  <div className="c-row" key={index}>
+                    <ExpenseReport id_table={undefined} parentCallback={callBackFunction2} />
+                  </div>
+                )
+              case 'T_TablePriceBusinessReport':
+                return (
+                  <div className="c-row" key={index}>
+                    <PriceBusinessReport id_table={undefined} parentCallback={callBackFunction2} />
+                  </div>
+                )
+              case 'T_TableTravelAllowance':
+                return (
+                  <div className="c-row" key={index}>
+                    <TravelAllowance id_table={undefined} parentCallback={callBackFunction2} />
                   </div>
                 )
               default:
