@@ -102,7 +102,7 @@ export const Register = ({ id }) => {
         </div>
       ) : (
         <div className="box-register">
-          <div className="table tbl_custom">
+          <div className="table tbl_custom table tbl_custom--register">
             <div className="tbl_custom--03">
               <table>
                 <thead>
