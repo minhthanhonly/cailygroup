@@ -245,6 +245,14 @@ export default class FormElementsEdit extends React.Component {
                 )
               })
             }
+            <DynamicOptionList
+            // showCorrectColumn={this.props.showCorrectColumn}
+            // canHaveOptionCorrect={canHaveOptionCorrect}
+            canHaveOptionValue={canHaveOptionValue}
+            data={this.props.preview.state.data}
+            updateElement={this.props.updateElement}
+            preview={this.props.preview}
+            element={this.props.element}/>
           </div>
         }
         { this.props.element.hasOwnProperty('custom_options') &&
