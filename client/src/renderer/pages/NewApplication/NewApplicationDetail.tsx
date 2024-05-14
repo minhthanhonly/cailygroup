@@ -146,13 +146,6 @@ export default function NewApplicationDetail() {
           mergedValue.push(objHaveDifLabel);
         }
 
-        console.log(mergedValue);
-
-        // for(let i = 0; i < dupeObjs.length; i++){
-        //   mergedValue.push(dupeObjs[i].value);
-        //   console.log(dupeObjs[i]);
-        // }
-
         // Gom các đối tượng trùng lặp id thành 1 đối tượng
         var resultObject = dupeObjs.reduce(function (result, currentObject) {
           for (var key in currentObject) {
@@ -173,17 +166,21 @@ export default function NewApplicationDetail() {
       const appJSON: { [key: string]: any } = {
         appName: '',
         formData: [],
-        tableData: estimate,
+        tableData: [],
         id_status: 1,
       };
       appJSON.appName = formName;
-      // appJSON.formData = formData;
       (uniqObjs.length > 1) ? appJSON.formData = uniqObjs : appJSON.formData = formData;
+
+      if(formRefHaveTable.current){
+        appJSON.tableData = estimate;
+      } else {
+        appJSON.tableData = [];
+      }
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      console.log(appJsonString);
-
+      const res = await axiosPrivate.post("newapplication/add", appJsonString);
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
       //   if(res.data.success === 'error'){
@@ -196,12 +193,6 @@ export default function NewApplicationDetail() {
       //   }
       // }
     }
-
-
-    if (formRefHaveTable.current) {
-      console.log("Table");
-    }
-
   }
 
   return (
@@ -264,12 +255,6 @@ export default function NewApplicationDetail() {
                     />
                   </div>
                 )
-              // case 'T_TableTravelExpenses':
-              //   return (
-              //     <div className="c-row" key={index}>
-              //       <TravelExpenses id_table={undefined}/>
-              //     </div>
-              //   )
               default:
                 formHTML += "";
                 break;

@@ -93,7 +93,7 @@ export default class FormElementsEdit extends React.Component {
     });
   }
 
-  onEditorHavePropStateChange(elemProperty, propsProperty, targProperty, index, e) {
+  onEditorHavePropStateChange(elemProperty, propsProperty, index, e) {
     // elemProperty could be content or label
     // targProperty could be value or checked
     let this_element = this.state.element;
@@ -240,29 +240,11 @@ export default class FormElementsEdit extends React.Component {
               titlePropsState.map((title, index) => {
                 return (
                   <div className="custom-control mt10" key={index}>
-                    <input type="text" name={`title_${index}`} className="custom-control-input c-form-control" defaultValue={title} onChange={this.onEditorHavePropStateChange.bind(this, 'props', `title_${index}`, 'checked', index)} />
+                    <input type="text" name={`title_${index}`} className="custom-control-input c-form-control" defaultValue={title} onChange={this.onEditorHavePropStateChange.bind(this, 'props', `title_${index}`, index)} />
                   </div>
                 )
               })
             }
-            {
-
-            }
-            {/* {
-              titlePropsState.map((title) => {
-                return <Editor
-                toolbar={toolbar}
-                defaultEditorState={title}
-                // onBlur={this.updateElement.bind(this)}
-                onEditorStateChange={this.onEditorHavePropStateChange.bind(this, 'props', 'title', 'checked')}
-                stripPastedStyles={true} />
-              })
-
-            } */}
-
-
-
-
           </div>
         }
         { this.props.element.hasOwnProperty('custom_options') &&
