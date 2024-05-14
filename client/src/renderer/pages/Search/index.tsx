@@ -16,7 +16,8 @@ interface ListItem {
     name: string;
     datajson: string;
     id_status: number;
-    table_id: number;
+    createdAt: string;
+    owner: string;
     // Các trường khác nếu có
 }
 export const Search = () => {
@@ -73,17 +74,19 @@ export const Search = () => {
     useEffect(() => {
         const getTables = async () => {
             try {
-                const response = await axiosPrivate.get('search');
+
                 const dataCheck = await axiosPrivate.get('search/data');
                 const data = dataCheck.data;
                 setListOflistOfDataBase(data);
-                setListOfTable(response.data); // Cập nhật mảng với dữ liệu từ API
             } catch (err) {
                 console.error('Lỗi khi lấy dữ liệu:', err);
             }
         }
         getTables();
     }, []);
+
+    console.log("listOfDataBase", listOfDataBase);
+
 
 
     const [date, setDate] = useState(new Date());
@@ -123,7 +126,7 @@ export const Search = () => {
 
     // useEffect để đặt giá trị mặc định cho selectedId khi component được tạo
     useEffect(() => {
-        setSelectedId(listOfTable.length > 0 ? listOfTable[0].id : '');
+        setSelectedId(listOfDataBase.length > 0 ? listOfDataBase[0].id : '');
     }, []); // [] đảm bảo useEffect chỉ chạy một lần khi component được tạo
 
     // Hàm xử lý khi chọn một mục từ dropdown
@@ -160,43 +163,80 @@ export const Search = () => {
     const handleSearch = () => {
         // Lấy id của mục được chọn từ dropdown
 
-        const searchText = textValue.trim().toLowerCase();
-        const selectedOptionId = selectedId;
-        const startDate = dateRange.dateStart || startOfDay;
-        const endDate = dateRange.dateEnd || endOfDay;
+        // const searchText = textValue.trim().toLowerCase();
 
-        const startDateUpdate = dateRange.dateStartUpdate || startOfDayUpdate;
-        const endDateUpdate = dateRange.dateEndUpdate || endOfDayUpdate;
+        // const startDate = dateRange.dateStart || startOfDay;
+        // const endDate = dateRange.dateEnd || endOfDay;
+
+        // const startDateUpdate = dateRange.dateStartUpdate || startOfDayUpdate;
+        // const endDateUpdate = dateRange.dateEndUpdate || endOfDayUpdate;
+
+
+        // const matchedItems = listOfDataBase.filter(item => {
+        //     // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
+        //     const jsonData = JSON.parse(item.datajson);
+        //     const itemDate = new Date(item.createdAt);
+        //     const updateDate = new Date(item.createdAt);
+
+        //     if (jsonData && jsonData.appName && searchText !== '') {
+        //         return (
+        //             String(item.table_id) === String(selectedOptionId) &&
+        //             jsonData.appName.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
+
+        //             && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
+        //         );
+        //     } else if (jsonData && jsonData.appName && searchText === '') {
+
+        //         if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+
+        //             return String(item.table_id) === String(selectedOptionId)
+        //                 && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+        //         }
+        //         else {
+        //             return false;
+        //         }
+        //     }
+        //     return false;
+        // });
 
 
         const matchedItems = listOfDataBase.filter(item => {
             // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
+
+            const selectedOptionId = selectedId;
             const jsonData = JSON.parse(item.datajson);
             const itemDate = new Date(item.createdAt);
             const updateDate = new Date(item.createdAt);
 
-            if (jsonData && jsonData.appName && searchText !== '') {
-                return (
-                    String(item.table_id) === String(selectedOptionId) &&
-                    jsonData.appName.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
 
-                    && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
-                );
-            } else if (jsonData && jsonData.appName && searchText === '') {
+            // return ()
+            if (jsonData) {
 
-                if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
-
-                    return String(item.table_id) === String(selectedOptionId)
-                        && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
-                }
-                else {
-                    return false;
-                }
+                return String(item.id) === String(selectedOptionId);
+            } else {
+                return false;
             }
-            return false;
-        });
+            // return (
+            //     String(item.table_id) === String(selectedOptionId) &&
+            //     jsonData.appName.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
 
-        console.log("matchedItems", matchedItems);
+            //     && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
+            // );
+            // if (jsonData && jsonData.appName && searchText !== '') {
+
+            // } else if (jsonData && jsonData.appName && searchText === '') {
+
+            //     if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
+
+            //         return String(item.table_id) === String(selectedOptionId)
+            //             && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+            //     }
+            //     else {
+            //         return false;
+            //     }
+            // }
+            // return false;
+        });
 
         setSearchResults(matchedItems);
 
@@ -219,7 +259,6 @@ export const Search = () => {
         <>
             <Heading2 text="申請状況" />
             <p className="txt-lead">申請検索</p>
-
             <div className="group_box">
                 <div className="grid-row group_box--grid">
                     <div className="group_box--title"><p>申請書の種類 </p></div>
@@ -228,9 +267,15 @@ export const Search = () => {
                             <div className="group_box--box">
                                 <div className="group_box--flex">
                                     <select className="dropdown" onChange={handleTableSelect}>
-                                        {listOfTable.map((data, index) => (
-                                            <option key={data.id} value={data.id}>{data.name}</option>
-                                        ))}
+                                        {listOfDataBase.map((data, index) => {
+                                            // Parse JSON string to get appName
+                                            const jsonData = JSON.parse(data.datajson);
+                                            return (
+                                                <option key={data.id} value={data.id}>
+                                                    {jsonData.appName}
+                                                </option>
+                                            );
+                                        })}
                                     </select>
                                 </div>
                             </div>
@@ -299,6 +344,7 @@ export const Search = () => {
                 <div className="tab01 tab-head">
                     <ul className="lst-branch">
                         {tabs.map(tab => (
+
                             <li key={tab.id}>
                                 <a
                                     onClick={() => handleTabClick(tab.id)}
@@ -322,8 +368,12 @@ export const Search = () => {
                                             try {
                                                 // Phân tích chuỗi JSON thành đối tượng JavaScript
                                                 let jsonData = JSON.parse(item.datajson);
+
+
+
                                                 let numberStatus = (Number(item.id_status));
-                                                let table = item.table_id;
+                                                let table = (Number(item.id));
+
                                                 let id = Number(item.id);
 
                                                 // Hiển thị thông tin chỉ khi trạng thái phù hợp
@@ -334,11 +384,11 @@ export const Search = () => {
                                                                 <div className="list-accordion__item__head" onClick={() => toggleAccordion(item.id)}>
                                                                     <div className="list-accordion__item__head__title">
                                                                         <p className="list-accordion__item__head__title__title">
-                                                                            {jsonData.appName && jsonData.appName.length > 0 ? jsonData.appName[0].tableName : 'No data available'}
+                                                                            {jsonData.appName && jsonData.appName.length > 0 ? jsonData.appName : 'No data available'}
 
                                                                         </p>
                                                                         <span className="list-accordion__item__head__title__subtitle">
-                                                                            {jsonData.appName[0].owner}（{jsonData.appName[0].date} {'\u00A0\u00A0'}
+                                                                            {item.owner}（{item.createdAt} {'\u00A0\u00A0'}
                                                                             {jsonData.appName[0].time}）
                                                                         </span>
                                                                     </div>
@@ -354,7 +404,6 @@ export const Search = () => {
                                                                     {openTabId && (
                                                                         <div className="list-accordion__item__content__inner">
                                                                             <div className="list-accordion__item__content__item">
-                                                                                ssss
                                                                                 <SearchData id={id} table={table} />
 
                                                                             </div >
