@@ -31,19 +31,8 @@ export default function ExpenseReport(props) {
     const [total, setTotal] = useState(0);
     const [totalPriceNotTax, setTotalPriceNotTax] = useState<number>(0);
     const [totalpriceTax, setTotalPriceTax] = useState(0);
-
-
-
-
-
     const [priceNotax, setPriceNotax] = useState<string[]>(new Array(rows.length).fill(''));
     const [tax, setTax] = useState<string[]>(new Array(rows.length).fill(''));
-
-
-    // useEffect(() => {
-    //     const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
-    //     props.parentCallback({ rows, total: totalTaxIncluded.toLocaleString() });
-    // }, [rows, totalPriceNotTax, totalpriceTax]);
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceNotax' | 'tax') => {
         let inputValue = event.target.value.replace(/[^0-9]/g, '');
@@ -113,9 +102,13 @@ export default function ExpenseReport(props) {
             newRows[index] = { ...newRows[index], [field]: value };
 
             const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
+            // Thêm total vào mỗi đối tượng trong newRows
+            const newRowsWithTotal = newRows.map(row => ({ ...row, total: totalTaxIncluded }));
+            props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
             // props.parentCallback(newRows, total: totalTaxIncluded.toLocaleString() });
-            props.parentCallback(newRows); // callback props ve cha
-            return newRows; // Trả về một giá trị từ hàm setRows
+            // props.parentCallback(newRows); // callback props ve cha
+
+            return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
         });
     };
 
@@ -125,60 +118,6 @@ export default function ExpenseReport(props) {
     const formatNumberWithCommas = (value: number) => {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
-    // const saveExpense = async (status: number) => {
-    //     const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
-    //     try {
-    //         const isValid = checkBeforeSave();
-    //         const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
-    //         if (isValid) {
-    //             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
-
-    //             const dataToSend = rows.map((row, index) => ({
-    //                 date: formattedDate,
-    //                 route: row.route,
-    //                 paymentDestination: row.paymentDestination,
-    //                 priceNotax: formatNumberWithCommas(row.priceNotax),
-    //                 tax: formatNumberWithCommas(row.tax),
-    //                 check: checkedState[index], // Trạng thái checkbox tại index tương ứng
-    //                 note: row.note,
-    //                 owner: users.realname,
-    //                 totalPriceNotTax: formatNumberWithCommas(totalPriceNotTax),
-    //                 totalPriceTax: formatNumberWithCommas(totalpriceTax),
-    //                 total: formatNumberWithCommas(totalTaxIncluded),
-    //                 tableName: tableName,
-    //             }));
-
-    //             // Tạo đối tượng JSON chứa các mảng dữ liệu
-    //             const requestData = {
-    //                 rows: dataToSend,
-    //                 owner: users.realname,
-    //                 table_id: id_table,
-    //                 id_status: status,
-
-    //                 // totalPriceNotTax: totalPriceNotTax,
-    //                 // totalPriceTax: totalpriceTax,
-    //                 // total: totalTaxIncluded,
-    //             };
-
-    //             console.log("rowsObject", requestData);
-
-    //             // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-    //             // const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
-
-    //             // if (response.status >= 200 && response.status < 300) {
-    //             //     if (status === 1) {
-    //             //         toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-    //             //     } else {
-    //             //         toast.success('Bạn Lưu vào bản nháp thành công');
-    //             //     }
-    //             // } else {
-    //             //     console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
-    //             // }
-    //         }
-    //     } catch (error) {
-    //         console.error('Error saving expenses:', error);
-    //     }
-    // };
 
     const [checkedState, setCheckedState] = useState(new Array(rows.length).fill(0));
 
