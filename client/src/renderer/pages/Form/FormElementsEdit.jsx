@@ -7,6 +7,7 @@ import draftToHtml from 'draftjs-to-html';
 import { Editor } from 'react-draft-wysiwyg';
 
 import DynamicOptionList from './dynamic-option-list';
+import DynamicOptionListInProps from './DynamicOptionListInProps'
 // import { get } from './stores/requests';
 import ID from './UUID';
 // import IntlMessages from './language-provider/IntlMessages';
@@ -233,26 +234,32 @@ export default class FormElementsEdit extends React.Component {
           </div>
         }
         {
-          this.props.element.props.some(item => item["title"] !== undefined) &&
-          <div className="form-group mt30">
-            <label className="control-label">Display Title:</label>
+          // this.props.element.props.some(item => item["title"] !== undefined) &&
+          this.props.element.hasOwnProperty('props') &&
+          <div className="form-group">
             {
               titlePropsState.map((title, index) => {
                 return (
-                  <div className="custom-control mt10" key={index}>
-                    <input type="text" name={`title_${index}`} className="custom-control-input c-form-control" defaultValue={title} onChange={this.onEditorHavePropStateChange.bind(this, 'props', `title_${index}`, index)} />
+                  <div className="custom-control mt30" key={index}>
+                    <label className="control-label">Display Title:</label>
+                    <div className="w30per">
+                      <input type="text" name={`title_${index}`} className="custom-control-input c-form-control" defaultValue={title} onChange={this.onEditorHavePropStateChange.bind(this, 'props', `title_${index}`, index)} />
+                    </div>
+
+                    <label className="control-label mt20">Display Setting Checkbox:</label>
+                    <DynamicOptionListInProps
+                    // showCorrectColumn={this.props.showCorrectColumn}
+                    // canHaveOptionCorrect={canHaveOptionCorrect}
+                    canHaveOptionValue={canHaveOptionValue}
+                    data={this.props.preview.state.data}
+                    updateElement={this.props.updateElement}
+                    element={this.props.element}
+                    index={index}/>
                   </div>
                 )
               })
             }
-            <DynamicOptionList
-            // showCorrectColumn={this.props.showCorrectColumn}
-            // canHaveOptionCorrect={canHaveOptionCorrect}
-            canHaveOptionValue={canHaveOptionValue}
-            data={this.props.preview.state.data}
-            updateElement={this.props.updateElement}
-            preview={this.props.preview}
-            element={this.props.element}/>
+
           </div>
         }
         { this.props.element.hasOwnProperty('custom_options') &&
@@ -266,7 +273,7 @@ export default class FormElementsEdit extends React.Component {
             element={this.props.element}
             key={this.props.element.custom_options.length} />
         }
-        {
+        {/* {
           this.props.element.props.some(item => item["days"] !== undefined) &&
           <div className="form-group mt30">
             <div className="custom-control custom-checkbox">
@@ -292,7 +299,7 @@ export default class FormElementsEdit extends React.Component {
               <label className="custom-control-label" htmlFor="is-timesto">Time (from~to)</label>
             </div>
           </div>
-        }
+        } */}
       </div>
     );
   }

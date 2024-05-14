@@ -2,10 +2,6 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 import editIcon from '../../../../assets/icn-edit.png';
 import closeIcon from '../../../../assets/icn-close.png';
-import { Report } from './report';
-import { Expense } from './expense';
-import { Business } from './business';
-import { Travelallowance } from './travelallowance';
 import { Register } from './register';
 import { UserRole } from '../../components/UserRole';
 import { emitter } from '../../layouts/components/Sidebar/index';
@@ -347,17 +343,7 @@ const TabContent = ({ id, sendDataToParent }) => {
             {isOpen && (
               <div className="list-accordion__item__content__inner">
                 <div className="list-accordion__item__content__item">
-                  {accordionItems.table_id === 6 ? (
-                    <Register id={id} />
-                  ) : accordionItems.table_id === 7 ? (
-                    <Expense id={id} />
-                  ) : accordionItems.table_id === 8 ? (
-                    <Report id={id} />
-                  ) : accordionItems.table_id === 9 ? (
-                    <Business id={id} />
-                  ) : (
-                    <Register id={id} />
-                  )}
+                  <Register id={id} />
                   <div className="box-approves">
                     <div className="box-approves__inner">
                       <p className="box-approves__headding">承認状況</p>

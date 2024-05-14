@@ -10,34 +10,48 @@ export const Register = ({ id }) => {
       try {
         const response = await axiosPrivate.get('application/getforid/' + id);
         const data = response.data;
+
+        // Phân tích JSON
         const parsedDataJson = JSON.parse(data.datajson);
-        let periodValue = [];
-        if (Array.isArray(parsedDataJson.formData)) {
+
+        if (parsedDataJson.formData && parsedDataJson.formData.length > 0) {
+          // Trường hợp 1: formData không rỗng
+          //console.log('formData không rỗng');
+          let periodValue = [];
           for (const item of parsedDataJson.formData) {
             if (item.label === '期間') {
               periodValue.push(item.value);
             }
           }
+          parsedDataJson.periodValues = periodValue;
+          setAccordionItems(parsedDataJson);
+        } else if (
+          parsedDataJson.tableData &&
+          parsedDataJson.tableData.length > 0
+        ) {
+          // Trường hợp 2: tableData không rỗng
+          //console.log('tableData không rỗng');
+          setAccordionItems(parsedDataJson);
         } else {
-          console.log('formData không phải là mảng');
+          console.log('Cả formData và tableData đều rỗng');
         }
-        parsedDataJson.periodValues = periodValue;
-        setAccordionItems(parsedDataJson);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
     };
     Load();
   }, [id]);
+
   let isPeriodDisplayed = false;
 
   return (
     <>
-      <div className="box-register">
-        <ul>
-          {accordionItems &&
-            accordionItems.formData &&
-            accordionItems.formData.map((formDataItem: any, index: any) => {
+      {accordionItems &&
+      accordionItems.formData &&
+      accordionItems.formData.length > 0 ? (
+        <div className="box-register">
+          <ul>
+            {accordionItems.formData.map((formDataItem, index) => {
               if (formDataItem.label === '期間' && isPeriodDisplayed) {
                 return null;
               }
@@ -84,8 +98,56 @@ export const Register = ({ id }) => {
                 </li>
               );
             })}
-        </ul>
-      </div>
+          </ul>
+        </div>
+      ) : (
+        <div className="box-register">
+          <div className="table tbl_custom table tbl_custom--register">
+            <div className="tbl_custom--03">
+              <table>
+                <thead>
+                  <tr>
+                    {accordionItems &&
+                      accordionItems.tableData &&
+                      Object.keys(accordionItems.tableData[0]).map(
+                        (key, index) => {
+                          // Bỏ qua cột 'id'
+                          if (key !== 'id') {
+                            return <th key={index}>{key}</th>;
+                          }
+                          return null;
+                        },
+                      )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {accordionItems &&
+                    accordionItems.tableData &&
+                    accordionItems.tableData.map((tableDataItem, index) => (
+                      <tr key={index}>
+                        {Object.entries(tableDataItem).map(
+                          ([key, value], index) => {
+                            // Bỏ qua cột 'id'
+                            if (key !== 'id') {
+                              // Chuyển đổi 'date' thành 'yyyy-mm-dd' format
+                              if (key === 'date') {
+                                value = new Date(value)
+                                  .toISOString()
+                                  .split('T')[0];
+                              }
+                              return <td key={index}>{value}</td>;
+                            }
+                            return null;
+                          },
+                        )}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

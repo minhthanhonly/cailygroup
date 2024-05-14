@@ -2748,3 +2748,20 @@ textarea {
   width: 25px;
   height: 25px;
 }
+
+.box-register {
+  width: 100%;
+  overflow-x: auto;
+  .table.tbl_custom {
+    width: 100%;
+  }
+  .table.tbl_custom .tbl_custom--03 {
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-x: auto;
+  }
+  .table.tbl_custom table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+}

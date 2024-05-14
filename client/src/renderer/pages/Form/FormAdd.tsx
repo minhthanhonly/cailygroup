@@ -117,17 +117,17 @@ export default function FormAdd() {
           checkboxOptions: [
             {
               value: 'checkbox_value_1',
-              text: '全休',
+              text: '慶弔休暇',
               key: 'checkboxes_option_1',
             },
             {
               value: 'checkbox_value_2',
-              text: '午前休',
+              text: '生理休暇',
               key: 'checkboxes_option_2',
             },
             {
               value: 'checkbox_value_3',
-              text: '午後休',
+              text: '子の看護休暇',
               key: 'checkboxes_option_3',
             },
           ],
