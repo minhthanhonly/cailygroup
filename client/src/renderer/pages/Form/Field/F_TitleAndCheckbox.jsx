@@ -8,6 +8,9 @@ class F_Checkbox extends React.Component {
   }
 
   render() {
+    let propsProperty = this.props.data;
+    console.log(propsProperty);
+
     const self = this;
     let classNames = '';
     if (this.props.data.inline) { classNames += ' option-inline'; }
