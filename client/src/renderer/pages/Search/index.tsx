@@ -10,6 +10,7 @@ import { UserRole } from '../../components/UserRole';
 import moment from 'moment'; // Import moment.js
 import { Travelallowance } from '../Application/travelallowance';
 import { SearchData } from './SearchData';
+import { Register } from '../Application/register';
 
 interface ListItem {
     id: string;
@@ -404,7 +405,7 @@ export const Search = () => {
                                                                     {openTabId && (
                                                                         <div className="list-accordion__item__content__inner">
                                                                             <div className="list-accordion__item__content__item">
-                                                                                <SearchData id={id} table={table} />
+                                                                                <Register id={id} />
 
                                                                             </div >
                                                                         </div>

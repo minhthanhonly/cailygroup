@@ -14,7 +14,8 @@ interface Row {
     paymentDestination: string;
     priceNotax: number;
     tax: number;
-    check: number;
+    check: boolean;
+    total: number;
     note: string;
 }
 
@@ -26,27 +27,16 @@ export default function ExpenseReport(props) {
 
     const [date, setDate] = useState(new Date());
     // const [rows, setRows] = useState([{ id: 0, values: ['', ''] }]);
-    const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: 0, note: '' }]);
+    const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: false, note: '', total: 0 }]);
     const [total, setTotal] = useState(0);
     const [totalPriceNotTax, setTotalPriceNotTax] = useState<number>(0);
     const [totalpriceTax, setTotalPriceTax] = useState(0);
-
-
-
-
-
     const [priceNotax, setPriceNotax] = useState<string[]>(new Array(rows.length).fill(''));
     const [tax, setTax] = useState<string[]>(new Array(rows.length).fill(''));
-    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceNotax' | 'tax') => {
-        let inputValue = event.target.value;
-        // Loại bỏ các ký tự không phải số
-        inputValue = inputValue.replace(/[^0-9]/g, '');
 
-        // Kiểm tra xem giá trị sau khi loại bỏ ký tự không phải số có là chuỗi rỗng không
-        if (inputValue === '') {
-            // Nếu là chuỗi rỗng, có thể gán giá trị là 0 hoặc bất kỳ giá trị mặc định khác tùy theo yêu cầu của bạn
-            inputValue = '0';
-        }
+    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceNotax' | 'tax') => {
+        let inputValue = event.target.value.replace(/[^0-9]/g, '');
+        inputValue = inputValue === '' ? '0' : inputValue;
 
         const newValue = parseInt(inputValue, 10);
         const formattedValue = newValue.toLocaleString();
@@ -55,6 +45,7 @@ export default function ExpenseReport(props) {
         const rowToUpdate = newRows[index];
         if (rowToUpdate) {
             rowToUpdate[field] = newValue;
+            rowToUpdate.total = rowToUpdate.priceNotax + rowToUpdate.tax;
             setRows(newRows);
         }
 
@@ -72,6 +63,9 @@ export default function ExpenseReport(props) {
         const total2 = newRows.reduce((acc, row) => acc + row.tax, 0);
         setTotalPriceNotTax(total);
         setTotalPriceTax(total2);
+
+        const totalTaxIncluded = total + total2;
+        //props.parentCallback({ rows: newRows, total: totalTaxIncluded.toLocaleString() });
     };
 
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
@@ -96,7 +90,7 @@ export default function ExpenseReport(props) {
     };
     // thêm
     const addRow = () => {
-        const newRow: Row = { id: rows.length, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: 0, note: '' };
+        const newRow: Row = { id: rows.length, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: false, note: '', total: 0 };
         setRows(prevRows => [...prevRows, newRow]);
     };
 
@@ -106,8 +100,15 @@ export default function ExpenseReport(props) {
         setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
-            props.parentCallback(newRows); // callback props ve cha
-            return newRows; // Trả về một giá trị từ hàm setRows
+
+            const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
+            // Thêm total vào mỗi đối tượng trong newRows
+            const newRowsWithTotal = newRows.map(row => ({ ...row, total: totalTaxIncluded }));
+            props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
+            // props.parentCallback(newRows, total: totalTaxIncluded.toLocaleString() });
+            // props.parentCallback(newRows); // callback props ve cha
+
+            return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
         });
     };
 
@@ -117,68 +118,20 @@ export default function ExpenseReport(props) {
     const formatNumberWithCommas = (value: number) => {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
-    // const saveExpense = async (status: number) => {
-    //     const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
-    //     try {
-    //         const isValid = checkBeforeSave();
-    //         const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
-    //         if (isValid) {
-    //             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
-
-    //             const dataToSend = rows.map((row, index) => ({
-    //                 date: formattedDate,
-    //                 route: row.route,
-    //                 paymentDestination: row.paymentDestination,
-    //                 priceNotax: formatNumberWithCommas(row.priceNotax),
-    //                 tax: formatNumberWithCommas(row.tax),
-    //                 check: checkedState[index], // Trạng thái checkbox tại index tương ứng
-    //                 note: row.note,
-    //                 owner: users.realname,
-    //                 totalPriceNotTax: formatNumberWithCommas(totalPriceNotTax),
-    //                 totalPriceTax: formatNumberWithCommas(totalpriceTax),
-    //                 total: formatNumberWithCommas(totalTaxIncluded),
-    //                 tableName: tableName,
-    //             }));
-
-    //             // Tạo đối tượng JSON chứa các mảng dữ liệu
-    //             const requestData = {
-    //                 rows: dataToSend,
-    //                 owner: users.realname,
-    //                 table_id: id_table,
-    //                 id_status: status,
-
-    //                 // totalPriceNotTax: totalPriceNotTax,
-    //                 // totalPriceTax: totalpriceTax,
-    //                 // total: totalTaxIncluded,
-    //             };
-
-    //             console.log("rowsObject", requestData);
-
-    //             // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-    //             // const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
-
-    //             // if (response.status >= 200 && response.status < 300) {
-    //             //     if (status === 1) {
-    //             //         toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-    //             //     } else {
-    //             //         toast.success('Bạn Lưu vào bản nháp thành công');
-    //             //     }
-    //             // } else {
-    //             //     console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
-    //             // }
-    //         }
-    //     } catch (error) {
-    //         console.error('Error saving expenses:', error);
-    //     }
-    // };
 
     const [checkedState, setCheckedState] = useState(new Array(rows.length).fill(0));
 
     const handleCheckboxChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = event.target.checked;
         const newCheckedState = [...checkedState];
-        newCheckedState[index] = isChecked ? 0 : 1;
+        newCheckedState[index] = isChecked;
+
         setCheckedState(newCheckedState);
+        const newRows = [...rows];
+        newRows[index] = { ...newRows[index], check: isChecked };
+        setRows(newRows);
+
+        console.log("Checked state updated: ", newCheckedState);
     };
 
     return (
@@ -209,8 +162,15 @@ export default function ExpenseReport(props) {
                                     <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'paymentDestination')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceNotax[index]} onChange={(e) => handleNumberChange(e, index, 'priceNotax')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={tax[index]} onChange={(e) => handleNumberChange(e, index, 'tax')} /></td>
-                                    <td className='tdCheckbox'>
-                                        <input type="checkbox" id={`checkbox-${index}`} checked={checkedState[index]} onChange={(e) => handleCheckboxChange(index, e)} />
+                                    <td className='tdCheckbox form-checkbox'>
+                                        {/* <input type="checkbox" name="checkbox" id="checkbox" onChange={(e) => handleCheckboxChange(index, e)} checked={checkedState[index]} /> */}
+                                        <input
+                                            className="custom-check-box"
+                                            type="checkbox"
+                                            id={`checkbox-${index}`}
+                                            checked={checkedState[index]}
+                                            onChange={(e) => handleCheckboxChange(index, e)}
+                                        />
                                         <label htmlFor={`checkbox-${index}`}></label>
                                     </td>
                                     <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, 'note')} /></td>
