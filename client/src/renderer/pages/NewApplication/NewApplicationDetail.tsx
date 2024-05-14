@@ -51,8 +51,9 @@ export default function NewApplicationDetail() {
     setLabel(childData);
   }
 
+  const [estimate, setEstimate] = useState('');
   const callBackFunction2 = (childData) => {
-    console.log("childData2", childData);
+    setEstimate(childData)
   }
 
 
@@ -172,7 +173,7 @@ export default function NewApplicationDetail() {
       const appJSON: { [key: string]: any } = {
         appName: '',
         formData: [],
-        tableData: [],
+        tableData: estimate,
         id_status: 1,
       };
       appJSON.appName = formName;
@@ -181,7 +182,7 @@ export default function NewApplicationDetail() {
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      // console.log(appJsonString);
+      console.log(appJsonString);
 
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);

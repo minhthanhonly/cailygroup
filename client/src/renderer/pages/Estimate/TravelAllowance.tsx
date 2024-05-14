@@ -160,17 +160,7 @@ export default function TravelAllowance(props) {
   );
 
   const addRow = () => {
-    const newRow = {
-      id: rows.length,
-      date: '',
-      railwayName: '',
-      router: '',
-      startroad: '',
-      endroad: '',
-      monthlyticket: 0,
-      roundtrip: 0,
-      note: '',
-    };
+    const newRow = { id: rows.length, date: '', railwayName: '', router: '', startroad: '', endroad: '', monthlyticket: 0, roundtrip: 0, note: '', };
     setRows([...rows, newRow]);
   };
 

@@ -18,14 +18,11 @@ interface Row {
     note: string;
 }
 
-export const ExpenseReport = (props: { id_table: any; }) => {
-    const { id_table } = props;
+export default function ExpenseReport(props) {
 
 
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
-
-
 
     const [date, setDate] = useState(new Date());
     // const [rows, setRows] = useState([{ id: 0, values: ['', ''] }]);
@@ -102,113 +99,78 @@ export const ExpenseReport = (props: { id_table: any; }) => {
         const newRow: Row = { id: rows.length, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: 0, note: '' };
         setRows(prevRows => [...prevRows, newRow]);
     };
+
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
         const { value } = event.target;
-        setRows(prevRows => {
+        setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
-            return newRows;
+            props.parentCallback(newRows); // callback props ve cha
+            return newRows; // Trả về một giá trị từ hàm setRows
         });
-
-        validateInput(value, field, index); // Truyền index vào hàm validateInput
     };
 
-    const saveAsDraft = async () => {
-        await saveExpense(3); // Trạng thái cho bản nháp
-    };
 
-    const saveAsAwaitingApproval = async () => {
-        await saveExpense(1); // Trạng thái cho đang chờ duyệt
-    };
-    const checkBeforeSave = (): boolean => {
-        // Kiểm tra xem mỗi hàng có đầy đủ dữ liệu không
-        const isValid = rows.every(row => (
-            row.route && row.paymentDestination && row.priceNotax && row.tax && row.note
-        ));
 
-        if (!isValid) {
-            toast.error('Vui lòng nhập đầy đủ các thông tin mỗi hàng.');
-        }
-
-        return isValid;
-    };
-
-    const [tableName, setTableName] = useState(0);
-    useEffect(() => {
-        const getTables = async () => {
-            try {
-                const response = await axiosPrivate.get('estimate');
-                const { data } = response;
-                const { id_table } = props;
-
-                // Lặp qua mảng data để tìm name tương ứng với id_table
-                const matchedTable = data.find((data: { id: any; }) => data.id === id_table);
-                setTableName(matchedTable.name);
-
-            } catch (err) {
-                console.error('Lỗi khi lấy dữ liệu:', err);
-            }
-        }
-        getTables();
-    }, [id_table]);
 
     const formatNumberWithCommas = (value: number) => {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
-    const saveExpense = async (status: number) => {
-        const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
-        try {
-            const isValid = checkBeforeSave();
-            const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
-            if (isValid) {
-                // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
+    // const saveExpense = async (status: number) => {
+    //     const formattedDate = moment(date).format("YYYY/MM/DD HH:mm:ss");
+    //     try {
+    //         const isValid = checkBeforeSave();
+    //         const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
+    //         if (isValid) {
+    //             // Tạo mảng các đối tượng JSON đại diện cho mỗi hàng dữ liệu
 
-                const dataToSend = rows.map((row, index) => ({
-                    date: formattedDate,
-                    route: row.route,
-                    paymentDestination: row.paymentDestination,
-                    priceNotax: formatNumberWithCommas(row.priceNotax),
-                    tax: formatNumberWithCommas(row.tax),
-                    check: checkedState[index], // Trạng thái checkbox tại index tương ứng
-                    note: row.note,
-                    owner: users.realname,
-                    totalPriceNotTax: formatNumberWithCommas(totalPriceNotTax),
-                    totalPriceTax: formatNumberWithCommas(totalpriceTax),
-                    total: formatNumberWithCommas(totalTaxIncluded),
-                    tableName: tableName,
-                }));
+    //             const dataToSend = rows.map((row, index) => ({
+    //                 date: formattedDate,
+    //                 route: row.route,
+    //                 paymentDestination: row.paymentDestination,
+    //                 priceNotax: formatNumberWithCommas(row.priceNotax),
+    //                 tax: formatNumberWithCommas(row.tax),
+    //                 check: checkedState[index], // Trạng thái checkbox tại index tương ứng
+    //                 note: row.note,
+    //                 owner: users.realname,
+    //                 totalPriceNotTax: formatNumberWithCommas(totalPriceNotTax),
+    //                 totalPriceTax: formatNumberWithCommas(totalpriceTax),
+    //                 total: formatNumberWithCommas(totalTaxIncluded),
+    //                 tableName: tableName,
+    //             }));
 
-                // Tạo đối tượng JSON chứa các mảng dữ liệu
-                const requestData = {
-                    rows: dataToSend,
-                    owner: users.realname,
-                    table_id: id_table,
-                    id_status: status,
+    //             // Tạo đối tượng JSON chứa các mảng dữ liệu
+    //             const requestData = {
+    //                 rows: dataToSend,
+    //                 owner: users.realname,
+    //                 table_id: id_table,
+    //                 id_status: status,
 
-                    // totalPriceNotTax: totalPriceNotTax,
-                    // totalPriceTax: totalpriceTax,
-                    // total: totalTaxIncluded,
-                };
+    //                 // totalPriceNotTax: totalPriceNotTax,
+    //                 // totalPriceTax: totalpriceTax,
+    //                 // total: totalTaxIncluded,
+    //             };
 
-                console.log("rowsObject", requestData);
+    //             console.log("rowsObject", requestData);
 
-                // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
-                // const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
+    //             // Gửi yêu cầu POST với dữ liệu được định dạng theo yêu cầu
+    //             // const response = await axiosPrivate.post('travelexpenses/add', requestData, { headers: { 'Content-Type': 'application/json' } });
 
-                // if (response.status >= 200 && response.status < 300) {
-                //     if (status === 1) {
-                //         toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
-                //     } else {
-                //         toast.success('Bạn Lưu vào bản nháp thành công');
-                //     }
-                // } else {
-                //     console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
-                // }
-            }
-        } catch (error) {
-            console.error('Error saving expenses:', error);
-        }
-    };
+    //             // if (response.status >= 200 && response.status < 300) {
+    //             //     if (status === 1) {
+    //             //         toast.success('Bạn đã gởi thông tin thành công vui lòng chờ');
+    //             //     } else {
+    //             //         toast.success('Bạn Lưu vào bản nháp thành công');
+    //             //     }
+    //             // } else {
+    //             //     console.error('Yêu cầu POST không thành công. Mã lỗi:', response.status);
+    //             // }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error saving expenses:', error);
+    //     }
+    // };
 
     const [checkedState, setCheckedState] = useState(new Array(rows.length).fill(0));
 
@@ -259,7 +221,6 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                     <p onClick={addRow} className='plus-row'> 行を追加する</p>
                 </div>
 
-
                 <div className='tbl_custom--04 table_custom'>
                     <table>
                         <tbody>
@@ -275,28 +236,7 @@ export const ExpenseReport = (props: { id_table: any; }) => {
                         </tbody>
                     </table>
                 </div>
-
             </div>
-
-            {/* <div className='box-router'>
-                <div className='box-router__title'>承認ルート</div>
-                <div className='grid-row box-router__grid'>
-                    <div className='box-router__name'>
-                        <p>承認者: </p> <p>齋藤社長</p>
-                    </div>
-                    <div className='box-router__name'>
-                        <p>共有者: </p> <p>総務</p>
-                    </div>
-
-                </div>
-                <div className='box-router__edit'>
-                    <p className='plus-row box-router__edit--content'>承認ルートを編集</p>
-                </div>
-            </div>
-            <div className="wrp-button">
-                <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
-                <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
-            </div> */}
         </>
     )
 

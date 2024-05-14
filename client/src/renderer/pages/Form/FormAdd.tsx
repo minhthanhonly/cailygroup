@@ -18,8 +18,8 @@ import { isValidForm } from "../../components/Validate";
 import { useNavigate } from "react-router-dom";
 import TravelExpenses from "../Estimate/TravelExpenses";
 import F_TitleAndCheckbox from "./Field/F_TitleAndCheckbox";
-import { ExpenseReport } from "../Estimate/ExpenseReport";
-import { PriceBusinessReport } from "../Estimate/PriceBusinessReport";
+import ExpenseReport from "../Estimate/ExpenseReport";
+import PriceBusinessReport from "../Estimate/PriceBusinessReport";
 import TravelAllowance from "../Estimate/TravelAllowance";
 
 export default function FormAdd() {
