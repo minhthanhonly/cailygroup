@@ -22,9 +22,8 @@ export const SearchData: React.FC<SearchDataProps> = ({ id, table }) => {
                 const response = await axiosPrivate.get('application/getforid/' + id);
                 const data = response.data;
                 // Parse tablejson thành JSON
-                const parsedTableJson = JSON.parse(data.tablejson);
                 // Truy cập vào phần tử rows trong parsedTableJson
-                setAccordionItems(parsedTableJson);
+                setAccordionItems(data);
             } catch (error) {
                 console.error('Error fetching data: ', error);
             }
@@ -33,11 +32,65 @@ export const SearchData: React.FC<SearchDataProps> = ({ id, table }) => {
         Load();
     }, [id]);
 
+    console.log("accordionItems", accordionItems);
+
 
     return (
         <>
             <div className="box-register">
                 <ul>
+                    {/* {accordionItems.map((data, index) => {
+                        // Parse JSON string to get appName
+                        const jsonData = JSON.parse(data.datajson);
+                        return (
+                            <li key={index}>
+                                <div className="box-register__item">
+                                    <span className="box-register__item__title"> {table === 7 || table === 8 || table === 9 ? "日付" : "鉄道名"} </span>
+                                    <span className="box-register__item__content">
+                                        {data.createdAt}
+                                    </span>
+                                </div>
+                                <div className="box-register__item">
+                                    <span className="box-register__item__title">路線</span>
+                                    <span className="box-register__item__content">
+                                        {rowData.route}
+                                    </span>
+                                </div>
+                                <div className="box-register__item">
+                                    <span className="box-register__item__title">乗車駅</span>
+                                    <span className="box-register__item__content">
+                                        {rowData.boardingStation}
+                                    </span>
+                                </div>
+                                <div className="box-register__item">
+                                    <span className="box-register__item__title">下車駅</span>
+                                    <span className="box-register__item__content">
+                                        {rowData.alightingStation}
+                                    </span>
+                                </div>
+                                <div className="box-register__item">
+                                    <span className="box-register__item__title">金額</span>
+                                    <span className="box-register__item__content">
+                                        {rowData.mealExpense}
+                                    </span>
+                                </div>
+                                <div className="box-register__item">
+                                    <span className="box-register__item__title">備考</span>
+                                    <span className="box-register__item__content">
+                                        {rowData.note}
+                                    </span>
+                                </div>
+                                <div className="box-register__item">
+                                    <span className="box-register__item__title">合計金額</span>
+                                    <span className="box-register__item__content">
+                                        {rowData.total}
+                                    </span>
+                                </div>
+
+                            </li>
+                        );
+                    })} */}
+
                     {accordionItems.rows && accordionItems.rows.map((rowData: any, index: number) => {
                         try {
 

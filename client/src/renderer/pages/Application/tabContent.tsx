@@ -7,6 +7,7 @@ import { Expense } from './expense';
 import { Business } from './business';
 import { Travelallowance } from './travelallowance';
 import { Register } from './register';
+import { Transportcosts } from './transportcosts';
 import { UserRole } from '../../components/UserRole';
 import { emitter } from '../../layouts/components/Sidebar/index';
 import './Accordion.scss';

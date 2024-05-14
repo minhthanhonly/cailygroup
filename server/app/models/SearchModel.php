@@ -5,7 +5,7 @@ class SearchModel {
         global $conn;
 
         // Thực hiện truy vấn SELECT
-        $sql = "SELECT * FROM table_register";
+        $sql = "SELECT * FROM application_details";
         $result = $conn->query($sql);
 
         // Khởi tạo mảng để lưu trữ dữ liệu
