@@ -47,8 +47,8 @@ export const Register = ({ id }) => {
   return (
     <>
       {accordionItems &&
-      accordionItems.formData &&
-      accordionItems.formData.length > 0 ? (
+        accordionItems.formData &&
+        accordionItems.formData.length > 0 ? (
         <div className="box-register">
           <ul>
             {accordionItems.formData.map((formDataItem, index) => {

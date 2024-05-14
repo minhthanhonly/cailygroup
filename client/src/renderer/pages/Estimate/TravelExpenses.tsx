@@ -28,21 +28,6 @@ export default function TravelExpenses(props) {
     const [total, setTotal] = useState(0);
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
 
-
-    const validateInput = (value: string, fieldName: string, index: number) => {
-        const newVisibleErrors = [...visibleErrors];
-
-        if (!value && !newVisibleErrors.includes(fieldName)) {
-            newVisibleErrors.push(fieldName); // Thêm lỗi chỉ khi giá trị rỗng và lỗi chưa được hiển thị
-        } else if (value && newVisibleErrors.includes(fieldName)) {
-            // Loại bỏ lỗi nếu giá trị không rỗng và lỗi đã được hiển thị
-            const errorIndex = newVisibleErrors.indexOf(fieldName);
-            newVisibleErrors.splice(errorIndex, 1);
-        }
-
-        setVisibleErrors(newVisibleErrors);
-    };
-
     const [mealExpenses, setMealExpenses] = useState<string[]>(new Array(rows.length).fill(''));
 
     const handleLeaveDateChange = () => {
@@ -61,15 +46,16 @@ export default function TravelExpenses(props) {
     };
 
     useEffect(() => {
-        calculateTotal();
+        calculateTotal(rows);
     }, [rows]);
 
-    const calculateTotal = () => {
+    const calculateTotal = (rows: Row[]) => {
         let sum = 0;
         rows.forEach(row => {
             sum += row.mealExpense;
         });
-        setTotal(sum);
+        setTotal(sum); // Cập nhật state total
+        return sum;
     };
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -101,20 +87,19 @@ export default function TravelExpenses(props) {
         setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
-            props.parentCallback(newRows); // callback props ve cha
-            return newRows; // Trả về một giá trị từ hàm setRows
+            const newTotal = calculateTotal(newRows); // Tính toán tổng mới
+            // Thêm total vào mỗi đối tượng trong newRows
+            const newRowsWithTotal = newRows.map(row => ({ ...row, total: newTotal }));
+            props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
+
+
+            return newRowsWithTotal;
         });
     };
 
 
     return (
         <>
-            {visibleErrors.map((error, index) => (
-                <div key={index}>{error} is required.</div>
-            ))}
-            {/* <h2 className="hdglv2"><span>交通費清算書</span></h2>
-            <p className="txt-lead">下記の通り申請致します。</p> */}
-
             <div className="table tbl_custom">
                 <div className='tbl_custom--03'>
                     <table>
@@ -126,7 +111,6 @@ export default function TravelExpenses(props) {
                                 <th>下車駅</th>
                                 <th>金額</th>
                                 <th>備考</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -140,8 +124,6 @@ export default function TravelExpenses(props) {
                                     <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
                                 </tr>
                             ))}
-
-
                         </tbody>
                     </table>
                     <p onClick={addRow} className='plus-row'> 行を追加する</p>
