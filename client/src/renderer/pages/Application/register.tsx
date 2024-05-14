@@ -16,7 +16,6 @@ export const Register = ({ id }) => {
 
         if (parsedDataJson.formData && parsedDataJson.formData.length > 0) {
           // Trường hợp 1: formData không rỗng
-          //console.log('formData không rỗng');
           let periodValue = [];
           for (const item of parsedDataJson.formData) {
             if (item.label === '期間') {
@@ -30,7 +29,6 @@ export const Register = ({ id }) => {
           parsedDataJson.tableData.length > 0
         ) {
           // Trường hợp 2: tableData không rỗng
-          //console.log('tableData không rỗng');
           setAccordionItems(parsedDataJson);
         } else {
           console.log('Cả formData và tableData đều rỗng');
