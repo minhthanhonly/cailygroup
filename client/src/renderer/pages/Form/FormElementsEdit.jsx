@@ -273,8 +273,9 @@ export default class FormElementsEdit extends React.Component {
             element={this.props.element}
             key={this.props.element.custom_options.length} />
         }
-        {/* {
-          this.props.element.props.some(item => item["days"] !== undefined) &&
+        {
+          // this.props.element.props.some(item => item["days"] !== undefined) &&
+          this.props.element.hasOwnProperty('props') &&
           <div className="form-group mt30">
             <div className="custom-control custom-checkbox">
               <input id="is-days" className="custom-control-input" type="checkbox" value={true} checked={this_props_days} onChange={this.editElementHaveProp.bind(this, 'props', 'days', 'checked')}/>
@@ -283,7 +284,8 @@ export default class FormElementsEdit extends React.Component {
           </div>
         }
         {
-          this.props.element.props.some(item => item["times"] !== undefined) &&
+          // this.props.element.props.some(item => item["times"] !== undefined) &&
+            this.props.element.hasOwnProperty('props') &&
             <div className="form-group mt10">
               <div className="custom-control custom-checkbox">
                 <input id="is-times" className="custom-control-input" type="checkbox" value={true} checked={this_props_times} onChange={this.editElementHaveProp.bind(this, 'props', 'times', 'checked')}/>
@@ -292,14 +294,15 @@ export default class FormElementsEdit extends React.Component {
           </div>
         }
         {
-          this.props.element.props.some(item => item["timesto"] !== undefined) &&
+          // this.props.element.props.some(item => item["timesto"] !== undefined) &&
+          this.props.element.hasOwnProperty('props') &&
           <div className="form-group mt10">
             <div className="custom-control custom-checkbox">
               <input id="is-timesto" className="custom-control-input" type="checkbox" value={true} checked={this_props_timesto} onChange={this.editElementHaveProp.bind(this, 'props', 'timesto', 'checked')}/>
               <label className="custom-control-label" htmlFor="is-timesto">Time (from~to)</label>
             </div>
           </div>
-        } */}
+        }
       </div>
     );
   }
