@@ -8,7 +8,6 @@ import editIcon from '../../../../assets/icn-edit.png';
 import closeIcon from '../../../../assets/icn-close.png';
 import { UserRole } from '../../components/UserRole';
 import moment from 'moment'; // Import moment.js
-import { Travelallowance } from '../Application/travelallowance';
 import { SearchData } from './SearchData';
 import { Register } from '../Application/register';
 
@@ -118,18 +117,39 @@ export const Search = () => {
             console.log('Date is null or not valid');
         }
     };
+    const [selectedName, setSelectedName] = useState('');
     const [selectedId, setSelectedId] = useState('');
     const [searchResults, setSearchResults] = useState<ListItem[]>([]);
 
-    // useEffect để đặt giá trị mặc định cho selectedId khi component được tạo
-    useEffect(() => {
-        setSelectedId(listOfDataBase.length > 0 ? listOfDataBase[0].id : '');
-    }, []); // [] đảm bảo useEffect chỉ chạy một lần khi component được tạo
+    const handleTableSelect = (event: { target: { value: string; }; }) => {
+        const selectedId = event.target.value;
+        setSelectedId(selectedId);
 
-    // Hàm xử lý khi chọn một mục từ dropdown
-    const handleTableSelect = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        setSelectedId(event.target.value);
+        // Tìm JSON tương ứng với ID đã chọn
+        const selectedJson = listOfDataBase.find(data => data.id === selectedId);
+        if (selectedJson) {
+            // Nếu tìm thấy, lấy tên từ JSON và đặt vào state
+            const jsonData = JSON.parse(selectedJson.datajson);
+            setSelectedName(jsonData.appName);
+        }
     };
+
+    useEffect(() => {
+        // Đảm bảo useEffect chỉ chạy một lần khi component được tạo
+        if (listOfDataBase.length > 0) {
+            // Lấy ID của JSON đầu tiên trong danh sách
+            const firstDataId = listOfDataBase[0].id;
+            setSelectedId(firstDataId);
+
+            // Tìm JSON tương ứng với ID đầu tiên
+            const firstData = listOfDataBase.find(data => data.id === firstDataId);
+            if (firstData) {
+                // Nếu tìm thấy, lấy tên từ JSON và đặt vào state
+                const jsonData = JSON.parse(firstData.datajson);
+                setSelectedName(jsonData.appName);
+            }
+        }
+    }, [listOfDataBase]); // useEffect sẽ chạy lại khi `listOfDataBase` thay đổi
     const formatNumberWithCommas = (value: number) => {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
@@ -158,45 +178,6 @@ export const Search = () => {
 
     // Hàm xử lý khi nhấn nút tìm kiếm
     const handleSearch = () => {
-        // Lấy id của mục được chọn từ dropdown
-
-        // const searchText = textValue.trim().toLowerCase();
-
-        // const startDate = dateRange.dateStart || startOfDay;
-        // const endDate = dateRange.dateEnd || endOfDay;
-
-        // const startDateUpdate = dateRange.dateStartUpdate || startOfDayUpdate;
-        // const endDateUpdate = dateRange.dateEndUpdate || endOfDayUpdate;
-
-
-        // const matchedItems = listOfDataBase.filter(item => {
-        //     // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
-        //     const jsonData = JSON.parse(item.datajson);
-        //     const itemDate = new Date(item.createdAt);
-        //     const updateDate = new Date(item.createdAt);
-
-        //     if (jsonData && jsonData.appName && searchText !== '') {
-        //         return (
-        //             String(item.table_id) === String(selectedOptionId) &&
-        //             jsonData.appName.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
-
-        //             && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate
-        //         );
-        //     } else if (jsonData && jsonData.appName && searchText === '') {
-
-        //         if (itemDate && startDate && endDate && updateDate && startDateUpdate && endDateUpdate) {
-
-        //             return String(item.table_id) === String(selectedOptionId)
-        //                 && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
-        //         }
-        //         else {
-        //             return false;
-        //         }
-        //     }
-        //     return false;
-        // });
-
-
         const matchedItems = listOfDataBase.filter(item => {
             // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
 
@@ -204,12 +185,10 @@ export const Search = () => {
             const jsonData = JSON.parse(item.datajson);
             const itemDate = new Date(item.createdAt);
             const updateDate = new Date(item.createdAt);
-
-
             // return ()
             if (jsonData) {
 
-                return String(item.id) === String(selectedOptionId);
+                return selectedName === jsonData.appName;
             } else {
                 return false;
             }
