@@ -45,8 +45,8 @@ export const Register = ({ id }) => {
   return (
     <>
       {accordionItems &&
-        accordionItems.formData &&
-        accordionItems.formData.length > 0 ? (
+      accordionItems.formData &&
+      accordionItems.formData.length > 0 ? (
         <div className="box-register">
           <ul>
             {accordionItems.formData.map((formDataItem, index) => {
@@ -64,7 +64,7 @@ export const Register = ({ id }) => {
               if (formDataItem.label === '日間') {
                 let duration = formDataItem.value.pop(); // Lấy giá trị "日間" ra khỏi mảng
                 valueToDisplay = formDataItem.value.join(' ~ '); // Nối giá trị còn lại
-                valueToDisplay += `  ${duration.value}   ${duration.label}  `; // Thêm "日間" vào cuối
+                // valueToDisplay += `  ${duration.value}   ${duration.label}  `; // Thêm "日間" vào cuối
               } else if (
                 Array.isArray(formDataItem.value) &&
                 formDataItem.value.length >= 2 // Kiểm tra nếu có ít nhất 2 phần tử
@@ -83,6 +83,7 @@ export const Register = ({ id }) => {
               } else if (Array.isArray(formDataItem.value)) {
                 valueToDisplay = formDataItem.value.join('  '); // Nối giá trị với dấu cách
               }
+
               return (
                 <li key={index}>
                   <div className="box-register__item">
