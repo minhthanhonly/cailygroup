@@ -86,10 +86,6 @@ export const Search = () => {
         getTables();
     }, []);
 
-    console.log("listOfDataBase", listOfDataBase);
-
-
-
     const [date, setDate] = useState(new Date());
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 1); // Đặt giờ và phút thành 0:01

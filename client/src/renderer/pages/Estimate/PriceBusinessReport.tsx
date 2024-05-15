@@ -81,21 +81,29 @@ export default function PriceBusinessReport(props) {
         setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
-            props.parentCallback(newRows); // callback props ve cha
-            return newRows; // Trả về một giá trị từ hàm setRows
+
+            const newRowsWithTotal = newRows.map(row => ({ ...row, total: finalTotalPrice }));
+
+            props.parentCallback(newRowsWithTotal); // callback props ve cha
+            return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
         });
     };
 
 
-    const handleDomesticCheck = () => {
-        setDomestic(isDomestic === 1 ? 0 : 1);
-        if (isForeign === 1) setForeign(0); // Deselect early leave if late is selected
-    };
+    // const handleDomesticCheck = () => {
+    //     setDomestic(isDomestic === 1 ? 0 : 1);
+    //     if (isForeign === 1) setForeign(0); // Deselect early leave if late is selected
+    // };
 
-    const handleForeignCheck = () => {
-        setForeign(isForeign === 1 ? 0 : 1);
-        if (isDomestic === 1) setDomestic(0); // Deselect late if early leave is selected
-    };
+    // const handleForeignCheck = () => {
+    //     setForeign(isForeign === 1 ? 0 : 1);
+    //     if (isDomestic === 1) setDomestic(0); // Deselect late if early leave is selected
+    // };
+
+    // tính tổng
+    const calculatedPrice = inputDate * 3000;
+    const finalPayment = totalSum - inputValue;
+    const finalTotalPrice = finalPayment + calculatedPrice;
 
     // thêm
 
@@ -227,11 +235,6 @@ export default function PriceBusinessReport(props) {
     };
 
 
-    // tính tổng
-    const calculatedPrice = inputDate * 3000;
-    const finalPayment = totalSum - inputValue;
-
-    const finalTotalPrice = finalPayment + calculatedPrice;
 
 
     useEffect(() => {
@@ -250,7 +253,7 @@ export default function PriceBusinessReport(props) {
             {/* <h2 className="hdglv2"><span>出張旅費清算書</span></h2>
             <p className="txt-lead">下記の通り申請致します。</p> */}
 
-            <table className='tb-from'>
+            {/* <table className='tb-from'>
                 <tbody>
                     <tr>
                         <th><div className='tb-from--th'>用途<span className='txt-red'>（必須）</span></div></th>
@@ -299,7 +302,7 @@ export default function PriceBusinessReport(props) {
                         </td>
                     </tr>
                 </tbody>
-            </table>
+            </table> */}
 
             <div className="table tbl_custom">
                 <div className='tbl_custom--03'>
@@ -367,25 +370,7 @@ export default function PriceBusinessReport(props) {
                 </div>
             </div>
 
-            {/* <div className='box-router'>
-                <div className='box-router__title'>承認ルート</div>
-                <div className='grid-row box-router__grid'>
-                    <div className='box-router__name'>
-                        <p>承認者: </p> <p>齋藤社長</p>
-                    </div>
-                    <div className='box-router__name'>
-                        <p>共有者: </p> <p>総務</p>
-                    </div>
 
-                </div>
-                <div className='box-router__edit'>
-                    <p className='plus-row box-router__edit--content'>承認ルートを編集</p>
-                </div>
-            </div>
-            <div className="wrp-button">
-                <button className="btn btn--from btn--gray" onClick={saveAsDraft}>下書き保存</button>
-                <button className="btn btn--from btn--blue" onClick={saveAsAwaitingApproval}>申請する</button>
-            </div> */}
         </>
     )
 
