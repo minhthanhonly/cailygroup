@@ -14,6 +14,7 @@ import TravelExpenses from "../Estimate/TravelExpenses";
 import ExpenseReport from "../Estimate/ExpenseReport";
 import PriceBusinessReport from "../Estimate/PriceBusinessReport";
 import TravelAllowance from "../Estimate/TravelAllowance";
+import ComponentTitleAndCheckbox from "../Form/Component/ComponentTitleAndCheckbox";
 
 export default function NewApplicationDetail() {
   const { id } = useParams();
@@ -91,12 +92,17 @@ export default function NewApplicationDetail() {
 
         // Lấy các thuộc tính của đối tượng
         if (element.value && element.type != 'checkbox') {
-
           if (element.ariaLabel === null) {
             newObj = {
               id: element.name,
               label: label,
               value: element.value,
+            }
+          } else if(element.ariaDescription) {
+            newObj = {
+              id: element.name,
+              label: label,
+              value: element.value + element.ariaLabel,
             }
           } else {
             newObj = {
@@ -118,9 +124,42 @@ export default function NewApplicationDetail() {
         }
       }
 
-
       const dupeObjs: any = [];
       const uniqObjs: any = [];
+
+      const groupedItems = formData.reduce((dataField, item) => {
+        // Nếu chưa có nhóm cho id này thì tạo mảng mới
+        if (!dataField[item.id]) {
+          dataField[item.id] = { id: item.id, label: item.label };
+        }
+
+        // Duyệt qua các thuộc tính của đối tượng hiện tại
+        Object.keys(item).forEach(key => {
+          if (key !== 'id' && key !== 'label') { // bỏ qua thuộc tính id khi gộp
+            if (!dataField[item.id][key]) {
+
+                dataField[item.id][key] = [];
+            }
+            dataField[item.id][key].push(item[key]);
+          }
+        });
+
+        return dataField;
+      }, {})
+
+      // Chuyển đổi từ đối tượng thành mảng các nhóm nếu cần
+      const formDataIsGrouped = Object.values(groupedItems);
+      console.log(formDataIsGrouped);
+
+
+
+
+
+
+
+
+
+
       // Lọc và gom nhóm các đối tượng
       formData.forEach(obj => [uniqObjs, dupeObjs][+(formData.map(obj => obj.id).filter(id => id === obj.id).length > 1)].push(obj));
 
@@ -132,35 +171,38 @@ export default function NewApplicationDetail() {
         let mergedValue: any = [];
         let objHaveDifLabel: any = { label: '', value: '' };
 
-        if (uniqObjs_2.length > 0) {
-          for (let i = 0; i < uniqObjs_2.length; i++) {
-            objHaveDifLabel = { label: uniqObjs_2[i].label, value: uniqObjs_2[i].value }
-          }
-        } else {
-          for (let i = 0; i < dupeObjs.length; i++) {
-            mergedValue.push(dupeObjs[i].value);
-          }
-        }
+        // if (uniqObjs_2.length > 0) {
+        //   for (let i = 0; i < uniqObjs_2.length; i++) {
+        //     objHaveDifLabel = { label: uniqObjs_2[i].label, value: uniqObjs_2[i].value }
+        //   }
+        // } else {
+        //   for (let i = 0; i < dupeObjs.length; i++) {
+        //     mergedValue.push(dupeObjs[i].value);
+        //   }
+        // }
 
-        if (dupeObjs_2.length > 1 && uniqObjs_2.length > 0) {
-          for (let i = 0; i < dupeObjs_2.length; i++) {
-            mergedValue.push(dupeObjs_2[i].value);
-          }
-          mergedValue.push(objHaveDifLabel);
-        }
+        // if (dupeObjs_2.length > 1 && uniqObjs_2.length > 0) {
+        //   for (let i = 0; i < dupeObjs_2.length; i++) {
+        //     mergedValue.push(dupeObjs_2[i].value);
+        //   }
+        //   mergedValue.push(objHaveDifLabel);
+        // }
+
+        // console.log(uniqObjs);
 
         // Gom các đối tượng trùng lặp id thành 1 đối tượng
-        var resultObject = dupeObjs.reduce(function (result, currentObject) {
-          for (var key in currentObject) {
-            if (currentObject.hasOwnProperty(key)) {
-              result[key] = currentObject[key];
-            }
-          }
-          return result;
-        }, {});
+        // var resultObject = dupeObjs_2.reduce(function (result, currentObject) {
+        //   for (var key in currentObject) {
+        //     if (currentObject.hasOwnProperty(key)) {
+        //       result[key] = currentObject[key];
+        //     }
+        //   }
+        //   return result;
+        // }, {});
 
-        resultObject.value = mergedValue;
+        // resultObject.value = mergedValue;
 
+        var resultObject = '';
         // Kết xuất lại kết quả từ Form sau khi hợp nhất các đối tượng trùng lặp id
         uniqObjs.unshift(resultObject);
       }
@@ -183,7 +225,7 @@ export default function NewApplicationDetail() {
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      console.log(appJSON);
+      // console.log(appJSON);
       // const res = await axiosPrivate.post("newapplication/add", appJsonString);
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
@@ -234,6 +276,17 @@ export default function NewApplicationDetail() {
                       times={item.props[0].times}
                       timesto={item.props[0].timesto}
                       parentCallback={callBackFunction}
+                    />
+                  </div>
+                )
+              case 'F_TitleAndCheckbox':
+                return (
+                  <div className="c-row" key={index}>
+                    <ComponentTitleAndCheckbox
+                      id={item.id}
+                      label={item.label}
+                      required={item.required}
+                      customProps={item.props}
                     />
                   </div>
                 )
