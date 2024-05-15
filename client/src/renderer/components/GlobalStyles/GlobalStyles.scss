@@ -2030,6 +2030,9 @@ textarea {
   font-size: 1.4rem;
   text-indent: -1em;
   padding-left: 1em;
+  &--01{
+    font-size: 1.2rem;
+  }
 }
 .txt-note:before {
   content: '※';

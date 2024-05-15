@@ -1,4 +1,4 @@
-export default function ComponentTitleAndCheckbox(props){
+export default function ComponentCheckboxAndTitle(props){
   return (
     <div className="c-form">
       <div className="c-form-inner">

@@ -1,20 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate } from "../../api/axios";
-import ComponentInputText from "../Form/Component/ComponentInputText";
-import ComponentText from "../Form/Component/ComponentText";
-import C_TravelExpenses from "../Estimate/Components/C_TravelExpenses";
-import ComponentDatePicker from "../Form/Component/ComponentDatePicker";
-import ComponentTextArea from "../Form/Component/ComponentTextArea";
+import { isValidInputText, isValidTextArea } from "../../components/Validate/";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
+import ComponentInputText from "../Form/Component/ComponentInputText";
+import ComponentText from "../Form/Component/ComponentText";
+import ComponentDatePicker from "../Form/Component/ComponentDatePicker";
+import ComponentTextArea from "../Form/Component/ComponentTextArea";
 import ComponentCheckbox from "../Form/Component/ComponentCheckbox";
-import { isValidInputText, isValidTextArea } from "../../components/Validate/";
 import TravelExpenses from "../Estimate/TravelExpenses";
 import ExpenseReport from "../Estimate/ExpenseReport";
 import PriceBusinessReport from "../Estimate/PriceBusinessReport";
 import TravelAllowance from "../Estimate/TravelAllowance";
-import ComponentTitleAndCheckbox from "../Form/Component/ComponentTitleAndCheckbox";
+import ComponentCheckboxAndTitle from "../Form/Component/ComponentCheckboxAndTitle";
+import ComponentCheckboxAndInputText from "../Form/Component/ComponentCheckboxAndInputText";
+import ComponentInputFile from "../Form/Component/ComponentInputFile";
+import ComponentCheckboxAndDate from "../Form/Component/ComponentCheckboxAndDate";
+import ComponentTextAndLabel from "../Form/Component/ComponentTextAndLabel";
 
 export default function NewApplicationDetail() {
   const { id } = useParams();
@@ -149,7 +152,7 @@ export default function NewApplicationDetail() {
 
       // Chuyển đổi từ đối tượng thành mảng các nhóm nếu cần
       const formDataIsGrouped = Object.values(groupedItems);
-      console.log(formDataIsGrouped);
+      // console.log(formDataIsGrouped);
 
 
 
@@ -201,10 +204,8 @@ export default function NewApplicationDetail() {
         // }, {});
 
         // resultObject.value = mergedValue;
-
-        var resultObject = '';
         // Kết xuất lại kết quả từ Form sau khi hợp nhất các đối tượng trùng lặp id
-        uniqObjs.unshift(resultObject);
+        // uniqObjs.unshift(resultObject);
       }
 
       // Tạo đối tượng JSON
@@ -215,7 +216,8 @@ export default function NewApplicationDetail() {
         id_status: 1,
       };
       appJSON.appName = formName;
-      (uniqObjs.length > 1) ? appJSON.formData = uniqObjs : appJSON.formData = formData;
+      appJSON.formData = formDataIsGrouped;
+      // (uniqObjs.length > 1) ? appJSON.formData = uniqObjs : appJSON.formData = formData;
 
       if(formRefHaveTable.current){
         appJSON.tableData = estimate;
@@ -226,7 +228,7 @@ export default function NewApplicationDetail() {
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
       // console.log(appJSON);
-      // const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      const res = await axiosPrivate.post("newapplication/add", appJsonString);
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
       //   if(res.data.success === 'error'){
@@ -253,6 +255,18 @@ export default function NewApplicationDetail() {
             switch (item.key) {
               case 'F_Text':
                 return <div className="c-row" key={index}><ComponentText text={item.content} /></div>;
+              case 'F_TextAndLabel':
+                return (
+                  <div className="c-row" key={index}>
+                    <ComponentTextAndLabel
+                      keys={item.key}
+                      id={item.id}
+                      label={item.label}
+                      required={item.required}
+                      text={item.props[0].text}
+                    />
+                  </div>
+                )
               case 'F_InputText':
                 return (
                   <div className="c-row" key={index}>
@@ -282,7 +296,7 @@ export default function NewApplicationDetail() {
               case 'F_TitleAndCheckbox':
                 return (
                   <div className="c-row" key={index}>
-                    <ComponentTitleAndCheckbox
+                    <ComponentCheckboxAndTitle
                       id={item.id}
                       label={item.label}
                       required={item.required}
@@ -309,6 +323,38 @@ export default function NewApplicationDetail() {
                       label={item.label}
                       required={item.required}
                       customOptions={item.custom_options}
+                    />
+                  </div>
+                )
+              case 'F_CheckboxAndInputText':
+                return (
+                  <div className="c-row" key={index}>
+                    <ComponentCheckboxAndInputText
+                      id={item.id}
+                      label={item.label}
+                      required={item.required}
+                      customOptions={item.custom_options}
+                    />
+                  </div>
+                )
+              case 'F_CheckboxAndDate':
+                return (
+                  <div className="c-row" key={index}>
+                    <ComponentCheckboxAndDate
+                      id={item.id}
+                      label={item.label}
+                      required={item.required}
+                      customOptions={item.custom_options}
+                    />
+                  </div>
+                )
+              case 'F_InputFile':
+                return (
+                  <div className="c-row" key={index}>
+                    <ComponentInputFile
+                      id={item.id}
+                      label={item.label}
+                      required={item.required}
                     />
                   </div>
                 )

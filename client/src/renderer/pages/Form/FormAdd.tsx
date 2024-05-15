@@ -17,10 +17,15 @@ import F_RadioButtons from "./Field/F_RadioButtons";
 import { isValidForm } from "../../components/Validate";
 import { useNavigate } from "react-router-dom";
 import TravelExpenses from "../Estimate/TravelExpenses";
-import F_TitleAndCheckbox from "./Field/F_TitleAndCheckbox";
+import F_TitleAndCheckbox from "./Field/F_CheckboxAndTitle";
 import ExpenseReport from "../Estimate/ExpenseReport";
 import PriceBusinessReport from "../Estimate/PriceBusinessReport";
 import TravelAllowance from "../Estimate/TravelAllowance";
+import F_InputFile from "./Field/F_InputFile";
+import F_CheckboxAndInputText from "./Field/F_CheckboxAndInputText";
+import F_CheckboxAndTitle from "./Field/F_CheckboxAndTitle";
+import F_CheckboxAndDate from "./Field/F_CheckboxAndDate";
+import F_TextAndLabel from "./Field/F_TextAndLabel";
 
 export default function FormAdd() {
   const axiosPrivate = useAxiosPrivate();
@@ -41,6 +46,22 @@ export default function FormAdd() {
       static: true,
       icon: 'fa fa-paragraph',
       content: '期間',
+      group_name: 'Text',
+    },
+    {
+      key: 'F_TextAndLabel',
+      element: 'CustomElement',
+      component: F_TextAndLabel,
+      type: 'custom',
+      field_name: 'my_text_and_label',
+      name: 'Text and Label',
+      static: true,
+      icon: 'fa fa-paragraph',
+      label: '毎月の支給方法',
+      group_name: 'Text',
+      props: [
+        { text: '【時給制の場合】普通運賃の勤務日数分を支給　　【月給制の場合】1ヵ月分の定期券代金を支給', }
+      ]
     },
     {
       key: 'F_InputText',
@@ -63,6 +84,7 @@ export default function FormAdd() {
       static: true,
       icon: 'far fa-check-square',
       label: '行先',
+      group_name: 'Checkbox',
       custom_options: [
         {
           value: 'checkbox_value_1',
@@ -82,15 +104,35 @@ export default function FormAdd() {
       ]
     },
     {
-      key: 'F_TitleAndCheckbox',
+      key: 'F_CheckboxAndDate',
       element: 'CustomElement',
-      component: F_TitleAndCheckbox,
+      component: F_CheckboxAndDate,
       type: 'custom',
-      field_name: 'my_checkbox_',
-      name: 'Title and Checkbox',
+      field_name: 'my_checkbox_and_date',
+      name: 'Checkbox and Date',
+      static: true,
+      icon: 'far fa-check-square',
+      label: '適用開始年月日',
+      group_name: 'Checkbox',
+      custom_options: [
+        {
+          value: 'checkbox_value_1',
+          text: '入社日から適用',
+          key: 'checkboxes_option_1',
+        },
+      ]
+    },
+    {
+      key: 'F_CheckboxAndTitle',
+      element: 'CustomElement',
+      component: F_CheckboxAndTitle,
+      type: 'custom',
+      field_name: 'my_checkbox_and_title',
+      name: 'Checkbox and Title',
       static: true,
       icon: 'far fa-check-square',
       label: '休暇区分',
+      group_name: 'Checkbox',
       props: [
         {
           title: '有給休暇',
@@ -132,6 +174,30 @@ export default function FormAdd() {
             },
           ],
         },
+      ]
+    },
+    {
+      key: 'F_CheckboxAndInputText',
+      element: 'CustomElement',
+      component: F_CheckboxAndInputText,
+      type: 'custom',
+      field_name: 'my_checkbox_and_inputtext',
+      name: 'Checkbox and Input Text',
+      static: true,
+      icon: 'far fa-check-square',
+      label: '出張先',
+      group_name: 'Checkbox',
+      custom_options: [
+        {
+          value: 'checkbox_value_1',
+          text: '国内',
+          key: 'checkboxes_option_1',
+        },
+        {
+          value: 'checkbox_value_2',
+          text: '海外',
+          key: 'checkboxes_option_2',
+        }
       ]
     },
     {
@@ -199,6 +265,16 @@ export default function FormAdd() {
         { times: false },
         { timesto: false },
       ]
+    },
+    {
+      key: 'F_InputFile',
+      element: 'CustomElement',
+      component: F_InputFile,
+      type: 'custom',
+      name: 'File',
+      static: true,
+      icon: 'fas fa-file',
+      label: '領収書添付',
     },
     {
       key: 'T_TableTravelExpenses',

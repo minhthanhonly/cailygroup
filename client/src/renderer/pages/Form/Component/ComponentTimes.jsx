@@ -10,7 +10,6 @@ const ComponentTimes = (props) => {
     { hasTimesInput &&
       <div className="c-form-item c-form-item--02 pl0">
         <TimePickerButton
-          defaultValue={timeStart}
           onChange={(newValue) => setTimeStart(newValue)}
         />
         <input type="text" className="c-form-control form-input" placeholder="hh:mm" />

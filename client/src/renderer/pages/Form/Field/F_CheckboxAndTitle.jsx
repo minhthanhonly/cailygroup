@@ -1,7 +1,7 @@
 import React from 'react';
 import ComponentLabel from '../Component/ComponentLabel';
 
-class F_Checkbox extends React.Component {
+class F_CheckboxAndTitle extends React.Component {
   constructor(props) {
     super(props);
     this.custom_options = {};
@@ -58,4 +58,4 @@ class F_Checkbox extends React.Component {
   }
 }
 
-export default F_Checkbox;
+export default F_CheckboxAndTitle;
