@@ -55,7 +55,7 @@
 			$conn->close();
 		}
 
-		function postAdd($userid, $password, $realname, $authority, $user_group){
+		function postAdd($userid, $password, $realname, $authority, $user_group, $user_email){
 			global $conn;
 			
 			if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -67,10 +67,11 @@
 				$realname = $userPostData->realname;
 				$authority = $userPostData->authority;
 				$user_group = $userPostData->user_group;
+				$user_email = $userPostData->user_email;
 			
 				// Thêm dữ liệu vào cơ sở dữ liệu
 				$sql = "INSERT INTO users (userid, password, password_default, realname, authority, user_group, user_groupname, user_email, user_skype, user_ruby, user_postcode,user_address, user_addressruby, user_phone, user_mobile, user_order, edit_level, edit_group, edit_user, owner, editor, createdAt, updatedAt) 
-				VALUES ('$userid', '$password', '', '$realname', '$authority', '$user_group', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '')";
+				VALUES ('$userid', '$password', '', '$realname', '$authority', '$user_group', '', '$user_email', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '')";
 				
 				$result = $conn->query($sql);
 
@@ -143,7 +144,7 @@
 			}
 		}
 
-		function delete(){
+		function delete($id){
 			global $conn;
 			$userPostData = json_decode(file_get_contents("php://input"));
 
@@ -152,14 +153,16 @@
 
 			// Thực hiện truy vấn SELECT
 			$sql = "DELETE FROM users WHERE id='$id'";
+
 			$result = $conn->query($sql);
 
-			header('Content-Type: application/json');
 			if($result) {
-				echo json_encode(['success' => 'Xóa thành viên thành công']);
+				$result = "ok";
+				echo json_encode(['success' => $result]);
 				return;
 			} else {
-				echo json_encode(['success' => 'Please check the Users data!']);
+				$result = "error";
+				echo json_encode(['success' => $result]);
 				return;
 			}
 		}

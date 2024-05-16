@@ -56,11 +56,13 @@
 			
 			if ($_SERVER["REQUEST_METHOD"] === "POST") {
 				$appJsonString = file_get_contents("php://input");
-				$createdAt = date('Y-m-d H:i:s');
+				$appPostData = json_decode(file_get_contents("php://input"));
+
+				$userNameReg = $appPostData->userNameReg;
 			
 				// Thêm dữ liệu vào cơ sở dữ liệu
 				$sql = "INSERT INTO application_details (datajson, owner, id_status, createdAt) 
-				VALUES ('$appJsonString', 'Admin', 1, NOW())";
+				VALUES ('$appJsonString', '$userNameReg', 1, NOW())";
 
 				$result = $conn->query($sql);
 

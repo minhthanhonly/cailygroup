@@ -8,7 +8,7 @@ function MemberAdd() {
   const axiosPrivate = useAxiosPrivate();
 	const navigate = useNavigate();
 
-	const [formValue, setFormValue] = useState({ userid: '', password: '', password_confirm: '', realname: '', authority: '', user_group: '' })
+	const [formValue, setFormValue] = useState({ userid: '', password: '', password_confirm: '', realname: '', authority: '', user_group: '', user_email: '' })
 	const [message, setMessage] = useState('');
 
   type FieldUsers = {
@@ -38,7 +38,7 @@ function MemberAdd() {
 		const validationErrors = isValidUser({ ...formValue }, oldUserid);
 		e.preventDefault();
 		if (validationErrors === true) {
-			const formData = { userid: formValue.userid, password: formValue.password, realname: formValue.realname, authority: formValue.authority, user_group: formValue.user_group }
+			const formData = { userid: formValue.userid, password: formValue.password, realname: formValue.realname, authority: formValue.authority, user_group: formValue.user_group, user_email: formValue.user_email }
 			const res = await axiosPrivate.post("users/add", formData);
 			if (res.data.success) {
 				setMessage(res.data.success);
@@ -113,9 +113,7 @@ function MemberAdd() {
 			{message == '' ? '' : <div className="box-bg"><p className="bg bg-green">{message}</p></div>}
 			<div className="form-user form">
 				<div className="form-content">
-					<div className="row">
-						<div className="col-6">
-							<form onSubmit={handleSubmit} method="POST">
+          <form onSubmit={handleSubmit} method="POST">
 								<div className="form-group">
 									<label>
 										ID User *
@@ -180,6 +178,22 @@ function MemberAdd() {
 										value={formValue.realname} onChange={handleInput}
 									/>
 								</div>
+                <div className="form-group">
+									<label>
+										Email *
+										<img
+											src={require('../../../../assets/icon-email.jpg')}
+											alt=""
+											className="fluid-image"
+										/>
+									</label>
+									<input
+										className="form-input"
+										type="text"
+										name="user_email"
+										value={formValue.user_email} onChange={handleInput}
+									/>
+								</div>
 								<div className="form-group">
 									<label>
 										Nhóm *
@@ -220,9 +234,7 @@ function MemberAdd() {
 									<button className="btn btn--green" type="submit">Xác nhận</button>
 									<button className="btn btn--orange" onClick={handleBack}>Hủy</button>
 								</div>
-							</form>
-						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</>
