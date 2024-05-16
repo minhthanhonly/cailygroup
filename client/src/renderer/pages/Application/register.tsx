@@ -205,7 +205,6 @@ export const Register = ({ id }) => {
                 } else if (Array.isArray(formDataItem.value)) {
                   valueToDisplay = formDataItem.value.join('  '); // Nối giá trị với dấu cách
                 }
-
                 return (
                   <li key={index}>
                     <div className="box-register__item">
