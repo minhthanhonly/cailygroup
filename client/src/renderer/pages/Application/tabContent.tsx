@@ -364,7 +364,6 @@ const TabContent = ({ id, sendDataToParent }) => {
                         <li>
                           <div className="box-approves__item">
                             <div className="box-approves__item__title">
-                              {/* <span>1</span> */}
                               {isAdmin ? (
                                 <span className="active">1</span>
                               ) : (
@@ -460,7 +459,6 @@ const TabContent = ({ id, sendDataToParent }) => {
                         <li>
                           <div className="box-approves__item">
                             <div className="box-approves__item__title">
-                              {/* <span>2</span> */}
                               {isManager ? (
                                 <span className="active">2</span>
                               ) : (
