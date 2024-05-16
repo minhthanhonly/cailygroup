@@ -56,6 +56,16 @@ const TabContent = ({ id, sendDataToParent }) => {
   const handleStatusClick = async (event: any) => {
     try {
       const id_status = event.currentTarget.getAttribute('data-id_status');
+      // kiểm tra nếu statusattrText khớp với điều kiện không được click
+      if (
+        (approve.statusattrTexts === '承認待ち' && id_status === '1') ||
+        (approve.statusattrTexts === '承認済み' && id_status === '4') ||
+        (approve.statusattrTexts === '差し戻し' && id_status === '2') ||
+        (approve.statusattrTexts === '却下' && id_status === '3') ||
+        (approve.statusattrTexts === '取り消し' && id_status === '6')
+      ) {
+        retrun;
+      }
       const dataUpdate = { id, id_status };
       const response = await axiosPrivate.put(
         'application/updatestatus/',
