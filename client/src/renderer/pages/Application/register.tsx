@@ -149,8 +149,8 @@ export const Register = ({ id }) => {
                                           .toISOString()
                                           .split('T')[0];
                                       } else {
-                                        // Xử lý nếu giá trị không hợp lệ
-                                        value = 'Ngày không hợp lệ';
+                                        // Xử lý nếu giá trị rỗng hoặc không hợp lệ
+                                        value = '';
                                       }
                                     }
                                     return <td key={index}>{value}</td>;
@@ -169,7 +169,6 @@ export const Register = ({ id }) => {
           </div>
         ) : accordionItems.formData && accordionItems.formData.length > 0 ? (
           //trường hợp : formData không rỗng
-
           <div className="box-register">
             <ul>
               {accordionItems.formData.map((formDataItem: any, index: any) => {
@@ -223,6 +222,7 @@ export const Register = ({ id }) => {
             </ul>
           </div>
         ) : (
+          //trường hợp tableData không rỗng
           <div className="box-register">
             <div className="table tbl_custom table tbl_custom--register">
               <div className="tbl_custom--03">
@@ -256,8 +256,8 @@ export const Register = ({ id }) => {
                                         .toISOString()
                                         .split('T')[0];
                                     } else {
-                                      // Xử lý nếu giá trị không phải là ngày hợp lệ
-                                      value = 'Ngày không hợp lệ';
+                                      // Xử lý nếu giá trị rỗng hoặc không hợp lệ
+                                      value = '';
                                     }
                                   }
                                   return <td key={index}>{value}</td>;
