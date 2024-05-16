@@ -364,7 +364,12 @@ const TabContent = ({ id, sendDataToParent }) => {
                         <li>
                           <div className="box-approves__item">
                             <div className="box-approves__item__title">
-                              <span>1</span>
+                              {/* <span>1</span> */}
+                              {isAdmin ? (
+                                <span className="active">1</span>
+                              ) : (
+                                <span>1</span>
+                              )}
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
@@ -455,7 +460,12 @@ const TabContent = ({ id, sendDataToParent }) => {
                         <li>
                           <div className="box-approves__item">
                             <div className="box-approves__item__title">
-                              <span>2</span>
+                              {/* <span>2</span> */}
+                              {isManager ? (
+                                <span className="active">2</span>
+                              ) : (
+                                <span>2</span>
+                              )}
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
@@ -538,7 +548,11 @@ const TabContent = ({ id, sendDataToParent }) => {
                         <li>
                           <div className="box-approves__item">
                             <div className="box-approves__item__title">
-                              <span className="active">3</span>
+                              {isLeader ? (
+                                <span className="active">3</span>
+                              ) : (
+                                <span>3</span>
+                              )}
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
