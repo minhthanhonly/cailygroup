@@ -14,6 +14,7 @@ function MemberEdit() {
     userid: '',
     password: '',
     realname: '',
+    user_email: '',
   });
   const [apiData, setApiData] = useState({
     realname: '',
@@ -97,6 +98,7 @@ function MemberEdit() {
         realname: formValue.realname,
         authority: selectedValue.authority,
         user_group: selectedValue.user_group,
+        user_email: formValue.user_email
       };
 
       const res = await axiosPrivate.post('users/update', formData);
@@ -112,6 +114,7 @@ function MemberEdit() {
             "roles": res2.data.authority_name,
             "user_group": res2.data.group_name,
             "user_group_id": res2.data.user_group,
+            "user_email":  res2.data.user_email,
           }
           localStorage.setItem('users', JSON.stringify(users));
         }
@@ -221,6 +224,22 @@ function MemberEdit() {
               name="realname"
               value={formValue.realname}
               onChange={handleInput}
+            />
+          </div>
+          <div className="form-group">
+            <label>
+              Email *
+              <img
+                src={require('../../../../assets/icon-email.jpg')}
+                alt=""
+                className="fluid-image"
+              />
+            </label>
+            <input
+              className="form-input"
+              type="text"
+              name="user_email"
+              value={formValue.user_email} onChange={handleInput}
             />
           </div>
           <div className="form-group">

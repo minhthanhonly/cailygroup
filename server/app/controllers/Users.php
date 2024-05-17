@@ -34,10 +34,10 @@
             }
         }
 
-        function update($id='', $userid='', $password='', $passwordNew='', $realname='', $authority='', $user_group=''){
+        function update($id='', $userid='', $password='', $passwordNew='', $realname='', $authority='', $user_group='', $user_email=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){
-                return $this->model('UsersModel')->postUpdate($id, $userid, $password, $passwordNew, $realname, $authority, $user_group);
+                return $this->model('UsersModel')->postUpdate($id, $userid, $password, $passwordNew, $realname, $authority, $user_group, $user_email);
             }
         }
 

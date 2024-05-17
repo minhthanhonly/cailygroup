@@ -189,6 +189,11 @@ export default function NewApplicationDetail() {
       appJSON.userNameReg = users.realname;
       appJSON.userEmailReg = users.user_email;
 
+      const currentStatus = e.currentTarget.getAttribute('data-status');
+      if(currentStatus === "draft") {
+        appJSON.id_status = 5;
+      }
+
       if (formRefHaveTable.current) {
         appJSON.tableData = estimate;
       } else {
@@ -406,8 +411,8 @@ export default function NewApplicationDetail() {
         </div>
       </div>
       <div className="wrp-button mt50">
-        <button className="btn btn--from btn--gray">下書き保存</button>
-        <button className="btn btn--from btn--blue" onClick={handleSubmit}>申請する</button>
+        <button className="btn btn--from btn--gray" onClick={handleSubmit} data-status="draft">下書き保存</button>
+        <button className="btn btn--from btn--blue" onClick={handleSubmit} data-status="apply">申請する</button>
       </div>
       <ButtonBack onHandle={handleBackIndex} />
     </>

@@ -398,6 +398,8 @@ const TabContent = ({ id, sendDataToParent }) => {
   //   }
   // }, [id]);
 
+  console.log("Hello");
+
   const renderItem = (
     statusId: any,
     label: any,

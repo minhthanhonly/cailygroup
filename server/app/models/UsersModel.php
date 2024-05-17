@@ -106,7 +106,7 @@
 			$conn->close();
 		}
 
-		function postUpdate($userid, $password, $passwordNew, $realname, $authority, $user_group){
+		function postUpdate($userid, $password, $passwordNew, $realname, $authority, $user_group, $user_email){
 			global $conn;
 			
 			if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -124,12 +124,13 @@
 				$realname = $userPostData->realname;
 				$authority = $userPostData->authority;
 				$user_group = $userPostData->user_group;
+				$user_email = $userPostData->user_email;
 				
 				//Cập nhật dữ liệu vào cơ sở dữ liệu
 				if(!empty($passwordNew)) {
-					$sql = "UPDATE users SET userid='$userid', password='$passwordNew', password_default='', realname='$realname', authority='$authority', user_group='$user_group', user_groupname='', user_email='', user_skype='', user_ruby='', user_postcode='',user_address='', user_addressruby='', user_phone='', user_mobile='', user_order='', edit_level='', edit_group='', edit_user='', owner='', editor='', createdAt='', updatedAt='' WHERE id='$id'";
+					$sql = "UPDATE users SET userid='$userid', password='$passwordNew', password_default='', realname='$realname', authority='$authority', user_group='$user_group', user_groupname='', user_email='$user_email', user_skype='', user_ruby='', user_postcode='',user_address='', user_addressruby='', user_phone='', user_mobile='', user_order='', edit_level='', edit_group='', edit_user='', owner='', editor='', createdAt='', updatedAt='' WHERE id='$id'";
 				} else {
-					$sql = "UPDATE users SET userid='$userid', password='$password', password_default='', realname='$realname', authority='$authority', user_group='$user_group', user_groupname='', user_email='', user_skype='', user_ruby='', user_postcode='',user_address='', user_addressruby='', user_phone='', user_mobile='', user_order='', edit_level='', edit_group='', edit_user='', owner='', editor='', createdAt='', updatedAt='' WHERE id='$id'";
+					$sql = "UPDATE users SET userid='$userid', password='$password', password_default='', realname='$realname', authority='$authority', user_group='$user_group', user_groupname='', user_email='$user_email', user_skype='', user_ruby='', user_postcode='',user_address='', user_addressruby='', user_phone='', user_mobile='', user_order='', edit_level='', edit_group='', edit_user='', owner='', editor='', createdAt='', updatedAt='' WHERE id='$id'";
 				}
 
 				$result = $conn->query($sql);

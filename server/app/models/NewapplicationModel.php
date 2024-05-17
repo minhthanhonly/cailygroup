@@ -61,10 +61,11 @@
 				$appPostData = json_decode(file_get_contents("php://input"));
 
 				$userNameReg = $appPostData->userNameReg;
-			
+				$id_status =  $appPostData->id_status;
+
 				//Thêm dữ liệu vào cơ sở dữ liệu
 				$sql = "INSERT INTO application_details (datajson, owner, id_status, createdAt, updatedAt) 
-				VALUES ('$appJsonString', '$userNameReg', 1, NOW(), NOW())";
+				VALUES ('$appJsonString', '$userNameReg', '$id_status', NOW(), NOW())";
 
 				$result = $conn->query($sql);
 
