@@ -214,9 +214,8 @@ export default function NewApplicationDetail() {
         setTimeout(() => {
           navigate('/newapplication');
         }, 2000);
+        emitter.emit('reloadSidebar');
       }
-
-
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
       //   if(res.data.success === 'error'){

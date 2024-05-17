@@ -6,6 +6,7 @@ import { Register } from './register';
 import { UserRole } from '../../components/UserRole';
 import { emitter } from '../../layouts/components/Sidebar/index';
 import './Accordion.scss';
+import { toast } from 'react-toastify';
 
 const TabContent = ({ id, sendDataToParent }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -763,35 +764,80 @@ const TabContent = ({ id, sendDataToParent }) => {
                                 1,
                                 '未',
                                 isChecked,
-                                handleStatusClick,
+                                () => {
+                                  // Kiểm tra vai trò của người dùng trước khi thực hiện handleStatusClick
+                                  if (isLeader || isAdmin || isManager) {
+                                    handleStatusClick;
+                                  } else {
+                                    toast.error(
+                                      'Bạn không có quyền thực hiện hành động này.',
+                                    );
+                                  }
+                                },
                                 approve.statusattrTexts === '承認待ち',
                               )}
                               {renderItem(
                                 4,
                                 '完',
                                 isChecked,
-                                handleStatusClick,
+                                () => {
+                                  // Kiểm tra vai trò của người dùng trước khi thực hiện handleStatusClick
+                                  if (isLeader || isAdmin || isManager) {
+                                    handleStatusClick;
+                                  } else {
+                                    toast.error(
+                                      'Bạn không có quyền thực hiện hành động này.',
+                                    );
+                                  }
+                                },
                                 approve.statusattrTexts === '承認済み',
                               )}
                               {renderItem(
                                 2,
                                 '却',
                                 isChecked,
-                                handleStatusClick,
+                                () => {
+                                  // Kiểm tra vai trò của người dùng trước khi thực hiện handleStatusClick
+                                  if (isLeader || isAdmin || isManager) {
+                                    handleStatusClick;
+                                  } else {
+                                    toast.error(
+                                      'Bạn không có quyền thực hiện hành động này.',
+                                    );
+                                  }
+                                },
                                 approve.statusattrTexts === '差し戻し',
                               )}
                               {renderItem(
                                 3,
                                 '下',
                                 isChecked,
-                                handleStatusClick,
+                                () => {
+                                  // Kiểm tra vai trò của người dùng trước khi thực hiện handleStatusClick
+                                  if (isLeader || isAdmin || isManager) {
+                                    handleStatusClick;
+                                  } else {
+                                    toast.error(
+                                      'Bạn không có quyền thực hiện hành động này.',
+                                    );
+                                  }
+                                },
                                 approve.statusattrTexts === '却下',
                               )}
                               {renderItem(
                                 6,
                                 '消',
                                 isChecked,
-                                handleStatusClick,
+                                () => {
+                                  // Kiểm tra vai trò của người dùng trước khi thực hiện handleStatusClick
+                                  if (isLeader || isAdmin || isManager) {
+                                    handleStatusClick;
+                                  } else {
+                                    toast.error(
+                                      'Bạn không có quyền thực hiện hành động này.',
+                                    );
+                                  }
+                                },
                                 approve.statusattrTexts === '取り消し',
                               )}
                             </ul>
