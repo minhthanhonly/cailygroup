@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://guis3.sakura.ne.jp/caily/';
+export const BASE_URL = 'https://guis3.sakura.ne.jp/caily/';
 //const BASE_URL = 'http://localhost/';
 export default axios.create({
   baseURL: BASE_URL,
