@@ -94,7 +94,7 @@
                     if (isset($current_json)) {
                         $current_json = $id_status;
                         $new_json = json_encode($current_json);
-                        $updateQuery = "UPDATE application_details SET datajson = JSON_SET(datajson, '$.id_status', $new_json), id_status = '$id_status', createdAt = NOW() WHERE id ='$id'";
+                        $updateQuery = "UPDATE application_details SET datajson = JSON_SET(datajson, '$.id_status', $new_json), id_status = '$id_status', updatedAt = NOW() WHERE id ='$id'";
                 
                         if (mysqli_query($conn, $updateQuery)) {
                             $responseData = ["message" => "Dữ liệu được cập nhật thành công"];
