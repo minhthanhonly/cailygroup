@@ -321,7 +321,27 @@
             }
             $conn->close();
         }
-       
+
+        function deleteAccodion($id){
+            global $conn;
+            $data = json_decode(file_get_contents("php://input"), true);
+            if (isset($id)) {
+                $deleteQuery = "DELETE FROM application_details WHERE id = $id";
+                // echo $deleteQuery;
+                // exit();
+                if (mysqli_query($conn, $deleteQuery)) {
+                    http_response_code(200);
+                echo json_encode(['errCode' => 0]);
+                } else {
+                    http_response_code(500);
+                echo json_encode(['errCode' => 1, 'message' => 'không thể Xóa']);
+                }
+            } else {
+                http_response_code(400);
+                echo json_encode(['errCode' => 2, 'message' => 'không thể tìm thấy']);
+            }
+            $conn->close();
+        }
         
         function addCommentThird($user_id,$aplication_id,$authority_id, $note, $createdAt)
         {

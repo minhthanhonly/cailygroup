@@ -376,6 +376,22 @@ const TabContent = ({ id, sendDataToParent }) => {
     }
   };
 
+  const handleDeleteAccodion = async (id: any) => {
+    try {
+      // console.log('id:', id);
+      const response = await axiosPrivate.delete(
+        `application/deleteaccodion/${id}`,
+      );
+      // console.log(response.data);
+      if (response.status === 200) {
+        console.log('Xóa Thành Công');
+        Load();
+      } else {
+        console.error('Failed to delete comment:', response.statusText);
+      }
+    } catch (error) {}
+  };
+
   const renderItem = (
     statusId: any,
     label: any,
@@ -432,7 +448,12 @@ const TabContent = ({ id, sendDataToParent }) => {
                 <span className="icn-item">
                   <img src={editIcon} alt="edit" className="fluid-image" />
                 </span>
-                <span className="icn-item">
+                <span
+                  className="icn-item"
+                  onClick={() => {
+                    handleDeleteAccodion(Items.id);
+                  }}
+                >
                   <img src={closeIcon} alt="close" className="fluid-image" />
                 </span>
               </p>

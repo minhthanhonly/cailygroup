@@ -77,6 +77,13 @@
                 return $this->model('ApplicationModel')->deletecommentthird($id);
             }
         }
+
+        function deleteAccodion($id=''){
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('ApplicationModel')->deleteAccodion($id);
+            }
+        }
         
         function addCommentThird($user_id='',$aplication_id='',$authority_id='', $note=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
