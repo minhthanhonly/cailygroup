@@ -83,11 +83,11 @@ export default function PriceBusinessReport(props) {
         setVisibleErrors(newVisibleErrors);
     };
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, type: string, index: number) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
         const { value } = event.target;
         setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
-            newRows[index] = { ...newRows[index], [type]: value };
+            newRows[index] = { ...newRows[index], [field]: value };
 
             const newRowsWithTotal = newRows.map(row => ({ ...row, total: finalTotalPrice }));
 
@@ -227,32 +227,43 @@ export default function PriceBusinessReport(props) {
 
 
     useEffect(() => {
-        updateRowsLeave(inputValue, inputDate);
-    }, [inputValue, inputDate]);
+        const newCalculatedPrice = inputDate * 3000;
+        const newFinalPayment = totalSum - inputValue;
+        const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
 
-    const updateRowsLeave = (value: number, dateValue: number) => {
+        setCalculatedPrice(newCalculatedPrice);
+        setFinalPayment(newFinalPayment);
+        setFinalTotalPrice(newFinalTotalPrice);
+    }, [inputDate, inputValue, totalSum]);
+
+    const updateRowsLeave = (leaveValue: number) => {
         const updatedRows = rows.map(row => ({
             ...row,
-            leave: value,
-            calculatedPrice: dateValue * 3000,
-            finalPayment: totalSum - value,
-            finalTotalPrice: (totalSum - value) + (dateValue * 3000),
+            leave: leaveValue,
+            calculatedPrice: calculatedPrice,
+            finalPayment: finalPayment,
         }));
+
+        console.log("updatedRows", updatedRows);
 
         setRows(updatedRows);
     };
 
-    const handleInputChange2 = (event: React.ChangeEvent<HTMLInputElement>, inputType: 'value' | 'price') => {
+    const handleInputValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = parseFloat(event.target.value.replace(/,/g, ''));
-        const valueToSet = isNaN(newValue) ? 0 : newValue;
 
-        if (inputType === 'value') {
-            setInputValue(valueToSet);
-            updateRowsLeave(valueToSet, inputDate); // Thêm inputDate vào hàm updateRowsLeave
-        } else if (inputType === 'price') {
-            setInputDate(valueToSet);
-            updateRowsLeave(inputValue, valueToSet); // Thêm inputValue vào hàm updateRowsLeave
-        }
+        const valueToSet = isNaN(newValue) ? 0 : newValue;
+        setInputValue(valueToSet);
+        updateRowsLeave(valueToSet);
+
+
+    };
+    const handleInputPrice = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue1 = parseFloat(event.target.value.replace(/,/g, ''));
+        const valueToSet = isNaN(newValue1) ? 0 : newValue1;
+        setInputDate(valueToSet);
+        updateRowsLeave(valueToSet);
+
     };
 
 
@@ -313,30 +324,11 @@ export default function PriceBusinessReport(props) {
                             </tr>
                             <tr>
                                 <th>仮払金</th>
-                                <td>
-                                    <input
-                                        className='input_noboder numberInput'
-                                        type="text"
-                                        placeholder='金額を入力'
-                                        value={formatNumberWithCommas(inputValue)}
-                                        onChange={(e) => handleInputChange2(e, 'value')}
-                                    />
-                                </td>
+                                <td><input className='input_noboder numberInput' type="text" placeholder='金額を入力' value={formatNumberWithCommas(inputValue)} onChange={handleInputValueChange} /></td>
                             </tr>
                             <tr>
                                 <th>出張手当</th>
-                                <td>
-                                    <span>日当 3,000 × </span>
-                                    <input
-                                        className='input_noboder w100 numberInput'
-                                        type="text"
-                                        placeholder='日数を入力'
-                                        value={inputDate}
-                                        onChange={(e) => handleInputChange2(e, 'price')}
-                                    />
-                                    <span>日</span>
-                                    <span className="price">{formatNumberWithCommas(calculatedPrice)}</span>
-                                </td>
+                                <td><span>日当 3,000 × </span><input className='input_noboder w100 numberInput' type="text" placeholder='日数を入力' value={inputDate} onChange={handleInputPrice} /><span>日</span><span className="price">{formatNumberWithCommas(calculatedPrice)}</span> </td>
                             </tr>
                             <tr>
                                 <th>精算額</th>

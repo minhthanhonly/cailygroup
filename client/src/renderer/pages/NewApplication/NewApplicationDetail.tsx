@@ -27,12 +27,6 @@ export default function NewApplicationDetail() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
-<<<<<<< HEAD
-=======
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
-  const[pfile, setPfile]= useState('');
-  const fileData = new FormData();
->>>>>>> 11635fc67c3918a4d49a487d20b4d271d2ce97ac
 
   const fetchNewApplicationById = async () => {
     try {
@@ -71,22 +65,8 @@ export default function NewApplicationDetail() {
     setEstimate(childData)
   }
 
-<<<<<<< HEAD
 
 
-=======
-  // Lấy giá trị của File Upload
-  const fileCallBackFunction = (childData) => {
-    setPfile(childData);
-  }
-
-  // Lấy giá trị của File Upload khi Remove File
-  const fileClearCallBackFunction = (childData) => {
-    setPfile(childData);
-  }
-
-  // Truy cập vào Form
->>>>>>> 11635fc67c3918a4d49a487d20b4d271d2ce97ac
   const formRef = useRef<HTMLFormElement>(null);
 
   // Truy cập vào Form có Table
@@ -254,16 +234,16 @@ export default function NewApplicationDetail() {
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
 
-      if(pfile) {
+      if (pfile) {
         const resUpload = await axiosPrivate.post("newapplication/upload", fileData, {
-          headers:{'Content-Type':"multipart/form-data"},
+          headers: { 'Content-Type': "multipart/form-data" },
         });
       } else {
         console.error("You have not selected a file to upload");
       }
 
       const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      if(res.data.success === 'error'){
+      if (res.data.success === 'error') {
         setError('Bị lỗi khi đăng ký');
       } else {
         setMsg('Bạn đã đăng ký thành công');
@@ -284,13 +264,10 @@ export default function NewApplicationDetail() {
       //   	}, 2000);
       //   }
       // }
-<<<<<<< HEAD
 
 
       emitter.emit('reloadSidebar');
 
-=======
->>>>>>> 11635fc67c3918a4d49a487d20b4d271d2ce97ac
     }
   }
 
