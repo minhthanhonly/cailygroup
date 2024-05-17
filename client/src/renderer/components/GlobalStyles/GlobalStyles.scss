@@ -2282,9 +2282,11 @@ textarea {
 // box-tab
 .box-tab {
   margin-top: 7rem;
+  width: 100%;
   .lst-branch {
     display: flex;
     align-items: center;
+    width: 100%;
     // border-bottom: 1px solid #707070;
     margin-bottom: 0;
     li {
