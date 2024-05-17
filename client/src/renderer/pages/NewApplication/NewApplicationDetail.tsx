@@ -18,6 +18,7 @@ import ComponentCheckboxAndInputText from "../Form/Component/ComponentCheckboxAn
 import ComponentInputFile from "../Form/Component/ComponentInputFile";
 import ComponentCheckboxAndDate from "../Form/Component/ComponentCheckboxAndDate";
 import ComponentTextAndLabel from "../Form/Component/ComponentTextAndLabel";
+import { emitter } from "../../layouts/components/Sidebar";
 
 export default function NewApplicationDetail() {
   const { id } = useParams();
@@ -100,7 +101,7 @@ export default function NewApplicationDetail() {
               label: label,
               value: element.value,
             }
-          } else if(element.ariaDescription) {
+          } else if (element.ariaDescription) {
             newObj = {
               id: element.name,
               label: label,
@@ -140,7 +141,7 @@ export default function NewApplicationDetail() {
           if (key !== 'id' && key !== 'label') { // bỏ qua thuộc tính id khi gộp
             if (!dataField[item.id][key]) {
 
-                dataField[item.id][key] = [];
+              dataField[item.id][key] = [];
             }
             dataField[item.id][key].push(item[key]);
           }
@@ -166,7 +167,7 @@ export default function NewApplicationDetail() {
       appJSON.userNameReg = users.realname;
       appJSON.userEmailReg = users.user_email;
 
-      if(formRefHaveTable.current){
+      if (formRefHaveTable.current) {
         appJSON.tableData = estimate;
       } else {
         appJSON.tableData = [];
@@ -176,6 +177,8 @@ export default function NewApplicationDetail() {
       const appJsonString = JSON.stringify(appJSON);
       // console.log(appJSON);
       const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      console.log("res", res);
+
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
       //   if(res.data.success === 'error'){
@@ -188,6 +191,7 @@ export default function NewApplicationDetail() {
       //   }
       // }
     }
+    emitter.emit('reloadSidebar');
   }
 
   return (
@@ -302,6 +306,7 @@ export default function NewApplicationDetail() {
                       id={item.id}
                       label={item.label}
                       required={item.required}
+                      value={item.value}
                     />
                   </div>
                 )

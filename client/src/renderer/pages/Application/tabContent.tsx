@@ -57,6 +57,16 @@ const TabContent = ({ id, sendDataToParent }) => {
   const handleStatusClick = async (event: any) => {
     try {
       const id_status = event.currentTarget.getAttribute('data-id_status');
+      // kiểm tra nếu statusattrText khớp với điều kiện không được click
+      if (
+        (approve.statusattrTexts === '承認待ち' && id_status === '1') ||
+        (approve.statusattrTexts === '承認済み' && id_status === '4') ||
+        (approve.statusattrTexts === '差し戻し' && id_status === '2') ||
+        (approve.statusattrTexts === '却下' && id_status === '3') ||
+        (approve.statusattrTexts === '取り消し' && id_status === '6')
+      ) {
+        retrun;
+      }
       const dataUpdate = { id, id_status };
       const response = await axiosPrivate.put(
         'application/updatestatus/',
@@ -338,6 +348,39 @@ const TabContent = ({ id, sendDataToParent }) => {
     }
   };
 
+  const renderItem = (
+    statusId,
+    label,
+    isChecked,
+    handleStatusClick,
+    shouldBeActive,
+  ) => {
+    const isActive =
+      approve.statusattrTexts === '承認待ち' ||
+      approve.statusattrTexts === '承認済み' ||
+      approve.statusattrTexts === '差し戻し' ||
+      approve.statusattrTexts === '取り消し' ||
+      approve.statusattrTexts === '却下';
+
+    return (
+      <li key={statusId}>
+        <div
+          className={`box-approves__item box-approves__item--01 ${
+            isChecked ? 'checked' : ''
+          } ${shouldBeActive ? 'active' : 'disible'}`}
+          onClick={handleStatusClick}
+          data-id_status={statusId}
+        >
+          <div className="box-approves__item__title">
+            <span className={shouldBeActive ? 'active' : 'disible'}>
+              {label}
+            </span>
+          </div>
+        </div>
+      </li>
+    );
+  };
+
   return (
     <>
       <div className="list-accordion__parent">
@@ -392,7 +435,11 @@ const TabContent = ({ id, sendDataToParent }) => {
                         <li>
                           <div className="box-approves__item">
                             <div className="box-approves__item__title">
-                              <span>1</span>
+                              {isAdmin ? (
+                                <span className="active">1</span>
+                              ) : (
+                                <span>1</span>
+                              )}
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
@@ -483,7 +530,11 @@ const TabContent = ({ id, sendDataToParent }) => {
                         <li>
                           <div className="box-approves__item">
                             <div className="box-approves__item__title">
-                              <span>2</span>
+                              {isManager ? (
+                                <span className="active">2</span>
+                              ) : (
+                                <span>2</span>
+                              )}
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
@@ -566,7 +617,11 @@ const TabContent = ({ id, sendDataToParent }) => {
                         <li>
                           <div className="box-approves__item">
                             <div className="box-approves__item__title">
-                              <span className="active">3</span>
+                              {isLeader ? (
+                                <span className="active">3</span>
+                              ) : (
+                                <span>3</span>
+                              )}
                             </div>
                             <div className="box-approves__item__content">
                               <p className="box-approves__item__content__text">
@@ -646,69 +701,45 @@ const TabContent = ({ id, sendDataToParent }) => {
                             </div>
                           </div>
                         </li>
-                        <li>
-                          <div
-                            className={`box-approves__item ${
-                              isChecked ? 'checked' : ''
-                            }`}
-                            onClick={handleStatusClick}
-                            data-id_status={1}
-                          >
-                            <div className="box-approves__item__title">
-                              <span className="is-disible">未</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div
-                            className={`box-approves__item box-approves__item--01 ${
-                              isChecked ? 'checked' : ''
-                            }`}
-                            onClick={handleStatusClick}
-                            data-id_status={4}
-                          >
-                            <div className="box-approves__item__title">
-                              <span className="bg-blue01 color-white">完</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div
-                            className={`box-approves__item box-approves__item--01 ${
-                              isChecked ? 'checked' : ''
-                            }`}
-                            onClick={handleStatusClick}
-                            data-id_status={2}
-                          >
-                            <div className="box-approves__item__title">
-                              <span className="bg-red01 color-white">却</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div
-                            className={`box-approves__item box-approves__item--01 ${
-                              isChecked ? 'checked' : ''
-                            }`}
-                            onClick={handleStatusClick}
-                            data-id_status={3}
-                          >
-                            <div className="box-approves__item__title">
-                              <span className="bg-blue01 color-white">下</span>
-                            </div>
-                          </div>
-                        </li>
-                        <li>
-                          <div
-                            className={`box-approves__item box-approves__item--01 ${
-                              isChecked ? 'checked' : ''
-                            }`}
-                            onClick={handleStatusClick}
-                            data-id_status={6}
-                          >
-                            <div className="box-approves__item__title">
-                              <span className="bg-blue01 color-white">消</span>
-                            </div>
+                        <li className="box-status">
+                          <div>
+                            <ul className="list-status">
+                              {renderItem(
+                                1,
+                                '未',
+                                isChecked,
+                                handleStatusClick,
+                                approve.statusattrTexts === '承認待ち',
+                              )}
+                              {renderItem(
+                                4,
+                                '完',
+                                isChecked,
+                                handleStatusClick,
+                                approve.statusattrTexts === '承認済み',
+                              )}
+                              {renderItem(
+                                2,
+                                '却',
+                                isChecked,
+                                handleStatusClick,
+                                approve.statusattrTexts === '差し戻し',
+                              )}
+                              {renderItem(
+                                3,
+                                '下',
+                                isChecked,
+                                handleStatusClick,
+                                approve.statusattrTexts === '却下',
+                              )}
+                              {renderItem(
+                                6,
+                                '消',
+                                isChecked,
+                                handleStatusClick,
+                                approve.statusattrTexts === '取り消し',
+                              )}
+                            </ul>
                           </div>
                         </li>
                       </ul>

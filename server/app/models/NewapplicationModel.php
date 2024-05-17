@@ -55,10 +55,28 @@
 			global $conn;
 			
 			if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+
 				$appJsonString = file_get_contents("php://input");
 				$appPostData = json_decode(file_get_contents("php://input"));
 
 				$userNameReg = $appPostData->userNameReg;
+				$createdAt = date('Y-m-d H:i:s');
+
+				
+				//  if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+				// 	$fileTmpPath = $_FILES['file']['tmp_name'];
+				// 	$fileName = $_FILES['file']['name'];
+				// 	$uploadFileDir = 'upload/';
+				// 	$dest_path = $uploadFileDir . $fileName;
+
+				// 	if(move_uploaded_file($fileTmpPath, $dest_path)) {
+				// 		$fileUploadSuccess = true;
+				// 	} else {
+				// 		echo json_encode(['success' => 'error', 'message' => 'Error moving uploaded file']);
+				// 		return;
+				// 	}
+				// }
 			
 				// Thêm dữ liệu vào cơ sở dữ liệu
 				$sql = "INSERT INTO application_details (datajson, owner, id_status, createdAt) 

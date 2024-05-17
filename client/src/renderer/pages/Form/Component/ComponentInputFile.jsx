@@ -39,8 +39,8 @@ export default function ComponentInputFile(props) {
         <div className="c-form-content">
           <div className="grid-row grid-row--02">
             <div className="c-form-item--04 w60per">
-              <input type="file" id="fileInput" className="tb-from--fileInput" onChange={handleFileChange} ref={fileInputRef} />
-              <input type="text" id="fileInputText" className="tb-from--input" value={selectedFileName} placeholder="ファイルを選択してください" disabled />
+              <input type="file" id="fileInput" className="tb-from--fileInput" aria-label={props.label} title={props.label} name={props.id} onChange={handleFileChange} ref={fileInputRef} />
+              <input type="text" id="fileInputText" className="tb-from--input" value={selectedFileName} name={props.id} placeholder="ファイルを選択してください" disabled />
             </div>
             <div className="c-form-item--04 w30per">
               <button className="group_box--button ml0" onClick={handleBtnFile}>  ファイル選択 </button>
