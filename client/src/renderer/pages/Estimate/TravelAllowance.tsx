@@ -158,7 +158,8 @@ export default function TravelAllowance(props) {
       const newRows = [...prevRows];
       newRows[index] = { ...newRows[index], [field]: value };
 
-      const newRowsWithTotal = newRows.map(row => ({ ...row, total: totalRoundtrip }));
+      const totalTaxIncluded = Number(monthlyticket) + Number(roundtrip);
+      const newRowsWithTotal = newRows.map(row => ({ ...row, total: totalTaxIncluded }));
       props.parentCallback(newRowsWithTotal); // callback props ve cha
       return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
     });
