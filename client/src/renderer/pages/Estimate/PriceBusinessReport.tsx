@@ -16,14 +16,13 @@ interface Row {
     priceCustomer: number;
     priceEat: number;
     priceOther: number;
-    totalPrice: number;
     note: string;
     totalrows: number;
     leave: number;
     calculatedPrice: number;
     finalPayment: number;
     finalTotalPrice: number;
-
+    newFinalTotalPrice: number;
 
 }
 
@@ -36,7 +35,7 @@ export default function PriceBusinessReport(props) {
     const users = JSON.parse(localStorage.getItem('users') || '{}');
 
 
-    const [rows, setRows] = useState<Row[]>([{ id: 0, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '', totalrows: 0, leave: 0, calculatedPrice: 0, finalPayment: 0, finalTotalPrice: 0, }]);
+    const [rows, setRows] = useState<Row[]>([{ id: 0, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, note: '', totalrows: 0, leave: 0, calculatedPrice: 0, finalPayment: 0, finalTotalPrice: 0, newFinalTotalPrice: 0, }]);
     const [date, setDate] = useState(new Date());
     const [selectedFileName, setSelectedFileName] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +60,8 @@ export default function PriceBusinessReport(props) {
             [type === 'start' ? 'dateStart' : 'dateEnd']: date
         }));
     };
+    console.log("inputDate", inputDate);
+
 
     const handleInputChangeAdress = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAddressDomesticForeign(event.target.value);
@@ -89,7 +90,12 @@ export default function PriceBusinessReport(props) {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
 
-            const newRowsWithTotal = newRows.map(row => ({ ...row, total: finalTotalPrice }));
+            const newCalculatedPrice = inputDate * 3000;
+            const newFinalPayment = totalSum - inputValue;
+            const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
+            const newRowsWithTotal = newRows.map(row => ({
+                ...row, total: finalTotalPrice, leave: inputDate, calculatedPrice: calculatedPrice, finalPayment: finalPayment, newFinalTotalPrice: newFinalTotalPrice,
+            }));
 
             props.parentCallback(newRowsWithTotal); // callback props ve cha
             return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
@@ -236,25 +242,14 @@ export default function PriceBusinessReport(props) {
         setFinalTotalPrice(newFinalTotalPrice);
     }, [inputDate, inputValue, totalSum]);
 
-    const updateRowsLeave = (leaveValue: number) => {
-        const updatedRows = rows.map(row => ({
-            ...row,
-            leave: leaveValue,
-            calculatedPrice: calculatedPrice,
-            finalPayment: finalPayment,
-        }));
 
-        console.log("updatedRows", updatedRows);
-
-        setRows(updatedRows);
-    };
 
     const handleInputValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = parseFloat(event.target.value.replace(/,/g, ''));
 
         const valueToSet = isNaN(newValue) ? 0 : newValue;
         setInputValue(valueToSet);
-        updateRowsLeave(valueToSet);
+
 
 
     };
@@ -262,7 +257,7 @@ export default function PriceBusinessReport(props) {
         const newValue1 = parseFloat(event.target.value.replace(/,/g, ''));
         const valueToSet = isNaN(newValue1) ? 0 : newValue1;
         setInputDate(valueToSet);
-        updateRowsLeave(valueToSet);
+
 
     };
 
@@ -272,7 +267,7 @@ export default function PriceBusinessReport(props) {
     }, [rows]); // Lắng nghe sự thay đổi của mảng rows ////  
 
     const addRow = () => {
-        const newRow = { id: rows.length, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '', totalrows: 0, leave: 0, calculatedPrice: 0, finalPayment: 0, finalTotalPrice: 0, };
+        const newRow = { id: rows.length, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, note: '', totalrows: 0, leave: 0, calculatedPrice: 0, finalPayment: 0, finalTotalPrice: 0, newFinalTotalPrice: 0 };
         setRows([...rows, newRow]);
         calculateTotalSum();
     };
