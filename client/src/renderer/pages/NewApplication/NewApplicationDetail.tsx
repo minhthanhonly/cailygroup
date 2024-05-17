@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate, BASE_URL } from "../../api/axios";
 import { isValidInputText, isValidTextArea } from "../../components/Validate/";
@@ -84,7 +84,18 @@ export default function NewApplicationDetail() {
   // Truy cập vào Form có Table
   const formRefHaveTable = useRef<HTMLFormElement>(null);
 
+<<<<<<< HEAD
   // Xử lý khi gửi Form Public
+=======
+
+
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileSelect = (file: SetStateAction<null>) => {
+    setSelectedFile(file);
+  };
+>>>>>>> e8581ad0ceeb56d6341cd9b38907961871674331
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formRef.current) {
@@ -219,6 +230,37 @@ export default function NewApplicationDetail() {
       //   	}, 2000);
       //   }
       // }
+
+      console.log("formRef.current", formRef.current);
+
+      if (formRef.current) {
+        const formElements = formRef.current.elements;
+        console.log("formElements", formElements.length);
+
+        const formData = new FormData();
+
+        for (let i = 0; i < formElements.length; i++) {
+          const element = formElements[i];
+        }
+
+        if (selectedFile) {
+          formData.append('file', selectedFile);
+        }
+
+        try {
+          const response = await axiosPrivate.post('models/upload.php', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          console.log('File uploaded successfully', response.data);
+        } catch (error) {
+          console.error('Error uploading file', error);
+        }
+      }
+
+      emitter.emit('reloadSidebar');
+
     }
   }
 
@@ -334,9 +376,14 @@ export default function NewApplicationDetail() {
                       id={item.id}
                       label={item.label}
                       required={item.required}
+<<<<<<< HEAD
                       value={item.value}
                       parentFileCallback={fileCallBackFunction}
                       parentClearFileCallback={fileClearCallBackFunction}
+=======
+                      value={item.fileInputRef}
+                      onFileSelect={item.handleFileSelect}
+>>>>>>> e8581ad0ceeb56d6341cd9b38907961871674331
                     />
                   </div>
                 )

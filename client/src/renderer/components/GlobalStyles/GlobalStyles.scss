@@ -2282,10 +2282,11 @@ textarea {
 // box-tab
 .box-tab {
   margin-top: 7rem;
+  width: 100%;
   .lst-branch {
     display: flex;
     align-items: center;
-    // border-bottom: 1px solid #707070;
+    width: 100%;
     margin-bottom: 0;
     li {
       padding: 1rem 0;
@@ -2766,31 +2767,5 @@ textarea {
   .table.tbl_custom table {
     width: 100%;
     border-collapse: collapse;
-  }
-}
-.active {
-  color: red;
-  &:hover {
-    opacity: 1;
-  }
-}
-.disible {
-  color: #000;
-}
-.box-status {
-  display: flex !important;
-  width: 100% !important;
-  .list-status {
-    display: flex;
-    padding: 0;
-    li {
-      margin-right: 1.5rem;
-      width: 3.5rem;
-      .disible:hover {
-        background-color: #038803;
-        color: #fff;
-        border-radius: 50%;
-      }
-    }
   }
 }

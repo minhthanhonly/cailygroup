@@ -121,7 +121,7 @@ export const Search = () => {
     const [selectedId, setSelectedId] = useState('');
     const [searchResults, setSearchResults] = useState<ListItem[]>([]);
 
-    const handleTableSelect = (event: { target: { value: string; }; }) => {
+    const handleTableSelect = (event) => {
         const selectedId = event.target.value;
         setSelectedId(selectedId);
 
@@ -149,7 +149,14 @@ export const Search = () => {
                 setSelectedName(jsonData.appName);
             }
         }
-    }, [listOfDataBase]); // useEffect sẽ chạy lại khi `listOfDataBase` thay đổi
+    }, [listOfDataBase]); // useEffect sẽ chạy lại khi `listOfDataBase` thay đổi 
+
+
+
+
+
+
+
     const formatNumberWithCommas = (value: number) => {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
@@ -173,6 +180,7 @@ export const Search = () => {
     };
 
 
+
     const [statusCounts, setStatusCounts] = useState<{ [key: number]: number }>({});
     const [isSearched, setIsSearched] = useState(false);
 
@@ -181,17 +189,33 @@ export const Search = () => {
         const matchedItems = listOfDataBase.filter(item => {
             // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
 
-            const selectedOptionId = selectedId;
+
+            const searchText = textValue.trim().toLowerCase();
             const jsonData = JSON.parse(item.datajson);
             const itemDate = new Date(item.createdAt);
-            const updateDate = new Date(item.createdAt);
-            // return ()
-            if (jsonData) {
+            const updateDate = new Date(item.updatedAt);
 
-                return selectedName === jsonData.appName;
-            } else {
+            const startDate = dateRange.dateStart || new Date(0); // or some default start date
+            const endDate = dateRange.dateEnd || new Date(); // or some default end date
+            const startDateUpdate = dateRange.dateStartUpdate || new Date(0); // or some default start date
+            const endDateUpdate = dateRange.dateEndUpdate || new Date(); // or some default end date
+            // return ()
+
+
+            console.log("jsonData.appName.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))", (searchText === '' || JSON.stringify(jsonData).toLowerCase().includes(searchText)));
+
+            if (jsonData) {
+                return selectedName === jsonData.appName && (searchText === '' || JSON.stringify(jsonData).toLowerCase().includes(searchText)) && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+            }
+            else if (jsonData && searchText !== '') {
+                return selectedName === jsonData.appName && (searchText === '' || JSON.stringify(jsonData).toLowerCase().includes(searchText)) && itemDate >= startDate && itemDate <= endDate && updateDate >= startDateUpdate && updateDate <= endDateUpdate;
+            }
+            else {
                 return false;
             }
+
+
+
             // return (
             //     String(item.table_id) === String(selectedOptionId) &&
             //     jsonData.appName.some((row: any) => Object.values(row).some(value => typeof value === 'string' && value.includes(searchText)))
@@ -243,15 +267,21 @@ export const Search = () => {
                             <div className="group_box--box">
                                 <div className="group_box--flex">
                                     <select className="dropdown" onChange={handleTableSelect}>
-                                        {listOfDataBase.map((data, index) => {
-                                            // Parse JSON string to get appName
-                                            const jsonData = JSON.parse(data.datajson);
-                                            return (
-                                                <option key={data.id} value={data.id}>
-                                                    {jsonData.appName}
-                                                </option>
-                                            );
-                                        })}
+                                        {(() => {
+                                            const addedNames = new Set();
+                                            return listOfDataBase.map((data) => {
+                                                const jsonData = JSON.parse(data.datajson);
+                                                if (!addedNames.has(jsonData.appName)) {
+                                                    addedNames.add(jsonData.appName);
+                                                    return (
+                                                        <option key={data.id} value={data.id}>
+                                                            {jsonData.appName}
+                                                        </option>
+                                                    );
+                                                }
+                                                return null; // Trả về null nếu tên đã tồn tại
+                                            }).filter(option => option !== null); // Lọc ra các mục null
+                                        })()}
                                     </select>
                                 </div>
                             </div>

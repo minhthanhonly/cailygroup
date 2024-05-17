@@ -83,18 +83,29 @@ const TabContent = ({ id, sendDataToParent }) => {
 
       // Send Mail
       let nameStatus = '';
-      switch(id_status){
-        case '1': nameStatus = '承認待ち'; break;
-        case '2': nameStatus ='差し戻し'; break;
-        case '3': nameStatus ='却下'; break;
-        case '4': nameStatus ='完了'; break;
-        case '5': nameStatus ='下書き'; break;
-        default: nameStatus ='取り消し'; break;
+      switch (id_status) {
+        case '1':
+          nameStatus = '承認待ち';
+          break;
+        case '2':
+          nameStatus = '差し戻し';
+          break;
+        case '3':
+          nameStatus = '却下';
+          break;
+        case '4':
+          nameStatus = '完了';
+          break;
+        case '5':
+          nameStatus = '下書き';
+          break;
+        default:
+          nameStatus = '取り消し';
+          break;
       }
 
       // const mailData = {appName: accordionItems.appName, nameStatus: nameStatus, userName: users.realname, userEmail: users.user_email};
       // const sendMail = await axiosPrivate.post('application/mail', mailData);
-
     } catch (error) {
       console.error('Error updating id_status:', error);
     }
@@ -197,14 +208,17 @@ const TabContent = ({ id, sendDataToParent }) => {
       const parsedDataJson = JSON.parse(Items.datajson);
       setUserEmailReg(parsedDataJson.userEmailReg);
 
-      const mailData = {appName: accordionItems.appName, userName: Items.owner, userEmail: parsedDataJson.userEmailReg, userCmt: users.realname, dataCmt: comment_data};
+      const mailData = {
+        appName: accordionItems.appName,
+        userName: Items.owner,
+        userEmail: parsedDataJson.userEmailReg,
+        userCmt: users.realname,
+        dataCmt: comment_data,
+      };
       console.log(mailData);
       // const sendMail = await axiosPrivate.post('application/mail', mailData);
 
       // const parsedFormJson = JSON.parse(data[0].form);
-
-
-
     } catch (error) {
       console.error('Lỗi khi thêm comment:', error);
     }
@@ -349,11 +363,11 @@ const TabContent = ({ id, sendDataToParent }) => {
   };
 
   const renderItem = (
-    statusId,
-    label,
-    isChecked,
-    handleStatusClick,
-    shouldBeActive,
+    statusId: any,
+    label: any,
+    isChecked: any,
+    handleStatusClick: any,
+    shouldBeActive: any,
   ) => {
     const isActive =
       approve.statusattrTexts === '承認待ち' ||

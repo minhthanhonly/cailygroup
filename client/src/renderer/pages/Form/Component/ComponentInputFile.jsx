@@ -31,6 +31,7 @@ export default function ComponentInputFile(props) {
     }
   };
 
+
   return (
     <div className="c-form">
       <div className="c-form-inner">
