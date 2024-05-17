@@ -106,7 +106,6 @@ export const Application = () => {
     Load();
   }, [activeTab]);
   //  tab
-
   const tabs = ['tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'tab6', 'tab7'];
   return (
     <div>
