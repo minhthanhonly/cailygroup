@@ -57,26 +57,26 @@ const TabContent = ({ id, sendDataToParent }) => {
   // Tiến hành gửi mail gồm dữ liệu gửi mail và hành động thực hiện (Comment hoặc Click thay đổi trạng thái)
   const sendMailWhenCmt = async (idStatus, cmtData, action) => {
     let nameStatus = '';
-      switch (idStatus) {
-        case '1':
-          nameStatus = '承認待ち';
-          break;
-        case '2':
-          nameStatus = '差し戻し';
-          break;
-        case '3':
-          nameStatus = '却下';
-          break;
-        case '4':
-          nameStatus = '完了';
-          break;
-        case '5':
-          nameStatus = '下書き';
-          break;
-        default:
-          nameStatus = '取り消し';
-          break;
-      }
+    switch (idStatus) {
+      case '1':
+        nameStatus = '承認待ち';
+        break;
+      case '2':
+        nameStatus = '差し戻し';
+        break;
+      case '3':
+        nameStatus = '却下';
+        break;
+      case '4':
+        nameStatus = '完了';
+        break;
+      case '5':
+        nameStatus = '下書き';
+        break;
+      default:
+        nameStatus = '取り消し';
+        break;
+    }
 
     const parsedDataJson = JSON.parse(Items.datajson);
     setUserEmailReg(parsedDataJson.userEmailReg);
@@ -90,7 +90,7 @@ const TabContent = ({ id, sendDataToParent }) => {
       action: action,
     };
     const sendMail = await axiosPrivate.post('application/mail', mailData);
-  }
+  };
 
   const handleStatusClick = async (event: any) => {
     try {
@@ -121,7 +121,7 @@ const TabContent = ({ id, sendDataToParent }) => {
 
       // Send Mail
       let comment_data = '';
-      sendMailWhenCmt(id_status, comment_data, 'change-status')
+      sendMailWhenCmt(id_status, comment_data, 'change-status');
     } catch (error) {
       console.error('Error updating id_status:', error);
     }
@@ -376,21 +376,27 @@ const TabContent = ({ id, sendDataToParent }) => {
     }
   };
 
-  const handleDeleteAccodion = async (id: any) => {
-    try {
-      // console.log('id:', id);
-      const response = await axiosPrivate.delete(
-        `application/deleteaccodion/${id}`,
-      );
-      // console.log(response.data);
-      if (response.status === 200) {
-        console.log('Xóa Thành Công');
-        Load();
-      } else {
-        console.error('Failed to delete comment:', response.statusText);
-      }
-    } catch (error) {}
-  };
+  // const handleDeleteAccodion = async (id) => {
+  //   try {
+  //     const response = await axiosPrivate.delete(
+  //       `application/deleteaccodion/${id}`,
+  //     );
+  //     if (response.status === 200) {
+  //       console.log('Xóa Thành Công');
+  //       Load(); // Gọi lại Load để cập nhật lại dữ liệu
+  //     } else {
+  //       console.error('Failed to delete comment:', response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting item: ', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (id !== null) {
+  //     Load();
+  //   }
+  // }, [id]);
 
   const renderItem = (
     statusId: any,
@@ -450,9 +456,9 @@ const TabContent = ({ id, sendDataToParent }) => {
                 </span>
                 <span
                   className="icn-item"
-                  onClick={() => {
-                    handleDeleteAccodion(Items.id);
-                  }}
+                  // onClick={() => {
+                  //   handleDeleteAccodion(Items.id);
+                  // }}
                 >
                   <img src={closeIcon} alt="close" className="fluid-image" />
                 </span>
