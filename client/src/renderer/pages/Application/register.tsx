@@ -10,9 +10,18 @@ export const Register = ({ id }) => {
       try {
         const response = await axiosPrivate.get('application/getforid/' + id);
         const data = response.data;
-
         // Phân tích JSON
         const parsedDataJson = JSON.parse(data.datajson);
+        //kiểm tra và lấy dữ liệu file nếu có
+        if (parsedDataJson.formData) {
+          parsedDataJson.formData = parsedDataJson.formData.map((item) => {
+            if (item.type && item.type.includes('file') && item.value) {
+              const [localFile, url, fileName] = item.value;
+              item.fileInfo = { localFile, url, fileName };
+            }
+            return item;
+          });
+        }
         const hasFormData =
           parsedDataJson.formData && parsedDataJson.formData.length > 0;
         const hasTableData =
@@ -105,7 +114,24 @@ export const Register = ({ id }) => {
                             {formDataItem.label}
                           </span>
                           <span className="box-register__item__content">
-                            {valueToDisplay}
+                            {formDataItem.type &&
+                            formDataItem.type.includes('file')
+                              ? formDataItem.fileInfo && (
+                                  <>
+                                    <div>
+                                      <a
+                                        href={formDataItem.fileInfo.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="file-url"
+                                      >
+                                        {formDataItem.fileInfo.url}
+                                      </a>
+                                      {formDataItem.fileInfo.fileName}
+                                    </div>
+                                  </>
+                                )
+                              : valueToDisplay}
                           </span>
                         </div>
                       </li>
@@ -212,7 +238,23 @@ export const Register = ({ id }) => {
                         {formDataItem.label}
                       </span>
                       <span className="box-register__item__content">
-                        {valueToDisplay}
+                        {formDataItem.type && formDataItem.type.includes('file')
+                          ? formDataItem.fileInfo && (
+                              <>
+                                <div>
+                                  <a
+                                    href={formDataItem.fileInfo.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="file-url"
+                                  >
+                                    {formDataItem.fileInfo.url}
+                                  </a>
+                                  {formDataItem.fileInfo.fileName}
+                                </div>
+                              </>
+                            )
+                          : valueToDisplay}
                       </span>
                     </div>
                   </li>
