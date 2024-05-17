@@ -216,7 +216,8 @@
           a {
             transition: all 0.3s ease;
             &:hover {
-              opacity: 0.7;
+              background-color: #038803;
+              color: #fff;
             }
           }
         }
@@ -293,6 +294,11 @@
       li {
         margin-right: 1.5rem;
         width: 3.5rem;
+        .active {
+          span {
+            cursor: default;
+          }
+        }
         .disible {
           color: #000;
           transition: all 0.3s ease;
