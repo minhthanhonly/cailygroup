@@ -56,6 +56,7 @@ function FormLogin(){
             "roles":  res.data.info.authority_name,
             "user_group":  res.data.info.group_name,
             "user_group_id":  res.data.info.user_group,
+            "user_email":  res.data.info.user_email,
           }
           localStorage.setItem('users', JSON.stringify(users));
           localStorage.setItem('token', res.data.info.token);

@@ -27,6 +27,7 @@ export default function NewApplicationDetail() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
 
   const fetchNewApplicationById = async () => {
     try {
@@ -63,8 +64,6 @@ export default function NewApplicationDetail() {
   const callBackFunction2 = (childData) => {
     setEstimate(childData)
   }
-
-
 
   const formRef = useRef<HTMLFormElement>(null);
   const formRefHaveTable = useRef<HTMLFormElement>(null);
@@ -153,57 +152,6 @@ export default function NewApplicationDetail() {
 
       // Chuyển đổi từ đối tượng thành mảng các nhóm nếu cần
       const formDataIsGrouped = Object.values(groupedItems);
-      // console.log(formDataIsGrouped);
-
-
-
-
-
-
-      // Lọc và gom nhóm các đối tượng
-      formData.forEach(obj => [uniqObjs, dupeObjs][+(formData.map(obj => obj.id).filter(id => id === obj.id).length > 1)].push(obj));
-
-      // Lấy giá trị của các đối tượng trùng lặp id và thêm vào mảng
-      const dupeObjs_2: any = [];
-      const uniqObjs_2: any = [];
-      if (dupeObjs.length > 1) {
-        dupeObjs.forEach(obj => [uniqObjs_2, dupeObjs_2][+(dupeObjs.map(obj => obj.label).filter(label => label === obj.label).length > 1)].push(obj));
-        let mergedValue: any = [];
-        let objHaveDifLabel: any = { label: '', value: '' };
-
-        // if (uniqObjs_2.length > 0) {
-        //   for (let i = 0; i < uniqObjs_2.length; i++) {
-        //     objHaveDifLabel = { label: uniqObjs_2[i].label, value: uniqObjs_2[i].value }
-        //   }
-        // } else {
-        //   for (let i = 0; i < dupeObjs.length; i++) {
-        //     mergedValue.push(dupeObjs[i].value);
-        //   }
-        // }
-
-        // if (dupeObjs_2.length > 1 && uniqObjs_2.length > 0) {
-        //   for (let i = 0; i < dupeObjs_2.length; i++) {
-        //     mergedValue.push(dupeObjs_2[i].value);
-        //   }
-        //   mergedValue.push(objHaveDifLabel);
-        // }
-
-        // console.log(uniqObjs);
-
-        // Gom các đối tượng trùng lặp id thành 1 đối tượng
-        // var resultObject = dupeObjs_2.reduce(function (result, currentObject) {
-        //   for (var key in currentObject) {
-        //     if (currentObject.hasOwnProperty(key)) {
-        //       result[key] = currentObject[key];
-        //     }
-        //   }
-        //   return result;
-        // }, {});
-
-        // resultObject.value = mergedValue;
-        // Kết xuất lại kết quả từ Form sau khi hợp nhất các đối tượng trùng lặp id
-        // uniqObjs.unshift(resultObject);
-      }
 
       // Tạo đối tượng JSON
       const appJSON: { [key: string]: any } = {
@@ -211,10 +159,13 @@ export default function NewApplicationDetail() {
         formData: [],
         tableData: [],
         id_status: 1,
+        userNameReg: '',
+        userEmailReg: '',
       };
       appJSON.appName = formName;
       appJSON.formData = formDataIsGrouped;
-      // (uniqObjs.length > 1) ? appJSON.formData = uniqObjs : appJSON.formData = formData;
+      appJSON.userNameReg = users.realname;
+      appJSON.userEmailReg = users.user_email;
 
       if (formRefHaveTable.current) {
         appJSON.tableData = estimate;

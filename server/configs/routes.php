@@ -103,6 +103,8 @@
     $routes['application/updatestatus'] = 'application/updatestatus';
     $routes['application/getapplicationbyidstatus/.+-(\d+)'] = 'application/getapplicationbyidstatus/$1';
     $routes['application/getallstatus'] = 'application/getallstatus';
+    // Send Mail
+    $routes['application/mail'] = 'application/mail';
 
     // Form
     $routes['form/add'] = 'form/add';
