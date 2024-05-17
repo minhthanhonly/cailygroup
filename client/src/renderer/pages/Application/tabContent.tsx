@@ -147,7 +147,7 @@ const TabContent = ({ id, sendDataToParent }) => {
       setApprove({
         approveTexts: '却下',
         approveClass: 'lbl01 lbl-red',
-        statusattrTexts: '下書き',
+        statusattrTexts: '却下',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else if (accordionItems.id_status == 4) {
@@ -161,7 +161,7 @@ const TabContent = ({ id, sendDataToParent }) => {
       setApprove({
         approveTexts: '下書き',
         approveClass: 'lbl01 lbl-brown',
-        statusattrTexts: '却下',
+        statusattrTexts: '下書き',
         statusattrClass: 'lbl01 lbc-red lbbd-red',
       });
     } else {
@@ -411,8 +411,8 @@ const TabContent = ({ id, sendDataToParent }) => {
       approve.statusattrTexts === '承認待ち' ||
       approve.statusattrTexts === '承認済み' ||
       approve.statusattrTexts === '差し戻し' ||
-      approve.statusattrTexts === '取り消し' ||
-      approve.statusattrTexts === '却下';
+      approve.statusattrTexts === '却下' ||
+      approve.statusattrTexts === '取り消し';
 
     return (
       <li key={statusId}>
