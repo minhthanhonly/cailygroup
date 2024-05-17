@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate } from "../../api/axios";
 import { isValidInputText, isValidTextArea } from "../../components/Validate/";
@@ -68,6 +68,14 @@ export default function NewApplicationDetail() {
   const formRef = useRef<HTMLFormElement>(null);
   const formRefHaveTable = useRef<HTMLFormElement>(null);
 
+
+
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileSelect = (file: SetStateAction<null>) => {
+    setSelectedFile(file);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -175,9 +183,9 @@ export default function NewApplicationDetail() {
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      // console.log(appJSON);
-      const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      console.log("res", res);
+      console.log(appJSON);
+      // const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      // console.log("res", res);
 
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
@@ -190,8 +198,38 @@ export default function NewApplicationDetail() {
       //   	}, 2000);
       //   }
       // }
+
+      console.log("formRef.current", formRef.current);
+
+      if (formRef.current) {
+        const formElements = formRef.current.elements;
+        console.log("formElements", formElements.length);
+
+        const formData = new FormData();
+
+        for (let i = 0; i < formElements.length; i++) {
+          const element = formElements[i];
+        }
+
+        if (selectedFile) {
+          formData.append('file', selectedFile);
+        }
+
+        try {
+          const response = await axiosPrivate.post('models/upload.php', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          console.log('File uploaded successfully', response.data);
+        } catch (error) {
+          console.error('Error uploading file', error);
+        }
+      }
+
+      emitter.emit('reloadSidebar');
+
     }
-    emitter.emit('reloadSidebar');
   }
 
   return (
@@ -306,7 +344,8 @@ export default function NewApplicationDetail() {
                       id={item.id}
                       label={item.label}
                       required={item.required}
-                      value={item.value}
+                      value={item.fileInputRef}
+                      onFileSelect={item.handleFileSelect}
                     />
                   </div>
                 )
