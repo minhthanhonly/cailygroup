@@ -54,36 +54,10 @@ const TabContent = ({ id, sendDataToParent }) => {
     Load();
   }, [id]);
 
-  const handleStatusClick = async (event: any) => {
-    try {
-      const id_status = event.currentTarget.getAttribute('data-id_status');
-      // kiểm tra nếu statusattrText khớp với điều kiện không được click
-      if (
-        (approve.statusattrTexts === '承認待ち' && id_status === '1') ||
-        (approve.statusattrTexts === '承認済み' && id_status === '4') ||
-        (approve.statusattrTexts === '差し戻し' && id_status === '2') ||
-        (approve.statusattrTexts === '却下' && id_status === '3') ||
-        (approve.statusattrTexts === '取り消し' && id_status === '6')
-      ) {
-        retrun;
-      }
-      const dataUpdate = { id, id_status };
-      const response = await axiosPrivate.put(
-        'application/updatestatus/',
-        dataUpdate,
-        { headers: { 'Content-Type': 'application/json' } },
-      );
-      const idStatusCurrent = response.data.info.id_status;
-      const response2 = await axiosPrivate.get(
-        'application/getapplicationbyidstatus/' + idStatusCurrent,
-        { headers: { 'Content-Type': 'application/json' } },
-      );
-      sendDataToParent(idStatusCurrent);
-      Load();
-
-      // Send Mail
-      let nameStatus = '';
-      switch (id_status) {
+  // Tiến hành gửi mail gồm dữ liệu gửi mail và hành động thực hiện (Comment hoặc Click thay đổi trạng thái)
+  const sendMailWhenCmt = async (idStatus, cmtData, action) => {
+    let nameStatus = '';
+      switch (idStatus) {
         case '1':
           nameStatus = '承認待ち';
           break;
@@ -104,8 +78,50 @@ const TabContent = ({ id, sendDataToParent }) => {
           break;
       }
 
-      // const mailData = {appName: accordionItems.appName, nameStatus: nameStatus, userName: users.realname, userEmail: users.user_email};
-      // const sendMail = await axiosPrivate.post('application/mail', mailData);
+    const parsedDataJson = JSON.parse(Items.datajson);
+    setUserEmailReg(parsedDataJson.userEmailReg);
+    const mailData = {
+      appName: accordionItems.appName,
+      nameStatus: nameStatus,
+      userNameReg: Items.owner,
+      userEmailReg: parsedDataJson.userEmailReg,
+      userCmt: users.realname,
+      dataCmt: cmtData,
+      action: action,
+    };
+    const sendMail = await axiosPrivate.post('application/mail', mailData);
+  }
+
+  const handleStatusClick = async (event: any) => {
+    try {
+      const id_status = event.currentTarget.getAttribute('data-id_status');
+      // kiểm tra nếu statusattrText khớp với điều kiện không được click
+      if (
+        (approve.statusattrTexts === '承認待ち' && id_status === '1') ||
+        (approve.statusattrTexts === '承認済み' && id_status === '4') ||
+        (approve.statusattrTexts === '差し戻し' && id_status === '2') ||
+        (approve.statusattrTexts === '却下' && id_status === '3') ||
+        (approve.statusattrTexts === '取り消し' && id_status === '6')
+      ) {
+        return;
+      }
+      const dataUpdate = { id, id_status };
+      const response = await axiosPrivate.put(
+        'application/updatestatus/',
+        dataUpdate,
+        { headers: { 'Content-Type': 'application/json' } },
+      );
+      const idStatusCurrent = response.data.info.id_status;
+      const response2 = await axiosPrivate.get(
+        'application/getapplicationbyidstatus/' + idStatusCurrent,
+        { headers: { 'Content-Type': 'application/json' } },
+      );
+      sendDataToParent(idStatusCurrent);
+      Load();
+
+      // Send Mail
+      let comment_data = '';
+      sendMailWhenCmt(id_status, comment_data, 'change-status')
     } catch (error) {
       console.error('Error updating id_status:', error);
     }
@@ -198,26 +214,16 @@ const TabContent = ({ id, sendDataToParent }) => {
         authority_id: 1,
       };
 
-      // setTextValue('');
-      // const res = await axiosPrivate.post(
-      //   'application/addcomment/',
-      //   comment_data,
-      // );
-      // getCommentForUserFirst();
+      setTextValue('');
+      const res = await axiosPrivate.post(
+        'application/addcomment/',
+        comment_data,
+      );
+      getCommentForUserFirst();
 
-      const parsedDataJson = JSON.parse(Items.datajson);
-      setUserEmailReg(parsedDataJson.userEmailReg);
-
-      const mailData = {
-        appName: accordionItems.appName,
-        userName: Items.owner,
-        userEmail: parsedDataJson.userEmailReg,
-        userCmt: users.realname,
-        dataCmt: comment_data,
-      };
-      console.log(mailData);
-      // const sendMail = await axiosPrivate.post('application/mail', mailData);
-
+      // Send mail
+      const id_status = Items.id_status;
+      sendMailWhenCmt(id_status, comment_data, 'cmt');
       // const parsedFormJson = JSON.parse(data[0].form);
     } catch (error) {
       console.error('Lỗi khi thêm comment:', error);
@@ -276,6 +282,10 @@ const TabContent = ({ id, sendDataToParent }) => {
         comment_data,
       );
       getCommentForUserSecond();
+
+      // Send mail
+      const id_status = Items.id_status;
+      sendMailWhenCmt(id_status, comment_data, 'cmt');
     } catch (error) {
       console.error('Lỗi khi thêm comment:', error);
     }
@@ -341,6 +351,10 @@ const TabContent = ({ id, sendDataToParent }) => {
         comment_data,
       );
       getCommentForUserThird();
+
+      // Send mail
+      const id_status = Items.id_status;
+      sendMailWhenCmt(id_status, comment_data, 'cmt');
     } catch (error) {
       console.error('Lỗi khi thêm comment:', error);
     }

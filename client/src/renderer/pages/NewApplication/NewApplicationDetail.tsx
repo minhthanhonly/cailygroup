@@ -27,9 +27,12 @@ export default function NewApplicationDetail() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
+<<<<<<< HEAD
+=======
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const[pfile, setPfile]= useState('');
   const fileData = new FormData();
+>>>>>>> 11635fc67c3918a4d49a487d20b4d271d2ce97ac
 
   const fetchNewApplicationById = async () => {
     try {
@@ -68,6 +71,10 @@ export default function NewApplicationDetail() {
     setEstimate(childData)
   }
 
+<<<<<<< HEAD
+
+
+=======
   // Lấy giá trị của File Upload
   const fileCallBackFunction = (childData) => {
     setPfile(childData);
@@ -79,6 +86,7 @@ export default function NewApplicationDetail() {
   }
 
   // Truy cập vào Form
+>>>>>>> 11635fc67c3918a4d49a487d20b4d271d2ce97ac
   const formRef = useRef<HTMLFormElement>(null);
 
   // Truy cập vào Form có Table
@@ -174,6 +182,57 @@ export default function NewApplicationDetail() {
 
       // Chuyển đổi từ đối tượng thành mảng các nhóm nếu cần
       const formDataIsGrouped = Object.values(groupedItems);
+      // console.log(formDataIsGrouped);
+
+
+
+
+
+
+      // Lọc và gom nhóm các đối tượng
+      formData.forEach(obj => [uniqObjs, dupeObjs][+(formData.map(obj => obj.id).filter(id => id === obj.id).length > 1)].push(obj));
+
+      // Lấy giá trị của các đối tượng trùng lặp id và thêm vào mảng
+      const dupeObjs_2: any = [];
+      const uniqObjs_2: any = [];
+      if (dupeObjs.length > 1) {
+        dupeObjs.forEach(obj => [uniqObjs_2, dupeObjs_2][+(dupeObjs.map(obj => obj.label).filter(label => label === obj.label).length > 1)].push(obj));
+        let mergedValue: any = [];
+        let objHaveDifLabel: any = { label: '', value: '' };
+
+        // if (uniqObjs_2.length > 0) {
+        //   for (let i = 0; i < uniqObjs_2.length; i++) {
+        //     objHaveDifLabel = { label: uniqObjs_2[i].label, value: uniqObjs_2[i].value }
+        //   }
+        // } else {
+        //   for (let i = 0; i < dupeObjs.length; i++) {
+        //     mergedValue.push(dupeObjs[i].value);
+        //   }
+        // }
+
+        // if (dupeObjs_2.length > 1 && uniqObjs_2.length > 0) {
+        //   for (let i = 0; i < dupeObjs_2.length; i++) {
+        //     mergedValue.push(dupeObjs_2[i].value);
+        //   }
+        //   mergedValue.push(objHaveDifLabel);
+        // }
+
+        // console.log(uniqObjs);
+
+        // Gom các đối tượng trùng lặp id thành 1 đối tượng
+        // var resultObject = dupeObjs_2.reduce(function (result, currentObject) {
+        //   for (var key in currentObject) {
+        //     if (currentObject.hasOwnProperty(key)) {
+        //       result[key] = currentObject[key];
+        //     }
+        //   }
+        //   return result;
+        // }, {});
+
+        // resultObject.value = mergedValue;
+        // Kết xuất lại kết quả từ Form sau khi hợp nhất các đối tượng trùng lặp id
+        // uniqObjs.unshift(resultObject);
+      }
 
       // Tạo đối tượng JSON
       const appJSON: { [key: string]: any } = {
@@ -181,13 +240,10 @@ export default function NewApplicationDetail() {
         formData: [],
         tableData: [],
         id_status: 1,
-        userNameReg: '',
-        userEmailReg: '',
       };
       appJSON.appName = formName;
       appJSON.formData = formDataIsGrouped;
-      appJSON.userNameReg = users.realname;
-      appJSON.userEmailReg = users.user_email;
+      // (uniqObjs.length > 1) ? appJSON.formData = uniqObjs : appJSON.formData = formData;
 
       if (formRefHaveTable.current) {
         appJSON.tableData = estimate;
@@ -207,6 +263,15 @@ export default function NewApplicationDetail() {
       }
 
       const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      if(res.data.success === 'error'){
+        setError('Bị lỗi khi đăng ký');
+      } else {
+        setMsg('Bạn đã đăng ký thành công');
+        setTimeout(() => {
+          navigate('/newapplication');
+        }, 2000);
+      }
+
 
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
@@ -219,37 +284,13 @@ export default function NewApplicationDetail() {
       //   	}, 2000);
       //   }
       // }
+<<<<<<< HEAD
 
-      console.log("formRef.current", formRef.current);
-
-      if (formRef.current) {
-        const formElements = formRef.current.elements;
-        console.log("formElements", formElements.length);
-
-        const formData = new FormData();
-
-        for (let i = 0; i < formElements.length; i++) {
-          const element = formElements[i];
-        }
-
-        if (selectedFile) {
-          formData.append('file', selectedFile);
-        }
-
-        try {
-          const response = await axiosPrivate.post('models/upload.php', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-          console.log('File uploaded successfully', response.data);
-        } catch (error) {
-          console.error('Error uploading file', error);
-        }
-      }
 
       emitter.emit('reloadSidebar');
 
+=======
+>>>>>>> 11635fc67c3918a4d49a487d20b4d271d2ce97ac
     }
   }
 

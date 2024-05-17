@@ -18,6 +18,13 @@ interface Row {
     priceOther: number;
     totalPrice: number;
     note: string;
+    totalrows: number;
+    leave: number;
+    calculatedPrice: number;
+    finalPayment: number;
+    finalTotalPrice: number;
+
+
 }
 
 
@@ -29,7 +36,7 @@ export default function PriceBusinessReport(props) {
     const users = JSON.parse(localStorage.getItem('users') || '{}');
 
 
-    const [rows, setRows] = useState<Row[]>([{ id: 0, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' }]);
+    const [rows, setRows] = useState<Row[]>([{ id: 0, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '', totalrows: 0, leave: 0, calculatedPrice: 0, finalPayment: 0, finalTotalPrice: 0, }]);
     const [date, setDate] = useState(new Date());
     const [selectedFileName, setSelectedFileName] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -76,11 +83,11 @@ export default function PriceBusinessReport(props) {
         setVisibleErrors(newVisibleErrors);
     };
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, type: string, index: number) => {
         const { value } = event.target;
         setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
-            newRows[index] = { ...newRows[index], [field]: value };
+            newRows[index] = { ...newRows[index], [type]: value };
 
             const newRowsWithTotal = newRows.map(row => ({ ...row, total: finalTotalPrice }));
 
@@ -88,24 +95,6 @@ export default function PriceBusinessReport(props) {
             return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
         });
     };
-
-
-    // const handleDomesticCheck = () => {
-    //     setDomestic(isDomestic === 1 ? 0 : 1);
-    //     if (isForeign === 1) setForeign(0); // Deselect early leave if late is selected
-    // };
-
-    // const handleForeignCheck = () => {
-    //     setForeign(isForeign === 1 ? 0 : 1);
-    //     if (isDomestic === 1) setDomestic(0); // Deselect late if early leave is selected
-    // };
-
-    // tính tổng
-    const calculatedPrice = inputDate * 3000;
-    const finalPayment = totalSum - inputValue;
-    const finalTotalPrice = finalPayment + calculatedPrice;
-
-    // thêm
 
     const updateRow = (updatedRow: Row) => {
         // Tìm chỉ mục của dòng được cập nhật trong mảng rows
@@ -130,24 +119,6 @@ export default function PriceBusinessReport(props) {
         }
         setRows(newRows);
     };
-    const handleFileChange = () => {
-        const fileInput = fileInputRef.current;
-        if (fileInput && fileInput.files && fileInput.files.length > 0) {
-            const file = fileInput.files[0]; // Lấy tệp đầu tiên từ danh sách các tệp được chọn
-            setSelectedFileName(file.name); // Lấy tên của tệp và cập nhật vào state
-        }
-    };
-    const handleBtnFile = () => {
-        // Kích hoạt sự kiện click trên input file
-        const fileInput = fileInputRef.current;
-        if (fileInput) {
-            fileInput.click();
-        }
-    };
-    const handleClearBtnFile = () => {
-        setSelectedFileName(""); // Xóa tên file
-    };
-
 
     // ham changed and reda
 
@@ -157,18 +128,17 @@ export default function PriceBusinessReport(props) {
     const [priceEat, setpriceEat] = useState<string[]>(new Array(rows.length).fill(''));
     const [priceOther, setpriceOther] = useState<string[]>(new Array(rows.length).fill(''));
 
+    const [total, setTotal] = useState(0);
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceTrain' | 'priceHouse' | 'priceCustomer' | 'priceEat' | 'priceOther') => {
         let inputValue = event.target.value;
         // Loại bỏ các ký tự không phải số
         inputValue = inputValue.replace(/[^0-9]/g, '');
-
         // Kiểm tra xem giá trị sau khi loại bỏ ký tự không phải số có là chuỗi rỗng không
         if (inputValue === '') {
             // Nếu là chuỗi rỗng, có thể gán giá trị là 0 hoặc bất kỳ giá trị mặc định khác tùy theo yêu cầu của bạn
             inputValue = '0';
         }
-
         const newValue = parseInt(inputValue, 10);
         const formattedValue = newValue.toLocaleString();
 
@@ -182,26 +152,55 @@ export default function PriceBusinessReport(props) {
         if (field === 'priceTrain') {
             const newpriceTrain = [...priceTrain];
             newpriceTrain[index] = formattedValue;
+            newRows[index].totalrows = calculateRowTotal(newRows[index]);
             setpriceTrain(newpriceTrain);
         } else if (field === 'priceHouse') {
             const newpriceHouse = [...priceHouse];
             newpriceHouse[index] = formattedValue;
+            newRows[index].totalrows = calculateRowTotal(newRows[index]);
             setpriceHouse(newpriceHouse);
         } else if (field === 'priceCustomer') {
             const newpriceCustomer = [...priceCustomer];
             newpriceCustomer[index] = formattedValue;
+            newRows[index].totalrows = calculateRowTotal(newRows[index]);
             setpriceCustomer(newpriceCustomer);
         } else if (field === 'priceEat') {
             const newpriceEat = [...priceEat];
             newpriceEat[index] = formattedValue;
+            newRows[index].totalrows = calculateRowTotal(newRows[index]);
             setpriceEat(newpriceEat);
         }
         else if (field === 'priceOther') {
             const newpriceOther = [...priceOther];
             newpriceOther[index] = formattedValue;
+            newRows[index].totalrows = calculateRowTotal(newRows[index]);
             setpriceOther(newpriceOther);
         }
 
+    };
+
+    const calculateRowTotal = (row: Row) => {
+        return row.priceTrain + row.priceHouse + row.priceCustomer + row.priceEat + row.priceOther; // Tạm thời chỉ tính tổng từ trường mealExpense
+    };
+
+    useEffect(() => {
+        calculateTotal(rows);
+    }, [rows]);
+
+    const calculateTotal = (rows: Row[]) => {
+        let sum = 0;
+        rows.forEach(row => {
+            sum += row.priceTrain + row.priceHouse + row.priceCustomer + row.priceEat + row.priceOther;
+        });
+        setTotal(sum); // Cập nhật state total
+
+        // Tính tổng của tất cả các hàng
+        let totalRowsSum = 0;
+        rows.forEach(row => {
+            totalRowsSum += row.totalrows;
+        });
+
+        return sum;
     };
 
     const calculateTotalSum = () => {
@@ -218,91 +217,56 @@ export default function PriceBusinessReport(props) {
         const totalForRow = valuesBeforeColumn5.reduce((acc, currentValue) => acc + currentValue, 0);
         return totalForRow;
     };
-
     const formatNumberWithCommas = (value: number) => {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
-    const handleInputValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const [calculatedPrice, setCalculatedPrice] = useState(0);
+    const [finalPayment, setFinalPayment] = useState(0);
+    const [finalTotalPrice, setFinalTotalPrice] = useState(0);
+
+
+    useEffect(() => {
+        updateRowsLeave(inputValue, inputDate);
+    }, [inputValue, inputDate]);
+
+    const updateRowsLeave = (value: number, dateValue: number) => {
+        const updatedRows = rows.map(row => ({
+            ...row,
+            leave: value,
+            calculatedPrice: dateValue * 3000,
+            finalPayment: totalSum - value,
+            finalTotalPrice: (totalSum - value) + (dateValue * 3000),
+        }));
+
+        setRows(updatedRows);
+    };
+
+    const handleInputChange2 = (event: React.ChangeEvent<HTMLInputElement>, inputType: 'value' | 'price') => {
         const newValue = parseFloat(event.target.value.replace(/,/g, ''));
-        setInputValue(isNaN(newValue) ? 0 : newValue);
+        const valueToSet = isNaN(newValue) ? 0 : newValue;
 
+        if (inputType === 'value') {
+            setInputValue(valueToSet);
+            updateRowsLeave(valueToSet, inputDate); // Thêm inputDate vào hàm updateRowsLeave
+        } else if (inputType === 'price') {
+            setInputDate(valueToSet);
+            updateRowsLeave(inputValue, valueToSet); // Thêm inputValue vào hàm updateRowsLeave
+        }
     };
-    const handleInputPrice = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue1 = parseFloat(event.target.value.replace(/,/g, ''));
-        setInputDate(isNaN(newValue1) ? 0 : newValue1);
-
-    };
-
-
 
 
     useEffect(() => {
         calculateTotalSum();
-    }, [rows]); // Lắng nghe sự thay đổi của mảng rows
+    }, [rows]); // Lắng nghe sự thay đổi của mảng rows ////  
 
     const addRow = () => {
-        const newRow = { id: rows.length, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '' };
+        const newRow = { id: rows.length, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, totalPrice: 0, note: '', totalrows: 0, leave: 0, calculatedPrice: 0, finalPayment: 0, finalTotalPrice: 0, };
         setRows([...rows, newRow]);
         calculateTotalSum();
     };
-
-
     return (
         <>
-            {/* <h2 className="hdglv2"><span>出張旅費清算書</span></h2>
-            <p className="txt-lead">下記の通り申請致します。</p> */}
-
-            {/* <table className='tb-from'>
-                <tbody>
-                    <tr>
-                        <th><div className='tb-from--th'>用途<span className='txt-red'>（必須）</span></div></th>
-                        <td>
-                            <div className='tb-from--td'>
-                                <div className='tb-from--checkbox'>
-                                    <label><input type="checkbox" name="checkbox" checked={isDomestic === 1} onChange={handleDomesticCheck} /><span></span>遅刻</label>
-                                </div>
-                                <div className='tb-from--checkbox'>
-                                    <label><input type="checkbox" name="checkbox" checked={isForeign === 1} onChange={handleForeignCheck} /><span></span>早退</label>
-                                </div>
-                                <input
-                                    type="text"
-                                    className='tb-from--input'
-                                    placeholder="address"
-                                    value={addressDomesticForeign}
-                                    onChange={handleInputChangeAdress}
-                                />
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><div className='tb-from--th'>期間<span className='txt-red'>（必須）</span></div></th>
-                        <td>
-                            <div className='tb-from--td'>
-                                <div className='tb-from--times'>
-                                    <span>
-                                        <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateStart, 'start')} value={dateRange.dateStart} />
-                                    </span>
-                                    <span> <DatePicker onChange={(_date) => handleLeaveDateChange(dateRange.dateEnd, 'end')} value={dateRange.dateEnd} /></span>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><div className='tb-from--th'>行先<span className='txt-red'>（必須）</span></div></th>
-                        <td>
-                            <div className='tb-from--td tb-from--file'>
-                                <input type="file" id="fileInput" className='tb-from--fileInput' onChange={handleFileChange} ref={fileInputRef} style={{ display: 'none' }} />
-                                <input type="text" id="fileInputText" className='tb-from--input' value={selectedFileName} placeholder="ファイルを選択してください" disabled
-                                />
-                                <button className="tb-from--button" onClick={handleBtnFile}>ファイル選択</button>
-                                <button className="tb-from--button tb-from--button__red" onClick={handleClearBtnFile}>キャンセル</button>
-                                <p>※全てのデータをひとつのフォルダにまとめてzipファイルに圧縮してからアップロードしてください。</p>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table> */}
 
             <div className="table tbl_custom">
                 <div className='tbl_custom--03'>
@@ -318,7 +282,6 @@ export default function PriceBusinessReport(props) {
                                 <th>その他</th>
                                 <th>合計</th>
                                 <th>備考</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -326,15 +289,12 @@ export default function PriceBusinessReport(props) {
                                 <tr key={row.id}>
                                     <td><DatePicker onChange={(_date) => handleLeaveDateChange02(_date, index)} value={date} format="YYYY/MM/DD HH:mm:ss" /> </td>
                                     <td><input type="text" value={row.project} onChange={(e) => handleInputChange(e, index, 'project')} placeholder='入力してください' /></td>
-
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceTrain[index]} onChange={(e) => handleNumberChange(e, index, 'priceTrain')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceHouse[index]} onChange={(e) => handleNumberChange(e, index, 'priceHouse')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceCustomer[index]} onChange={(e) => handleNumberChange(e, index, 'priceCustomer')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceEat[index]} onChange={(e) => handleNumberChange(e, index, 'priceEat')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={priceOther[index]} onChange={(e) => handleNumberChange(e, index, 'priceOther')} /></td>
-
                                     <td>{formatNumberWithCommas(calculateRowSum(row))}</td>
-
                                     <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
                                 </tr>
                             ))}
@@ -344,22 +304,39 @@ export default function PriceBusinessReport(props) {
                     </table>
                     <p onClick={addRow} className='plus-row'> 行を追加する</p>
                 </div>
-
                 <div className='tbl_custom--04 tbl_width tbl_right'>
                     <table>
                         <tbody>
                             <tr>
                                 <th>仮払金差引合計</th>
                                 <td>{formatNumberWithCommas(finalPayment)}</td>
-
                             </tr>
                             <tr>
                                 <th>仮払金</th>
-                                <td><input className='input_noboder numberInput' type="text" placeholder='金額を入力' value={formatNumberWithCommas(inputValue)} onChange={handleInputValueChange} /></td>
+                                <td>
+                                    <input
+                                        className='input_noboder numberInput'
+                                        type="text"
+                                        placeholder='金額を入力'
+                                        value={formatNumberWithCommas(inputValue)}
+                                        onChange={(e) => handleInputChange2(e, 'value')}
+                                    />
+                                </td>
                             </tr>
                             <tr>
                                 <th>出張手当</th>
-                                <td><span>日当 3,000 × </span><input className='input_noboder w100 numberInput' type="text" placeholder='日数を入力' value={inputDate} onChange={handleInputPrice} /><span>日</span><span className="price">{formatNumberWithCommas(calculatedPrice)}</span> </td>
+                                <td>
+                                    <span>日当 3,000 × </span>
+                                    <input
+                                        className='input_noboder w100 numberInput'
+                                        type="text"
+                                        placeholder='日数を入力'
+                                        value={inputDate}
+                                        onChange={(e) => handleInputChange2(e, 'price')}
+                                    />
+                                    <span>日</span>
+                                    <span className="price">{formatNumberWithCommas(calculatedPrice)}</span>
+                                </td>
                             </tr>
                             <tr>
                                 <th>精算額</th>
