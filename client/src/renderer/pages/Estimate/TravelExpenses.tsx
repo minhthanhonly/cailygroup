@@ -14,6 +14,7 @@ interface Row {
     alightingStation: string;
     mealExpense: number;
     note: string;
+    totalrows: number;
 }
 
 
@@ -24,7 +25,7 @@ export default function TravelExpenses(props) {
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
     const [date, setDate] = useState(new Date());
-    const [rows, setRows] = useState<Row[]>([{ date: new Date(), id: 0, route: '', boardingStation: '', alightingStation: '', mealExpense: 0, note: '' }]);
+    const [rows, setRows] = useState<Row[]>([{ date: new Date(), id: 0, route: '', boardingStation: '', alightingStation: '', mealExpense: 0, note: '', totalrows: 0 }]);
     const [total, setTotal] = useState(0);
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
 
@@ -37,7 +38,7 @@ export default function TravelExpenses(props) {
 
     // thêm
     const addRow = () => {
-        const newRow: Row = { date: new Date(), id: rows.length, route: '', boardingStation: '', alightingStation: '', mealExpense: 0, note: '' };
+        const newRow: Row = { date: new Date(), id: rows.length, route: '', boardingStation: '', alightingStation: '', mealExpense: 0, note: '', totalrows: 0 };
         setRows(prevRows => [...prevRows, newRow]);
     };
 
@@ -55,17 +56,21 @@ export default function TravelExpenses(props) {
             sum += row.mealExpense;
         });
         setTotal(sum); // Cập nhật state total
+
+        // Tính tổng của tất cả các hàng
+        let totalRowsSum = 0;
+        rows.forEach(row => {
+            totalRowsSum += row.totalrows;
+        });
+
         return sum;
     };
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
         let inputValue = event.target.value;
-        // Loại bỏ các ký tự không phải số
         inputValue = inputValue.replace(/[^0-9]/g, '');
 
-        // Kiểm tra xem giá trị sau khi loại bỏ ký tự không phải số có là chuỗi rỗng không
         if (inputValue === '') {
-            // Nếu là chuỗi rỗng, có thể gán giá trị là 0 hoặc bất kỳ giá trị mặc định khác tùy theo yêu cầu của bạn
             inputValue = '0';
         }
 
@@ -79,20 +84,25 @@ export default function TravelExpenses(props) {
         const newRows: Row[] = [...rows];
         if (newRows[index]) {
             newRows[index].mealExpense = newValue;
+            newRows[index].totalrows = calculateRowTotal(newRows[index]); // Cập nhật totalrows của hàng
             setRows(newRows);
         }
+    };
+
+
+    const calculateRowTotal = (row: Row) => {
+        return row.mealExpense; // Tạm thời chỉ tính tổng từ trường mealExpense
     };
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
         const { value } = event.target;
         setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
+
             const newTotal = calculateTotal(newRows); // Tính toán tổng mới
             // Thêm total vào mỗi đối tượng trong newRows
             const newRowsWithTotal = newRows.map(row => ({ ...row, total: newTotal }));
             props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
-
-
             return newRowsWithTotal;
         });
     };

@@ -17,6 +17,7 @@ interface Row {
     check: boolean;
     total: number;
     note: string;
+    totalrows: number;
 }
 
 export default function ExpenseReport(props) {
@@ -27,7 +28,7 @@ export default function ExpenseReport(props) {
 
     const [date, setDate] = useState(new Date());
     // const [rows, setRows] = useState([{ id: 0, values: ['', ''] }]);
-    const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: false, note: '', total: 0 }]);
+    const [rows, setRows] = useState<Row[]>([{ id: 0, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: false, note: '', total: 0, totalrows: 0 }]);
     const [total, setTotal] = useState(0);
     const [totalPriceNotTax, setTotalPriceNotTax] = useState<number>(0);
     const [totalpriceTax, setTotalPriceTax] = useState(0);
@@ -52,10 +53,12 @@ export default function ExpenseReport(props) {
         if (field === 'priceNotax') {
             const newPriceNotax = [...priceNotax];
             newPriceNotax[index] = formattedValue;
+            newRows[index].totalrows = calculateRowTotal(newRows[index]);
             setPriceNotax(newPriceNotax);
         } else if (field === 'tax') {
             const newTax = [...tax];
             newTax[index] = formattedValue;
+            newRows[index].totalrows = calculateRowTotal(newRows[index]);
             setTax(newTax);
         }
 
@@ -68,29 +71,40 @@ export default function ExpenseReport(props) {
         //props.parentCallback({ rows: newRows, total: totalTaxIncluded.toLocaleString() });
     };
 
-    const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
+    const calculateRowTotal = (row: Row) => {
+        return row.priceNotax + row.tax; // Tạm thời chỉ tính tổng từ trường mealExpense
+    };
+
+    useEffect(() => {
+        calculateTotal(rows);
+    }, [rows]);
+
+    const calculateTotal = (rows: Row[]) => {
+        let sum = 0;
+        rows.forEach(row => {
+            sum += row.priceNotax + row.tax;
+        });
+        setTotal(sum); // Cập nhật state total
+
+        // Tính tổng của tất cả các hàng
+        let totalRowsSum = 0;
+        rows.forEach(row => {
+            totalRowsSum += row.totalrows;
+        });
+
+        return sum;
+    };
+
 
     const handleLeaveDateChange = () => {
         const newRows = [...rows];
         setRows(newRows);
     };
 
-    const validateInput = (value: string, fieldName: string, index: number) => {
-        const newVisibleErrors = [...visibleErrors];
 
-        if (!value && !newVisibleErrors.includes(fieldName)) {
-            newVisibleErrors.push(fieldName); // Thêm lỗi chỉ khi giá trị rỗng và lỗi chưa được hiển thị
-        } else if (value && newVisibleErrors.includes(fieldName)) {
-            // Loại bỏ lỗi nếu giá trị không rỗng và lỗi đã được hiển thị
-            const errorIndex = newVisibleErrors.indexOf(fieldName);
-            newVisibleErrors.splice(errorIndex, 1);
-        }
-
-        setVisibleErrors(newVisibleErrors);
-    };
     // thêm
     const addRow = () => {
-        const newRow: Row = { id: rows.length, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: false, note: '', total: 0 };
+        const newRow: Row = { id: rows.length, route: '', paymentDestination: '', priceNotax: 0, tax: 0, check: false, note: '', total: 0, totalrows: 0 };
         setRows(prevRows => [...prevRows, newRow]);
     };
 

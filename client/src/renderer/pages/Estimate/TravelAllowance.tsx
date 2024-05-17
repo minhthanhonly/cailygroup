@@ -14,6 +14,8 @@ interface Row {
   monthlyticket: number;
   roundtrip: number;
   note: string;
+  totalrows: number;
+  total: number;
 }
 
 
@@ -21,19 +23,7 @@ export default function TravelAllowance(props) {
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const axiosPrivate = useAxiosPrivate();
-  const [rows, setRows] = useState([
-    {
-      date: '',
-      id: 0,
-      railwayName: '',
-      router: '',
-      startroad: '',
-      endroad: '',
-      monthlyticket: 0,
-      roundtrip: 0,
-      note: '',
-    },
-  ]);
+  const [rows, setRows] = useState([{ date: '', id: 0, railwayName: '', router: '', startroad: '', endroad: '', monthlyticket: 0, roundtrip: 0, note: '', totalrows: 0, total: 0, },]);
   const [isNew, setNew] = useState(1);
   const [isChange, setChange] = useState(0);
   const [isChangePrice, setChangePrice] = useState(0);
@@ -106,12 +96,40 @@ export default function TravelAllowance(props) {
     if (field === 'monthlyticket') {
       const newmonthlyticket = [...monthlyticket];
       newmonthlyticket[index] = formattedValue;
+      newRows[index].totalrows = calculateRowTotal(newRows[index]);
       setmonthlyticket(newmonthlyticket);
     } else if (field === 'roundtrip') {
       const newroundtrip = [...roundtrip];
       newroundtrip[index] = formattedValue;
+      newRows[index].totalrows = calculateRowTotal(newRows[index]);
       setroundtrip(newroundtrip);
     }
+  };
+
+
+  const [total, setTotal] = useState(0);
+  const calculateRowTotal = (row: Row) => {
+    return row.monthlyticket + row.roundtrip; // Tạm thời chỉ tính tổng từ trường mealExpense
+  };
+
+  useEffect(() => {
+    calculateTotal(rows);
+  }, [rows]);
+
+  const calculateTotal = (rows: Row[]) => {
+    let sum = 0;
+    rows.forEach(row => {
+      sum += row.monthlyticket + row.roundtrip;
+    });
+    setTotal(sum); // Cập nhật state total
+
+    // Tính tổng của tất cả các hàng
+    let totalRowsSum = 0;
+    rows.forEach(row => {
+      totalRowsSum += row.totalrows;
+    });
+
+    return sum;
   };
 
   const formatNumberWithCommas = (value: number) => {
@@ -162,7 +180,7 @@ export default function TravelAllowance(props) {
   );
 
   const addRow = () => {
-    const newRow = { id: rows.length, date: '', railwayName: '', router: '', startroad: '', endroad: '', monthlyticket: 0, roundtrip: 0, note: '', };
+    const newRow = { id: rows.length, date: '', railwayName: '', router: '', startroad: '', endroad: '', monthlyticket: 0, roundtrip: 0, note: '', totalrows: 0, total: 0 };
     setRows([...rows, newRow]);
   };
 
@@ -182,7 +200,7 @@ export default function TravelAllowance(props) {
           <table>
             <thead>
               <tr>
-                <th>鉄道名</th>
+                <th>鉄道名 s</th>
                 <th>路線名</th>
                 <th className="w500">利用区間</th>
                 <th>
@@ -302,32 +320,6 @@ export default function TravelAllowance(props) {
           </table>
         </div>
       </div>
-
-      {/* <div className="box-router">
-        <div className="box-router__title">承認ルート</div>
-        <div className="grid-row box-router__grid">
-          <div className="box-router__name">
-            <p>承認者: </p> <p>齋藤社長</p>
-          </div>
-          <div className="box-router__name">
-            <p>共有者: </p> <p>総務</p>
-          </div>
-        </div>
-        <div className="box-router__edit">
-          <p className="plus-row box-router__edit--content">承認ルートを編集</p>
-        </div>
-      </div>
-      <div className="wrp-button">
-        <button className="btn btn--from btn--gray" onClick={saveAsDraft}>
-          下書き保存
-        </button>
-        <button
-          className="btn btn--from btn--blue"
-          onClick={saveAsAwaitingApproval}
-        >
-          申請する
-        </button>
-      </div> */}
     </>
   );
 };
