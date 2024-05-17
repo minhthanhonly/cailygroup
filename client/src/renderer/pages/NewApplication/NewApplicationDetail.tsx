@@ -84,18 +84,7 @@ export default function NewApplicationDetail() {
   // Truy cập vào Form có Table
   const formRefHaveTable = useRef<HTMLFormElement>(null);
 
-<<<<<<< HEAD
   // Xử lý khi gửi Form Public
-=======
-
-
-
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  const handleFileSelect = (file: SetStateAction<null>) => {
-    setSelectedFile(file);
-  };
->>>>>>> e8581ad0ceeb56d6341cd9b38907961871674331
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formRef.current) {
@@ -376,14 +365,9 @@ export default function NewApplicationDetail() {
                       id={item.id}
                       label={item.label}
                       required={item.required}
-<<<<<<< HEAD
                       value={item.value}
                       parentFileCallback={fileCallBackFunction}
                       parentClearFileCallback={fileClearCallBackFunction}
-=======
-                      value={item.fileInputRef}
-                      onFileSelect={item.handleFileSelect}
->>>>>>> e8581ad0ceeb56d6341cd9b38907961871674331
                     />
                   </div>
                 )
