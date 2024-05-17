@@ -123,11 +123,9 @@ export const Register = ({ id }) => {
                                         href={formDataItem.fileInfo.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="file-url"
                                       >
-                                        {formDataItem.fileInfo.url}
+                                        {formDataItem.fileInfo.fileName}
                                       </a>
-                                      {formDataItem.fileInfo.fileName}
                                     </div>
                                   </>
                                 )
@@ -246,11 +244,9 @@ export const Register = ({ id }) => {
                                     href={formDataItem.fileInfo.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="file-url"
                                   >
-                                    {formDataItem.fileInfo.url}
+                                    {formDataItem.fileInfo.fileName}
                                   </a>
-                                  {formDataItem.fileInfo.fileName}
                                 </div>
                               </>
                             )
