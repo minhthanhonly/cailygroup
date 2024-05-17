@@ -107,6 +107,7 @@ export const Application = () => {
   }, [activeTab]);
   //  tab
 
+  const tabs = ['tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'tab6', 'tab7'];
   return (
     <div>
       <div className="grid-row grid-flex">
@@ -187,110 +188,23 @@ export const Application = () => {
           <div className="tab01 tab-content">
             <div className="list-accordion">
               <div className="list-accorditon__inner">
-                {activeTab === 'tab1' && (
-                  <div className="table_content">
-                    {Array.isArray(items) && items.length > 0 && (
-                      <div>
-                        {currentItems.map((item: any, index: any) => (
-                          <TabContent
-                            key={index}
-                            id={item.id}
-                            sendDataToParent={handleDataFromChild}
-                          />
-                        ))}
+                {tabs.map(
+                  (tab) =>
+                    activeTab === tab && (
+                      <div className="table_content" key={tab}>
+                        {Array.isArray(items) && items.length > 0 && (
+                          <div>
+                            {currentItems.map((item: any, index: any) => (
+                              <TabContent
+                                key={index}
+                                id={item.id}
+                                sendDataToParent={handleDataFromChild}
+                              />
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                )}
-                {activeTab === 'tab2' && (
-                  <div className="table_content">
-                    {Array.isArray(items) && items.length > 0 && (
-                      <div>
-                        {currentItems.map((item: any, index: any) => (
-                          <TabContent
-                            key={index}
-                            id={item.id}
-                            sendDataToParent={handleDataFromChild}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {activeTab === 'tab3' && (
-                  <div className="table_content">
-                    {Array.isArray(items) && items.length > 0 && (
-                      <div>
-                        {currentItems.map((item: any, index: any) => (
-                          <TabContent
-                            key={index}
-                            id={item.id}
-                            sendDataToParent={handleDataFromChild}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {activeTab === 'tab4' && (
-                  <div className="table_content">
-                    {Array.isArray(items) && items.length > 0 && (
-                      <div>
-                        {currentItems.map((item: any, index: any) => (
-                          <TabContent
-                            key={index}
-                            id={item.id}
-                            sendDataToParent={handleDataFromChild}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {activeTab === 'tab5' && (
-                  <div className="table_content">
-                    {Array.isArray(items) && items.length > 0 && (
-                      <div>
-                        {currentItems.map((item: any, index: any) => (
-                          <TabContent
-                            key={index}
-                            id={item.id}
-                            sendDataToParent={handleDataFromChild}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {activeTab === 'tab6' && (
-                  <div className="table_content">
-                    {Array.isArray(items) && items.length > 0 && (
-                      <div>
-                        {currentItems.map((item: any, index: any) => (
-                          <TabContent
-                            key={index}
-                            id={item.id}
-                            sendDataToParent={handleDataFromChild}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {activeTab === 'tab7' && (
-                  <div className="table_content">
-                    {Array.isArray(items) && items.length > 0 && (
-                      <div>
-                        {currentItems.map((item: any, index: any) => (
-                          <TabContent
-                            key={index}
-                            id={item.id}
-                            sendDataToParent={handleDataFromChild}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                    ),
                 )}
               </div>
             </div>
