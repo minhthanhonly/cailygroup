@@ -207,6 +207,15 @@ export default function NewApplicationDetail() {
       }
 
       const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      if(res.data.success === 'error'){
+        setError('Bị lỗi khi đăng ký');
+      } else {
+        setMsg('Bạn đã đăng ký thành công');
+        setTimeout(() => {
+          navigate('/newapplication');
+        }, 2000);
+      }
+
 
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
@@ -219,37 +228,6 @@ export default function NewApplicationDetail() {
       //   	}, 2000);
       //   }
       // }
-
-      console.log("formRef.current", formRef.current);
-
-      if (formRef.current) {
-        const formElements = formRef.current.elements;
-        console.log("formElements", formElements.length);
-
-        const formData = new FormData();
-
-        for (let i = 0; i < formElements.length; i++) {
-          const element = formElements[i];
-        }
-
-        if (selectedFile) {
-          formData.append('file', selectedFile);
-        }
-
-        try {
-          const response = await axiosPrivate.post('models/upload.php', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-          console.log('File uploaded successfully', response.data);
-        } catch (error) {
-          console.error('Error uploading file', error);
-        }
-      }
-
-      emitter.emit('reloadSidebar');
-
     }
   }
 
