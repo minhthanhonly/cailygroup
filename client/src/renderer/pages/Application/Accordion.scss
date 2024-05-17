@@ -284,6 +284,39 @@
   textarea {
     border: 1px solid #707070;
   }
+  .box-status {
+    display: flex !important;
+    width: 100% !important;
+    .list-status {
+      display: flex;
+      padding: 0;
+      li {
+        margin-right: 1.5rem;
+        width: 3.5rem;
+        .disible {
+          color: #000;
+          transition: all 0.3s ease;
+        }
+        .disible:hover {
+          span {
+            border-radius: 50%;
+            animation: grow 0.3s forwards;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+@keyframes grow {
+  0% {
+    background-color: #038803;
+    transform: scale(0.8);
+  }
+  100% {
+    background-color: #038803;
+    transform: scale(1);
+  }
 }
 .btncomment {
   background-color: var(--grey02);

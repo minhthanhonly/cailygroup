@@ -2768,29 +2768,3 @@ textarea {
     border-collapse: collapse;
   }
 }
-.active {
-  color: red;
-  &:hover {
-    opacity: 1;
-  }
-}
-.disible {
-  color: #000;
-}
-.box-status {
-  display: flex !important;
-  width: 100% !important;
-  .list-status {
-    display: flex;
-    padding: 0;
-    li {
-      margin-right: 1.5rem;
-      width: 3.5rem;
-      .disible:hover {
-        background-color: #038803;
-        color: #fff;
-        border-radius: 50%;
-      }
-    }
-  }
-}
