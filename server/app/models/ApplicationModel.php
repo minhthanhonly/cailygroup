@@ -1,4 +1,8 @@
 <?php
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\SMTP;
+    use PHPMailer\PHPMailer\Exception;
+
     class ApplicationModel{
 
         function getApplication(){
@@ -94,7 +98,7 @@
                     if (isset($current_json)) {
                         $current_json = $id_status;
                         $new_json = json_encode($current_json);
-                        $updateQuery = "UPDATE application_details SET datajson = JSON_SET(datajson, '$.id_status', $new_json), id_status = '$id_status', createdAt = NOW() WHERE id ='$id'";
+                        $updateQuery = "UPDATE application_details SET datajson = JSON_SET(datajson, '$.id_status', $new_json), id_status = '$id_status', updatedAt = NOW() WHERE id ='$id'";
                 
                         if (mysqli_query($conn, $updateQuery)) {
                             $responseData = ["message" => "Dữ liệu được cập nhật thành công"];
@@ -353,6 +357,61 @@
             }
         }
 
-    }
+        function postMail(){
+			global $conn;
+			if ($_SERVER["REQUEST_METHOD"] === "POST") {
+				$mailData = json_decode(file_get_contents("php://input"));
 
+                // -------------------------- Value Form --------------------------
+                $appName = $mailData->appName;
+                $nameStatus = $mailData->nameStatus;
+                $userName = $mailData->userName;
+                $userEmail = $mailData->userEmail;
+
+                // -------------------------- Mail Content --------------------------
+                $content = '';
+                $content .= "<div class='box_email--content'>";
+                $content .= "<p>件名：申請差し戻し：".$appName."</p>";
+                $content .= "<p>株式会社GUIS <br>".$userName."（".$userEmail."）</p>";
+                $content .= "<p>申請が差し戻しされました。<br>内容を確認し、再申請もしくは申請取り消しをしてください。</p>";
+                $content .= "<p>----------------------------------------------------------------------</p>";
+                $content .= "<p>申請者: ".$userName."</p><p>状態: ".$nameStatus."</p><p>申請の種類: ".$appName."</p>";
+                $content .= "<p>----------------------------------------------------------------------</p>";
+                $content .= "<p>以下のURLにアクセスして詳細を確認してください。</p><p>http://〇〇〇〇〇</p>";
+                $content .= "<p class='box_email--note'># 本メールはシステムより自動送信されています。<br># 本メールに返信されましても、返答できませんのでご了承ください。</p></div>";
+
+                try{
+                    //Server settings
+                    $mail = new PHPMailer(true);
+                    // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+                    $mail->isSMTP();                                            //Send using SMTP
+                    $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+                    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+                    $mail->Username   = 'tu.caily.com.vn@gmail.com';                     //SMTP username
+                    $mail->Password   = 'rnxztvdgxsoizaze';                               //SMTP password
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+                    $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+                
+                    //Recipients
+                    $mail->setFrom('caily-noreply@caily.com.vn', 'CAILY GROUP');   // Email và tên người gửi
+                    $mail->addAddress($userEmail, $userName);     //Add a recipient
+                    $mail->addReplyTo('noreply@caily.com.vn', 'Noreply');
+                
+                    //Content
+                    $mail->CharSet = "UTF-8";
+                    $mail->isHTML(true);                                  //Set email format to HTML
+                    $mail->Subject = 'Email Response To Your Application!';
+                    $mail->Body    = $content;
+                    $mail->AltBody = '';
+                
+                    /* Send Mail */ 	
+                    $mail->send();
+                    $host  = $_SERVER['HTTP_HOST'];
+                    // header("Location: http://$host/contact/complete.html");
+                } catch (Exception $e) {
+                    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                }
+			}
+		}
+    }
 ?>
