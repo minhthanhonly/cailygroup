@@ -151,20 +151,20 @@ export const Sidebar = () => {
               module
             </NavLink>
           </li>
-          <li className="nav-global__item">
+          {/* <li className="nav-global__item">
             <NavLink to="/estimate">
               <span className="icn">
                 <FontAwesomeIcon icon={faCalendarDays} />
               </span>
               新規申請
             </NavLink>
-          </li>
+          </li> */}
           <li className="nav-global__item">
             <NavLink to="/newapplication">
               <span className="icn">
                 <FontAwesomeIcon icon={faNewspaper} />
               </span>
-              New application
+              新規申請
             </NavLink>
           </li>
           <li className="nav-global__item">
@@ -175,30 +175,18 @@ export const Sidebar = () => {
               申請状況 <span className="boder_count">{countIdStatusOne}</span>
             </NavLink>
           </li>
-          {/* <li className="nav-global__item">
-            <NavLink to="/field">
-              <span className="icn">
-                <FontAwesomeIcon icon={faCalendarDays} />
-              </span>
-              Field
-            </NavLink>
-          </li> */}
-          <li className="nav-global__item">
-            <NavLink to="/form/add">
-              <span className="icn">
-                <FontAwesomeIcon icon={faFileLines} />
-              </span>
-              Add New Form
-            </NavLink>
-          </li>
-          {/* <li className="nav-global__item">
-            <NavLink to="/form/detail/2">
-              <span className="icn">
-                <FontAwesomeIcon icon={faFileLines} />
-              </span>
-              Form Detail
-            </NavLink>
-          </li> */}
+          {isAdmin || isManager ? (
+            <li className="nav-global__item">
+              <NavLink to="/form/add">
+                <span className="icn">
+                  <FontAwesomeIcon icon={faFileLines} />
+                </span>
+                Add New Form
+              </NavLink>
+            </li>
+          ) : (
+            ''
+          )}
         </ul>
       </nav>
       <div className="acount">

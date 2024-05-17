@@ -61,26 +61,10 @@
 				$appPostData = json_decode(file_get_contents("php://input"));
 
 				$userNameReg = $appPostData->userNameReg;
-				$createdAt = date('Y-m-d H:i:s');
-
-				
-				//  if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-				// 	$fileTmpPath = $_FILES['file']['tmp_name'];
-				// 	$fileName = $_FILES['file']['name'];
-				// 	$uploadFileDir = 'upload/';
-				// 	$dest_path = $uploadFileDir . $fileName;
-
-				// 	if(move_uploaded_file($fileTmpPath, $dest_path)) {
-				// 		$fileUploadSuccess = true;
-				// 	} else {
-				// 		echo json_encode(['success' => 'error', 'message' => 'Error moving uploaded file']);
-				// 		return;
-				// 	}
-				// }
 			
-				// Thêm dữ liệu vào cơ sở dữ liệu
-				$sql = "INSERT INTO application_details (datajson, owner, id_status, createdAt) 
-				VALUES ('$appJsonString', '$userNameReg', 1, NOW())";
+				//Thêm dữ liệu vào cơ sở dữ liệu
+				$sql = "INSERT INTO application_details (datajson, owner, id_status, createdAt, updatedAt) 
+				VALUES ('$appJsonString', '$userNameReg', 1, NOW(), NOW())";
 
 				$result = $conn->query($sql);
 
@@ -92,6 +76,32 @@
 					$result = "error";
 					echo json_encode(['success' => $result]);
 					return;
+				}
+			}
+		}
+
+		function postUpload(){
+			global $conn;
+			
+			if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+				if(isset($_FILES['pfile']))
+				{
+					// Nếu file upload không bị lỗi,
+					// Tức là thuộc tính error > 0
+					if ($_FILES['pfile']['error'] > 0)
+					{
+						echo 'File Upload Bị Lỗi';
+					}
+					else{
+						// Upload file
+						move_uploaded_file($_FILES['pfile']['tmp_name'], './upload/'.$_FILES['pfile']['name']);
+						echo 'File Uploaded';
+						// echo $_SERVER['HTTP_HOST'].'/caily/upload/'.$_FILES['pfile']['name'];
+					}
+				}
+				else{
+					echo 'Bạn chưa chọn file upload';
 				}
 			}
 		}

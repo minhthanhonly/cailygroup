@@ -362,22 +362,37 @@
 			if ($_SERVER["REQUEST_METHOD"] === "POST") {
 				$mailData = json_decode(file_get_contents("php://input"));
 
-                // -------------------------- Value Form --------------------------
+                // // -------------------------- Value Form --------------------------
                 $appName = $mailData->appName;
                 $nameStatus = $mailData->nameStatus;
-                $userName = $mailData->userName;
-                $userEmail = $mailData->userEmail;
+                $userNameReg = $mailData->userNameReg;
+                $userEmailReg = $mailData->userEmailReg;
+                $userCmt = $mailData->userCmt;
+                $dataCmt = $mailData->dataCmt;
+                $action = $mailData->action;
 
                 // -------------------------- Mail Content --------------------------
                 $content = '';
                 $content .= "<div class='box_email--content'>";
                 $content .= "<p>件名：申請差し戻し：".$appName."</p>";
-                $content .= "<p>株式会社GUIS <br>".$userName."（".$userEmail."）</p>";
-                $content .= "<p>申請が差し戻しされました。<br>内容を確認し、再申請もしくは申請取り消しをしてください。</p>";
-                $content .= "<p>----------------------------------------------------------------------</p>";
-                $content .= "<p>申請者: ".$userName."</p><p>状態: ".$nameStatus."</p><p>申請の種類: ".$appName."</p>";
-                $content .= "<p>----------------------------------------------------------------------</p>";
-                $content .= "<p>以下のURLにアクセスして詳細を確認してください。</p><p>http://〇〇〇〇〇</p>";
+                $content .= "<p>株式会社GUIS <br>".$userNameReg."（".$userEmailReg."）</p>";
+                if($action === 'cmt'){
+                    $content .= "<p>申請にコメントが追加されました。</p>";
+                    $content .= "<p>----------------------------------------------------------------------</p>";
+                    $content .= "<p>申請者: ".$userNameReg."</p>";
+                    $content .= "<p>申請の種類: ".$appName."</p>";
+                    $content .= "<p>コメント実施者：".$userCmt."</p>";
+                    $content .= "<p>コメント内容：".$dataCmt->note."</p>";
+                    $content .= "<p>----------------------------------------------------------------------</p>";
+                } else {
+                    $content .= "<p>申請が差し戻しされました。<br>内容を確認し、再申請もしくは申請取り消しをしてください。</p>";
+                    $content .= "<p>----------------------------------------------------------------------</p>";
+                    $content .= "<p>申請者: ".$userNameReg."</p>";
+                    $content .= "<p>状態: ".$nameStatus."</p>";
+                    $content .= "<p>申請の種類: ".$appName."</p>";
+                    $content .= "<p>----------------------------------------------------------------------</p>";
+                }
+                $content .= "<p>以下のURLにアクセスして詳細を確認してください。</p><p>http://".$_SERVER['HTTP_HOST'].'/caily/'."</p>";
                 $content .= "<p class='box_email--note'># 本メールはシステムより自動送信されています。<br># 本メールに返信されましても、返答できませんのでご了承ください。</p></div>";
 
                 try{
@@ -393,8 +408,8 @@
                     $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
                 
                     //Recipients
-                    $mail->setFrom('caily-noreply@caily.com.vn', 'CAILY GROUP');   // Email và tên người gửi
-                    $mail->addAddress($userEmail, $userName);     //Add a recipient
+                    $mail->setFrom('caily-noreply@caily.com.vn', 'CAILY GROUP - '.$appName);   // Email và tên người gửi
+                    $mail->addAddress($userEmailReg, $userNameReg);     //Add a recipient
                     $mail->addReplyTo('noreply@caily.com.vn', 'Noreply');
                 
                     //Content

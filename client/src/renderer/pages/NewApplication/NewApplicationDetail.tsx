@@ -1,6 +1,6 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { axiosPrivate } from "../../api/axios";
+import { axiosPrivate, BASE_URL } from "../../api/axios";
 import { isValidInputText, isValidTextArea } from "../../components/Validate/";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
@@ -27,6 +27,12 @@ export default function NewApplicationDetail() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
+<<<<<<< HEAD
+=======
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const[pfile, setPfile]= useState('');
+  const fileData = new FormData();
+>>>>>>> 11635fc67c3918a4d49a487d20b4d271d2ce97ac
 
   const fetchNewApplicationById = async () => {
     try {
@@ -59,35 +65,40 @@ export default function NewApplicationDetail() {
     setLabel(childData);
   }
 
+  // Lấy giá trị của thành phần trong Table
   const [estimate, setEstimate] = useState('');
   const callBackFunction2 = (childData) => {
     setEstimate(childData)
   }
 
+<<<<<<< HEAD
 
 
+=======
+  // Lấy giá trị của File Upload
+  const fileCallBackFunction = (childData) => {
+    setPfile(childData);
+  }
+
+  // Lấy giá trị của File Upload khi Remove File
+  const fileClearCallBackFunction = (childData) => {
+    setPfile(childData);
+  }
+
+  // Truy cập vào Form
+>>>>>>> 11635fc67c3918a4d49a487d20b4d271d2ce97ac
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Truy cập vào Form có Table
   const formRefHaveTable = useRef<HTMLFormElement>(null);
 
-
-
-
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  const handleFileSelect = (file: SetStateAction<null>) => {
-    setSelectedFile(file);
-  };
+  // Xử lý khi gửi Form Public
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (formRef.current) {
       const formElements = formRef.current.elements;
       const formData: string[] = [];
-      let newObj = {
-        id: '',
-        label: '',
-        value: '',
-      };
+      let newObj: any = {};
       let validInputTextErrors = false;
       let validTextAreaErrors = false;
 
@@ -134,11 +145,21 @@ export default function NewApplicationDetail() {
           }
           formData.push(newObj);
         }
+
+        if (element.type === 'file') {
+          fileData.append('pfile', pfile);
+
+          newObj = {
+            id: element.name,
+            label: element.title,
+            value: BASE_URL + 'upload/' + pfile.name,
+            type: 'file',
+          }
+          formData.push(newObj);
+        }
       }
 
-      const dupeObjs: any = [];
-      const uniqObjs: any = [];
-
+      // Gom các đối tượng cod id giống nhau vào một nhóm
       const groupedItems = formData.reduce((dataField, item) => {
         // Nếu chưa có nhóm cho id này thì tạo mảng mới
         if (!dataField[item.id]) {
@@ -232,9 +253,25 @@ export default function NewApplicationDetail() {
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
-      console.log(appJSON);
-      // const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      // console.log("res", res);
+
+      if(pfile) {
+        const resUpload = await axiosPrivate.post("newapplication/upload", fileData, {
+          headers:{'Content-Type':"multipart/form-data"},
+        });
+      } else {
+        console.error("You have not selected a file to upload");
+      }
+
+      const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      if(res.data.success === 'error'){
+        setError('Bị lỗi khi đăng ký');
+      } else {
+        setMsg('Bạn đã đăng ký thành công');
+        setTimeout(() => {
+          navigate('/newapplication');
+        }, 2000);
+      }
+
 
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
@@ -247,10 +284,13 @@ export default function NewApplicationDetail() {
       //   	}, 2000);
       //   }
       // }
+<<<<<<< HEAD
 
 
       emitter.emit('reloadSidebar');
 
+=======
+>>>>>>> 11635fc67c3918a4d49a487d20b4d271d2ce97ac
     }
   }
 
@@ -366,8 +406,9 @@ export default function NewApplicationDetail() {
                       id={item.id}
                       label={item.label}
                       required={item.required}
-                      value={item.fileInputRef}
-                      onFileSelect={item.handleFileSelect}
+                      value={item.value}
+                      parentFileCallback={fileCallBackFunction}
+                      parentClearFileCallback={fileClearCallBackFunction}
                     />
                   </div>
                 )
@@ -377,6 +418,7 @@ export default function NewApplicationDetail() {
             }
           })
         }
+        {/* <input type="file" className="form-control" onChange={(e)=>setPfile(e.target.files[0])} /> */}
       </form>
       <form ref={formRefHaveTable}>
         {

@@ -13,11 +13,12 @@ export default function ComponentInputFile(props) {
     }
   };
 
-  const handleFileChange = () => {
+  const handleFileChange = (e) => {
     const fileInput = fileInputRef.current;
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0]; // Lấy tệp đầu tiên từ danh sách các tệp được chọn
       setSelectedFileName(file.name); // Cập nhật tên tệp vào state
+      props.parentFileCallback(e.target.files[0]);
     }
   };
 
@@ -26,6 +27,7 @@ export default function ComponentInputFile(props) {
     setSelectedFileName(''); // Xóa tên tệp
     if (fileInputRef.current) {
       fileInputRef.current.value = ''; // Xóa giá trị của input file
+      props.parentClearFileCallback('');
     }
   };
 
@@ -36,12 +38,11 @@ export default function ComponentInputFile(props) {
         <label className="c-form-label">
           <span>{props.label}</span>{props.required === true ? (<span className="c-form-label--required txt-red">（必須）</span>) : null}
         </label>
-
         <div className="c-form-content">
           <div className="grid-row grid-row--02">
             <div className="c-form-item--04 w60per">
-              <input type="file" id="fileInput" className="tb-from--fileInput" aria-label={props.label} title={props.label} name={props.id} onChange={handleFileChange} ref={fileInputRef} />
-              <input type="text" id="fileInputText" className="tb-from--input" value={selectedFileName} name={props.id} placeholder="ファイルを選択してください" disabled />
+              <input type="file" id="fileInput" className="tb-from--fileInput" aria-label={props.label} title={props.label} onChange={handleFileChange} ref={fileInputRef}  />
+              <input type="text" id="fileInputText" className="tb-from--input" value={selectedFileName} placeholder="ファイルを選択してください" disabled />
             </div>
             <div className="c-form-item--04 w30per">
               <button className="group_box--button ml0" onClick={handleBtnFile}>  ファイル選択 </button>
