@@ -760,43 +760,47 @@ const TabContent = ({ id, sendDataToParent }) => {
                         </li>
                         <li className="box-status">
                           <div>
-                            <ul className="list-status">
-                              {renderItem(
-                                1,
-                                '未',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '承認待ち',
-                              )}
-                              {renderItem(
-                                4,
-                                '完',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '承認済み',
-                              )}
-                              {renderItem(
-                                2,
-                                '却',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '差し戻し',
-                              )}
-                              {renderItem(
-                                3,
-                                '下',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '却下',
-                              )}
-                              {renderItem(
-                                6,
-                                '消',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '取り消し',
-                              )}
-                            </ul>
+                            {isLeader || isAdmin || isManager ? (
+                              <ul className="list-status">
+                                {renderItem(
+                                  1,
+                                  '未',
+                                  isChecked,
+                                  handleStatusClick,
+                                  approve.statusattrTexts === '承認待ち',
+                                )}
+                                {renderItem(
+                                  4,
+                                  '完',
+                                  isChecked,
+                                  handleStatusClick,
+                                  approve.statusattrTexts === '承認済み',
+                                )}
+                                {renderItem(
+                                  2,
+                                  '却',
+                                  isChecked,
+                                  handleStatusClick,
+                                  approve.statusattrTexts === '差し戻し',
+                                )}
+                                {renderItem(
+                                  3,
+                                  '下',
+                                  isChecked,
+                                  handleStatusClick,
+                                  approve.statusattrTexts === '却下',
+                                )}
+                                {renderItem(
+                                  6,
+                                  '消',
+                                  isChecked,
+                                  handleStatusClick,
+                                  approve.statusattrTexts === '取り消し',
+                                )}
+                              </ul>
+                            ) : (
+                              <ul></ul>
+                            )}
                           </div>
                         </li>
                       </ul>
