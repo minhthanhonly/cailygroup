@@ -233,15 +233,9 @@ export const isValidNumber = (Value: any, Label: string) => {
 }
 
 
-<<<<<<< HEAD
 export const isValidCheck = ( check: boolean, Label: string ) => {
   if(check === false) {
     toast.error(Label + ERROR_JP['choose']);
-=======
-export const isValidCheck = (Value: any, Label: string) => {
-  if (!Value) {
-    toast.error(Label + " - " + ERROR_JP['choose']);
->>>>>>> 78044b51a53ac42f77db65b1fedb444e4f1022a8
     return false;
   }
   return true;
