@@ -450,14 +450,18 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                 <span className="icn-item">
                   <img src={editIcon} alt="edit" className="fluid-image" />
                 </span>
-                <span
-                  className="icn-item"
-                  onClick={(event) => {
-                    openModaldelete(Items.id);
-                  }}
-                >
-                  <img src={closeIcon} alt="close" className="fluid-image" />
-                </span>
+                {isAdmin || isManager ? (
+                  <span
+                    className="icn-item"
+                    onClick={(event) => {
+                      openModaldelete(Items.id);
+                    }}
+                  >
+                    <img src={closeIcon} alt="close" className="fluid-image" />
+                  </span>
+                ) : (
+                  <span></span>
+                )}
               </p>
             </div>
           </div>
