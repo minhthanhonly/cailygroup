@@ -58,7 +58,7 @@ type paraUser = {
 
 export const isValidUser = ({...paraUser}, olduserid: string) => {
   if(!paraUser.userid) {
-    toast.error(ERROR['require'] + useridName + "!");
+    toast.error(ERROR['require'] + useridName);
     return false;
   } else if(isZenSpace(paraUser.userid)) {
     toast.error("Giá trị nhập vào "+ useridName +" không hợp lệ.");
@@ -71,7 +71,7 @@ export const isValidUser = ({...paraUser}, olduserid: string) => {
   }
 
   if(!paraUser.userid) {
-    toast.error(ERROR['require'] + useridName + "!");
+    toast.error(ERROR['require'] + useridName);
     return false;
   } else if(isZenSpace(paraUser.userid)) {
     toast.error("Giá trị nhập vào "+ useridName +" không hợp lệ.");
@@ -79,7 +79,7 @@ export const isValidUser = ({...paraUser}, olduserid: string) => {
   }
 
   if(!paraUser.password) {
-    toast.error(ERROR['require'] + passwordName + "!");
+    toast.error(ERROR['require'] + passwordName);
     return false;
   } else if(isZenSpace(paraUser.password)) {
     toast.error("Giá trị nhập vào "+ passwordName +" không hợp lệ.");
@@ -92,17 +92,17 @@ export const isValidUser = ({...paraUser}, olduserid: string) => {
   }
 
   if(!paraUser.realname) {
-    toast.error(ERROR['require'] + realnameName + "!");
+    toast.error(ERROR['require'] + realnameName);
     return false;
   }
 
   if(!paraUser.user_group || paraUser.user_group == '-1') {
-    toast.error(ERROR['choose'] + userGroupName + "!");
+    toast.error(ERROR['choose'] + userGroupName);
     return false;
   }
 
   if(!paraUser.authority || paraUser.authority == '-1') {
-    toast.error(ERROR['choose'] + authorityName + "!");
+    toast.error(ERROR['choose'] + authorityName);
     return false;
   }
 
@@ -126,18 +126,18 @@ export const isValidUserEdit = ({...paraUser}, {...selectedValue}, password: str
   }
 
   if(!paraUser.realname) {
-    toast.error(ERROR['require'] + realnameName + "!");
+    toast.error(ERROR['require'] + realnameName);
     return false;
   }
 
   if(!selectedValue.user_group || selectedValue.user_group == '-1') {
-    toast.error(ERROR['choose'] + userGroupName + "!");
+    toast.error(ERROR['choose'] + userGroupName);
     return false;
   }
 
   if(selectedValue.authority){
     if(!selectedValue.authority || selectedValue.authority == '-1') {
-      toast.error(ERROR['choose'] + authorityName + "!");
+      toast.error(ERROR['choose'] + authorityName);
       return false;
     }
   }
@@ -154,7 +154,7 @@ type paraGroup = {
 
 export const isValidGroupEdit = ({...paraGroup}) => {
   if(!paraGroup.group_name) {
-    toast.error(ERROR['indispensable'] + "!");
+    toast.error(ERROR['indispensable']);
     return false;
   }
   return true;
@@ -178,7 +178,7 @@ type paraTimecardsholidays = {
 
 export const isValidTimecardsholidaysEdit = ({...paraTimecardsholidays}) => {
   if(!paraTimecardsholidays.name) {
-    toast.error(ERROR['obligatory'] + "!");
+    toast.error(ERROR['obligatory']);
     return false;
   }
   return true;
@@ -215,33 +215,26 @@ export const isValidForm = ({...paraForm}, reactFormData: any) => {
 
 /* =======================================================================* */
 
-export const isValidText = ( Text: string, Label: string ) => {
-  if(!Text) {
-    toast.error(Label + ERROR_JP['require'] + "!");
+export const isValidText = ( Value: string, Label: string ) => {
+  if(!Value) {
+    toast.error(Label + ERROR_JP['require']);
     return false;
   }
   return true;
 }
 
-export const isValidInputText = ( InputText: string, Label: string ) => {
-  if(!InputText) {
-    toast.error(Label + ERROR_JP['require'] + "!");
-    return false;
-  }
-  return true;
-}
-
-export const isValidTextArea = ( TextArea: string, Label: string ) => {
-  if(!TextArea) {
-    toast.error(Label + ERROR_JP['require'] + "!");
-    return false;
-  }
-  return true;
-}
-
-export const isValidNumber = ( Value: number, Label: string ) => {
+export const isValidNumber = ( Value: any, Label: string ) => {
   if(!isNumber(Value)) {
-    toast.error(Label + " - " + ERROR_JP['illegal'] + "!");
+    toast.error(Label + " - " + ERROR_JP['illegal']);
+    return false;
+  }
+  return true;
+}
+
+
+export const isValidCheck = ( Value: any, Label: string ) => {
+  if(!Value) {
+    toast.error(Label + " - " + ERROR_JP['choose']);
     return false;
   }
   return true;

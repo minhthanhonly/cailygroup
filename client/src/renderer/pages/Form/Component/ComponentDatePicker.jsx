@@ -41,7 +41,6 @@ export default function ComponentDatePicker(props){
                     name={props.id}
                     required={props.required}
                     title={option.text}
-                    data-type="null"
                   />
                 </div>
               ))
@@ -59,7 +58,7 @@ export default function ComponentDatePicker(props){
             }
             {props.days === true ?
               <div className="c-form-item ml0">
-                <input type="text" name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleChange} title="days" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" />
+                <input type="text" name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleChange} title="日間" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" />
                 <label className="c-form-label--02">日間</label>
               </div>
               : ''

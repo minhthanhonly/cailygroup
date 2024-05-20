@@ -1,4 +1,12 @@
+import { useState } from "react";
+
 export default function ComponentCheckbox(props){
+  const [selectedCheckbox, setSelectedCheckbox] = useState('');
+
+  const handleCheckboxChange = (e) => {
+    const { value } = e.target;
+    setSelectedCheckbox(value);
+  }
   return (
     <div className="c-form">
       <div className="c-form-inner">
@@ -12,7 +20,7 @@ export default function ComponentCheckbox(props){
               props.customOptions.map((option, index) => {
                 return (
                   <div className="c-form-item--03" key={index}>
-                    <label className="c-form-label--03"><input type="checkbox" className="c-form-control" value={option.text} name={props.id} title={props.label} /><span className="checkmark"></span>{option.text}</label>
+                    <label className="c-form-label--03"><input type="checkbox" className="c-form-control" value={option.text} id={props.id} name={props.id} title={props.label} onChange={handleCheckboxChange} checked={selectedCheckbox === option.text} /><span className="checkmark"></span>{option.text}</label>
                   </div>
                 )
               })
