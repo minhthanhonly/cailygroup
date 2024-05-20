@@ -29,6 +29,15 @@ function isZenSpace(str: string){
   }
 }
 
+function isNumber(int){
+	int = (int==null)? "":int;
+	if(int.match(/^[0-9]+$/)){
+		return true;
+	}else{
+		return false;
+	}
+}
+
 const useridName = "ID User";
 const passwordName = "Mật khẩu";
 const passwordConfirmName = "Mật khẩu (Xác nhận)";
@@ -206,6 +215,14 @@ export const isValidForm = ({...paraForm}, reactFormData: any) => {
 
 /* =======================================================================* */
 
+export const isValidText = ( Text: string, Label: string ) => {
+  if(!Text) {
+    toast.error(Label + ERROR_JP['require'] + "!");
+    return false;
+  }
+  return true;
+}
+
 export const isValidInputText = ( InputText: string, Label: string ) => {
   if(!InputText) {
     toast.error(Label + ERROR_JP['require'] + "!");
@@ -217,6 +234,14 @@ export const isValidInputText = ( InputText: string, Label: string ) => {
 export const isValidTextArea = ( TextArea: string, Label: string ) => {
   if(!TextArea) {
     toast.error(Label + ERROR_JP['require'] + "!");
+    return false;
+  }
+  return true;
+}
+
+export const isValidNumber = ( Value: number, Label: string ) => {
+  if(!isNumber(Value)) {
+    toast.error(Label + " - " + ERROR_JP['illegal'] + "!");
     return false;
   }
   return true;
