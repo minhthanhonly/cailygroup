@@ -33,6 +33,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const [userEmailReg, setUserEmailReg] = useState('');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleteModalid, setDeleteModalId] = useState('');
+  const [idStatus, setIdStatus] = useState<any>([]);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -55,6 +56,19 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   useEffect(() => {
     Load();
   }, [id]);
+
+  const LoadIdStatus = async () => {
+    try {
+      const response = await axiosPrivate.get('application/getallstatus');
+      const data = response.data;
+      setIdStatus(response.data);
+    } catch (error) {
+      console.log('Không tìm thấy idStatus', error);
+    }
+  };
+  useEffect(() => {
+    LoadIdStatus();
+  }, []);
 
   // Tiến hành gửi mail gồm dữ liệu gửi mail và hành động thực hiện (Comment hoặc Click thay đổi trạng thái)
   const sendMailWhenCmt = async (idStatus, cmtData, action) => {
@@ -402,12 +416,12 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
     shouldBeActive: any,
   ) => {
     const isActive =
-      approve.statusattrTexts === '承認待ち' ||
-      approve.statusattrTexts === '承認済み' ||
-      approve.statusattrTexts === '差し戻し' ||
-      approve.statusattrTexts === '却下' ||
-      approve.statusattrTexts === '取り消し';
-
+      idStatus.length > 0 &&
+      (approve.statusattrTexts === idStatus[7]?.name ||
+        approve.statusattrTexts === idStatus[6]?.name ||
+        approve.statusattrTexts === idStatus[1]?.name ||
+        approve.statusattrTexts === idStatus[2]?.name ||
+        approve.statusattrTexts === idStatus[5]?.name);
     return (
       <li key={statusId}>
         <div
@@ -426,6 +440,14 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
       </li>
     );
   };
+
+  const statusItems = [
+    { idIndex: 0, label: '未', activeIndex: 7 },
+    { idIndex: 3, label: '完', activeIndex: 6 },
+    { idIndex: 1, label: '却', activeIndex: 1 },
+    { idIndex: 2, label: '下', activeIndex: 2 },
+    { idIndex: 5, label: '消', activeIndex: 5 },
+  ];
 
   return (
     <>
@@ -760,40 +782,49 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                           <div>
                             {isLeader || isAdmin || isManager ? (
                               <ul className="list-status">
-                                {renderItem(
-                                  1,
-                                  '未',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '承認待ち',
-                                )}
-                                {renderItem(
-                                  4,
-                                  '完',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '承認済み',
-                                )}
-                                {renderItem(
-                                  2,
-                                  '却',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '差し戻し',
-                                )}
-                                {renderItem(
-                                  3,
-                                  '下',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '却下',
-                                )}
-                                {renderItem(
-                                  6,
-                                  '消',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '取り消し',
+                                {idStatus.length > 0 && (
+                                  <>
+                                    {renderItem(
+                                      idStatus[0].id,
+                                      statusItems[0].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[7].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[3].id,
+                                      statusItems[1].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[6].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[1].id,
+                                      statusItems[2].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[1].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[2].id,
+                                      statusItems[3].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[2].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[5].id,
+                                      statusItems[4].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[5].name,
+                                    )}
+                                  </>
                                 )}
                               </ul>
                             ) : (
