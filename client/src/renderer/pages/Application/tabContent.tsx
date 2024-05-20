@@ -416,12 +416,12 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
     shouldBeActive: any,
   ) => {
     const isActive =
-      approve.statusattrTexts === '承認待ち' ||
-      approve.statusattrTexts === '承認済み' ||
-      approve.statusattrTexts === '差し戻し' ||
-      approve.statusattrTexts === '却下' ||
-      approve.statusattrTexts === '取り消し';
-
+      idStatus.length > 0 &&
+      (approve.statusattrTexts === idStatus[7]?.name ||
+        approve.statusattrTexts === idStatus[6]?.name ||
+        approve.statusattrTexts === idStatus[1]?.name ||
+        approve.statusattrTexts === idStatus[2]?.name ||
+        approve.statusattrTexts === idStatus[5]?.name);
     return (
       <li key={statusId}>
         <div
