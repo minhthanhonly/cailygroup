@@ -322,24 +322,37 @@
             $conn->close();
         }
 
-        function deleteAccodion($id){
+        function deleteaccodion($id){
             global $conn;
-            $data = json_decode(file_get_contents("php://input"), true);
-            if (isset($id)) {
-                $deleteQuery = "DELETE FROM application_details WHERE id = $id";
-                // echo $deleteQuery;
-                // exit();
-                if (mysqli_query($conn, $deleteQuery)) {
-                    http_response_code(200);
-                echo json_encode(['errCode' => 0]);
-                } else {
-                    http_response_code(500);
-                echo json_encode(['errCode' => 1, 'message' => 'không thể Xóa']);
-                }
-            } else {
+
+            if (!isset($id)) {
                 http_response_code(400);
-                echo json_encode(['errCode' => 2, 'message' => 'không thể tìm thấy']);
+                echo json_encode(['errCode' => 2, 'message' => 'Không thể tìm thấy comment của người dùng']);
+                return;
             }
+        
+            $deleteQuery = "DELETE FROM application_details WHERE id = ?";
+            $stmt = $conn->prepare($deleteQuery);
+        
+            if ($stmt === false) {
+                error_log("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+                http_response_code(500);
+                echo json_encode(['errCode' => 1, 'message' => 'Lỗi chuẩn bị truy vấn']);
+                return;
+            }
+        
+            $stmt->bind_param("i", $id);
+        
+            if ($stmt->execute()) {
+                http_response_code(200);
+                echo json_encode(['errCode' => 0]);
+            } else {
+                error_log("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+                http_response_code(500);
+                echo json_encode(['errCode' => 1, 'message' => 'Không thể xóa comment']);
+            }
+        
+            $stmt->close();
             $conn->close();
         }
         

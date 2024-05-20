@@ -102,9 +102,35 @@ export const Application = () => {
     toast.success('Bạn đã cập nhật trạng thái thành công !');
     Load();
   };
+  const handleDeleteAccodion = async (id: any) => {
+    // console.log(id);
+    try {
+      const response = await axiosPrivate.delete(
+        `application/deleteaccodion/${id}`,
+      );
+      console.log(response.data);
+      if (response.status === 200) {
+        toast.success('Bạn đã xóa thành công !');
+        setActiveTab('tab2');
+      } else {
+        console.error('Failed to delete comment:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+    }
+  };
   useEffect(() => {
     Load();
   }, [activeTab]);
+
+  // const isDeleteModalOpen = async (id: any) => {
+  //   setDeleteModalId(id);
+  //   setDeleteModalOpen(true);
+  // };
+  // const closeModaldelete = () => {
+  //   setDeleteModalOpen(false);
+  // };
+
   //  tab
   const tabs = ['tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'tab6', 'tab7'];
   return (
@@ -198,6 +224,7 @@ export const Application = () => {
                                 key={index}
                                 id={item.id}
                                 sendDataToParent={handleDataFromChild}
+                                sendIdToParent={handleDeleteAccodion}
                               />
                             ))}
                           </div>
