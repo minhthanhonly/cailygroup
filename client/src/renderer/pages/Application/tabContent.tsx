@@ -33,6 +33,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const [userEmailReg, setUserEmailReg] = useState('');
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleteModalid, setDeleteModalId] = useState('');
+  const [idStatus, setIdStatus] = useState<any>([]);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -55,6 +56,19 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   useEffect(() => {
     Load();
   }, [id]);
+
+  const LoadIdStatus = async () => {
+    try {
+      const response = await axiosPrivate.get('application/getallstatus');
+      const data = response.data;
+      setIdStatus(response.data);
+    } catch (error) {
+      console.log('Không tìm thấy idStatus', error);
+    }
+  };
+  useEffect(() => {
+    LoadIdStatus();
+  }, []);
 
   // Tiến hành gửi mail gồm dữ liệu gửi mail và hành động thực hiện (Comment hoặc Click thay đổi trạng thái)
   const sendMailWhenCmt = async (idStatus, cmtData, action) => {
@@ -760,40 +774,49 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                           <div>
                             {isLeader || isAdmin || isManager ? (
                               <ul className="list-status">
-                                {renderItem(
-                                  1,
-                                  '未',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '承認待ち',
-                                )}
-                                {renderItem(
-                                  4,
-                                  '完',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '承認済み',
-                                )}
-                                {renderItem(
-                                  2,
-                                  '却',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '差し戻し',
-                                )}
-                                {renderItem(
-                                  3,
-                                  '下',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '却下',
-                                )}
-                                {renderItem(
-                                  6,
-                                  '消',
-                                  isChecked,
-                                  handleStatusClick,
-                                  approve.statusattrTexts === '取り消し',
+                                {idStatus.length > 0 && (
+                                  <>
+                                    {renderItem(
+                                      idStatus[0].id,
+                                      '未',
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[7].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[3].id,
+                                      '完',
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[6].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[1].id,
+                                      '却',
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[1].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[2].id,
+                                      '下',
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[2].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[5].id,
+                                      '消',
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[5].name,
+                                    )}
+                                  </>
                                 )}
                               </ul>
                             ) : (
