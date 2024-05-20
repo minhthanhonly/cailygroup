@@ -6,8 +6,9 @@ import { Register } from './register';
 import { UserRole } from '../../components/UserRole';
 import { emitter } from '../../layouts/components/Sidebar/index';
 import './Accordion.scss';
+import Modaldelete from '../../components/Modal/Modaldelete';
 
-const TabContent = ({ id, sendDataToParent }) => {
+const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
@@ -30,6 +31,9 @@ const TabContent = ({ id, sendDataToParent }) => {
     statusattrClass: '',
   });
   const [userEmailReg, setUserEmailReg] = useState('');
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isDeleteModalid, setDeleteModalId] = useState('');
+  const [idStatus, setIdStatus] = useState<any>([]);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -46,13 +50,25 @@ const TabContent = ({ id, sendDataToParent }) => {
       };
       setAccordionItems(itemWithStatus);
     } catch (error) {
-      console.error('Error fetching data: ', error);
+      //console.error('Error fetching data: ', error);
     }
   };
-
   useEffect(() => {
     Load();
   }, [id]);
+
+  const LoadIdStatus = async () => {
+    try {
+      const response = await axiosPrivate.get('application/getallstatus');
+      const data = response.data;
+      setIdStatus(response.data);
+    } catch (error) {
+      console.log('Không tìm thấy idStatus', error);
+    }
+  };
+  useEffect(() => {
+    LoadIdStatus();
+  }, []);
 
   // Tiến hành gửi mail gồm dữ liệu gửi mail và hành động thực hiện (Comment hoặc Click thay đổi trạng thái)
   const sendMailWhenCmt = async (idStatus, cmtData, action) => {
@@ -90,6 +106,22 @@ const TabContent = ({ id, sendDataToParent }) => {
       action: action,
     };
     const sendMail = await axiosPrivate.post('application/mail', mailData);
+  };
+
+  const handleToGetId = async (id: any) => {
+    try {
+      sendIdToParent(id);
+      closeModaldelete();
+    } catch (error) {
+      console.log('Không lấy được id:', error);
+    }
+  };
+  const openModaldelete = async (id: any) => {
+    setDeleteModalId(id);
+    setDeleteModalOpen(true);
+  };
+  const closeModaldelete = () => {
+    setDeleteModalOpen(false);
   };
 
   const handleStatusClick = async (event: any) => {
@@ -376,30 +408,6 @@ const TabContent = ({ id, sendDataToParent }) => {
     }
   };
 
-  // const handleDeleteAccodion = async (id) => {
-  //   try {
-  //     const response = await axiosPrivate.delete(
-  //       `application/deleteaccodion/${id}`,
-  //     );
-  //     if (response.status === 200) {
-  //       console.log('Xóa Thành Công');
-  //       Load(); // Gọi lại Load để cập nhật lại dữ liệu
-  //     } else {
-  //       console.error('Failed to delete comment:', response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error deleting item: ', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (id !== null) {
-  //     Load();
-  //   }
-  // }, [id]);
-
-  // console.log("Hello");
-
   const renderItem = (
     statusId: any,
     label: any,
@@ -408,12 +416,12 @@ const TabContent = ({ id, sendDataToParent }) => {
     shouldBeActive: any,
   ) => {
     const isActive =
-      approve.statusattrTexts === '承認待ち' ||
-      approve.statusattrTexts === '承認済み' ||
-      approve.statusattrTexts === '差し戻し' ||
-      approve.statusattrTexts === '却下' ||
-      approve.statusattrTexts === '取り消し';
-
+      idStatus.length > 0 &&
+      (approve.statusattrTexts === idStatus[7]?.name ||
+        approve.statusattrTexts === idStatus[6]?.name ||
+        approve.statusattrTexts === idStatus[1]?.name ||
+        approve.statusattrTexts === idStatus[2]?.name ||
+        approve.statusattrTexts === idStatus[5]?.name);
     return (
       <li key={statusId}>
         <div
@@ -432,6 +440,14 @@ const TabContent = ({ id, sendDataToParent }) => {
       </li>
     );
   };
+
+  const statusItems = [
+    { idIndex: 0, label: '未', activeIndex: 7 },
+    { idIndex: 3, label: '完', activeIndex: 6 },
+    { idIndex: 1, label: '却', activeIndex: 1 },
+    { idIndex: 2, label: '下', activeIndex: 2 },
+    { idIndex: 5, label: '消', activeIndex: 5 },
+  ];
 
   return (
     <>
@@ -456,14 +472,18 @@ const TabContent = ({ id, sendDataToParent }) => {
                 <span className="icn-item">
                   <img src={editIcon} alt="edit" className="fluid-image" />
                 </span>
-                <span
-                  className="icn-item"
-                  // onClick={() => {
-                  //   handleDeleteAccodion(Items.id);
-                  // }}
-                >
-                  <img src={closeIcon} alt="close" className="fluid-image" />
-                </span>
+                {isAdmin || isManager ? (
+                  <span
+                    className="icn-item"
+                    onClick={(event) => {
+                      openModaldelete(Items.id);
+                    }}
+                  >
+                    <img src={closeIcon} alt="close" className="fluid-image" />
+                  </span>
+                ) : (
+                  <span></span>
+                )}
               </p>
             </div>
           </div>
@@ -760,43 +780,56 @@ const TabContent = ({ id, sendDataToParent }) => {
                         </li>
                         <li className="box-status">
                           <div>
-                            <ul className="list-status">
-                              {renderItem(
-                                1,
-                                '未',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '承認待ち',
-                              )}
-                              {renderItem(
-                                4,
-                                '完',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '承認済み',
-                              )}
-                              {renderItem(
-                                2,
-                                '却',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '差し戻し',
-                              )}
-                              {renderItem(
-                                3,
-                                '下',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '却下',
-                              )}
-                              {renderItem(
-                                6,
-                                '消',
-                                isChecked,
-                                handleStatusClick,
-                                approve.statusattrTexts === '取り消し',
-                              )}
-                            </ul>
+                            {isLeader || isAdmin || isManager ? (
+                              <ul className="list-status">
+                                {idStatus.length > 0 && (
+                                  <>
+                                    {renderItem(
+                                      idStatus[0].id,
+                                      statusItems[0].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[7].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[3].id,
+                                      statusItems[1].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[6].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[1].id,
+                                      statusItems[2].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[1].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[2].id,
+                                      statusItems[3].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[2].name,
+                                    )}
+                                    {renderItem(
+                                      idStatus[5].id,
+                                      statusItems[4].label,
+                                      isChecked,
+                                      handleStatusClick,
+                                      approve.statusattrTexts ===
+                                        idStatus[5].name,
+                                    )}
+                                  </>
+                                )}
+                              </ul>
+                            ) : (
+                              <ul></ul>
+                            )}
                           </div>
                         </li>
                       </ul>
@@ -808,6 +841,20 @@ const TabContent = ({ id, sendDataToParent }) => {
           </div>
         </div>
       </div>
+      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        <h2>Bạn có chắc chắn muốn xóa không?</h2>
+        <div className="wrp-button">
+          <button
+            className="btn btn--green"
+            onClick={(event) => sendIdToParent(isDeleteModalid, event)}
+          >
+            Đồng ý
+          </button>
+          <button className="btn btn--orange" onClick={closeModaldelete}>
+            Quay lại
+          </button>
+        </div>
+      </Modaldelete>
     </>
   );
 };

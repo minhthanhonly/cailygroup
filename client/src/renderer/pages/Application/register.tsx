@@ -50,7 +50,7 @@ export const Register = ({ id }) => {
           //trường hợp : tableData không rỗng
           setAccordionItems(parsedDataJson);
         } else {
-          console.log('Cả formData và tableData đều rỗng');
+          //console.log('Cả formData và tableData đều rỗng');
         }
       } catch (error) {
         console.error('Error fetching data: ', error);
