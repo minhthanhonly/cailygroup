@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate, BASE_URL } from "../../api/axios";
-import { isValidInputText, isValidTextArea } from "../../components/Validate/";
+import { isValidInputText, isValidText, isValidTextArea } from "../../components/Validate/";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentInputText from "../Form/Component/ComponentInputText";
@@ -98,11 +98,13 @@ export default function NewApplicationDetail() {
       for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i] as HTMLInputElement;
 
+        console.log(element);
+
         //Bắt lỗi Validate
-        if (element.type === 'text' && element.required) {
-          validInputTextErrors = isValidInputText(element.value, element.title);
-        } else if (element.type === 'textarea' && element.required) {
-          validTextAreaErrors = isValidTextArea(element.value, element.title);
+        if (element.required) {
+          validInputTextErrors = isValidText(element.value, element.title);
+
+          // Table
         }
 
         // Lấy các thuộc tính của đối tượng
@@ -207,20 +209,18 @@ export default function NewApplicationDetail() {
         const resUpload = await axiosPrivate.post("newapplication/upload", fileData, {
           headers:{'Content-Type':"multipart/form-data"},
         });
-      } else {
-        console.error("You have not selected a file to upload");
       }
 
-      const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      if(res.data.success === 'error'){
-        setError('Bị lỗi khi đăng ký');
-      } else {
-        setMsg('Bạn đã đăng ký thành công');
-        setTimeout(() => {
-          navigate('/newapplication');
-        }, 2000);
-        emitter.emit('reloadSidebar');
-      }
+      // const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      // if(res.data.success === 'error'){
+      //   setError('Bị lỗi khi đăng ký');
+      // } else {
+      //   setMsg('Bạn đã đăng ký thành công');
+      //   setTimeout(() => {
+      //     navigate('/newapplication');
+      //   }, 2000);
+      //   emitter.emit('reloadSidebar');
+      // }
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
       //   if(res.data.success === 'error'){
