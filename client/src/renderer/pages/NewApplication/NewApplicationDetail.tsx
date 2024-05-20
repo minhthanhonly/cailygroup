@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate, BASE_URL } from "../../api/axios";
-import { isValidCheck, isValidNumber, isValidText } from "../../components/Validate/";
+import { isValidNumber, isValidText, isValidtextTable } from "../../components/Validate/";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentInputText from "../Form/Component/ComponentInputText";
@@ -28,7 +28,7 @@ export default function NewApplicationDetail() {
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  const [pfile, setPfile]= useState('');
+  const [pfile, setPfile] = useState('');
   const fileData = new FormData();
 
   const fetchNewApplicationById = async () => {
@@ -102,7 +102,7 @@ export default function NewApplicationDetail() {
         if (element.required) {
           validInputTextErrors = isValidText(element.value, element.title);
           if(element.type === "checkbox" && element.checked !== true) {
-            console.log(element.);
+
 
           }
 
@@ -201,13 +201,29 @@ export default function NewApplicationDetail() {
       appJSON.userEmailReg = users.user_email;
 
       const currentStatus = e.currentTarget.getAttribute('data-status');
-      if(currentStatus === "draft") {
+      if (currentStatus === "draft") {
         appJSON.id_status = 5;
       }
 
       if (formRefHaveTable.current) {
         //Lấy giá trị của Table
         appJSON.tableData = estimate;
+
+        //Bắt lỗi Validate các thành phần trong Table
+        const formElementsInTable = formRefHaveTable.current.elements;
+
+
+
+        // Lấy tất cả các đối tượng trong Form
+        // Lấy tất cả các đối tượng trong Form
+        for (let i = 0; i < formElementsInTable.length; i++) {
+          const element = formElementsInTable[i] as HTMLInputElement;
+
+          if (element.value === "") {
+            validInputTextErrors = isValidtextTable(element.value, element.title);
+            return;
+          }
+        }
       } else {
         appJSON.tableData = [];
       }
@@ -215,9 +231,9 @@ export default function NewApplicationDetail() {
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
 
-      if(pfile) {
+      if (pfile) {
         const resUpload = await axiosPrivate.post("newapplication/upload", fileData, {
-          headers:{'Content-Type':"multipart/form-data"},
+          headers: { 'Content-Type': "multipart/form-data" },
         });
       }
 
