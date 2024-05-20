@@ -6,8 +6,9 @@ import { Register } from './register';
 import { UserRole } from '../../components/UserRole';
 import { emitter } from '../../layouts/components/Sidebar/index';
 import './Accordion.scss';
+import Modaldelete from '../../components/Modal/Modaldelete';
 
-const TabContent = ({ id, sendDataToParent }) => {
+const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
@@ -30,6 +31,8 @@ const TabContent = ({ id, sendDataToParent }) => {
     statusattrClass: '',
   });
   const [userEmailReg, setUserEmailReg] = useState('');
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isDeleteModalid, setDeleteModalId] = useState('');
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -46,10 +49,9 @@ const TabContent = ({ id, sendDataToParent }) => {
       };
       setAccordionItems(itemWithStatus);
     } catch (error) {
-      console.error('Error fetching data: ', error);
+      //console.error('Error fetching data: ', error);
     }
   };
-
   useEffect(() => {
     Load();
   }, [id]);
@@ -90,6 +92,22 @@ const TabContent = ({ id, sendDataToParent }) => {
       action: action,
     };
     const sendMail = await axiosPrivate.post('application/mail', mailData);
+  };
+
+  const handleToGetId = async (id: any) => {
+    try {
+      sendIdToParent(id);
+      closeModaldelete();
+    } catch (error) {
+      console.log('Không lấy được id:', error);
+    }
+  };
+  const openModaldelete = async (id: any) => {
+    setDeleteModalId(id);
+    setDeleteModalOpen(true);
+  };
+  const closeModaldelete = () => {
+    setDeleteModalOpen(false);
   };
 
   const handleStatusClick = async (event: any) => {
@@ -376,30 +394,6 @@ const TabContent = ({ id, sendDataToParent }) => {
     }
   };
 
-  // const handleDeleteAccodion = async (id) => {
-  //   try {
-  //     const response = await axiosPrivate.delete(
-  //       `application/deleteaccodion/${id}`,
-  //     );
-  //     if (response.status === 200) {
-  //       console.log('Xóa Thành Công');
-  //       Load(); // Gọi lại Load để cập nhật lại dữ liệu
-  //     } else {
-  //       console.error('Failed to delete comment:', response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error deleting item: ', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (id !== null) {
-  //     Load();
-  //   }
-  // }, [id]);
-
-  // console.log("Hello");
-
   const renderItem = (
     statusId: any,
     label: any,
@@ -456,14 +450,18 @@ const TabContent = ({ id, sendDataToParent }) => {
                 <span className="icn-item">
                   <img src={editIcon} alt="edit" className="fluid-image" />
                 </span>
-                <span
-                  className="icn-item"
-                  // onClick={() => {
-                  //   handleDeleteAccodion(Items.id);
-                  // }}
-                >
-                  <img src={closeIcon} alt="close" className="fluid-image" />
-                </span>
+                {isAdmin || isManager ? (
+                  <span
+                    className="icn-item"
+                    onClick={(event) => {
+                      openModaldelete(Items.id);
+                    }}
+                  >
+                    <img src={closeIcon} alt="close" className="fluid-image" />
+                  </span>
+                ) : (
+                  <span></span>
+                )}
               </p>
             </div>
           </div>
@@ -812,6 +810,20 @@ const TabContent = ({ id, sendDataToParent }) => {
           </div>
         </div>
       </div>
+      <Modaldelete isOpen={isDeleteModalOpen} onRequestClose={closeModaldelete}>
+        <h2>Bạn có chắc chắn muốn xóa không?</h2>
+        <div className="wrp-button">
+          <button
+            className="btn btn--green"
+            onClick={(event) => sendIdToParent(isDeleteModalid, event)}
+          >
+            Đồng ý
+          </button>
+          <button className="btn btn--orange" onClick={closeModaldelete}>
+            Quay lại
+          </button>
+        </div>
+      </Modaldelete>
     </>
   );
 };
