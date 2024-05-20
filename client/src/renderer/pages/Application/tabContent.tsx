@@ -441,6 +441,14 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
     );
   };
 
+  const statusItems = [
+    { idIndex: 0, label: '未', activeIndex: 7 },
+    { idIndex: 3, label: '完', activeIndex: 6 },
+    { idIndex: 1, label: '却', activeIndex: 1 },
+    { idIndex: 2, label: '下', activeIndex: 2 },
+    { idIndex: 5, label: '消', activeIndex: 5 },
+  ];
+
   return (
     <>
       <div className="list-accordion__parent">
@@ -778,7 +786,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                   <>
                                     {renderItem(
                                       idStatus[0].id,
-                                      '未',
+                                      statusItems[0].label,
                                       isChecked,
                                       handleStatusClick,
                                       approve.statusattrTexts ===
@@ -786,7 +794,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                     )}
                                     {renderItem(
                                       idStatus[3].id,
-                                      '完',
+                                      statusItems[1].label,
                                       isChecked,
                                       handleStatusClick,
                                       approve.statusattrTexts ===
@@ -794,7 +802,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                     )}
                                     {renderItem(
                                       idStatus[1].id,
-                                      '却',
+                                      statusItems[2].label,
                                       isChecked,
                                       handleStatusClick,
                                       approve.statusattrTexts ===
@@ -802,7 +810,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                     )}
                                     {renderItem(
                                       idStatus[2].id,
-                                      '下',
+                                      statusItems[3].label,
                                       isChecked,
                                       handleStatusClick,
                                       approve.statusattrTexts ===
@@ -810,7 +818,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                     )}
                                     {renderItem(
                                       idStatus[5].id,
-                                      '消',
+                                      statusItems[4].label,
                                       isChecked,
                                       handleStatusClick,
                                       approve.statusattrTexts ===
