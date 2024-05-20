@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate, BASE_URL } from "../../api/axios";
-import { isValidNumber, isValidText } from "../../components/Validate/";
+import { isValidNumber, isValidText, isValidtextTable } from "../../components/Validate/";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentInputText from "../Form/Component/ComponentInputText";
@@ -28,7 +28,7 @@ export default function NewApplicationDetail() {
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  const [pfile, setPfile]= useState('');
+  const [pfile, setPfile] = useState('');
   const fileData = new FormData();
 
   const fetchNewApplicationById = async () => {
@@ -105,7 +105,7 @@ export default function NewApplicationDetail() {
           validInputTextErrors = isValidText(element.value, element.title);
 
           const dType = element.getAttribute('data-type');
-          if(dType === "is-Number" && element.value!=="") {
+          if (dType === "is-Number" && element.value !== "") {
             isValidNumber(element.value, element.title);
           }
 
@@ -197,7 +197,7 @@ export default function NewApplicationDetail() {
       appJSON.userEmailReg = users.user_email;
 
       const currentStatus = e.currentTarget.getAttribute('data-status');
-      if(currentStatus === "draft") {
+      if (currentStatus === "draft") {
         appJSON.id_status = 5;
       }
 
@@ -206,12 +206,19 @@ export default function NewApplicationDetail() {
         appJSON.tableData = estimate;
 
         //Bắt lỗi Validate các thành phần trong Table
-        const formElementsInTable = formRef.current.elements;
+        const formElementsInTable = formRefHaveTable.current.elements;
 
-      // Lấy tất cả các đối tượng trong Form
+
+
+        // Lấy tất cả các đối tượng trong Form
+        // Lấy tất cả các đối tượng trong Form
         for (let i = 0; i < formElementsInTable.length; i++) {
-          const element = formElements[i] as HTMLInputElement;
-          console.log(element);
+          const element = formElementsInTable[i] as HTMLInputElement;
+
+          if (element.value === "") {
+            validInputTextErrors = isValidtextTable(element.value, element.title);
+            return;
+          }
         }
       } else {
         appJSON.tableData = [];
@@ -220,22 +227,25 @@ export default function NewApplicationDetail() {
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
 
-      if(pfile) {
+      if (pfile) {
         const resUpload = await axiosPrivate.post("newapplication/upload", fileData, {
-          headers:{'Content-Type':"multipart/form-data"},
+          headers: { 'Content-Type': "multipart/form-data" },
         });
       }
 
-      // const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      // if(res.data.success === 'error'){
-      //   setError('Bị lỗi khi đăng ký');
-      // } else {
-      //   setMsg('Bạn đã đăng ký thành công');
-      //   setTimeout(() => {
-      //     navigate('/newapplication');
-      //   }, 2000);
-      //   emitter.emit('reloadSidebar');
-      // }
+      const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      if (res.data.success === 'error') {
+        setError('Bị lỗi khi đăng ký');
+      } else {
+        setMsg('Bạn đã đăng ký thành công');
+        setTimeout(() => {
+          navigate('/newapplication');
+        }, 2000);
+        emitter.emit('reloadSidebar');
+      }
+
+
+
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
       //   if(res.data.success === 'error'){
