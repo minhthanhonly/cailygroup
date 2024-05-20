@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate, BASE_URL } from "../../api/axios";
-import { isValidNumber, isValidText } from "../../components/Validate/";
+import { isValidCheck, isValidNumber, isValidText } from "../../components/Validate/";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentInputText from "../Form/Component/ComponentInputText";
@@ -94,8 +94,6 @@ export default function NewApplicationDetail() {
       let validInputTextErrors = false;
       let validTextAreaErrors = false;
 
-
-
       // Lấy tất cả các đối tượng trong Form
       for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i] as HTMLInputElement;
@@ -103,9 +101,15 @@ export default function NewApplicationDetail() {
         //Bắt lỗi Validate
         if (element.required) {
           validInputTextErrors = isValidText(element.value, element.title);
+          if(element.type === "checkbox" && element.checked !== true) {
+            console.log(element.);
+
+          }
+
+
 
           const dType = element.getAttribute('data-type');
-          if(dType === "is-Number" && element.value!=="") {
+          if(dType === "is-Number" && element.value !== "") {
             isValidNumber(element.value, element.title);
           }
 
@@ -204,15 +208,6 @@ export default function NewApplicationDetail() {
       if (formRefHaveTable.current) {
         //Lấy giá trị của Table
         appJSON.tableData = estimate;
-
-        //Bắt lỗi Validate các thành phần trong Table
-        const formElementsInTable = formRef.current.elements;
-
-      // Lấy tất cả các đối tượng trong Form
-        for (let i = 0; i < formElementsInTable.length; i++) {
-          const element = formElements[i] as HTMLInputElement;
-          console.log(element);
-        }
       } else {
         appJSON.tableData = [];
       }
@@ -227,15 +222,6 @@ export default function NewApplicationDetail() {
       }
 
       // const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      // if(res.data.success === 'error'){
-      //   setError('Bị lỗi khi đăng ký');
-      // } else {
-      //   setMsg('Bạn đã đăng ký thành công');
-      //   setTimeout(() => {
-      //     navigate('/newapplication');
-      //   }, 2000);
-      //   emitter.emit('reloadSidebar');
-      // }
       // if(validInputTextErrors === true && validTextAreaErrors === true){
       //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
       //   if(res.data.success === 'error'){

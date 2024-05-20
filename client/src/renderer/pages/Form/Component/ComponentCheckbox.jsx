@@ -20,7 +20,7 @@ export default function ComponentCheckbox(props){
               props.customOptions.map((option, index) => {
                 return (
                   <div className="c-form-item--03" key={index}>
-                    <label className="c-form-label--03"><input type="checkbox" className="c-form-control" value={option.text} id={props.id} name={props.id} title={props.label} onChange={handleCheckboxChange} checked={selectedCheckbox === option.text} /><span className="checkmark"></span>{option.text}</label>
+                    <label className="c-form-label--03"><input type="checkbox" className="c-form-control" value={option.text} id={props.id} name={props.id} title={props.label} onChange={handleCheckboxChange} checked={(selectedCheckbox === option.text) ? true : false} required={props.required} /><span className="checkmark"></span>{option.text}</label>
                   </div>
                 )
               })

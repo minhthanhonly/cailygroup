@@ -232,9 +232,9 @@ export const isValidNumber = ( Value: any, Label: string ) => {
 }
 
 
-export const isValidCheck = ( Value: any, Label: string ) => {
-  if(!Value) {
-    toast.error(Label + " - " + ERROR_JP['choose']);
+export const isValidCheck = ( check: boolean, Label: string ) => {
+  if(check === false) {
+    toast.error(Label + ERROR_JP['choose']);
     return false;
   }
   return true;
