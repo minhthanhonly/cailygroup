@@ -864,7 +864,7 @@ export const Module = () => {
 			</div>
 
 			<div className="mt-3">
-				<SomeComponent showTimezone={true} />
+				<SomeComponent />
 			</div>
 
 		</>

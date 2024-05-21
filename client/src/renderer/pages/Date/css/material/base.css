@@ -10,8 +10,8 @@
   line-height: 75px;
   text-align: center;
   margin-bottom: 30px;
-  background-color: #3498db;
-  color: #FFFFFF;
+  /* background-color: #3498db; */
+  color: gray;
   font-size: 2.5em;
   border-radius: 2px 2px 0 0;
 }
@@ -30,6 +30,7 @@
 }
 .time_picker_modal_header .time_picker_header.active {
   cursor: default;
+  color: #3498db;
   opacity: 1;
 }
 .time_picker_modal_header .time_picker_header:hover {
@@ -176,3 +177,4 @@
   float: right;
   margin-top: 5px;
 }
+

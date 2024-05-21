@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import TimePicker from 'react-times';
 import 'react-times/css/material/default.css'; // sử dụng chủ đề material
-// import 'react-times/css/classic/default.css'; // hoặc bạn có thể sử dụng chủ đề classic
+import './TimePickerCustom.css'; // CSS tùy chỉnh của bạn
+
 
 const SomeComponent = () => {
     const [hour, setHour] = useState('00');

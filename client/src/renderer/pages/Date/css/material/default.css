@@ -42,3 +42,8 @@
 .dark .picker_point.point_inner {
   color: #D0D0D0;
 }
+
+
+.modal_container {
+  width: 21% !important;
+}
