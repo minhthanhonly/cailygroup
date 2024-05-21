@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate, BASE_URL } from "../../api/axios";
-import { isValidNumber, isValidText, isValidtextTable } from "../../components/Validate/";
+import { isValidCheck, isValidNumber, isValidText, isValidtextTable } from "../../components/Validate/";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentInputText from "../Form/Component/ComponentInputText";
@@ -30,6 +30,11 @@ export default function NewApplicationDetail() {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [pfile, setPfile] = useState('');
   const fileData = new FormData();
+  const childRef = useRef(null);
+  const childRefOfCheckbox = useRef(null);
+  const [valid, setValid] = useState(false);
+
+  const [isChildRef, setIsChildRef] = useState<any>({});
 
   const fetchNewApplicationById = async () => {
     try {
@@ -84,37 +89,82 @@ export default function NewApplicationDetail() {
   // Truy cập vào Form có Table
   const formRefHaveTable = useRef<HTMLFormElement>(null);
 
+
   // Xử lý khi gửi Form Public
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+
+
+    // Bắt lỗi Validate
+    if(childRef.current) {
+      setIsChildRef({...isChildRef, childRef: childRef.current.validate()})
+      // setValid(true);
+    }
+    if(childRefOfCheckbox.current) {
+      console.log("childRefOfCheckbox");
+    }
+
+    console.log(isChildRef);
+    // if(childRef.current && childRef.current.validate()){
+    //   setValid(true);
+    // } else if(childRefOfCheckbox.current && childRefOfCheckbox.current.validate()){
+    //   setValid(true);
+    // } else {
+    //   setValid(false);
+    // }
+    // if(childRefOfCheckbox.current && childRefOfCheckbox.current.validate()){
+    //   setValid(true);
+    // } else {
+    //   setValid(false);
+    // }
+
+
+
+
+
+
+    // Bắt lỗi Validate
+    // if (childRef.current && childRef.current.validate() || childRefOfCheckbox.current  && childRefOfCheckbox.current.validate()) {
+    //   // All validations passed
+    //   console.log('Form submitted successfully');
+    // } else {
+    //   console.log("ok");
+    // }
+
     if (formRef.current) {
       const formElements = formRef.current.elements;
       const formData: string[] = [];
       let newObj: any = {};
-      let validInputTextErrors = false;
-      let validTextAreaErrors = false;
+
+
+      // isValidCheck(selectedCheckbox);
 
       // Lấy tất cả các đối tượng trong Form
       for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i] as HTMLInputElement;
 
         //Bắt lỗi Validate
-        if (element.required) {
-          validInputTextErrors = isValidText(element.value, element.title);
-          if(element.type === "checkbox" && element.checked !== true) {
+        // if (element.required) {
+        //   validInputTextErrors = isValidText(element.value, element.title);
+        //   // if(element.type === "checkbox" && element.value === "") {
+        //   //   console.log("not");
+        //   // }
 
 
-          }
 
 
 
-          const dType = element.getAttribute('data-type');
-          if(dType === "is-Number" && element.value !== "") {
-            isValidNumber(element.value, element.title);
-          }
 
-          // Table
-        }
+        //   const dType = element.getAttribute('data-type');
+        //   if(dType === "is-Number" && element.value !== "") {
+        //     isValidNumber(element.value, element.title);
+        //   }
+
+        //   // Table
+        // }
+
+
 
         // Lấy các thuộc tính của đối tượng
         if (element.value && element.type != 'checkbox') {
@@ -252,6 +302,13 @@ export default function NewApplicationDetail() {
     }
   }
 
+  // useEffect(() => {
+
+  //   if(valid === true) {
+  //     console.log(isChildRef);
+  //   }
+  // }, [valid]);
+
   return (
     <>
       <Heading2 text={formName} />
@@ -299,6 +356,7 @@ export default function NewApplicationDetail() {
                       times={item.props[0].times}
                       timesto={item.props[0].timesto}
                       parentCallback={callBackFunction}
+                      ref={childRef}
                     />
                   </div>
                 )
@@ -332,6 +390,7 @@ export default function NewApplicationDetail() {
                       label={item.label}
                       required={item.required}
                       customOptions={item.custom_options}
+                      ref={childRefOfCheckbox}
                     />
                   </div>
                 )
