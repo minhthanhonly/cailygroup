@@ -1,34 +1,53 @@
 import React, { useState } from 'react';
-import TimePicker from 'react-times';
-import 'react-times/css/material/default.css'; // sử dụng chủ đề material
-import './TimePickerCustom.css'; // CSS tùy chỉnh của bạn
-
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { TimeClock } from '@mui/x-date-pickers/TimeClock';
+import dayjs from 'dayjs';
 
 const SomeComponent = () => {
-    const [hour, setHour] = useState('00');
-    const [minute, setMinute] = useState('00');
+    const initialTime = dayjs('2022-04-17T15:30');
+    const [selectedTime, setSelectedTime] = useState(initialTime);
+    const [isClockOpen, setIsClockOpen] = useState(false);
 
-    const onTimeChange = (options) => {
-        const { hour, minute } = options;
-        setHour(hour);
-        setMinute(minute);
+    const handleTimeChange = (newValue) => {
+        setSelectedTime(newValue);
+        console.log('Selected time:', newValue.format('HH:mm'));
     };
 
+    const handleOpenClock = () => {
+        setSelectedTime(initialTime);
+        setIsClockOpen(true);
+    };
 
-    console.log("hour", hour);
-    console.log("hour", minute);
+    const handleCloseClock = () => {
+        setIsClockOpen(false);
+    };
+
+    const resetTime = () => {
+        // Reset both hour and minute to the initial time's values
+        setSelectedTime(selectedTime.hour(initialTime.hour()).minute(initialTime.minute()));
+    };
+
     return (
-        <div>
-            <TimePicker
-                timeMode="24" // Đặt chế độ thời gian 24 giờ
-                onTimeChange={onTimeChange}
-                hour={hour} // Đặt giá trị giờ
-                minute={minute} // Đặt giá trị phút
-            />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div>
-                Thời gian đã chọn: {hour}:{minute}
+                <>
+                    <DemoItem label="AM PM disabled">
+                        <TimeClock
+                            value={selectedTime}
+                            onChange={handleTimeChange}
+                            ampm={false}
+                            onClose={handleCloseClock}
+                            open={isClockOpen}
+                        />
+                    </DemoItem>
+
+                    <p>Thời gian đã chọn: {selectedTime.format('HH:mm')}</p>
+                    <button onClick={resetTime}>Chọn lại thời gian</button>
+                </>
             </div>
-        </div>
+        </LocalizationProvider>
     );
 };
 

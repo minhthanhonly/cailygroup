@@ -1,13 +1,16 @@
 
 
-import { useEffect, useState } from "react";
+import { useImperativeHandle, forwardRef, useRef, useState } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-multi-date-picker';
-import { isValidNumber } from "../../../components/Validate";
+import { isValidNumber, isValidText } from "../../../components/Validate";
 
-export default function ComponentDatePicker(props){
+const ComponentDatePicker = forwardRef((props, ref) => {
   const [time, setTime] = useState('');
-  const [countDay, setCountDay] = useState('');
+  const [isValue, setIsValue] = useState('');
+  const [isDateValue, setIsDateValue] = useState({});
+  const customOptions = props.customOptions.length;
+  const [valid, setIsValid] = useState(false);
 
   const handleTimeChange = (e) => {
     const { value } = e.target;
@@ -17,9 +20,29 @@ export default function ComponentDatePicker(props){
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e, index) => {
     props.parentCallback(props.label);
+    setIsDateValue({...isDateValue, [index]: e.isValid});
   };
+
+  const handleDaysChange = (e) => {
+    setIsValue(e.target.value)
+  };
+
+  const inputRef = useRef(null);
+  useImperativeHandle(ref, () => ({
+    validate: () => {
+      if (Object.values(isDateValue).length !== customOptions && props.required === true) {
+        isValidText("", props.label);
+        return false;
+      }
+      if (isValue === '' && props.required === true && props.days === true) {
+        isValidText(isValue, '日間');
+        return false;
+      }
+      return true;
+    },
+  }));
 
   return (
     <div className="c-form">
@@ -34,18 +57,19 @@ export default function ComponentDatePicker(props){
               props.customOptions.map((option, index) => (
                 <div className="c-form-item" key={index}>
                   <DatePicker
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e, index)}
                     format="YYYY-MM-DD"
                     inputClass="c-form-control"
                     placeholder="yyyy/mm/dd"
                     name={props.id}
                     required={props.required}
                     title={option.text}
+                    ref={inputRef}
                   />
                 </div>
               ))
             }
-            {props.timesto === true ?
+            {/* {props.timesto === true ?
               <div className="c-form-inner">
                 <div className="c-form-item--02">
                   <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} title={props.label} aria-label={props.label} />
@@ -55,10 +79,10 @@ export default function ComponentDatePicker(props){
                 </div>
               </div>
               : ''
-            }
+            } */}
             {props.days === true ?
               <div className="c-form-item ml0">
-                <input type="text" name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleChange} title="日間" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" />
+                <input type="text" name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleDaysChange} title="days" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" ref={inputRef} />
                 <label className="c-form-label--02">日間</label>
               </div>
               : ''
@@ -76,4 +100,6 @@ export default function ComponentDatePicker(props){
       </div>
     </div>
   )
-}
+});
+
+export default ComponentDatePicker;
