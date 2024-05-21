@@ -107,7 +107,6 @@ export const Application = () => {
       const response = await axiosPrivate.delete(
         `application/deleteaccodion/${id}`,
       );
-      console.log(response.data);
       if (response.status === 200) {
         toast.success('Bạn đã xóa thành công !');
         setActiveTab((prevTab) => (prevTab !== 'tab2' ? 'tab2' : 'tab1'));
