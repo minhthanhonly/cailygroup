@@ -98,7 +98,7 @@ export const Application = () => {
 
   const handleDataFromChild = (id_status: any) => {
     setIdstatus(id_status);
-    setActiveTab((prevTab) => (prevTab !== 'tab2' ? 'tab2' : 'tab1'));
+    setActiveTab('tab2');
     toast.success('Bạn đã cập nhật trạng thái thành công !');
     Load();
   };
@@ -107,10 +107,10 @@ export const Application = () => {
       const response = await axiosPrivate.delete(
         `application/deleteaccodion/${id}`,
       );
-      console.log(response.data);
       if (response.status === 200) {
         toast.success('Bạn đã xóa thành công !');
         setActiveTab((prevTab) => (prevTab !== 'tab2' ? 'tab2' : 'tab1'));
+        //setActiveTab('tab2');
       } else {
         console.error('Failed to delete comment:', response.statusText);
       }
