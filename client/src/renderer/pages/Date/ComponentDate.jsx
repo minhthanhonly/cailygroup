@@ -29,23 +29,6 @@ const SomeComponent = () => {
         setSelectedTime(selectedTime.hour(initialTime.hour()).minute(initialTime.minute()));
     };
 
-<<<<<<< HEAD
-    // console.log("hour", hour);
-    // console.log("hour", minute);
-    // return (
-    //     <div>
-    //         <TimePicker
-    //             timeMode="24" // Đặt chế độ thời gian 24 giờ
-    //             onTimeChange={onTimeChange}
-    //             hour={hour} // Đặt giá trị giờ
-    //             minute={minute} // Đặt giá trị phút
-    //         />
-    //         <div>
-    //             Thời gian đã chọn: {hour}:{minute}
-    //         </div>
-    //     </div>
-    // );
-=======
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div>
@@ -66,7 +49,6 @@ const SomeComponent = () => {
             </div>
         </LocalizationProvider>
     );
->>>>>>> 0f86a390f7d89202563690008f68f1c168308119
 };
 
 export default SomeComponent;
