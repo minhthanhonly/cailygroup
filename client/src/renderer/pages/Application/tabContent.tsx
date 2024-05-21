@@ -2,6 +2,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { useEffect, useState } from 'react';
 import editIcon from '../../../../assets/icn-edit.png';
 import closeIcon from '../../../../assets/icn-close.png';
+import deleteIcon from '../../../../assets/icn-delete.png';
 import { Register } from './register';
 import { UserRole } from '../../components/UserRole';
 import { emitter } from '../../layouts/components/Sidebar/index';
@@ -68,7 +69,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   };
   useEffect(() => {
     LoadIdStatus();
-  }, []);
+  }, [idStatus]);
 
   // Tiến hành gửi mail gồm dữ liệu gửi mail và hành động thực hiện (Comment hoặc Click thay đổi trạng thái)
   const sendMailWhenCmt = async (idStatus, cmtData, action) => {
@@ -472,18 +473,17 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                 <span className="icn-item">
                   <img src={editIcon} alt="edit" className="fluid-image" />
                 </span>
-                {isAdmin || isManager ? (
-                  <span
-                    className="icn-item"
-                    onClick={(event) => {
-                      openModaldelete(Items.id);
-                    }}
-                  >
-                    <img src={closeIcon} alt="close" className="fluid-image" />
-                  </span>
-                ) : (
-                  <span></span>
-                )}
+                <span className="icn-item">
+                  <img src={closeIcon} alt="close" className="fluid-image" />
+                </span>
+                <span
+                  className="icn-item"
+                  onClick={(event) => {
+                    openModaldelete(Items.id);
+                  }}
+                >
+                  <img src={deleteIcon} alt="delete" className="fluid-image" />
+                </span>
               </p>
             </div>
           </div>
