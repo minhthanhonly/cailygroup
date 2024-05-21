@@ -44,6 +44,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
     try {
       const response = await axiosPrivate.get('application/getforid/' + id);
       const data = response.data;
+      //console.log(data);
       setItems(response.data);
       const itemWithStatus = {
         ...JSON.parse(data.datajson), // Sử dụng data.datajson trực tiếp
@@ -450,8 +451,36 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
     { idIndex: 5, label: '消', activeIndex: 5 },
   ];
 
+  const getUser = async () => {
+    try {
+      const response = await axiosPrivate.get('application/getusers/' + id);
+      const userData = response.data;
+      //console.log(userData);
+      // // Xử lý dữ liệu dựa trên kiểu dữ liệu trả về
+      if (Array.isArray(userData)) {
+        // Lặp qua mỗi bình luận và ghi nhận tên thực của người dùng
+        userData.forEach((userData) => {
+          //console.log(userData.realname); // Ghi nhận tên thực của người dùng
+          if (userData.realname === users.realname) {
+            console.log(userData.realname);
+          }
+        });
+        //setCommentFirst(commentData); // Cập nhật state với dữ liệu bình luận
+      } else {
+        console.error('Error fetching data: Response data is not an array');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, [id]);
+
   return (
     <>
+      {/* {console.log(accordionItems.user_id)} */}
       <div className="list-accordion__parent">
         <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
           <div className="list-accordion__item__head" onClick={toggleAccordion}>

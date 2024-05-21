@@ -45,6 +45,8 @@
             $conn->close();
         }
 
+        
+
         function getApplicationByIdStatus($idStatus){
             global $conn;
             $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
@@ -153,6 +155,25 @@
                 echo json_encode($data);
             $conn->close();
         }
+
+        function getUsers($id){
+            global $conn;
+            $sql = "SELECT application_details.*,users.realname FROM application_details JOIN users ON application_details.user_id = users.id WHERE application_details.id = $id";
+           // echo $sql; // In ra câu truy vấn để kiểm tra
+            $result = $conn->query($sql);
+            $data = array();
+            if ($result->num_rows > 0) {
+               while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
+                }
+            }
+            // Trả về dữ liệu dưới dạng JSON
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            return;
+            $conn->close();
+        }
+
         function addComment($user_id,$aplication_id,$authority_id, $note, $createdAt)
         {
             global $conn;
