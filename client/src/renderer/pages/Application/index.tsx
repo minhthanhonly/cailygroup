@@ -110,7 +110,8 @@ export const Application = () => {
       console.log(response.data);
       if (response.status === 200) {
         toast.success('Bạn đã xóa thành công !');
-        setActiveTab((prevTab) => (prevTab !== 'tab2' ? 'tab2' : 'tab1'));
+        //setActiveTab((prevTab) => (prevTab !== 'tab2' ? 'tab2' : 'tab1'));
+        setActiveTab('tab2');
       } else {
         console.error('Failed to delete comment:', response.statusText);
       }
