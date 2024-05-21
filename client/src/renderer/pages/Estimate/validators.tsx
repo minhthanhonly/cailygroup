@@ -1,3 +1,4 @@
+// validators.ts
 export const validateRow = (row: any, requiredFields: string[]): boolean => {
     return requiredFields.every(field => row[field] !== '' && row[field] !== null && row[field] !== undefined);
 };

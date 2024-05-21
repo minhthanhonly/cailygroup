@@ -19,10 +19,6 @@ import { GroupEdit } from './pages/Group/GroupEdit';
 import { Module } from './pages/Module';
 import { Application } from './pages/Application';
 import { Estimate } from './pages/Estimate';
-import TravelExpenses from './pages/Estimate/TravelExpenses';
-import { ExpenseReport } from './pages/Estimate/ExpenseReport';
-import { PriceBusinessReport } from './pages/Estimate/PriceBusinessReport';
-import { TravelAllowance } from './pages/Estimate/TravelAllowance';
 import Login from './pages/Login';
 import DefaultLayout from './layouts/DefaultLayout';
 import FluidLayout from './layouts/FluidLayout/FluidLayout';
@@ -37,6 +33,7 @@ import Field from './pages/From/Field';
 import FormAdd from './pages/Form/FormAdd';
 import NewApplication from './pages/NewApplication';
 import NewApplicationDetail from './pages/NewApplication/NewApplicationDetail';
+
 
 export default function App() {
   const { id } = useParams<{ id: string }>();
@@ -87,10 +84,7 @@ export default function App() {
               <Route path="Search" element={<Search />} />
               <Route path="estimate" element={<Estimate />} />
 
-              {/* <Route
-                path="estimate/7"
-                element={<TravelExpenses parentCallback={props} />}
-              /> */}
+
               {/* <Route
                 path="estimate/8"
                 element={<ExpenseReport id_table="8" />}
