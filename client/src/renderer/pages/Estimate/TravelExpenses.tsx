@@ -7,14 +7,14 @@ import moment from 'moment';
 import { toast } from "react-toastify";
 
 interface Row {
-    日付: Date;
+    日付: string;
     id: number;
     路線: string;
     乗車駅: string;
     下車駅: string;
     金額: number;
     備考: string;
-    totalrows: number;
+    合計: number;
 }
 
 
@@ -24,8 +24,9 @@ export default function TravelExpenses(props) {
 
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
-    const [date, setDate] = useState(new Date());
-    const [rows, setRows] = useState<Row[]>([{ 日付: new Date(), id: 0, 路線: '', 乗車駅: '', 下車駅: '', 金額: 0, 備考: '', totalrows: 0 }]);
+    const [日付, setDate] = useState(new Date());
+    const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
+    const [rows, setRows] = useState<Row[]>([{ 日付: currentDate, id: 0, 路線: '', 乗車駅: '', 下車駅: '', 金額: 0, 備考: '', 合計: 0 }]);
     const [total, setTotal] = useState(0);
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
 
@@ -38,7 +39,7 @@ export default function TravelExpenses(props) {
 
     // thêm
     const addRow = () => {
-        const newRow: Row = { 日付: new Date(), id: rows.length, 路線: '', 乗車駅: '', 下車駅: '', 金額: 0, 備考: '', totalrows: 0 };
+        const newRow: Row = { 日付: currentDate, id: rows.length, 路線: '', 乗車駅: '', 下車駅: '', 金額: 0, 備考: '', 合計: 0 };
         setRows(prevRows => [...prevRows, newRow]);
     };
 
@@ -60,7 +61,7 @@ export default function TravelExpenses(props) {
         // Tính tổng của tất cả các hàng
         let totalRowsSum = 0;
         rows.forEach(row => {
-            totalRowsSum += row.totalrows;
+            totalRowsSum += row.合計;
         });
 
         return sum;
@@ -84,7 +85,7 @@ export default function TravelExpenses(props) {
         const newRows: Row[] = [...rows];
         if (newRows[index]) {
             newRows[index].金額 = newValue;
-            newRows[index].totalrows = calculateRowTotal(newRows[index]); // Cập nhật totalrows của hàng
+            newRows[index].合計 = calculateRowTotal(newRows[index]); // Cập nhật totalrows của hàng
             setRows(newRows);
         }
     };
@@ -126,7 +127,7 @@ export default function TravelExpenses(props) {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY/MM/DD HH:mm:ss" /></td>
+                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={日付} format="YYYY/MM/DD HH:mm:ss" /></td>
                                     <td><input type="text" value={row.路線} onChange={(e) => handleInputChange(e, index, '路線')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.乗車駅} onChange={(e) => handleInputChange(e, index, '乗車駅')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.下車駅} onChange={(e) => handleInputChange(e, index, '下車駅')} placeholder='入力してください' /></td>

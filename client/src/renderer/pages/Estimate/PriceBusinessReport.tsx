@@ -9,20 +9,19 @@ import { DateObject } from 'react-multi-date-picker';
 
 interface Row {
     id: number;
-    project: string;
-    date: string; // Thêm thuộc tính 'date' với kiểu string
-    priceTrain: number;
-    priceHouse: number;
-    priceCustomer: number;
-    priceEat: number;
-    priceOther: number;
-    note: string;
-    totalrows: number;
-    leave: number;
-    calculatedPrice: number;
-    finalPayment: number;
-    finalTotalPrice: number;
-    newFinalTotalPrice: number;
+    項目: string;
+    日付: string; // Thêm thuộc tính 'date' với kiểu string
+    交通費: number;
+    宿泊費: number;
+    交際費: number;
+    食費: number;
+    その他: number;
+    備考: string;
+    合計: number;
+    日: number;
+    仮払金差引合計: number;
+    合計金額: number;
+    精算額: number;
 
 }
 
@@ -31,12 +30,10 @@ interface Row {
 
 export default function PriceBusinessReport(props) {
 
+    const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
 
-    const users = JSON.parse(localStorage.getItem('users') || '{}');
-
-
-    const [rows, setRows] = useState<Row[]>([{ id: 0, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, note: '', totalrows: 0, leave: 0, calculatedPrice: 0, finalPayment: 0, finalTotalPrice: 0, newFinalTotalPrice: 0, }]);
-    const [date, setDate] = useState(new Date());
+    const [rows, setRows] = useState<Row[]>([{ id: 0, 項目: '', 日付: currentDate, 交通費: 0, 宿泊費: 0, 交際費: 0, 食費: 0, その他: 0, 備考: '', 合計: 0, 日: 0, 仮払金差引合計: 0, 合計金額: 0, 精算額: 0, }]);
+    const [日付, setDate] = useState(new Date());
     const [selectedFileName, setSelectedFileName] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isDomestic, setDomestic] = useState(1);
@@ -50,8 +47,8 @@ export default function PriceBusinessReport(props) {
 
     const [addressDomesticForeign, setAddressDomesticForeign] = useState('');
     const [dateRange, setDateRange] = useState<{ dateStart: Date | null, dateEnd: Date | null }>({
-        dateStart: date,
-        dateEnd: date
+        dateStart: 日付,
+        dateEnd: 日付
     });
 
     const handleLeaveDateChange = (date: Date | null, type: 'start' | 'end') => {
@@ -60,7 +57,7 @@ export default function PriceBusinessReport(props) {
             [type === 'start' ? 'dateStart' : 'dateEnd']: date
         }));
     };
-    console.log("inputDate", inputDate);
+
 
 
     const handleInputChangeAdress = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +91,7 @@ export default function PriceBusinessReport(props) {
             const newFinalPayment = totalSum - inputValue;
             const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
             const newRowsWithTotal = newRows.map(row => ({
-                ...row, total: finalTotalPrice, leave: inputDate, calculatedPrice: calculatedPrice, finalPayment: finalPayment, newFinalTotalPrice: newFinalTotalPrice,
+                ...row, 精算額: finalTotalPrice, 日: inputDate, 合計金額: calculatedPrice, 仮払金差引合計: newFinalTotalPrice,
             }));
 
             props.parentCallback(newRowsWithTotal); // callback props ve cha
@@ -121,7 +118,7 @@ export default function PriceBusinessReport(props) {
         const newRows = [...rows];
         if (date && !Array.isArray(date)) { // Kiểm tra nếu date không phải là một mảng
             const normalDate = date.toDate(); // Chuyển đổi đối tượng ngày sang một đối tượng ngày thông thường
-            newRows[index] = { ...newRows[index], date: moment(normalDate).format("YYYY/MM/DD HH:mm:ss") };
+            newRows[index] = { ...newRows[index], 日付: moment(normalDate).format("YYYY/MM/DD HH:mm:ss") };
         }
         setRows(newRows);
     };
@@ -136,7 +133,7 @@ export default function PriceBusinessReport(props) {
 
     const [total, setTotal] = useState(0);
 
-    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: 'priceTrain' | 'priceHouse' | 'priceCustomer' | 'priceEat' | 'priceOther') => {
+    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: '交通費' | '宿泊費' | '交際費' | '食費' | 'その他') => {
         let inputValue = event.target.value;
         // Loại bỏ các ký tự không phải số
         inputValue = inputValue.replace(/[^0-9]/g, '');
@@ -155,38 +152,38 @@ export default function PriceBusinessReport(props) {
             setRows(newRows);
         }
 
-        if (field === 'priceTrain') {
+        if (field === '交通費') {
             const newpriceTrain = [...priceTrain];
             newpriceTrain[index] = formattedValue;
-            newRows[index].totalrows = calculateRowTotal(newRows[index]);
+            newRows[index].合計 = calculateRowTotal(newRows[index]);
             setpriceTrain(newpriceTrain);
-        } else if (field === 'priceHouse') {
+        } else if (field === '宿泊費') {
             const newpriceHouse = [...priceHouse];
             newpriceHouse[index] = formattedValue;
-            newRows[index].totalrows = calculateRowTotal(newRows[index]);
+            newRows[index].合計 = calculateRowTotal(newRows[index]);
             setpriceHouse(newpriceHouse);
-        } else if (field === 'priceCustomer') {
+        } else if (field === '交際費') {
             const newpriceCustomer = [...priceCustomer];
             newpriceCustomer[index] = formattedValue;
-            newRows[index].totalrows = calculateRowTotal(newRows[index]);
+            newRows[index].合計 = calculateRowTotal(newRows[index]);
             setpriceCustomer(newpriceCustomer);
-        } else if (field === 'priceEat') {
+        } else if (field === '食費') {
             const newpriceEat = [...priceEat];
             newpriceEat[index] = formattedValue;
-            newRows[index].totalrows = calculateRowTotal(newRows[index]);
+            newRows[index].合計 = calculateRowTotal(newRows[index]);
             setpriceEat(newpriceEat);
         }
-        else if (field === 'priceOther') {
+        else if (field === 'その他') {
             const newpriceOther = [...priceOther];
             newpriceOther[index] = formattedValue;
-            newRows[index].totalrows = calculateRowTotal(newRows[index]);
+            newRows[index].合計 = calculateRowTotal(newRows[index]);
             setpriceOther(newpriceOther);
         }
 
     };
 
     const calculateRowTotal = (row: Row) => {
-        return row.priceTrain + row.priceHouse + row.priceCustomer + row.priceEat + row.priceOther; // Tạm thời chỉ tính tổng từ trường mealExpense
+        return row.交通費 + row.宿泊費 + row.交際費 + row.食費 + row.その他; // Tạm thời chỉ tính tổng từ trường mealExpense
     };
 
     useEffect(() => {
@@ -196,14 +193,14 @@ export default function PriceBusinessReport(props) {
     const calculateTotal = (rows: Row[]) => {
         let sum = 0;
         rows.forEach(row => {
-            sum += row.priceTrain + row.priceHouse + row.priceCustomer + row.priceEat + row.priceOther;
+            sum += row.交通費 + row.宿泊費 + row.交際費 + row.食費 + row.その他;
         });
         setTotal(sum); // Cập nhật state total
 
         // Tính tổng của tất cả các hàng
         let totalRowsSum = 0;
         rows.forEach(row => {
-            totalRowsSum += row.totalrows;
+            totalRowsSum += row.合計;
         });
 
         return sum;
@@ -211,7 +208,7 @@ export default function PriceBusinessReport(props) {
 
     const calculateTotalSum = () => {
         const newTotalSum = rows.reduce((acc, row) => {
-            const valuesBeforeColumn5 = [row.priceTrain, row.priceHouse, row.priceCustomer, row.priceEat, row.priceOther].slice(0, 5);
+            const valuesBeforeColumn5 = [row.交通費, row.宿泊費, row.交際費, row.食費, row.その他].slice(0, 5);
             const totalForRow = valuesBeforeColumn5.reduce((sum, currentValue) => sum + currentValue, 0);
             return acc + totalForRow;
         }, 0);
@@ -219,7 +216,7 @@ export default function PriceBusinessReport(props) {
     };
 
     const calculateRowSum = (row: Row) => {
-        const valuesBeforeColumn5 = [row.priceTrain, row.priceHouse, row.priceCustomer, row.priceEat, row.priceOther].slice(0, 5);
+        const valuesBeforeColumn5 = [row.交通費, row.宿泊費, row.交際費, row.食費, row.その他].slice(0, 5);
         const totalForRow = valuesBeforeColumn5.reduce((acc, currentValue) => acc + currentValue, 0);
         return totalForRow;
     };
@@ -267,13 +264,12 @@ export default function PriceBusinessReport(props) {
     }, [rows]); // Lắng nghe sự thay đổi của mảng rows ////  
 
     const addRow = () => {
-        const newRow = { id: rows.length, project: '', date: '', priceTrain: 0, priceHouse: 0, priceCustomer: 0, priceEat: 0, priceOther: 0, note: '', totalrows: 0, leave: 0, calculatedPrice: 0, finalPayment: 0, finalTotalPrice: 0, newFinalTotalPrice: 0 };
+        const newRow = { id: rows.length, 項目: '', 日付: currentDate, 交通費: 0, 宿泊費: 0, 交際費: 0, 食費: 0, その他: 0, 備考: '', 合計: 0, 日: 0, 仮払金差引合計: 0, 合計金額: 0, 精算額: 0 };
         setRows([...rows, newRow]);
         calculateTotalSum();
     };
     return (
         <>
-
             <div className="table tbl_custom">
                 <div className='tbl_custom--03'>
                     <table>
@@ -293,15 +289,15 @@ export default function PriceBusinessReport(props) {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td><DatePicker onChange={(_date) => handleLeaveDateChange02(_date, index)} value={date} format="YYYY/MM/DD HH:mm:ss" /> </td>
-                                    <td><input type="text" value={row.project} onChange={(e) => handleInputChange(e, index, 'project')} placeholder='入力してください' /></td>
-                                    <td><input className="numberInput" type="text" placeholder='0' value={priceTrain[index]} onChange={(e) => handleNumberChange(e, index, 'priceTrain')} /></td>
-                                    <td><input className="numberInput" type="text" placeholder='0' value={priceHouse[index]} onChange={(e) => handleNumberChange(e, index, 'priceHouse')} /></td>
-                                    <td><input className="numberInput" type="text" placeholder='0' value={priceCustomer[index]} onChange={(e) => handleNumberChange(e, index, 'priceCustomer')} /></td>
-                                    <td><input className="numberInput" type="text" placeholder='0' value={priceEat[index]} onChange={(e) => handleNumberChange(e, index, 'priceEat')} /></td>
-                                    <td><input className="numberInput" type="text" placeholder='0' value={priceOther[index]} onChange={(e) => handleNumberChange(e, index, 'priceOther')} /></td>
+                                    <td><DatePicker onChange={(_date) => handleLeaveDateChange02(_date, index)} value={日付} format="YYYY/MM/DD HH:mm:ss" /> </td>
+                                    <td><input type="text" value={row.項目} onChange={(e) => handleInputChange(e, index, '項目')} placeholder='入力してください' /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceTrain[index]} onChange={(e) => handleNumberChange(e, index, '交通費')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceHouse[index]} onChange={(e) => handleNumberChange(e, index, '宿泊費')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceCustomer[index]} onChange={(e) => handleNumberChange(e, index, '交際費')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceEat[index]} onChange={(e) => handleNumberChange(e, index, '食費')} /></td>
+                                    <td><input className="numberInput" type="text" placeholder='0' value={priceOther[index]} onChange={(e) => handleNumberChange(e, index, 'その他')} /></td>
                                     <td>{formatNumberWithCommas(calculateRowSum(row))}</td>
-                                    <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
+                                    <td><input type="text" value={row.備考} onChange={(e) => handleInputChange(e, index, '備考')} placeholder='入力してください' /></td>
                                 </tr>
                             ))}
 
