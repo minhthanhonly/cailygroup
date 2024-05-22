@@ -7,13 +7,13 @@ import moment from 'moment';
 import { toast } from "react-toastify";
 
 interface Row {
-    date: Date;
+    日付: Date;
     id: number;
-    route: string;
-    boardingStation: string;
-    alightingStation: string;
-    mealExpense: number;
-    note: string;
+    路線: string;
+    乗車駅: string;
+    下車駅: string;
+    金額: number;
+    備考: string;
     totalrows: number;
 }
 
@@ -25,7 +25,7 @@ export default function TravelExpenses(props) {
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     const axiosPrivate = useAxiosPrivate();
     const [date, setDate] = useState(new Date());
-    const [rows, setRows] = useState<Row[]>([{ date: new Date(), id: 0, route: '', boardingStation: '', alightingStation: '', mealExpense: 0, note: '', totalrows: 0 }]);
+    const [rows, setRows] = useState<Row[]>([{ 日付: new Date(), id: 0, 路線: '', 乗車駅: '', 下車駅: '', 金額: 0, 備考: '', totalrows: 0 }]);
     const [total, setTotal] = useState(0);
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
 
@@ -38,7 +38,7 @@ export default function TravelExpenses(props) {
 
     // thêm
     const addRow = () => {
-        const newRow: Row = { date: new Date(), id: rows.length, route: '', boardingStation: '', alightingStation: '', mealExpense: 0, note: '', totalrows: 0 };
+        const newRow: Row = { 日付: new Date(), id: rows.length, 路線: '', 乗車駅: '', 下車駅: '', 金額: 0, 備考: '', totalrows: 0 };
         setRows(prevRows => [...prevRows, newRow]);
     };
 
@@ -53,7 +53,7 @@ export default function TravelExpenses(props) {
     const calculateTotal = (rows: Row[]) => {
         let sum = 0;
         rows.forEach(row => {
-            sum += row.mealExpense;
+            sum += row.金額;
         });
         setTotal(sum); // Cập nhật state total
 
@@ -83,7 +83,7 @@ export default function TravelExpenses(props) {
 
         const newRows: Row[] = [...rows];
         if (newRows[index]) {
-            newRows[index].mealExpense = newValue;
+            newRows[index].金額 = newValue;
             newRows[index].totalrows = calculateRowTotal(newRows[index]); // Cập nhật totalrows của hàng
             setRows(newRows);
         }
@@ -91,7 +91,7 @@ export default function TravelExpenses(props) {
 
 
     const calculateRowTotal = (row: Row) => {
-        return row.mealExpense; // Tạm thời chỉ tính tổng từ trường mealExpense
+        return row.金額; // Tạm thời chỉ tính tổng từ trường mealExpense
     };
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
         const { value } = event.target;
@@ -101,7 +101,7 @@ export default function TravelExpenses(props) {
 
             const newTotal = calculateTotal(newRows); // Tính toán tổng mới
             // Thêm total vào mỗi đối tượng trong newRows
-            const newRowsWithTotal = newRows.map(row => ({ ...row, total: newTotal }));
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 合計金額: newTotal }));
             props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
             return newRowsWithTotal;
         });
@@ -127,11 +127,11 @@ export default function TravelExpenses(props) {
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
                                     <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={date} format="YYYY/MM/DD HH:mm:ss" /></td>
-                                    <td><input type="text" value={row.route} onChange={(e) => handleInputChange(e, index, 'route')} placeholder='入力してください' /></td>
-                                    <td><input type="text" value={row.boardingStation} onChange={(e) => handleInputChange(e, index, 'boardingStation')} placeholder='入力してください' /></td>
-                                    <td><input type="text" value={row.alightingStation} onChange={(e) => handleInputChange(e, index, 'alightingStation')} placeholder='入力してください' /></td>
+                                    <td><input type="text" value={row.路線} onChange={(e) => handleInputChange(e, index, '路線')} placeholder='入力してください' /></td>
+                                    <td><input type="text" value={row.乗車駅} onChange={(e) => handleInputChange(e, index, '乗車駅')} placeholder='入力してください' /></td>
+                                    <td><input type="text" value={row.下車駅} onChange={(e) => handleInputChange(e, index, '下車駅')} placeholder='入力してください' /></td>
                                     <td><input className="numberInput" type="text" value={mealExpenses[index]} onChange={(e) => handleNumberChange(e, index)} placeholder='0' /></td>
-                                    <td><input type="text" value={row.note} onChange={(e) => handleInputChange(e, index, 'note')} placeholder='入力してください' /></td>
+                                    <td><input type="text" value={row.備考} onChange={(e) => handleInputChange(e, index, '備考')} placeholder='入力してください' /></td>
                                 </tr>
                             ))}
                         </tbody>

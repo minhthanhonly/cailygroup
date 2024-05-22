@@ -247,17 +247,17 @@ export default function NewApplicationDetail() {
         });
       }
 
-      // const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      //const res = await axiosPrivate.post("newapplication/add", appJsonString);
       // if(validInputTextErrors === true && validTextAreaErrors === true){
-      //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      //   if(res.data.success === 'error'){
-      //     setError('Bị lỗi khi đăng ký');
-      //   } else {
-      //     setMsg('Bạn đã đăng ký thành công');
-      //     setTimeout(() => {
-      //   		navigate('/newapplication');
-      //   	}, 2000);
-      //   }
+      const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      if (res.data.success === 'error') {
+        setError('Bị lỗi khi đăng ký');
+      } else {
+        setMsg('Bạn đã đăng ký thành công');
+        setTimeout(() => {
+          navigate('/newapplication');
+        }, 2000);
+      }
       // }
     }
 
