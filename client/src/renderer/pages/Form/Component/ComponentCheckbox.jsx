@@ -14,11 +14,11 @@ const ComponentCheckbox = forwardRef((props, ref) => {
   const checkboxRef = useRef(null);
   useImperativeHandle(ref, () => ({
     validate: () => {
+      let valid = true;
       if (isChecked === false && props.required === true) {
-        isValidCheck(isChecked, props.label);
-        return false;
+        valid = isValidCheck(isChecked, props.label);
       }
-      return true;
+      return valid;
     },
   }));
 

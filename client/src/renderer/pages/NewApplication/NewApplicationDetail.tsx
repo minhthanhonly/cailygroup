@@ -29,12 +29,19 @@ export default function NewApplicationDetail() {
   const [msg, setMsg] = useState('');
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [pfile, setPfile] = useState('');
+
+  //
   const fileData = new FormData();
+
+  //
   const childRef = useRef(null);
   const childRefOfCheckbox = useRef(null);
-  const [valid, setValid] = useState(false);
+  const childRefOfInputText = useRef(null);
+  const childRefOfTextArea = useRef(null);
 
-  const [isChildRef, setIsChildRef] = useState<any>({});
+
+
+
 
   const fetchNewApplicationById = async () => {
     try {
@@ -94,77 +101,31 @@ export default function NewApplicationDetail() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
-
-    // Bắt lỗi Validate
-    if(childRef.current) {
-      setIsChildRef({...isChildRef, childRef: childRef.current.validate()})
-      // setValid(true);
-    }
-    if(childRefOfCheckbox.current) {
-      console.log("childRefOfCheckbox");
-    }
-
-    console.log(isChildRef);
-    // if(childRef.current && childRef.current.validate()){
-    //   setValid(true);
-    // } else if(childRefOfCheckbox.current && childRefOfCheckbox.current.validate()){
-    //   setValid(true);
-    // } else {
-    //   setValid(false);
-    // }
-    // if(childRefOfCheckbox.current && childRefOfCheckbox.current.validate()){
-    //   setValid(true);
-    // } else {
-    //   setValid(false);
-    // }
-
-
-
-
-
+    let validInputTextErrors = false;
 
     // Bắt lỗi Validate
-    // if (childRef.current && childRef.current.validate() || childRefOfCheckbox.current  && childRefOfCheckbox.current.validate()) {
-    //   // All validations passed
-    //   console.log('Form submitted successfully');
-    // } else {
-    //   console.log("ok");
-    // }
+    let valid = true;
+    let check: any = {childRef: childRef.current, childRefOfCheckbox: childRefOfCheckbox.current, childRefOfInputText: childRefOfInputText.current, childRefOfTextArea: childRefOfTextArea.current};
+    for (var key in check) {
+      if(check[key] !== null){
+        if(check[key].validate() == false){
+          valid = false;
+        }
+      }
+		}
+
+    console.log(childRefOfTextArea.current.validate());
+
+
 
     if (formRef.current) {
       const formElements = formRef.current.elements;
       const formData: string[] = [];
       let newObj: any = {};
 
-
-      // isValidCheck(selectedCheckbox);
-
       // Lấy tất cả các đối tượng trong Form
       for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i] as HTMLInputElement;
-
-        //Bắt lỗi Validate
-        // if (element.required) {
-        //   validInputTextErrors = isValidText(element.value, element.title);
-        //   // if(element.type === "checkbox" && element.value === "") {
-        //   //   console.log("not");
-        //   // }
-
-
-
-
-
-
-        //   const dType = element.getAttribute('data-type');
-        //   if(dType === "is-Number" && element.value !== "") {
-        //     isValidNumber(element.value, element.title);
-        //   }
-
-        //   // Table
-        // }
-
-
 
         // Lấy các thuộc tính của đối tượng
         if (element.value && element.type != 'checkbox') {
@@ -201,7 +162,6 @@ export default function NewApplicationDetail() {
 
         if (element.type === 'file') {
           fileData.append('pfile', pfile);
-
           newObj = {
             id: element.name,
             label: element.title,
@@ -300,14 +260,10 @@ export default function NewApplicationDetail() {
       //   }
       // }
     }
+
+
   }
 
-  // useEffect(() => {
-
-  //   if(valid === true) {
-  //     console.log(isChildRef);
-  //   }
-  // }, [valid]);
 
   return (
     <>
@@ -341,6 +297,7 @@ export default function NewApplicationDetail() {
                       id={item.id}
                       label={item.label}
                       required={item.required}
+                      ref={childRefOfInputText}
                     />
                   </div>
                 )
@@ -375,10 +332,11 @@ export default function NewApplicationDetail() {
                 return (
                   <div className="c-row" key={index}>
                     <ComponentTextArea
-                      keys={item.key}
+                    keys={item.key}
                       id={item.id}
                       label={item.label}
                       required={item.required}
+                      ref={childRefOfTextArea}
                     />
                   </div>
                 )

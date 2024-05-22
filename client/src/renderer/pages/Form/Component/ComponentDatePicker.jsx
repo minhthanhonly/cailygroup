@@ -32,15 +32,14 @@ const ComponentDatePicker = forwardRef((props, ref) => {
   const inputRef = useRef(null);
   useImperativeHandle(ref, () => ({
     validate: () => {
+      let valid = true;
       if (Object.values(isDateValue).length !== customOptions && props.required === true) {
-        isValidText("", props.label);
-        return false;
+        valid = isValidText("", props.label);
       }
       if (isValue === '' && props.required === true && props.days === true) {
-        isValidText(isValue, '日間');
-        return false;
+        valid = isValidText(isValue, '日間');
       }
-      return true;
+      return valid;
     },
   }));
 

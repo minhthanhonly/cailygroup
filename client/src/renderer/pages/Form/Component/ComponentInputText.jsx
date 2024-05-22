@@ -1,15 +1,25 @@
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { ERROR } from "../../../components/Validate/"
+import { useImperativeHandle, forwardRef, useRef, useState } from "react";
+import { isValidText } from "../../../components/Validate";
 
 /* =======================================================================* */
 
-export default function ComponentInputText(props){
-  const [inputText, setInputText] = useState();
+const ComponentInputText = forwardRef((props, ref) => {
+  const [isValue, setIsValue] = useState('');
 
-  const handleInput = (e) => {
-    props.parentCallback(props.keys, props.id, props.label, e.target.value);
+  const handleChange = (e) => {
+    setIsValue(e.target.value);
   }
+
+  const inputTextRef = useRef(null);
+  useImperativeHandle(ref, () => ({
+    validate: () => {
+      let valid = true;
+      if (isValue === '' && props.required === true) {
+        valid = isValidText(isValue, props.label);
+      }
+      return valid;
+    },
+  }));
 
   return (
     <div className="c-form">
@@ -19,9 +29,11 @@ export default function ComponentInputText(props){
           {props.required === true ? <span className="c-form-label--required txt-red">（必須）</span> : ''}
         </label>
         <div className="c-form-content">
-          <input type="text" className="c-form-control" placeholder="入力してください" name={props.id} onChange={props.onHandle} aria-label={props.label} title={props.label} required={props.required} />
+          <input type="text" className="c-form-control" placeholder="入力してください" name={props.id} onChange={handleChange} aria-label={props.label} title={props.label} required={props.required} ref={inputTextRef} />
         </div>
       </div>
     </div>
   )
-}
+});
+
+export default ComponentInputText;
