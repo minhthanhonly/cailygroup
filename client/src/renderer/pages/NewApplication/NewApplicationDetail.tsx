@@ -99,14 +99,14 @@ export default function NewApplicationDetail() {
 
     // Bắt lỗi Validate
     let valid = true;
-    let check: any = {childRef: childRef.current, childRefOfCheckbox: childRefOfCheckbox.current, childRefOfInputText: childRefOfInputText.current};
+    let check: any = { childRef: childRef.current, childRefOfCheckbox: childRefOfCheckbox.current, childRefOfInputText: childRefOfInputText.current };
     for (var key in check) {
-      if(check[key] !== null){
-        if(check[key].validate() == false){
+      if (check[key] !== null) {
+        if (check[key].validate() == false) {
           valid = false;
         }
       }
-		}
+    }
     //
     arrValid.push(valid);
 
@@ -120,8 +120,8 @@ export default function NewApplicationDetail() {
         const element = formElements[i] as HTMLInputElement;
 
         // Bắt lỗi Validate của Textarea
-        if(element.required) {
-          if(element.type === 'textarea') {
+        if (element.required) {
+          if (element.type === 'textarea') {
             let validTextAreaErrors = false;
             validTextAreaErrors = isValidTextArea(element.value, element.title);
             arrValid.push(validTextAreaErrors);
@@ -252,12 +252,13 @@ export default function NewApplicationDetail() {
       // Kiểm tra xem tất cả các phần tử trong mảng có true không
       const allTrueArrValid: boolean = arrValid.every(x => x === true);
 
-      if(allTrueArrValid === true){
+      if (allTrueArrValid === true) {
         const res = await axiosPrivate.post("newapplication/add", appJsonString);
-        if(res.data.success === 'error'){
+        if (res.data.success === 'error') {
           setError('Bị lỗi khi đăng ký');
         } else {
           setMsg('Bạn đã đăng ký thành công');
+          emitter.emit('reloadSidebar');
           setTimeout(() => {
             navigate('/newapplication');
           }, 2000);

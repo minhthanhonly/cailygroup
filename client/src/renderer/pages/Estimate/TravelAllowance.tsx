@@ -6,30 +6,29 @@ import moment from 'moment';
 
 interface Row {
   id: number;
-  date: string;
-  railwayName: string;
-  router: string;
-  startroad: string;
-  endroad: string;
-  monthlyticket: number;
-  roundtrip: number;
-  note: string;
-  totalrows: number;
-  total: number;
+  日付: string;
+  鉄道名: string;
+  路線名: string;
+  利用区間_: string;
+  利用区間: string;
+  マンスリーチケット: number;
+  往復: number;
+  備考: string;
+  合計: number;
 }
 
 
 export default function TravelAllowance(props) {
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-  const axiosPrivate = useAxiosPrivate();
-  const [rows, setRows] = useState([{ date: '', id: 0, railwayName: '', router: '', startroad: '', endroad: '', monthlyticket: 0, roundtrip: 0, note: '', totalrows: 0, total: 0, },]);
+  const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
+  const [rows, setRows] = useState([{ 日付: currentDate, id: 0, 鉄道名: '', 路線名: '', 利用区間_: '', 利用区間: '', マンスリーチケット: 0, 往復: 0, 備考: '', 合計: 0, },]);
   const [isNew, setNew] = useState(1);
   const [isChange, setChange] = useState(0);
   const [isChangePrice, setChangePrice] = useState(0);
   const [isStartNow, setIsStartNow] = useState(false);
   const [isStartDate, setIsStartDate] = useState(false);
-  const [date, setDate] = useState(new Date());
+  const [日付, setDate] = useState(new Date());
 
   const handleLeaveDateChange = (_date: DateObject | DateObject[] | null) => {
     const newRows = [...rows];
@@ -71,7 +70,7 @@ export default function TravelAllowance(props) {
   const handleNumberChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number,
-    field: 'monthlyticket' | 'roundtrip',
+    field: 'マンスリーチケット' | '往復',
   ) => {
     let inputValue = event.target.value;
     // Loại bỏ các ký tự không phải số
@@ -93,15 +92,15 @@ export default function TravelAllowance(props) {
       setRows(newRows);
     }
 
-    if (field === 'monthlyticket') {
+    if (field === 'マンスリーチケット') {
       const newmonthlyticket = [...monthlyticket];
       newmonthlyticket[index] = formattedValue;
-      newRows[index].totalrows = calculateRowTotal(newRows[index]);
+      newRows[index].合計 = calculateRowTotal(newRows[index]);
       setmonthlyticket(newmonthlyticket);
-    } else if (field === 'roundtrip') {
+    } else if (field === '往復') {
       const newroundtrip = [...roundtrip];
       newroundtrip[index] = formattedValue;
-      newRows[index].totalrows = calculateRowTotal(newRows[index]);
+      newRows[index].合計 = calculateRowTotal(newRows[index]);
       setroundtrip(newroundtrip);
     }
   };
@@ -109,7 +108,7 @@ export default function TravelAllowance(props) {
 
   const [total, setTotal] = useState(0);
   const calculateRowTotal = (row: Row) => {
-    return row.monthlyticket + row.roundtrip; // Tạm thời chỉ tính tổng từ trường mealExpense
+    return row.マンスリーチケット + row.往復; // Tạm thời chỉ tính tổng từ trường mealExpense
   };
 
   useEffect(() => {
@@ -119,14 +118,14 @@ export default function TravelAllowance(props) {
   const calculateTotal = (rows: Row[]) => {
     let sum = 0;
     rows.forEach(row => {
-      sum += row.monthlyticket + row.roundtrip;
+      sum += row.マンスリーチケット + row.往復;
     });
     setTotal(sum); // Cập nhật state total
 
     // Tính tổng của tất cả các hàng
     let totalRowsSum = 0;
     rows.forEach(row => {
-      totalRowsSum += row.totalrows;
+      totalRowsSum += row.合計;
     });
 
     return sum;
@@ -181,7 +180,7 @@ export default function TravelAllowance(props) {
   );
 
   const addRow = () => {
-    const newRow = { id: rows.length, date: '', railwayName: '', router: '', startroad: '', endroad: '', monthlyticket: 0, roundtrip: 0, note: '', totalrows: 0, total: 0 };
+    const newRow = { id: rows.length, 日付: currentDate, 鉄道名: '', 路線名: '', 利用区間_: '', 利用区間: '', マンスリーチケット: 0, 往復: 0, 備考: '', 合計: 0 };
     setRows([...rows, newRow]);
   };
 
@@ -201,7 +200,7 @@ export default function TravelAllowance(props) {
           <table>
             <thead>
               <tr>
-                <th>鉄道名 s</th>
+                <th>鉄道名</th>
                 <th>路線名</th>
                 <th className="w500">利用区間</th>
                 <th>
@@ -219,23 +218,23 @@ export default function TravelAllowance(props) {
                     {showDatePicker && (
                       <DatePicker
                         onChange={(_date) => handleLeaveDateChange(_date)}
-                        value={date}
+                        value={日付}
                         format="YYYY-MM-DD HH:mm:ss"
                       />
                     )}
                     <input
                       type="text"
-                      value={row.railwayName}
+                      value={row.鉄道名}
                       onChange={(e) =>
-                        handleInputChange(e, index, 'railwayName')
+                        handleInputChange(e, index, '鉄道名')
                       }
                     />
                   </td>
                   <td>
                     <input
                       type="text"
-                      value={row.router}
-                      onChange={(e) => handleInputChange(e, index, 'router')}
+                      value={row.路線名}
+                      onChange={(e) => handleInputChange(e, index, '路線名')}
                     />
                   </td>
                   <td>
@@ -245,17 +244,17 @@ export default function TravelAllowance(props) {
                       <input
                         className="width_auto"
                         type="text"
-                        value={row.startroad}
+                        value={row.利用区間_}
                         onChange={(e) =>
-                          handleInputChange(e, index, 'startroad')
+                          handleInputChange(e, index, '利用区間_')
                         }
                       />{' '}
                       ↔{' '}
                       <input
                         className="width_auto"
                         type="text"
-                        value={row.endroad}
-                        onChange={(e) => handleInputChange(e, index, 'endroad')}
+                        value={row.利用区間}
+                        onChange={(e) => handleInputChange(e, index, '利用区間')}
                       />
                     </p>
                   </td>
@@ -266,7 +265,7 @@ export default function TravelAllowance(props) {
                       placeholder="税率を入力"
                       value={monthlyticket[index]}
                       onChange={(e) =>
-                        handleNumberChange(e, index, 'monthlyticket')
+                        handleNumberChange(e, index, 'マンスリーチケット')
                       }
                     />
                     <input
@@ -275,15 +274,15 @@ export default function TravelAllowance(props) {
                       placeholder="税率を入力"
                       value={roundtrip[index]}
                       onChange={(e) =>
-                        handleNumberChange(e, index, 'roundtrip')
+                        handleNumberChange(e, index, '往復')
                       }
                     />
                   </td>
                   <td>
                     <input
                       className="input_noboder "
-                      value={row.note}
-                      onChange={(e) => handleInputChange(e, index, 'note')}
+                      value={row.備考}
+                      onChange={(e) => handleInputChange(e, index, '備考')}
                       placeholder="入力してください"
                       type="text"
                     />

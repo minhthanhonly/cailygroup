@@ -105,6 +105,7 @@
     $routes['application/getallstatus'] = 'application/getallstatus';
     $routes['application/deleteaccodion/.+-(\d+)'] = 'application/deleteaccodion/$1';
     $routes['application/getusers/.+-(\d+)'] = 'application/getusers/$1';
+    $routes['application/getapplicationother/.+-(\d+)'] = 'application/getapplicationother/$1';
     // Send Mail
     $routes['application/mail'] = 'application/mail';
 

@@ -37,7 +37,6 @@ export const Sidebar = () => {
   const { auth } = useAuth();
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
-
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
   const isLeader = users.roles === UserRole.LEADER;
@@ -58,7 +57,6 @@ export const Sidebar = () => {
 
   const [countIdStatusOne, setCountIdStatusOne] = useState(0);
 
-
   useEffect(() => {
     if (firstLoad) {
       reloadSidebar(); // Gọi reloadSidebar khi render lần đầu tiên
@@ -74,15 +72,17 @@ export const Sidebar = () => {
     try {
       const response = await axiosPrivate.get('search/data');
       const data = response.data;
-      const countIdStatusOne = data.reduce((total: number, item: { id_status: any; }) => {
-        return Number(item.id_status) === 1 ? total + 1 : total;
-      }, 0);
+      const countIdStatusOne = data.reduce(
+        (total: number, item: { id_status: any }) => {
+          return Number(item.id_status) === 1 ? total + 1 : total;
+        },
+        0,
+      );
       setCountIdStatusOne(countIdStatusOne);
     } catch (error) {
       console.error('Lỗi khi lấy dữ liệu:', error);
     }
   };
-
 
   return (
     <div className="sidebar">
@@ -167,14 +167,25 @@ export const Sidebar = () => {
               新規申請
             </NavLink>
           </li>
-          <li className="nav-global__item">
-            <NavLink to="/application">
-              <span className="icn">
-                <FontAwesomeIcon icon={faCalendarDays} />
-              </span>
-              申請状況 <span className="boder_count">{countIdStatusOne}</span>
-            </NavLink>
-          </li>
+          {isAdmin || isManager || isLeader ? (
+            <li className="nav-global__item">
+              <NavLink to="/application">
+                <span className="icn">
+                  <FontAwesomeIcon icon={faCalendarDays} />
+                </span>
+                申請状況 <span className="boder_count">{countIdStatusOne}</span>
+              </NavLink>
+            </li>
+          ) : (
+            <li className="nav-global__item">
+              <NavLink to={'/application/getapplicationother/' + users.id}>
+                <span className="icn">
+                  <FontAwesomeIcon icon={faCalendarDays} />
+                </span>
+                申請状況 <span className="boder_count">{countIdStatusOne}</span>
+              </NavLink>
+            </li>
+          )}
           {isAdmin || isManager ? (
             <li className="nav-global__item">
               <NavLink to="/form/add">
