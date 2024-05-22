@@ -155,7 +155,6 @@ export const Application = () => {
           idStatus = 6;
         }
         let response;
-        // console.log('id_status:', idStatus);
         if (isAdmin || isManager || isLeader) {
           response = await axiosPrivate.get('application', {
             params: {
