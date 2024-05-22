@@ -214,8 +214,6 @@ export const Application = () => {
     } catch (error) {
       console.error('Error deleting comment:', error);
     }
-
-
   };
   useEffect(() => {
     Load();

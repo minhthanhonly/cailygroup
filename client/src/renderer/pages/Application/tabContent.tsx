@@ -504,13 +504,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                         <p className="list-accordion__item__head__btn__icn">
                           <span className="icn-item">
                             <img
-                              src={editIcon}
-                              alt="edit"
-                              className="fluid-image"
-                            />
-                          </span>
-                          <span className="icn-item">
-                            <img
                               src={closeIcon}
                               alt="close"
                               className="fluid-image"
