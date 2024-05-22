@@ -117,5 +117,12 @@
                 return $this->model('ApplicationModel')->getUsers($id);
             }
         }
+
+        function getApplicationOther($userId=''){
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('ApplicationModel')->getApplicationOther($userId);
+            }
+        }
     }
 ?>
