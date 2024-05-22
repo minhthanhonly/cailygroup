@@ -182,7 +182,7 @@ export const Sidebar = () => {
                 <span className="icn">
                   <FontAwesomeIcon icon={faCalendarDays} />
                 </span>
-                申請状況 <span className="boder_count">{countIdStatusOne}</span>
+                申請状況
               </NavLink>
             </li>
           )}
