@@ -30,33 +30,6 @@ export const Application = () => {
     handleTabClick(activeTab);
   }, [activeTab]);
 
-  // const Load = async () => {
-  //   try {
-  //     const response = await axiosPrivate.get('application', {
-  //       params: { id_status: -1 },
-  //     });
-  //     const data = response.data;
-  //     setStatusTotal(data.length);
-  //     // Tạo một bản sao của statusCount
-  //     let updatedStatusCount = [0, 0, 0, 0, 0, 0, 0];
-  //     // Cập nhật updatedStatusCount dựa trên dữ liệu mới
-  //     data.forEach((item: any) => {
-  //       const statusIndex = parseInt(item.id_status);
-  //       if (
-  //         !isNaN(statusIndex) &&
-  //         statusIndex >= 0 &&
-  //         statusIndex < updatedStatusCount.length
-  //       ) {
-  //         updatedStatusCount[statusIndex] += 1;
-  //       }
-  //     });
-  //     // Cập nhật statusCount
-  //     setStatusCount(updatedStatusCount);
-  //   } catch (error) {
-  //     console.error('Lỗi khi cập nhật trạng thái:', error);
-  //   }
-  // };
-
   const Load = async () => {
     try {
       let response;
