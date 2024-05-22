@@ -100,41 +100,6 @@ export const Application = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const LoadTab = async () => {
-  //     try {
-  //       let idStatus;
-  //       if (activeTab === 'tab1') {
-  //         idStatus = 1;
-  //       } else if (activeTab === 'tab2') {
-  //         idStatus = -1;
-  //       } else if (activeTab === 'tab3') {
-  //         idStatus = 2;
-  //       } else if (activeTab === 'tab4') {
-  //         idStatus = 3;
-  //       } else if (activeTab === 'tab5') {
-  //         idStatus = 4;
-  //       } else if (activeTab === 'tab6') {
-  //         idStatus = 5;
-  //       } else if (activeTab === 'tab7') {
-  //         idStatus = 6;
-  //       }
-  //       // console.log('id_status:', idStatus);
-  //       const response = await axiosPrivate.get('application', {
-  //         params: {
-  //           id_status: idStatus,
-  //         },
-  //       });
-  //       const data = response.data;
-  //       setItems(data);
-  //       setCurrentPage(1);
-  //     } catch (error) {
-  //       console.error('Lỗi khi cập nhật trạng thái :', error);
-  //     }
-  //   };
-  //   LoadTab();
-  // }, [activeTab]);
-
   useEffect(() => {
     const LoadTab = async () => {
       try {
