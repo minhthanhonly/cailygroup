@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 
 const SomeComponent = () => {
     const [initialDate, setInitialDate] = useState(dayjs('2022-04-17'));
-    const [initialTime, setInitialTime] = useState(dayjs('2022-04-17T00:00'));
+    const [initialTime, setInitialTime] = useState(dayjs().hour(0).minute(0)); // Thiết lập chỉ thời gian
     const [selectedDate, setSelectedDate] = useState(initialDate);
     const [selectedTime, setSelectedTime] = useState(initialTime);
     const [isClockOpen, setIsClockOpen] = useState(false);
@@ -43,7 +43,7 @@ const SomeComponent = () => {
 
     const handleInitialTimeChange = (event) => {
         const timeString = event.target.value;
-        const updatedTime = initialDate.hour(parseInt(timeString.slice(0, 2))).minute(parseInt(timeString.slice(3)));
+        const updatedTime = dayjs().hour(parseInt(timeString.slice(0, 2))).minute(parseInt(timeString.slice(3))); // Thiết lập thời gian từ chuỗi
         setInitialTime(updatedTime);
     };
 
@@ -55,11 +55,27 @@ const SomeComponent = () => {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div>
-                <TextField label="Giờ ban đầu" type="time" defaultValue={initialTime.format('HH:mm')} onChange={handleInitialTimeChange} />
-                <TextField label="Chọn ngày" type="date" value={selectedDate.format('YYYY-MM-DD')} onChange={handleDateChange} />
+                <TextField
+                    label="Giờ ban đầu"
+                    type="time"
+                    defaultValue={initialTime.format('HH:mm')}
+                    onChange={handleInitialTimeChange}
+                />
+                <TextField
+                    label="Chọn ngày"
+                    type="date"
+                    value={selectedDate.format('YYYY-MM-DD')}
+                    onChange={handleDateChange}
+                />
 
                 <DemoItem label="Chọn giờ">
-                    <TimeClock value={selectedTime} onChange={handleTimeChange} ampm={false} onClose={handleCloseClock} open={isClockOpen} />
+                    <TimeClock
+                        value={selectedTime}
+                        onChange={handleTimeChange}
+                        ampm={false}
+                        onClose={handleCloseClock}
+                        open={isClockOpen}
+                    />
                 </DemoItem>
 
                 <p>Ngày đã chọn: {selectedDate.format('YYYY-MM-DD')}</p>
