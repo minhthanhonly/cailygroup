@@ -105,18 +105,14 @@ export default function NewApplicationDetail() {
 
     // Bắt lỗi Validate
     let valid = true;
-    let check: any = {childRef: childRef.current, childRefOfCheckbox: childRefOfCheckbox.current, childRefOfInputText: childRefOfInputText.current, childRefOfTextArea: childRefOfTextArea.current};
+    let check: any = { childRef: childRef.current, childRefOfCheckbox: childRefOfCheckbox.current, childRefOfInputText: childRefOfInputText.current, childRefOfTextArea: childRefOfTextArea.current };
     for (var key in check) {
-      if(check[key] !== null){
-        if(check[key].validate() == false){
+      if (check[key] !== null) {
+        if (check[key].validate() == false) {
           valid = false;
         }
       }
-		}
-
-    console.log(childRefOfTextArea.current.validate());
-
-
+    }
 
     if (formRef.current) {
       const formElements = formRef.current.elements;
@@ -222,9 +218,6 @@ export default function NewApplicationDetail() {
         //Bắt lỗi Validate các thành phần trong Table
         const formElementsInTable = formRefHaveTable.current.elements;
 
-
-
-        // Lấy tất cả các đối tượng trong Form
         // Lấy tất cả các đối tượng trong Form
         for (let i = 0; i < formElementsInTable.length; i++) {
           const element = formElementsInTable[i] as HTMLInputElement;
@@ -332,7 +325,7 @@ export default function NewApplicationDetail() {
                 return (
                   <div className="c-row" key={index}>
                     <ComponentTextArea
-                    keys={item.key}
+                      keys={item.key}
                       id={item.id}
                       label={item.label}
                       required={item.required}
