@@ -850,60 +850,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                       </div>
                                     </div>
                                   </li>
-                                  <li className="box-status">
-                                    <div>
-                                      {isLeader || isAdmin || isManager ? (
-                                        <ul className="list-status">
-                                          {idStatus.length > 0 && (
-                                            <>
-                                              {renderItem(
-                                                idStatus[0].id,
-                                                statusItems[0].label,
-                                                isChecked,
-                                                handleStatusClick,
-                                                approve.statusattrTexts ===
-                                                  idStatus[7].name,
-                                              )}
-                                              {renderItem(
-                                                idStatus[3].id,
-                                                statusItems[1].label,
-                                                isChecked,
-                                                handleStatusClick,
-                                                approve.statusattrTexts ===
-                                                  idStatus[6].name,
-                                              )}
-                                              {renderItem(
-                                                idStatus[1].id,
-                                                statusItems[2].label,
-                                                isChecked,
-                                                handleStatusClick,
-                                                approve.statusattrTexts ===
-                                                  idStatus[1].name,
-                                              )}
-                                              {renderItem(
-                                                idStatus[2].id,
-                                                statusItems[3].label,
-                                                isChecked,
-                                                handleStatusClick,
-                                                approve.statusattrTexts ===
-                                                  idStatus[2].name,
-                                              )}
-                                              {renderItem(
-                                                idStatus[5].id,
-                                                statusItems[4].label,
-                                                isChecked,
-                                                handleStatusClick,
-                                                approve.statusattrTexts ===
-                                                  idStatus[5].name,
-                                              )}
-                                            </>
-                                          )}
-                                        </ul>
-                                      ) : (
-                                        <ul></ul>
-                                      )}
-                                    </div>
-                                  </li>
                                 </ul>
                               </div>
                             </div>
