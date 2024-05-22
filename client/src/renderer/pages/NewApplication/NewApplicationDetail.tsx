@@ -114,7 +114,7 @@ export default function NewApplicationDetail() {
       }
     }
 
-    console.log(childRefOfTextArea.current.validate());
+    // console.log(childRefOfTextArea.current.validate());
 
 
 
