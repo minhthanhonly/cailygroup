@@ -1,23 +1,26 @@
 import { useImperativeHandle, forwardRef, useRef, useState } from "react";
-import { isValidText } from "../../../components/Validate";
+import { isValidText, isValidTextArea } from "../../../components/Validate";
 
 const ComponentTextArea = forwardRef((props, ref) => {
-  const [isValue, setIsValue] = useState();
+  const [isValue, setIsValue] = useState('');
 
   const handleChange = (e) => {
     setIsValue(e.target.value);
   }
 
-  const textAreaRef = useRef(null);
-  useImperativeHandle(ref, () => ({
-    validate: () => {
-      let valid = true;
-      if (isValue.trim() === '' && props.required === true) {
-        valid = isValidText(isValue, props.label);
-      }
-      return valid;
-    },
-  }));
+  // const textAreaRef = useRef(null);
+  // useImperativeHandle(ref, () => ({
+  //   validate: () => {
+  //     let valid = true;
+  //     let required = true;
+  //     if (isValue === '' && props.required === true) {
+  //       valid = isValidText(isValue, props.label);
+  //     } else {
+  //       required = false;
+  //     }
+  //     return valid;
+  //   },
+  // }));
 
   return (
   <div className="c-form">
@@ -27,7 +30,7 @@ const ComponentTextArea = forwardRef((props, ref) => {
         {props.required === true ? <span className="c-form-label--required txt-red">（必須）</span> : ''}
       </label>
       <div className="c-form-content">
-        <textarea className="c-form-control" placeholder="入力してください" name={props.id} onChange={handleChange} value="" aria-label={props.label} title={props.label} required={props.required} ref={textAreaRef}/>
+        <textarea className="c-form-control" placeholder="入力してください" name={props.id} aria-label={props.label} title={props.label} required={props.required}/>
       </div>
     </div>
   </div>

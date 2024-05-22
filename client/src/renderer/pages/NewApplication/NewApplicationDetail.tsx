@@ -114,6 +114,10 @@ export default function NewApplicationDetail() {
       }
     }
 
+    console.log(childRefOfTextArea.current.validate());
+
+
+
     if (formRef.current) {
       const formElements = formRef.current.elements;
       const formData: string[] = [];
@@ -218,6 +222,9 @@ export default function NewApplicationDetail() {
         //Bắt lỗi Validate các thành phần trong Table
         const formElementsInTable = formRefHaveTable.current.elements;
 
+
+
+        // Lấy tất cả các đối tượng trong Form
         // Lấy tất cả các đối tượng trong Form
         for (let i = 0; i < formElementsInTable.length; i++) {
           const element = formElementsInTable[i] as HTMLInputElement;

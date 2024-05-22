@@ -62,10 +62,11 @@
 
 				$userNameReg = $appPostData->userNameReg;
 				$id_status =  $appPostData->id_status;
+				$user_id =  $appPostData->user_id;
 
 				//Thêm dữ liệu vào cơ sở dữ liệu
-				$sql = "INSERT INTO application_details (datajson, owner, id_status, createdAt, updatedAt) 
-				VALUES ('$appJsonString', '$userNameReg', '$id_status', NOW(), NOW())";
+				$sql = "INSERT INTO application_details (datajson, owner, id_status, user_id, createdAt, updatedAt) 
+				VALUES ('$appJsonString', '$userNameReg', '$id_status', '$user_id', NOW(), NOW())";
 
 				$result = $conn->query($sql);
 

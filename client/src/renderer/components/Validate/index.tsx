@@ -229,9 +229,12 @@ export const isValidNumber = (Value: any, Label: string) => {
     toast.error(Label + " - " + ERROR_JP['illegal']);
     return false;
   }
+  if (Value <= 0) {
+    toast.error(Label + " - " + ERROR_JP['illegal']);
+    return false;
+  }
   return true;
 }
-
 
 export const isValidCheck = ( ckecked: boolean, Label: string ) => {
   if(!ckecked) {
@@ -241,7 +244,22 @@ export const isValidCheck = ( ckecked: boolean, Label: string ) => {
   return true;
 }
 
+export const isValidTextArea = (Value: string, Label: string) => {
+  if (!Value) {
+    toast.error(Label + ERROR_JP['require']);
+    return false;
+  }
+  return true;
+}
 
+export const isValidTime = (Value: string, Label: string) => {
+  const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+  if (regex.test(Value)!=true) {
+    toast.error(Label + " - " + ERROR_JP['illegal']);
+    return false;
+  }
+  return true;
+}
 
 export const isValidtextTable = (Value: string, Label: string) => {
   if (!Value) {
