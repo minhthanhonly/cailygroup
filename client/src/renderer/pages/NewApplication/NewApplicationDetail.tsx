@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate, BASE_URL } from "../../api/axios";
-import { isValidCheck, isValidNumber, isValidText, isValidtextTable } from "../../components/Validate/";
+import { isValidCheck, isValidNumber, isValidText, isValidTextArea, isValidtextTable } from "../../components/Validate/";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentInputText from "../Form/Component/ComponentInputText";
@@ -37,11 +37,6 @@ export default function NewApplicationDetail() {
   const childRef = useRef(null);
   const childRefOfCheckbox = useRef(null);
   const childRefOfInputText = useRef(null);
-  const childRefOfTextArea = useRef(null);
-
-
-
-
 
   const fetchNewApplicationById = async () => {
     try {
@@ -100,23 +95,20 @@ export default function NewApplicationDetail() {
   // Xử lý khi gửi Form Public
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    let validInputTextErrors = false;
+    const arrValid: any = [];
 
     // Bắt lỗi Validate
     let valid = true;
-    let check: any = { childRef: childRef.current, childRefOfCheckbox: childRefOfCheckbox.current, childRefOfInputText: childRefOfInputText.current, childRefOfTextArea: childRefOfTextArea.current };
+    let check: any = {childRef: childRef.current, childRefOfCheckbox: childRefOfCheckbox.current, childRefOfInputText: childRefOfInputText.current};
     for (var key in check) {
-      if (check[key] !== null) {
-        if (check[key].validate() == false) {
+      if(check[key] !== null){
+        if(check[key].validate() == false){
           valid = false;
         }
       }
-    }
-
-    // console.log(childRefOfTextArea.current.validate());
-
-
+		}
+    //
+    arrValid.push(valid);
 
     if (formRef.current) {
       const formElements = formRef.current.elements;
@@ -126,6 +118,15 @@ export default function NewApplicationDetail() {
       // Lấy tất cả các đối tượng trong Form
       for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i] as HTMLInputElement;
+
+        // Bắt lỗi Validate của Textarea
+        if(element.required) {
+          if(element.type === 'textarea') {
+            let validTextAreaErrors = false;
+            validTextAreaErrors = isValidTextArea(element.value, element.title);
+            arrValid.push(validTextAreaErrors);
+          }
+        }
 
         // Lấy các thuộc tính của đối tượng
         if (element.value && element.type != 'checkbox') {
@@ -204,11 +205,13 @@ export default function NewApplicationDetail() {
         id_status: 1,
         userNameReg: '',
         userEmailReg: '',
+        user_id: 0,
       };
       appJSON.appName = formName;
       appJSON.formData = formDataIsGrouped;
       appJSON.userNameReg = users.realname;
       appJSON.userEmailReg = users.user_email;
+      appJSON.user_id = users.id;
 
       const currentStatus = e.currentTarget.getAttribute('data-status');
       if (currentStatus === "draft") {
@@ -222,16 +225,15 @@ export default function NewApplicationDetail() {
         //Bắt lỗi Validate các thành phần trong Table
         const formElementsInTable = formRefHaveTable.current.elements;
 
-
-
-        // Lấy tất cả các đối tượng trong Form
         // Lấy tất cả các đối tượng trong Form
         for (let i = 0; i < formElementsInTable.length; i++) {
           const element = formElementsInTable[i] as HTMLInputElement;
 
           if (element.value === "") {
+            let validInputTextErrors = false;
             validInputTextErrors = isValidtextTable(element.value, element.title);
-            return;
+            arrValid.push(validInputTextErrors);
+            return
           }
         }
       } else {
@@ -247,23 +249,22 @@ export default function NewApplicationDetail() {
         });
       }
 
-      //const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      // if(validInputTextErrors === true && validTextAreaErrors === true){
-      const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      if (res.data.success === 'error') {
-        setError('Bị lỗi khi đăng ký');
-      } else {
-        setMsg('Bạn đã đăng ký thành công');
-        setTimeout(() => {
-          navigate('/newapplication');
-        }, 2000);
+      // Kiểm tra xem tất cả các phần tử trong mảng có true không
+      const allTrueArrValid: boolean = arrValid.every(x => x === true);
+
+      if(allTrueArrValid === true){
+        const res = await axiosPrivate.post("newapplication/add", appJsonString);
+        if(res.data.success === 'error'){
+          setError('Bị lỗi khi đăng ký');
+        } else {
+          setMsg('Bạn đã đăng ký thành công');
+          setTimeout(() => {
+            navigate('/newapplication');
+          }, 2000);
+        }
       }
-      // }
     }
-
-
   }
-
 
   return (
     <>
@@ -317,6 +318,16 @@ export default function NewApplicationDetail() {
                     />
                   </div>
                 )
+              case 'F_TextArea':
+                return (
+                  <div className="c-row" key={index}>
+                    <ComponentTextArea
+                      id={item.id}
+                      label={item.label}
+                      required={item.required}
+                    />
+                  </div>
+                )
               case 'F_TitleAndCheckbox':
                 return (
                   <div className="c-row" key={index}>
@@ -326,17 +337,6 @@ export default function NewApplicationDetail() {
                       required={item.required}
                       customProps={item.props}
                       ref={childRefOfCheckbox}
-                    />
-                  </div>
-                )
-              case 'F_TextArea':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentTextArea
-                      keys={item.key}
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
                     />
                   </div>
                 )
@@ -393,7 +393,6 @@ export default function NewApplicationDetail() {
             }
           })
         }
-        {/* <input type="file" className="form-control" onChange={(e)=>setPfile(e.target.files[0])} /> */}
       </form>
       <form ref={formRefHaveTable}>
         {
