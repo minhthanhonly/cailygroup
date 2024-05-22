@@ -6,6 +6,7 @@ import { Search } from '../Search/index';
 import TabContent from '../Application/tabContent';
 import { toast } from 'react-toastify';
 import { PaginationJp } from '../../components/PaginationJp';
+import { emitter } from '../../layouts/components/Sidebar';
 
 export const Application = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -108,6 +109,7 @@ export const Application = () => {
         `application/deleteaccodion/${id}`,
       );
       if (response.status === 200) {
+        emitter.emit('reloadSidebar');
         toast.success('Bạn đã xóa thành công !');
         setActiveTab((prevTab) => (prevTab !== 'tab2' ? 'tab2' : 'tab1'));
         //setActiveTab('tab2');
@@ -117,6 +119,8 @@ export const Application = () => {
     } catch (error) {
       console.error('Error deleting comment:', error);
     }
+
+
   };
   useEffect(() => {
     Load();
