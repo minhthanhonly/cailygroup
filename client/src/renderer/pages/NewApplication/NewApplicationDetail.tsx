@@ -161,7 +161,7 @@ export default function NewApplicationDetail() {
           formData.push(newObj);
         }
 
-        if (element.type === 'file') {
+        if (element.type === 'file' && element.value) {
           fileData.append('pfile', pfile);
           newObj = {
             id: element.name,
@@ -360,6 +360,7 @@ export default function NewApplicationDetail() {
                       label={item.label}
                       required={item.required}
                       customOptions={item.custom_options}
+                      ref={childRefOfCheckbox}
                     />
                   </div>
                 )
