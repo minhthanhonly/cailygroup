@@ -1,4 +1,17 @@
-export default function ComponentCheckboxAndDate(props){
+import { useImperativeHandle, forwardRef, useRef, useState } from "react";
+import { isValidCheck } from "../../../components/Validate";
+
+const ComponentCheckboxAndDate = forwardRef((props, ref) => {
+  const [selectedCheckbox, setSelectedCheckbox] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = (e) => {
+    const { value } = e.target;
+    setSelectedCheckbox(value);
+    setIsChecked(e.target.checked);
+    console.log(e.target.value);
+  }
+
   return (
     <div className="c-form">
       <div className="c-form-inner">
@@ -12,7 +25,19 @@ export default function ComponentCheckboxAndDate(props){
               props.customOptions.map((option, index) => {
                 return (
                   <div className="c-form-item--03" key={index}>
-                    <label className="c-form-label--03"><input type="checkbox" className="c-form-control" value={option.text} name={props.id} title={props.label} /><span className="checkmark"></span>{option.text}</label>
+                    <label className="c-form-label--03">
+                      <input
+                      id={props.id}
+                      type="checkbox"
+                      checked={selectedCheckbox === option.text}
+                      className="c-form-control"
+                      value={option.text}
+                      name={props.id}
+                      onChange={handleCheckboxChange}
+                      title={props.label} />
+                      <span className="checkmark"></span>
+                      {option.text}
+                    </label>
                   </div>
                 )
               })
@@ -31,4 +56,6 @@ export default function ComponentCheckboxAndDate(props){
       </div>
     </div>
   )
-}
+});
+
+export default ComponentCheckboxAndDate;

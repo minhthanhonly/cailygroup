@@ -326,6 +326,7 @@ export default function NewApplicationDetail() {
                       label={item.label}
                       required={item.required}
                       customProps={item.props}
+                      ref={childRefOfCheckbox}
                     />
                   </div>
                 )
@@ -336,6 +337,7 @@ export default function NewApplicationDetail() {
                       id={item.id}
                       label={item.label}
                       required={item.required}
+                      ref={childRefOfCheckbox}
                     />
                   </div>
                 )

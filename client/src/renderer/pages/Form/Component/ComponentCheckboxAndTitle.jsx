@@ -1,4 +1,27 @@
-export default function ComponentCheckboxAndTitle(props){
+import { useImperativeHandle, forwardRef, useRef, useState } from "react";
+import { isValidCheck } from "../../../components/Validate";
+
+const ComponentCheckboxAndTitle = forwardRef((props, ref) => {
+  const [selectedCheckbox, setSelectedCheckbox] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = (e) => {
+    const { value } = e.target;
+    setSelectedCheckbox(value);
+    setIsChecked(e.target.checked);
+  }
+
+  const checkboxRef = useRef(null);
+  useImperativeHandle(ref, () => ({
+    validate: () => {
+      let valid = true;
+      if (isChecked === false && props.required === true) {
+        valid = isValidCheck(isChecked, props.label);
+      }
+      return valid;
+    },
+  }));
+
   return (
     <div className="c-form">
       <div className="c-form-inner">
@@ -18,7 +41,17 @@ export default function ComponentCheckboxAndTitle(props){
                         return (
                           <div className="c-form-item--03" key={index}>
                             <label className="c-form-label--03">
-                              <input type='checkbox' className="c-form-control" value={option.text} name={props.id} title={props.label} />
+                              <input
+                              type='checkbox'
+                              ref={checkboxRef}
+                              className="c-form-control"
+                              value={option.text}
+                              id={props.id}
+                              name={props.id}
+                              title={props.label}
+                              onChange={handleCheckboxChange}
+                              checked={selectedCheckbox === option.text}
+                              required={props.required}/>
                               <span className="checkmark"></span>
                               {option.text}
                             </label>
@@ -35,4 +68,6 @@ export default function ComponentCheckboxAndTitle(props){
       </div>
     </div>
   )
-}
+});
+
+export default ComponentCheckboxAndTitle;
