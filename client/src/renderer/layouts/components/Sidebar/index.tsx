@@ -167,14 +167,6 @@ export const Sidebar = () => {
               新規申請
             </NavLink>
           </li>
-          <li className="nav-global__item">
-            <NavLink to="/application">
-              <span className="icn">
-                <FontAwesomeIcon icon={faCalendarDays} />
-              </span>
-              申請状況 <span className="boder_count">{countIdStatusOne}</span>
-            </NavLink>
-          </li>
           {isAdmin || isManager || isLeader ? (
             <li className="nav-global__item">
               <NavLink to="/application">
@@ -186,11 +178,11 @@ export const Sidebar = () => {
             </li>
           ) : (
             <li className="nav-global__item">
-              <NavLink to={`/application/${users.id}`}>
+              <NavLink to={'/application/getapplicationother/' + users.id}>
                 <span className="icn">
                   <FontAwesomeIcon icon={faCalendarDays} />
                 </span>
-                申請状況 <span className="boder_count">{countIdStatusOne}</span>
+                user <span className="boder_count">{countIdStatusOne}</span>
               </NavLink>
             </li>
           )}

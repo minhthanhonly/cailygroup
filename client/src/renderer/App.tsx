@@ -34,7 +34,6 @@ import FormAdd from './pages/Form/FormAdd';
 import NewApplication from './pages/NewApplication';
 import NewApplicationDetail from './pages/NewApplication/NewApplicationDetail';
 
-
 export default function App() {
   const { id } = useParams<{ id: string }>();
 
@@ -84,7 +83,6 @@ export default function App() {
               <Route path="Search" element={<Search />} />
               <Route path="estimate" element={<Estimate />} />
 
-
               {/* <Route
                 path="estimate/8"
                 element={<ExpenseReport id_table="8" />}
@@ -102,6 +100,10 @@ export default function App() {
               <Route path="field" element={<Field />} />
 
               <Route path="application" element={<Application />} />
+              <Route
+                path="application/getapplicationother/:id"
+                element={<Application />}
+              />
               <Route path="application/getforid/:id" />
               <Route path="form/add" element={<FormAdd />} />
 

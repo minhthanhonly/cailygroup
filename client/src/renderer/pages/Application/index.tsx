@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Heading2 } from '../../components/Heading';
+import { UserRole } from '../../components/UserRole';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Link } from 'react-router-dom';
 import { Search } from '../Search/index';
@@ -8,6 +9,10 @@ import { toast } from 'react-toastify';
 import { PaginationJp } from '../../components/PaginationJp';
 
 export const Application = () => {
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const isAdmin = users.roles === UserRole.ADMIN;
+  const isManager = users.roles === UserRole.MANAGER;
+  const isLeader = users.roles === UserRole.LEADER;
   const axiosPrivate = useAxiosPrivate();
   const [activeTab, setActiveTab] = useState('tab2');
   const [idStatus, setIdStatus] = useState('');
@@ -24,17 +29,60 @@ export const Application = () => {
     handleTabClick(activeTab);
   }, [activeTab]);
 
+  // const Load = async () => {
+  //   try {
+  //     const response = await axiosPrivate.get('application', {
+  //       params: { id_status: -1 },
+  //     });
+  //     const data = response.data;
+  //     setStatusTotal(data.length);
+  //     // Tạo một bản sao của statusCount
+  //     let updatedStatusCount = [0, 0, 0, 0, 0, 0, 0];
+  //     // Cập nhật updatedStatusCount dựa trên dữ liệu mới
+  //     data.forEach((item: any) => {
+  //       const statusIndex = parseInt(item.id_status);
+  //       if (
+  //         !isNaN(statusIndex) &&
+  //         statusIndex >= 0 &&
+  //         statusIndex < updatedStatusCount.length
+  //       ) {
+  //         updatedStatusCount[statusIndex] += 1;
+  //       }
+  //     });
+  //     // Cập nhật statusCount
+  //     setStatusCount(updatedStatusCount);
+  //   } catch (error) {
+  //     console.error('Lỗi khi cập nhật trạng thái:', error);
+  //   }
+  // };
+
   const Load = async () => {
     try {
-      const response = await axiosPrivate.get('application', {
-        params: { id_status: -1 },
-      });
+      let response;
+
+      if (isAdmin || isManager || isLeader) {
+        response = await axiosPrivate.get('application', {
+          params: { id_status: -1 },
+        });
+        //console.log('1');
+      } else {
+        response = await axiosPrivate.get(
+          'application/getapplicationother/' + users.id,
+          {
+            params: { id_status: -1 },
+          },
+        );
+        //console.log('2');
+      }
+
       const data = response.data;
+      //console.log(data); // Log dữ liệu để kiểm tra
       setStatusTotal(data.length);
+
       // Tạo một bản sao của statusCount
       let updatedStatusCount = [0, 0, 0, 0, 0, 0, 0];
       // Cập nhật updatedStatusCount dựa trên dữ liệu mới
-      data.forEach((item: any) => {
+      data.forEach((item) => {
         const statusIndex = parseInt(item.id_status);
         if (
           !isNaN(statusIndex) &&
@@ -50,6 +98,41 @@ export const Application = () => {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
+
+  // useEffect(() => {
+  //   const LoadTab = async () => {
+  //     try {
+  //       let idStatus;
+  //       if (activeTab === 'tab1') {
+  //         idStatus = 1;
+  //       } else if (activeTab === 'tab2') {
+  //         idStatus = -1;
+  //       } else if (activeTab === 'tab3') {
+  //         idStatus = 2;
+  //       } else if (activeTab === 'tab4') {
+  //         idStatus = 3;
+  //       } else if (activeTab === 'tab5') {
+  //         idStatus = 4;
+  //       } else if (activeTab === 'tab6') {
+  //         idStatus = 5;
+  //       } else if (activeTab === 'tab7') {
+  //         idStatus = 6;
+  //       }
+  //       // console.log('id_status:', idStatus);
+  //       const response = await axiosPrivate.get('application', {
+  //         params: {
+  //           id_status: idStatus,
+  //         },
+  //       });
+  //       const data = response.data;
+  //       setItems(data);
+  //       setCurrentPage(1);
+  //     } catch (error) {
+  //       console.error('Lỗi khi cập nhật trạng thái :', error);
+  //     }
+  //   };
+  //   LoadTab();
+  // }, [activeTab]);
 
   useEffect(() => {
     const LoadTab = async () => {
@@ -70,12 +153,24 @@ export const Application = () => {
         } else if (activeTab === 'tab7') {
           idStatus = 6;
         }
+        let response;
         // console.log('id_status:', idStatus);
-        const response = await axiosPrivate.get('application', {
-          params: {
-            id_status: idStatus,
-          },
-        });
+        if (isAdmin || isManager || isLeader) {
+          response = await axiosPrivate.get('application', {
+            params: {
+              id_status: idStatus,
+            },
+          });
+        } else {
+          response = await axiosPrivate.get(
+            'application/getapplicationother/' + users.id,
+            {
+              params: {
+                id_status: idStatus,
+              },
+            },
+          );
+        }
         const data = response.data;
         setItems(data);
         setCurrentPage(1);
