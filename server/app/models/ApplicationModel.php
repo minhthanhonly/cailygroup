@@ -27,29 +27,6 @@
             $conn->close();
         }
 
-        // function getApplicationOther($userId){
-        //     global $conn;
-        //     $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
-        //     $sql = "SELECT * FROM application_details";
-        //     if ($statusFilter != -1) {
-        //         $sql .= " WHERE id_status = $statusFilter and  application_details.user_id = $userId"; // Sửa từ $query thành $sql
-        //     }
-        //     $sql .= " ORDER BY id DESC"; 
-        //     echo $sql;
-        //     exit();
-        //     $result = $conn->query($sql);
-        //     $data = array();
-        //     if ($result->num_rows > 0) {
-        //        while ($row = $result->fetch_assoc()) {
-        //             $data[] = $row;
-        //         }
-        //     }
-        //     // Trả về dữ liệu dưới dạng JSON
-        //     header('Content-Type: application/json');
-        //     echo json_encode($data);
-        //     return;
-        //     $conn->close();
-        // }
         function getApplicationOther($userId) {
             global $conn;
             $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
