@@ -57,9 +57,6 @@
             $conn->close();
         }
         
-        
-        
-
         function getAllStatus(){
             global $conn;
             $sql = "SELECT * FROM status";
@@ -77,8 +74,6 @@
             return;
             $conn->close();
         }
-
-        
 
         function getApplicationByIdStatus($idStatus){
             global $conn;
