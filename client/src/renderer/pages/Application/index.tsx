@@ -15,7 +15,7 @@ export const Application = () => {
   const isManager = users.roles === UserRole.MANAGER;
   const isLeader = users.roles === UserRole.LEADER;
   const axiosPrivate = useAxiosPrivate();
-  const [activeTab, setActiveTab] = useState('tab1');
+  const [activeTab, setActiveTab] = useState('tab2');
   const [idStatus, setIdStatus] = useState('');
   const [id_status, setIdstatus] = useState('');
   const [items, setItems] = useState<any>([]);
