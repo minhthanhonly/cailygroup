@@ -31,7 +31,6 @@
 
     require_once(__DIR__.'/app/App.php');
 
-    require_once(__DIR__.'/assets/mailer/mailer_cfg.php');
     require_once(__DIR__.'/assets/mailer/PHPMailer.php');
     require_once(__DIR__.'/assets/mailer/SMTP.php');
     require_once(__DIR__.'/assets/mailer/Exception.php');

@@ -100,6 +100,7 @@ export default function App() {
               <Route path="field" element={<Field />} />
 
               <Route path="application" element={<Application />} />
+              <Route path="application/:tab" element={<Application />} />
               <Route
                 path="application/getapplicationother/:id"
                 element={<Application />}

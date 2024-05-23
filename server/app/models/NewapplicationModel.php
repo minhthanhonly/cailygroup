@@ -1,4 +1,8 @@
 <?php
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\SMTP;
+	use PHPMailer\PHPMailer\Exception;
+
 	class NewapplicationModel extends Model{
 		function getList(){
 			global $conn;
@@ -53,6 +57,10 @@
 
 		function postAdd($appJsonString){
 			global $conn;
+			global $config;
+
+			$adminEmail = $config['email_admin'];
+			$adminName = $config['name_admin'];
 			
 			if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -60,11 +68,64 @@
 				$appJsonString = file_get_contents("php://input");
 				$appPostData = json_decode(file_get_contents("php://input"));
 
+				$appName = $appPostData->appName;
 				$userNameReg = $appPostData->userNameReg;
+				$userEmailReg = $appPostData->userEmailReg;
 				$id_status =  $appPostData->id_status;
 				$user_id =  $appPostData->user_id;
 
-				//Thêm dữ liệu vào cơ sở dữ liệu
+				// Send Mail
+				if($id_status === 1){
+					// -------------------------- Mail Content --------------------------
+					$content = '';
+					$content .= "<div class='box_email--content'>";
+					$content .= "<p>件名：".$appName."</p>";
+					$content .= "<p>株式会社GUIS <br>".$userNameReg."（".$userEmailReg."）</p>";
+
+					$content .= "<p>新規申請書があります。</p>";
+					$content .= "<p>----------------------------------------------------------------------</p>";
+					$content .= "<p>申請者: ".$userNameReg."</p>";
+					$content .= "<p>状態: 承認待ち</p>";
+					$content .= "<p>申請の種類: ".$appName."</p>";
+					$content .= "<p>----------------------------------------------------------------------</p>";
+
+					$content .= "<p>以下のURLにアクセスして詳細を確認してください。</p><p>http://".$_SERVER['HTTP_HOST'].'/caily/'."</p>";
+					$content .= "<p class='box_email--note'># 本メールはシステムより自動送信されています。<br># 本メールに返信されましても、返答できませんのでご了承ください。</p></div>";
+
+					try{
+						//Server settings
+						$mail = new PHPMailer(true);
+						// $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+						$mail->isSMTP();                                            //Send using SMTP
+						$mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+						$mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+						$mail->Username   = 'tu.caily.com.vn@gmail.com';                     //SMTP username
+						$mail->Password   = 'rnxztvdgxsoizaze';                               //SMTP password
+						$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+						$mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+
+						//Recipients
+						$mail->setFrom('caily-noreply@caily.com.vn', 'CAILY GROUP - '.$appName);   // Email và tên người gửi
+						$mail->addAddress($adminEmail, $adminName);     //Add a recipient
+						$mail->addReplyTo('noreply@caily.com.vn', 'Noreply');
+
+						//Content
+						$mail->CharSet = "UTF-8";
+						$mail->isHTML(true);                                  //Set email format to HTML
+						$mail->Subject = $config['subject_admin'];
+						$mail->Body    = $content;
+						$mail->AltBody = '';
+
+						/* Send Mail */ 	
+						$mail->send();
+						$host  = $_SERVER['HTTP_HOST'];
+						// header("Location: http://$host/contact/complete.html");
+					} catch (Exception $e) {
+						echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+					}
+				}
+
+				// Thêm dữ liệu vào cơ sở dữ liệu
 				$sql = "INSERT INTO application_details (datajson, owner, id_status, user_id, createdAt, updatedAt) 
 				VALUES ('$appJsonString', '$userNameReg', '$id_status', '$user_id', NOW(), NOW())";
 
