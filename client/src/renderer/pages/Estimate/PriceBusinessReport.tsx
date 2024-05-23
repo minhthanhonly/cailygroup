@@ -18,27 +18,17 @@ interface Row {
     その他: number;
     備考: string;
     合計: number;
-    日: number;
-    仮払金差引合計: number;
-    合計金額: number;
     精算額: number;
 
 }
-
-
 
 
 export default function PriceBusinessReport(props) {
 
     const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
 
-    const [rows, setRows] = useState<Row[]>([{ id: 0, 項目: '', 日付: currentDate, 交通費: 0, 宿泊費: 0, 交際費: 0, 食費: 0, その他: 0, 備考: '', 合計: 0, 日: 0, 仮払金差引合計: 0, 合計金額: 0, 精算額: 0, }]);
+    const [rows, setRows] = useState<Row[]>([{ id: 0, 項目: '', 日付: currentDate, 交通費: 0, 宿泊費: 0, 交際費: 0, 食費: 0, その他: 0, 備考: '', 合計: 0, 精算額: 0, }]);
     const [日付, setDate] = useState(new Date());
-    const [selectedFileName, setSelectedFileName] = useState('');
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [isDomestic, setDomestic] = useState(1);
-    const [isForeign, setForeign] = useState(0);
-    const [totalColumnSum, setTotalColumnSum] = useState<number>(0);
 
     const [inputValue, setInputValue] = useState<number>(0);
     const [inputDate, setInputDate] = useState<number>(0);
@@ -81,17 +71,26 @@ export default function PriceBusinessReport(props) {
         setVisibleErrors(newVisibleErrors);
     };
 
+
+    const [calculatedPrice, setCalculatedPrice] = useState(0);
+    const [finalPayment, setFinalPayment] = useState(0);
+    const [finalTotalPrice, setFinalTotalPrice] = useState(0);
+
+
+
+
+
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
         const { value } = event.target;
         setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
 
-            const newCalculatedPrice = inputDate * 3000;
-            const newFinalPayment = totalSum - inputValue;
-            const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
+
+
             const newRowsWithTotal = newRows.map(row => ({
-                ...row, 精算額: finalTotalPrice, 日: inputDate, 合計金額: calculatedPrice, 仮払金差引合計: newFinalTotalPrice,
+                ...row, 精算額: finalTotalPriceState,
             }));
 
             props.parentCallback(newRowsWithTotal); // callback props ve cha
@@ -132,6 +131,29 @@ export default function PriceBusinessReport(props) {
     const [priceOther, setpriceOther] = useState<string[]>(new Array(rows.length).fill(''));
 
     const [total, setTotal] = useState(0);
+
+
+    const newCalculatedPrice = inputDate * 3000;
+    const newFinalPayment = totalSum - inputValue;
+    const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
+    useEffect(() => {
+
+
+        setCalculatedPrice(newCalculatedPrice);
+        setFinalPayment(newFinalPayment);
+        setFinalTotalPrice(newFinalTotalPrice);
+        setFinalTotalPriceState(newFinalTotalPrice);
+
+        const newRowsWithTotal = rows.map(row => ({
+            ...row,
+            精算額: newFinalTotalPrice,
+        }));
+
+        setRows(newRowsWithTotal);
+        props.parentCallback(newRowsWithTotal);
+    }, [inputValue, inputDate, totalSum]);
+
+    const [finalTotalPriceState, setFinalTotalPriceState] = useState(newFinalTotalPrice);
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: '交通費' | '宿泊費' | '交際費' | '食費' | 'その他') => {
         let inputValue = event.target.value;
@@ -224,47 +246,55 @@ export default function PriceBusinessReport(props) {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
-    const [calculatedPrice, setCalculatedPrice] = useState(0);
-    const [finalPayment, setFinalPayment] = useState(0);
-    const [finalTotalPrice, setFinalTotalPrice] = useState(0);
+
+
+
+    const handleInputChangeGeneral = (event: React.ChangeEvent<HTMLInputElement>, type: 'value' | 'date') => {
+        const newValue = parseFloat(event.target.value.replace(/,/g, ''));
+        const valueToSet = isNaN(newValue) ? 0 : newValue;
+
+        if (type === 'value') {
+            setInputValue(valueToSet);
+            //  updateParentCallback(valueToSet, inputDate);
+        } else if (type === 'date') {
+            setInputDate(valueToSet);
+            // updateParentCallback(inputValue, valueToSet);
+        }
+    };
+
 
 
     useEffect(() => {
-        const newCalculatedPrice = inputDate * 3000;
-        const newFinalPayment = totalSum - inputValue;
-        const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
+        setFinalTotalPriceState(newFinalTotalPrice);
+    }, [newFinalTotalPrice]);
 
-        setCalculatedPrice(newCalculatedPrice);
-        setFinalPayment(newFinalPayment);
-        setFinalTotalPrice(newFinalTotalPrice);
-    }, [inputDate, inputValue, totalSum]);
+    // const updateParentCallback = (newValue: number, newPrice: number) => {
 
+    //     const newCalculatedPrice = newPrice * 3000;
+    //     console.log("newCalculatedPrice", newCalculatedPrice);
+    //     const newFinalPayment = totalSum - newValue;
+    //     console.log("newFinalPayment", newFinalPayment);
 
-
-    const handleInputValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = parseFloat(event.target.value.replace(/,/g, ''));
-
-        const valueToSet = isNaN(newValue) ? 0 : newValue;
-        setInputValue(valueToSet);
+    //     const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
+    //     console.log("newFinalTotalPrice", newFinalTotalPrice);
 
 
+    //     setFinalTotalPriceState(newFinalTotalPrice);
 
-    };
-    const handleInputPrice = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue1 = parseFloat(event.target.value.replace(/,/g, ''));
-        const valueToSet = isNaN(newValue1) ? 0 : newValue1;
-        setInputDate(valueToSet);
+    //     const newRowsWithTotal = rows.map(row => ({
+    //         ...row,
+    //         精算額: finalTotalPriceState,
+    //     }));
 
-
-    };
-
+    //     props.parentCallback(newRowsWithTotal);
+    // };
 
     useEffect(() => {
         calculateTotalSum();
     }, [rows]); // Lắng nghe sự thay đổi của mảng rows ////  
 
     const addRow = () => {
-        const newRow = { id: rows.length, 項目: '', 日付: currentDate, 交通費: 0, 宿泊費: 0, 交際費: 0, 食費: 0, その他: 0, 備考: '', 合計: 0, 日: 0, 仮払金差引合計: 0, 合計金額: 0, 精算額: 0 };
+        const newRow = { id: rows.length, 項目: '', 日付: currentDate, 交通費: 0, 宿泊費: 0, 交際費: 0, 食費: 0, その他: 0, 備考: '', 合計: 0, 精算額: 0 };
         setRows([...rows, newRow]);
         calculateTotalSum();
     };
@@ -315,11 +345,25 @@ export default function PriceBusinessReport(props) {
                             </tr>
                             <tr>
                                 <th>仮払金</th>
-                                <td><input className='input_noboder numberInput' type="text" placeholder='金額を入力' value={formatNumberWithCommas(inputValue)} onChange={handleInputValueChange} /></td>
+                                <td>
+                                    <input
+                                        className='input_noboder numberInput'
+                                        type="text"
+                                        placeholder='金額を入力'
+                                        value={formatNumberWithCommas(inputValue)}
+                                        onChange={(e) => handleInputChangeGeneral(e, 'value')}
+                                    />
+                                </td>
                             </tr>
                             <tr>
                                 <th>出張手当</th>
-                                <td><span>日当 3,000 × </span><input className='input_noboder w100 numberInput' type="text" placeholder='日数を入力' value={inputDate} onChange={handleInputPrice} /><span>日</span><span className="price">{formatNumberWithCommas(calculatedPrice)}</span> </td>
+                                <td><span>日当 3,000 × </span> <input
+                                    className='input_noboder w100 numberInput'
+                                    type="text"
+                                    placeholder='日数を入力'
+                                    value={inputDate}
+                                    onChange={(e) => handleInputChangeGeneral(e, 'date')}
+                                /><span>日</span><span className="price">{formatNumberWithCommas(calculatedPrice)}</span> </td>
                             </tr>
                             <tr>
                                 <th>精算額</th>
