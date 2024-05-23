@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Menberdetails } from '../../components/Menberdetails';
 import { useParams } from 'react-router-dom';
-import axios from "../../api/axios";
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 export const UserDetail = () => {

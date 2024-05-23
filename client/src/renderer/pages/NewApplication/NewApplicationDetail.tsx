@@ -91,6 +91,12 @@ export default function NewApplicationDetail() {
   // Truy cập vào Form có Table
   const formRefHaveTable = useRef<HTMLFormElement>(null);
 
+  // Chuyển hướng về trang 申請状況 khi đăng ký thành công
+  const Redirect = (parameter: string) => {
+    setTimeout(() => {
+      navigate(`/application/${parameter}`);
+    }, 2000);
+  }
 
   // Xử lý khi gửi Form Public
   const handleSubmit = async (e) => {
@@ -107,7 +113,6 @@ export default function NewApplicationDetail() {
         }
       }
     }
-    //
     arrValid.push(valid);
 
     if (formRef.current) {
@@ -252,6 +257,7 @@ export default function NewApplicationDetail() {
       // Kiểm tra xem tất cả các phần tử trong mảng có true không
       const allTrueArrValid: boolean = arrValid.every(x => x === true);
 
+
       if (allTrueArrValid === true) {
         const res = await axiosPrivate.post("newapplication/add", appJsonString);
         if (res.data.success === 'error') {
@@ -260,7 +266,7 @@ export default function NewApplicationDetail() {
           setMsg('Bạn đã đăng ký thành công');
           emitter.emit('reloadSidebar');
           setTimeout(() => {
-            navigate('/newapplication');
+            navigate('/application/');
           }, 2000);
         }
       }
