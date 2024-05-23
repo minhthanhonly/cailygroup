@@ -4,9 +4,13 @@ import { axiosPrivate } from "../../api/axios";
 import { Heading2 } from "../../components/Heading";
 import ButtonDelete from "../../components/Button/ButtonDelete";
 import Modaldelete from "../../components/Modal/Modaldelete";
+import { UserRole } from "../../components/UserRole";
 
 export default function NewApplication(){
   const [isTableUpdated, setIsTableUpdated] = useState(false);
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const isAdmin = users.roles === UserRole.ADMIN;
+  const isManager = users.roles === UserRole.MANAGER;
 
   type FieldNewApplication = {
     form_description: string;
@@ -52,7 +56,7 @@ export default function NewApplication(){
             <tr key={index}>
               <th><NavLink to={"detail/" + value.id} className="link">{value.form_name}</NavLink></th>
               <td>{value.form_description}</td>
-              <td><ButtonDelete onButtonClick={() => openModal(value.id)}/></td>
+              {(isAdmin || isManager) ? <td><ButtonDelete onButtonClick={() => openModal(value.id)}/></td> : ''}
             </tr>
           ))}
         </tbody>

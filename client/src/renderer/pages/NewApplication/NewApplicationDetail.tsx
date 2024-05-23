@@ -29,11 +29,7 @@ export default function NewApplicationDetail() {
   const [msg, setMsg] = useState('');
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [pfile, setPfile] = useState('');
-
-  //
   const fileData = new FormData();
-
-  //
   const childRef = useRef(null);
   const childRefOfCheckbox = useRef(null);
   const childRefOfInputText = useRef(null);

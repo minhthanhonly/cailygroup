@@ -50,7 +50,7 @@ interface ListTabsProps {
   }[];
   //number?: number; // Khai báo number là một props tùy chọn
 }
-export const ListTabs: React.FC<ListTabsProps> = ({ tab, number }) => {
+export const ListTabs: React.FC<ListTabsProps> = ({ tab }) => {
   return (
     <div className='tab01 tab-head'>
       {tab.map((item, index) => (
