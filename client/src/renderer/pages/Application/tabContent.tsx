@@ -843,6 +843,33 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                       </div>
                                     </div>
                                   </li>
+                                  <li className="box-status">
+                                    <div>
+                                      <ul className="list-status">
+                                        {idStatus.length > 0 && (
+                                          <>
+                                            {renderItem(
+                                              idStatus[0].id,
+                                              statusItems[0].label,
+                                              isChecked,
+                                              handleStatusClick,
+                                              approve.statusattrTexts ===
+                                                idStatus[7].name,
+                                            )}
+
+                                            {renderItem(
+                                              idStatus[2].id,
+                                              statusItems[3].label,
+                                              isChecked,
+                                              handleStatusClick,
+                                              approve.statusattrTexts ===
+                                                idStatus[2].name,
+                                            )}
+                                          </>
+                                        )}
+                                      </ul>
+                                    </div>
+                                  </li>
                                 </ul>
                               </div>
                             </div>
