@@ -856,7 +856,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                               approve.statusattrTexts ===
                                                 idStatus[7].name,
                                             )}
-
                                             {renderItem(
                                               idStatus[2].id,
                                               statusItems[3].label,
