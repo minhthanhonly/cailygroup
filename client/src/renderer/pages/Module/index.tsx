@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import './moduleSCSS.scss'
 import { TableBase } from "../../components/Table/Table";
 import SomeComponent from '../Date/ComponentDate';
+import DatePicker from "react-multi-date-picker";
+import TimePicker from "react-multi-date-picker/plugins/time_picker";
 
-
+import { setHours, setMinutes } from 'date-fns';
 
 export const Module = () => {
 	const [isInputVisible, setIsInputVisible] = useState(false);
@@ -16,7 +18,12 @@ export const Module = () => {
 		// Stop the click event propagation to prevent it from reaching the parent div
 		e.stopPropagation();
 	};
+	// const [startDate, setStartDate] = useState(new Date());
+	const [startTime, setStartTime] = useState(new Date());
 
+	const handleTimeChange = (time: React.SetStateAction<Date>) => {
+		setStartTime(time?.isValid ? time.toDate() : time);
+	};
 	return (
 		<>
 			<div>
@@ -864,9 +871,16 @@ export const Module = () => {
 			</div>
 
 			<div className="mt-3">
-				<SomeComponent />
+				<DatePicker
+					value={startTime}
+					onChange={handleTimeChange}
+					format="hh:mm A"
+					plugins={[<TimePicker position="bottom" />]}
+					hideWeekDays
+					disableDayPicker
+				/>
 			</div>
-
+			{startTime && startTime instanceof Date && <p>{startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>}
 		</>
 
 	);
