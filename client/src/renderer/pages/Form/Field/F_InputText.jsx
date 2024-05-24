@@ -4,7 +4,7 @@ import ComponentLabel from '../Component/ComponentLabel';
 class F_InputText extends React.Component {
   constructor(props) {
     super(props);
-    this.inputField = React.createRef();
+    // this.inputField = React.createRef();
   }
 
   render() {
@@ -30,7 +30,7 @@ class F_InputText extends React.Component {
           <div className="c-form-inner">
             <ComponentLabel {...this.props} />
             <div className="c-form-content">
-              <input className="c-form-control" placeholder="入力してください" {...props} />
+              <input className="c-form-control" id={this.props.data.id} placeholder="入力してください" {...props} />
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { ReactFormBuilder, ElementStore, Registry } from "react-form-builder2";
 import 'react-form-builder2/dist/app.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './Form.scss';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 import { Heading2 } from "../../components/Heading";
@@ -31,11 +31,10 @@ export default function FormAdd() {
   const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin' });
   const [formDescription, setFormDescription] = useState('');
   const [reactFormData, setReactFormData] = useState<any>([]);
-  const [formElementsArr, setFormElementsArr] = useState<any>([]);
+  const [reactFormData2, setReactFormData2] = useState<any>([]);
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
-  const formBuilderRef = useRef(null);
 
   const items = [
     {
@@ -331,45 +330,18 @@ export default function FormAdd() {
     setFormDescription(newValue);
   }
 
-  // const handleUpdate = (props) => {
-  //   console.log(reactFormData);
-  // }
+  const handleUpdate = (props) => {
+    console.log(props);
+  }
 
   const handleSubmit = async (e) => {
-    const formElements = formBuilderRef.current.elements;
-
-
-    let formArr = [];
-    // Lấy tất cả các đối tượng trong Form
-    for (let i = 0; i < formElements.length; i++) {
-      const element = formElements[i] as HTMLInputElement;
-      // setFormElementsArr([...formElementsArr, element.name]);
-      formArr.push(element.id)
-    }
-
-
-    const existingItems = reactFormData.filter(item => formArr.includes(item.id));
-    // let fArr = [];
-    // fArr.push(existingNumbers.join(', '))
-    // setReactFormData(existingItems);
-    console.log(existingItems);
-
-
-
-
-
     e.preventDefault();
     let validationErrors = true;
     // const validationErrors = isValidForm({ ...formValue }, reactFormData);
     if (validationErrors === true) {
       const formData = { form_name: formValue.form_name, formDescription, reactFormData, status: formValue.status, owner: formValue.owner }
-      console.log(formData.reactFormData);
-
-
       if(formData.reactFormData.length === reactFormData.length) {
-
-
-
+        console.log(reactFormData);
         // const res = await axiosPrivate.post("form/add", formData);
         // if (res.data.success === 'error') {
         //   setError('Bị lỗi khi thêm Form mới');
@@ -407,15 +379,13 @@ export default function FormAdd() {
         <textarea className="c-form-control" name="form_description" placeholder="Enter description here" value={formDescription} onChange={handleTextareaChange}></textarea>
       </div>
       <div className="c-form mt50">
-        <form ref={formBuilderRef}>
-          <ReactFormBuilder
-            data={reactFormData}
-            // onChange={handleUpdate}
-            toolbarItems={items}
-            onSubmit={handleSubmit}
-            renderEditForm={props => <FormElementsEdit {...props} />}
-          />
-        </form>
+        <ReactFormBuilder
+          data={reactFormData}
+          // toolbarItems={items}
+          // onPost={handleUpdate}
+          onSubmit={handleSubmit}
+          // renderEditForm={props => <FormElementsEdit {...props} />}
+        />
       </div>
       <div className="wrp-button">
         <button className="btn btn--from btn--gray" onClick={handleSubmitDraft}>下書き保存</button>

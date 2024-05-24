@@ -53,7 +53,7 @@ export default class FormElementsEdit extends React.Component {
     // elemProperty could be content or label
     // targProperty could be value or checked
     let this_element = this.state.element;
-    let this_element_add_tittle_and_checkbox = false;
+    // let this_element_add_tittle_and_checkbox = false;
     this_element[elemProperty].map((option) => {
       switch (propsProperty){
         case 'days':
@@ -65,10 +65,10 @@ export default class FormElementsEdit extends React.Component {
         case 'timesto':
           option.timesto = e.target[targProperty];
           break;
-        case 'title':
-          option.timesto = e.target[targProperty];
-          this_element_add_tittle_and_checkbox = option.timesto;
-          break;
+        // case 'title':
+        //   option.timesto = e.target[targProperty];
+        //   this_element_add_tittle_and_checkbox = option.timesto;
+        //   break;
       }
     });
 
@@ -104,8 +104,6 @@ export default class FormElementsEdit extends React.Component {
     if(propsProperty === 'text') {
       this_element[elemProperty][index].text = e.target.value;
     }
-
-    console.log(this_element);
 
     this.setState({
       element: this_element,
@@ -231,7 +229,7 @@ export default class FormElementsEdit extends React.Component {
             <Editor
               toolbar={toolbar}
               defaultEditorState={editorState}
-              // onBlur={this.updateElement.bind(this)}
+              onBlur={this.updateElement.bind(this)}
               onEditorStateChange={this.onEditorStateChange.bind(this, 0, 'label')}
               stripPastedStyles={true} />
             <div className="custom-control custom-checkbox mt30">

@@ -14,7 +14,7 @@ class F_TextArea extends React.Component {
           <div className="c-form-inner">
             <ComponentLabel {...this.props} />
             <div className="c-form-content">
-              <textarea className="c-form-control" placeholder="入力してください"></textarea>
+              <textarea className="c-form-control" id={this.props.data.id} placeholder="入力してください"></textarea>
             </div>
           </div>
         </div>
