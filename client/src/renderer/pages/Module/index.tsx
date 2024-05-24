@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react';
 import './moduleSCSS.scss'
 import { TableBase } from "../../components/Table/Table";
 import SomeComponent from '../Date/ComponentDate';
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
+import DatePicker from "react-multi-date-picker";
+import TimePicker from "react-multi-date-picker/plugins/time_picker";
 
 import { setHours, setMinutes } from 'date-fns';
 
@@ -18,13 +20,11 @@ export const Module = () => {
 		e.stopPropagation();
 	};
 	// const [startDate, setStartDate] = useState(new Date());
-	const [startDate, setStartDate] = useState<Date | null>(
-		setHours(setMinutes(new Date(), 30), 16)
-	);
-	const handleDateChange = (date: Date | null) => {
-		setStartDate(date);
-	};
+	const [startDate, setStartDate] = useState<Date | null>(new Date());
 
+	const handleDateChange = (date: any) => {
+		setStartDate(date ? date.toDate() : null);
+	};
 	return (
 		<>
 			<div>
@@ -873,14 +873,15 @@ export const Module = () => {
 
 			<div className="mt-3">
 				<DatePicker
-					selected={startDate}
-					onChange={(date) => setStartDate(date)}
-					timeInputLabel="Time:"
-					dateFormat="MM/dd/yyyy h:mm aa"
-					showTimeInput
+					value={startDate}
+					onChange={handleDateChange}
+					format="MMMM D, YYYY h:mm A"
+					plugins={[
+						<TimePicker position="bottom" />
+					]}
 				/>
 			</div>
-
+			{startDate && <p>{startDate.toLocaleString()}</p>}
 		</>
 
 	);
