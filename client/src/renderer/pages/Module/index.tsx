@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import './moduleSCSS.scss'
 import { TableBase } from "../../components/Table/Table";
 import SomeComponent from '../Date/ComponentDate';
+import DatePicker from "react-datepicker";
 
-
+import { setHours, setMinutes } from 'date-fns';
 
 export const Module = () => {
 	const [isInputVisible, setIsInputVisible] = useState(false);
@@ -15,6 +16,13 @@ export const Module = () => {
 	const handleInputClick = (e) => {
 		// Stop the click event propagation to prevent it from reaching the parent div
 		e.stopPropagation();
+	};
+	// const [startDate, setStartDate] = useState(new Date());
+	const [startDate, setStartDate] = useState<Date | null>(
+		setHours(setMinutes(new Date(), 30), 16)
+	);
+	const handleDateChange = (date: Date | null) => {
+		setStartDate(date);
 	};
 
 	return (
@@ -864,7 +872,13 @@ export const Module = () => {
 			</div>
 
 			<div className="mt-3">
-				<SomeComponent />
+				<DatePicker
+					selected={startDate}
+					onChange={(date) => setStartDate(date)}
+					timeInputLabel="Time:"
+					dateFormat="MM/dd/yyyy h:mm aa"
+					showTimeInput
+				/>
 			</div>
 
 		</>
