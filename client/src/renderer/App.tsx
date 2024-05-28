@@ -32,6 +32,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import FormAdd from './pages/Form/FormAdd';
 import NewApplication from './pages/NewApplication';
 import NewApplicationDetail from './pages/NewApplication/NewApplicationDetail';
+import NewApplicationEdit from './pages/NewApplication/NewApplicationEdit';
 
 export default function App() {
   const { id } = useParams<{ id: string }>();
@@ -109,6 +110,10 @@ export default function App() {
               <Route
                 path="newapplication/detail/:id"
                 element={<NewApplicationDetail />}
+              />
+              <Route
+                path="newapplication/edit/:id"
+                element={<NewApplicationEdit />}
               />
             </Route>
           </Route>

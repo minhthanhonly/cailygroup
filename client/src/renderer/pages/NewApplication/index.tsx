@@ -5,6 +5,7 @@ import { Heading2 } from "../../components/Heading";
 import ButtonDelete from "../../components/Button/ButtonDelete";
 import Modaldelete from "../../components/Modal/Modaldelete";
 import { UserRole } from "../../components/UserRole";
+import ButtonEdit from "../../components/Button/ButtonEdit";
 
 export default function NewApplication(){
   const [isTableUpdated, setIsTableUpdated] = useState(false);
@@ -56,7 +57,7 @@ export default function NewApplication(){
             <tr key={index}>
               <th><NavLink to={"detail/" + value.id} className="link">{value.form_name}</NavLink></th>
               <td>{value.form_description}</td>
-              {(isAdmin || isManager) ? <td><ButtonDelete onButtonClick={() => openModal(value.id)}/></td> : ''}
+              {(isAdmin || isManager) ? <td className="--w10"><ButtonEdit href={"/newapplication/edit/" + value.id} /><ButtonDelete onButtonClick={() => openModal(value.id)}/></td> : ''}
             </tr>
           ))}
         </tbody>

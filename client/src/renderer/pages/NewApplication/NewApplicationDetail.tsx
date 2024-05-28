@@ -18,7 +18,9 @@ import ComponentCheckboxAndInputText from "../Form/Component/ComponentCheckboxAn
 import ComponentInputFile from "../Form/Component/ComponentInputFile";
 import ComponentCheckboxAndDate from "../Form/Component/ComponentCheckboxAndDate";
 import ComponentTextAndLabel from "../Form/Component/ComponentTextAndLabel";
+import ComponentRadioButtons from "../Form/Component/ComponentRadioButtons";
 import { emitter } from "../../layouts/components/Sidebar";
+
 
 export default function NewApplicationDetail() {
   const { id } = useParams();
@@ -269,30 +271,73 @@ export default function NewApplicationDetail() {
     }
   }
 
-  const renderComponents = (item) => {
-    // Tạo các component tương ứng với các key trong đối tượng
-    return Object.keys(item).map(key => (
-        <div key={key}>
-            <p>{key}</p>
-        </div>
-    ));
-  };
-
-  const componentMap: { [key: string]: React.FC<{ name: string }> } = {
+  // Gọi ra các thành phần của FORM
+  const componentMap: { [key: string]: React.FC<{ id: string, label: string, text?: string, required: boolean, value?: any, customProps?: any, customOptions?: any, days?: boolean, times?: boolean, timesto?: boolean, parentCallback?: any, ref?: any, parentFileCallback?: any, parentClearFileCallback?: any}> } = {
     'F_Text': ComponentText,
-    'F_InputText': <ComponentInputText/>,
+    'F_TextAndLabel': ComponentTextAndLabel,
+    'F_InputText': ComponentInputText,
+    'F_TextArea': ComponentTextArea,
+    'F_DatePicker': ComponentDatePicker,
+    'F_RadioButtons': ComponentRadioButtons,
+    'F_TitleAndCheckbox': ComponentCheckboxAndTitle,
+    'F_Checkbox': ComponentCheckbox,
+    'F_CheckboxAndInputText': ComponentCheckboxAndInputText,
+    'F_CheckboxAndDate': ComponentCheckboxAndDate,
+    'F_InputFile': ComponentInputFile,
     // Thêm các ánh xạ khác nếu cần
   };
 
-  const renderedComponents = formData.map(item => {
+  // Render các thành phần có trong FORM
+  const renderedComponents = formData.map((item, index) => {
     const Component = componentMap[item.key]
     if (Component) {
-      return <Component key={item.key} name={item.name} />;
+      let valRel: any = null;
+      (item.key === 'F_InputText') ? valRel = childRefOfInputText :
+      (item.key === 'F_DatePicker') ? valRel = childRef :
+      (item.key === 'F_TitleAndCheckbox' || item.key === 'F_Checkbox' || item.key === 'F_CheckboxAndInputText') ? valRel = childRefOfCheckbox : valRel;
+      return (
+        <div className="c-row" key={index}>
+          {(item.key === 'F_DatePicker') ?
+            <Component
+              id={item.id}
+              label={item.label}
+              required={item.required}
+              customOptions={item.custom_options}
+              days={item.props[0].days}
+              times={item.props[0].times}
+              timesto={item.props[0].timesto}
+              parentCallback={callBackFunction}
+              ref={valRel}
+            /> : (item.key === 'F_InputFile') ?
+            <Component
+              id={item.id}
+              label={item.label}
+              required={item.required}
+              value={item.value}
+              parentFileCallback={fileCallBackFunction}
+              parentClearFileCallback={fileClearCallBackFunction}
+            /> : (item.key === 'F_TextAndLabel') ?
+            <Component
+              id={item.id}
+              label={item.label}
+              text={item.props[0].text}
+              required={item.required}
+            /> :
+            <Component
+              id={item.id}
+              label={item.label}
+              text={item.content}
+              required={item.required}
+              customProps={item.props}
+              customOptions={item.custom_options}
+              ref={valRel}
+            />
+          }
+        </div>
+      );
     }
     return null;
   });
-
-
 
   return (
     <>
@@ -300,164 +345,43 @@ export default function NewApplicationDetail() {
       {error == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
       {msg == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
       <div className="c-row"><p className="txt-lead">下記の通り申請致します。 </p></div>
-      {renderedComponents}
-      {/* <form ref={formRef}>
-        {
-          formData.map((item, index) => {
-            switch (item.key) {
-              case 'F_Text':
-                return <div className="c-row" key={index}><ComponentText text={item.content} /></div>;
-              case 'F_TextAndLabel':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentTextAndLabel
-                      keys={item.key}
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
-                      text={item.props[0].text}
-                    />
-                  </div>
-                )
-              case 'F_InputText':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentInputText
-                      keys={item.key}
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
-                      ref={childRefOfInputText}
-                    />
-                  </div>
-                )
-              case 'F_DatePicker':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentDatePicker
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
-                      customOptions={item.custom_options}
-                      days={item.props[0].days}
-                      times={item.props[0].times}
-                      timesto={item.props[0].timesto}
-                      parentCallback={callBackFunction}
-                      ref={childRef}
-                    />
-                  </div>
-                )
-              case 'F_TextArea':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentTextArea
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
-                    />
-                  </div>
-                )
-              case 'F_TitleAndCheckbox':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentCheckboxAndTitle
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
-                      customProps={item.props}
-                      ref={childRefOfCheckbox}
-                    />
-                  </div>
-                )
-              case 'F_Checkbox':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentCheckbox
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
-                      customOptions={item.custom_options}
-                      ref={childRefOfCheckbox}
-                    />
-                  </div>
-                )
-              case 'F_CheckboxAndInputText':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentCheckboxAndInputText
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
-                      customOptions={item.custom_options}
-                      ref={childRefOfCheckbox}
-                    />
-                  </div>
-                )
-              case 'F_CheckboxAndDate':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentCheckboxAndDate
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
-                      customOptions={item.custom_options}
-                    />
-                  </div>
-                )
-              case 'F_InputFile':
-                return (
-                  <div className="c-row" key={index}>
-                    <ComponentInputFile
-                      id={item.id}
-                      label={item.label}
-                      required={item.required}
-                      value={item.value}
-                      parentFileCallback={fileCallBackFunction}
-                      parentClearFileCallback={fileClearCallBackFunction}
-                    />
-                  </div>
-                )
-              default:
-                formHTML += "";
-                break;
-            }
-          })
-        }
-      </form> */}
+      <form ref={formRef}>
+        {renderedComponents}
+      </form>
       <form ref={formRefHaveTable}>
-        {
-          formData.map((item, index) => {
-            switch (item.key) {
-              case 'T_TableTravelExpenses':
-                return (
-                  <div className="c-row" key={index}>
-                    <TravelExpenses id_table={undefined} parentCallback={callBackFunction2} />
-                  </div>
-                )
-              case 'T_TableExpenseReport':
-                return (
-                  <div className="c-row" key={index}>
-                    <ExpenseReport id_table={undefined} parentCallback={callBackFunction2} />
-                  </div>
-                )
-              case 'T_TablePriceBusinessReport':
-                return (
-                  <div className="c-row" key={index}>
-                    <PriceBusinessReport id_table={undefined} parentCallback={callBackFunction2} />
-                  </div>
-                )
-              case 'T_TableTravelAllowance':
-                return (
-                  <div className="c-row" key={index}>
-                    <TravelAllowance id_table={undefined} parentCallback={callBackFunction2} />
-                  </div>
-                )
-              default:
-                formHTML += "";
-                break;
-            }
-          })
-        }
+      {
+        formData.map((item, index) => {
+          switch (item.key) {
+            case 'T_TableTravelExpenses':
+              return (
+                <div className="c-row" key={index}>
+                  <TravelExpenses id_table={undefined} parentCallback={callBackFunction2} />
+                </div>
+              )
+            case 'T_TableExpenseReport':
+              return (
+                <div className="c-row" key={index}>
+                  <ExpenseReport id_table={undefined} parentCallback={callBackFunction2} />
+                </div>
+              )
+            case 'T_TablePriceBusinessReport':
+              return (
+                <div className="c-row" key={index}>
+                  <PriceBusinessReport id_table={undefined} parentCallback={callBackFunction2} />
+                </div>
+              )
+            case 'T_TableTravelAllowance':
+              return (
+                <div className="c-row" key={index}>
+                  <TravelAllowance id_table={undefined} parentCallback={callBackFunction2} />
+                </div>
+              )
+            default:
+              formHTML += "";
+              break;
+          }
+        })
+      }
       </form>
       <div className="box-router">
         <div className="box-router__title">承認ルート</div>
