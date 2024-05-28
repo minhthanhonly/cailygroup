@@ -337,7 +337,7 @@ export default function FormAdd() {
 
   const handleUpdate = (data:any) => {
     setReactFormData(data);
-   }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -385,7 +385,6 @@ export default function FormAdd() {
         <ReactFormBuilder
           data={reactFormData}
           toolbarItems={items}
-
           onSubmit={handleSubmit}
           onChange={handleUpdate}
           renderEditForm={props => <FormElementsEdit {...props} />}

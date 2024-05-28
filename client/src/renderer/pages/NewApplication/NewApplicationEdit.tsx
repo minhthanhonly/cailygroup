@@ -23,13 +23,12 @@ import { axiosPrivate } from "../../api/axios";
 export default function NewApplicationEdit(){
   const {id} = useParams();
   const [formName, setFormName] = useState('');
-  // const [formData, setFormData] = useState<any>([]);
-  const formData: any = [];
+  const [formData, setFormData] = useState<any>([]);
   const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin' });
   const [formDescription, setFormDescription] = useState('');
 
   useEffect(()=> {
-    // ElementStore.subscribe((state:any)=>handleUpdate(state.data))
+    ElementStore.subscribe((state:any)=>handleUpdate(state.data))
   },[])
 
   const items = [
@@ -348,6 +347,12 @@ export default function NewApplicationEdit(){
     setFormDescription(newValue);
   }
 
+  const handleUpdate = (data:any) => {
+    setFormData(data);
+  }
+
+  const reactFormData = JSON.stringify(formData)
+
   return (
     <>
       <Heading2 text="Edit Form" />
@@ -366,7 +371,8 @@ export default function NewApplicationEdit(){
       </div>
       <div className="c-form mt50">
         <ReactFormBuilder
-          data={formData}
+          // data={reactFormData}
+          answer_data={formData}
           toolbarItems={items}
           // onSubmit={handleSubmit}
           // onChange={handleUpdate}
