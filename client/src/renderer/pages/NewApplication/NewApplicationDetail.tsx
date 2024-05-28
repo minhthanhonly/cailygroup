@@ -269,13 +269,39 @@ export default function NewApplicationDetail() {
     }
   }
 
+  const renderComponents = (item) => {
+    // Tạo các component tương ứng với các key trong đối tượng
+    return Object.keys(item).map(key => (
+        <div key={key}>
+            <p>{key}</p>
+        </div>
+    ));
+  };
+
+  const componentMap: { [key: string]: React.FC<{ name: string }> } = {
+    'F_Text': ComponentText,
+    'F_InputText': <ComponentInputText/>,
+    // Thêm các ánh xạ khác nếu cần
+  };
+
+  const renderedComponents = formData.map(item => {
+    const Component = componentMap[item.key]
+    if (Component) {
+      return <Component key={item.key} name={item.name} />;
+    }
+    return null;
+  });
+
+
+
   return (
     <>
       <Heading2 text={formName} />
       {error == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
       {msg == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
       <div className="c-row"><p className="txt-lead">下記の通り申請致します。 </p></div>
-      <form ref={formRef}>
+      {renderedComponents}
+      {/* <form ref={formRef}>
         {
           formData.map((item, index) => {
             switch (item.key) {
@@ -397,7 +423,7 @@ export default function NewApplicationDetail() {
             }
           })
         }
-      </form>
+      </form> */}
       <form ref={formRefHaveTable}>
         {
           formData.map((item, index) => {

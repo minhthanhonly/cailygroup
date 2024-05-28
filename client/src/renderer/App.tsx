@@ -29,7 +29,6 @@ import { Search } from './pages/Search/';
 import RequireAuth from './components/RequireAuth';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Field from './pages/From/Field';
 import FormAdd from './pages/Form/FormAdd';
 import NewApplication from './pages/NewApplication';
 import NewApplicationDetail from './pages/NewApplication/NewApplicationDetail';
@@ -96,8 +95,6 @@ export default function App() {
                 element={<TravelAllowance id_table="10" />}
               /> */}
               {/* Khu cua thịnh */}
-
-              <Route path="field" element={<Field />} />
 
               <Route path="application" element={<Application />} />
               <Route path="application/:tab" element={<Application />} />

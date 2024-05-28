@@ -218,7 +218,7 @@ export default class FormElementsEdit extends React.Component {
             <Editor
               toolbar={toolbar}
               defaultEditorState={editorState}
-              // onBlur={this.updateElement.bind(this)}
+              onBlur={this.updateElement.bind(this)}
               onEditorStateChange={this.onEditorStateChange.bind(this, 0, 'content')}
               stripPastedStyles={true} />
           </div>
