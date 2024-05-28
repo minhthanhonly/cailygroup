@@ -20,11 +20,8 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const [Items, setItems] = useState<any>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [commentFirst, setCommentFirst] = useState<any>([]);
-  const [commentSeCond, setCommentSeCond] = useState<any>([]);
-  const [commentThird, setCommentThird] = useState<any>([]);
   const [textValue, setTextValue] = useState('');
   const [commentValue, setCommentValue] = useState('');
-  const [commentValueThird, setCommentValueThird] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [approve, setApprove] = useState({
     approveTexts: '',
@@ -72,7 +69,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   };
   useEffect(() => {
     LoadIdStatus();
-  }, [idStatus]);
+  }, []); //idStatus
 
   // Tiến hành gửi mail gồm dữ liệu gửi mail và hành động thực hiện (Comment hoặc Click thay đổi trạng thái)
   const sendMailWhenCmt = async (idStatus, cmtData, action) => {
@@ -235,7 +232,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
 
   useEffect(() => {
     getCommentForUserFirst();
-  }, [id]);
+  }, []);
 
   const handleAddCommentForUserFirst = async () => {
     const note = textValue.trim(); // Loại bỏ các khoảng trắng dư thừa
@@ -343,8 +340,9 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
 
   useEffect(() => {
     getUser();
-  }, [id]);
+  }, []);
   const noop = () => {}; // No-op function
+
   return (
     <>
       {userData.length > 0 ? (
@@ -450,23 +448,28 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                       ：（
                                                       {commentItem.createdAt}）
                                                     </span>
-
-                                                    <>
-                                                      <span
-                                                        className="btn-delete"
-                                                        onClick={() =>
-                                                          handleDeleteCommentForUserFirst(
-                                                            commentItem.id,
-                                                          )
-                                                        }
-                                                      >
-                                                        <img
-                                                          src={require('../../../../assets/close.png')}
-                                                          alt="delete"
-                                                          className="fluid-image"
-                                                        />
-                                                      </span>
-                                                    </>
+                                                    {isMember &&
+                                                    commentItem.user_id ===
+                                                      users.id ? (
+                                                      <>
+                                                        <span
+                                                          className="btn-delete"
+                                                          onClick={() =>
+                                                            handleDeleteCommentForUserFirst(
+                                                              commentItem.id,
+                                                            )
+                                                          }
+                                                        >
+                                                          <img
+                                                            src={require('../../../../assets/close.png')}
+                                                            alt="delete"
+                                                            className="fluid-image"
+                                                          />
+                                                        </span>
+                                                      </>
+                                                    ) : (
+                                                      <span>không có</span>
+                                                    )}
                                                   </p>
                                                   <p className="box-approves__item__content__comment__text">
                                                     {commentItem.note}
@@ -694,7 +697,9 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                     ）
                                                   </span>
 
-                                                  {isAdmin ? (
+                                                  {isAdmin &&
+                                                  commentItem.user_id ===
+                                                    users.id ? (
                                                     <>
                                                       <span
                                                         className="btn-delete"
