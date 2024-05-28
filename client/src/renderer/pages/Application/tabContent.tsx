@@ -20,11 +20,8 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const [Items, setItems] = useState<any>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [commentFirst, setCommentFirst] = useState<any>([]);
-  const [commentSeCond, setCommentSeCond] = useState<any>([]);
-  const [commentThird, setCommentThird] = useState<any>([]);
   const [textValue, setTextValue] = useState('');
   const [commentValue, setCommentValue] = useState('');
-  const [commentValueThird, setCommentValueThird] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [approve, setApprove] = useState({
     approveTexts: '',
@@ -72,7 +69,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   };
   useEffect(() => {
     LoadIdStatus();
-  }, [idStatus]);
+  }, []); //idStatus
 
   // Tiến hành gửi mail gồm dữ liệu gửi mail và hành động thực hiện (Comment hoặc Click thay đổi trạng thái)
   const sendMailWhenCmt = async (idStatus, cmtData, action) => {
@@ -137,6 +134,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
         (approve.statusattrTexts === '承認済み' && id_status === '4') ||
         (approve.statusattrTexts === '差し戻し' && id_status === '2') ||
         (approve.statusattrTexts === '却下' && id_status === '3') ||
+        (approve.statusattrTexts === '下書き' && id_status === '5') ||
         (approve.statusattrTexts === '取り消し' && id_status === '6')
       ) {
         return;
@@ -234,7 +232,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
 
   useEffect(() => {
     getCommentForUserFirst();
-  }, [id]);
+  }, []);
 
   const handleAddCommentForUserFirst = async () => {
     const note = textValue.trim(); // Loại bỏ các khoảng trắng dư thừa
@@ -282,136 +280,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
     }
   };
 
-  const getCommentForUserSecond = async () => {
-    try {
-      const response = await axiosPrivate.get(
-        'application/getcommentforusersecond/' + id,
-      );
-      const commentData = response.data;
-      if (Array.isArray(commentData)) {
-        commentData.forEach((commentSeCond) => {});
-        setCommentSeCond(commentData);
-      } else {
-        console.error('Error fetching data: Response data is not an array');
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  const handleAddCommentSeCond = async () => {
-    const note = commentValue.trim(); // Loại bỏ các khoảng trắng dư thừa
-    if (note.length === 0) {
-      console.error('Không thể thêm comment: Nội dung trống');
-      return;
-    }
-    try {
-      const comment_data = {
-        note: commentValue,
-        user_id: users.id,
-        aplication_id: id,
-        authority_id: 2,
-      };
-      setCommentValue('');
-      const res = await axiosPrivate.post(
-        'application/addcommentsecond/',
-        comment_data,
-      );
-      getCommentForUserSecond();
-
-      // Send mail
-      const id_status = Items.id_status;
-      sendMailWhenCmt(id_status, comment_data, 'cmt');
-    } catch (error) {
-      console.error('Lỗi khi thêm comment:', error);
-    }
-  };
-
-  const handleDeleteSeCond = async (commentId: any) => {
-    try {
-      const response = await axiosPrivate.delete(
-        `application/deletecommentsecond/${commentId}`,
-      );
-      if (response.status === 200) {
-        console.log('Comment deleted successfully');
-        getCommentForUserSecond();
-      } else {
-        console.error('Failed to delete comment:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error deleting comment:', error);
-    }
-  };
-
-  useEffect(() => {
-    getCommentForUserSecond();
-  }, [id]);
-
-  const getCommentForUserThird = async () => {
-    try {
-      const response = await axiosPrivate.get(
-        'application/getcommentforuserthird/' + id,
-      );
-      const commentData = response.data;
-      if (Array.isArray(commentData)) {
-        commentData.forEach((commentThird) => {});
-        setCommentThird(commentData);
-      } else {
-        console.error('Error fetching data: Response data is not an array');
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    getCommentForUserThird();
-  }, [id]);
-
-  const handleAddCommentThird = async () => {
-    const note = commentValueThird.trim(); // Loại bỏ các khoảng trắng dư thừa
-    if (note.length === 0) {
-      console.error('Không thể thêm comment: Nội dung trống');
-      return;
-    }
-    try {
-      const comment_data = {
-        note: commentValueThird,
-        user_id: users.id,
-        aplication_id: id,
-        authority_id: 3,
-      };
-      setCommentValueThird('');
-      const res = await axiosPrivate.post(
-        'application/addcommentthird/',
-        comment_data,
-      );
-      getCommentForUserThird();
-
-      // Send mail
-      const id_status = Items.id_status;
-      sendMailWhenCmt(id_status, comment_data, 'cmt');
-    } catch (error) {
-      console.error('Lỗi khi thêm comment:', error);
-    }
-  };
-
-  const handleDeleteThird = async (commentId: any) => {
-    try {
-      const response = await axiosPrivate.delete(
-        `application/deletecommentthird/${commentId}`,
-      );
-      if (response.status === 200) {
-        console.log('Comment deleted successfully');
-        getCommentForUserThird();
-      } else {
-        console.error('Failed to delete comment:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error deleting comment:', error);
-    }
-  };
-
   const renderItem = (
     statusId: any,
     label: any,
@@ -424,8 +292,8 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
       (approve.statusattrTexts === idStatus[7]?.name ||
         approve.statusattrTexts === idStatus[6]?.name ||
         approve.statusattrTexts === idStatus[1]?.name ||
-        approve.statusattrTexts === idStatus[4]?.name ||
         approve.statusattrTexts === idStatus[2]?.name ||
+        approve.statusattrTexts === idStatus[4]?.name ||
         approve.statusattrTexts === idStatus[5]?.name);
     return (
       <li key={statusId}>
@@ -447,11 +315,12 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   };
 
   const statusItems = [
-    { idIndex: 0, label: '未', activeIndex: 7 },
-    { idIndex: 3, label: '完', activeIndex: 6 },
-    { idIndex: 1, label: '却', activeIndex: 1 },
-    { idIndex: 2, label: '下', activeIndex: 4 },
-    { idIndex: 5, label: '消', activeIndex: 5 },
+    { label: '未', activeIndex: 7 },
+    { label: '完', activeIndex: 6 },
+    { label: '戻', activeIndex: 1 },
+    { label: '却', activeIndex: 2 },
+    { label: '下', activeIndex: 4 },
+    { label: '消', activeIndex: 5 },
   ];
 
   const getUser = async () => {
@@ -471,7 +340,8 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
 
   useEffect(() => {
     getUser();
-  }, [id]);
+  }, []);
+  const noop = () => {}; // No-op function
 
   return (
     <>
@@ -551,13 +421,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                   </li>
                                   <li>
                                     <div className="box-approves__item">
-                                      <div className="box-approves__item__title">
-                                        {isAdmin ? (
-                                          <span className="active">1</span>
-                                        ) : (
-                                          <span>1</span>
-                                        )}
-                                      </div>
                                       <div className="box-approves__item__content">
                                         <p className="box-approves__item__content__text">
                                           承認者名：
@@ -585,8 +448,9 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                       ：（
                                                       {commentItem.createdAt}）
                                                     </span>
-
-                                                    {isAdmin ? (
+                                                    {isMember &&
+                                                    commentItem.user_id ===
+                                                      users.id ? (
                                                       <>
                                                         <span
                                                           className="btn-delete"
@@ -604,7 +468,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                         </span>
                                                       </>
                                                     ) : (
-                                                      <span></span>
+                                                      <span>không có</span>
                                                     )}
                                                   </p>
                                                   <p className="box-approves__item__content__comment__text">
@@ -615,31 +479,28 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                             )}
                                           </div>
                                         )}
-                                        {isAdmin ? (
-                                          <>
-                                            <textarea
-                                              placeholder="ココメントを入力（任意1000文字以内）"
-                                              value={textValue}
-                                              onChange={(event) =>
-                                                setTextValue(event.target.value)
-                                              }
-                                            />
-                                            <p className="box-approves__item__content__btn">
-                                              <span>
-                                                <a
-                                                  className="btncomment btn02"
-                                                  onClick={
-                                                    handleAddCommentForUserFirst
-                                                  }
-                                                >
-                                                  コメントする
-                                                </a>
-                                              </span>
-                                            </p>
-                                          </>
-                                        ) : (
-                                          <div></div>
-                                        )}
+                                        <>
+                                          <textarea
+                                            placeholder="ココメントを入力（任意1000文字以内）"
+                                            value={textValue}
+                                            onChange={(event) =>
+                                              setTextValue(event.target.value)
+                                            }
+                                          />
+                                          <p className="box-approves__item__content__btn">
+                                            <span>
+                                              <a
+                                                className="btncomment btn02"
+                                                onClick={
+                                                  handleAddCommentForUserFirst
+                                                }
+                                              >
+                                                コメントする
+                                              </a>
+                                            </span>
+                                          </p>
+                                        </>
+
                                         <p className="list-btn">
                                           <span className="list-btn__item">
                                             <span
@@ -654,217 +515,71 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                       </div>
                                     </div>
                                   </li>
-                                  <li>
-                                    <div className="box-approves__item">
-                                      <div className="box-approves__item__title">
-                                        {isManager ? (
-                                          <span className="active">2</span>
-                                        ) : (
-                                          <span>2</span>
-                                        )}
-                                      </div>
-                                      <div className="box-approves__item__content">
-                                        <p className="box-approves__item__content__text">
-                                          承認者名：
-                                          {commentSeCond.length > 0 &&
-                                            commentSeCond[0].realname}
-                                          （申請日時：
-                                          {accordionItems.date}
-                                          {'\u00A0\u00A0'}
-                                          {accordionItems.time}）
-                                        </p>
-                                        {commentSeCond.length > 0 && (
-                                          <div className="box-approves__item__content__comment">
-                                            {commentSeCond.map(
-                                              (
-                                                commentItem: any,
-                                                index: any,
-                                              ) => (
-                                                <div
-                                                  key={index}
-                                                  className="box-approves__item__content__comment__item"
-                                                >
-                                                  <p className="box-approves__item__content__comment__head">
-                                                    <span className="box-approves__item__content__comment__title">
-                                                      {commentItem.realname}
-                                                      ：（
-                                                      {commentItem.createdAt}）
-                                                    </span>
-                                                    {isManager ? (
-                                                      <>
-                                                        <span
-                                                          className="btn-delete"
-                                                          onClick={() =>
-                                                            handleDeleteSeCond(
-                                                              commentItem.id,
-                                                            )
-                                                          }
-                                                        >
-                                                          <img
-                                                            src={require('../../../../assets/close.png')}
-                                                            alt="delete"
-                                                            className="fluid-image"
-                                                          />
-                                                        </span>
-                                                      </>
-                                                    ) : (
-                                                      <span></span>
-                                                    )}
-                                                  </p>
-                                                  <p className="box-approves__item__content__comment__text">
-                                                    {commentItem.note}
-                                                  </p>
-                                                </div>
-                                              ),
-                                            )}
-                                          </div>
-                                        )}
-                                        {isManager ? (
-                                          <>
-                                            <textarea
-                                              placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
-                                              value={commentValue}
-                                              onChange={(event) =>
-                                                setCommentValue(
-                                                  event.target.value,
-                                                )
-                                              }
-                                            />
-                                            <p className="box-approves__item__content__btn">
-                                              <span>
-                                                <a
-                                                  className="btncomment btn02"
-                                                  onClick={
-                                                    handleAddCommentSeCond
-                                                  }
-                                                >
-                                                  コメントする
-                                                </a>
-                                              </span>
-                                            </p>
-                                          </>
-                                        ) : (
-                                          <div></div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li>
-                                    <div className="box-approves__item">
-                                      <div className="box-approves__item__title">
-                                        {isLeader ? (
-                                          <span className="active">3</span>
-                                        ) : (
-                                          <span>3</span>
-                                        )}
-                                      </div>
-                                      <div className="box-approves__item__content">
-                                        <p className="box-approves__item__content__text">
-                                          承認者名：
-                                          {commentThird.length > 0 &&
-                                            commentThird[0].realname}
-                                          （申請日時：
-                                          {accordionItems.date}
-                                          {'\u00A0\u00A0'}
-                                          {accordionItems.time}）
-                                        </p>
-                                        {commentThird.length > 0 && (
-                                          <div className="box-approves__item__content__comment">
-                                            {commentThird.map(
-                                              (
-                                                commentItem: any,
-                                                index: any,
-                                              ) => (
-                                                <div
-                                                  key={index}
-                                                  className="box-approves__item__content__comment__item"
-                                                >
-                                                  <p className="box-approves__item__content__comment__head">
-                                                    <span className="box-approves__item__content__comment__title">
-                                                      {commentItem.realname}
-                                                      ：（
-                                                      {commentItem.createdAt}）
-                                                    </span>
-                                                    {isLeader ? (
-                                                      <>
-                                                        <span
-                                                          className="btn-delete"
-                                                          onClick={() =>
-                                                            handleDeleteThird(
-                                                              commentItem.id,
-                                                            )
-                                                          }
-                                                        >
-                                                          <img
-                                                            src={require('../../../../assets/close.png')}
-                                                            alt="delete"
-                                                            className="fluid-image"
-                                                          />
-                                                        </span>
-                                                      </>
-                                                    ) : (
-                                                      <span></span>
-                                                    )}
-                                                  </p>
-                                                  <p className="box-approves__item__content__comment__text">
-                                                    {commentItem.note}
-                                                  </p>
-                                                </div>
-                                              ),
-                                            )}
-                                          </div>
-                                        )}
-                                        {isLeader ? (
-                                          <>
-                                            <textarea
-                                              placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
-                                              value={commentValueThird}
-                                              onChange={(event) =>
-                                                setCommentValueThird(
-                                                  event.target.value,
-                                                )
-                                              }
-                                            />
-                                            <p className="box-approves__item__content__btn">
-                                              <span>
-                                                <a
-                                                  className="btncomment btn02"
-                                                  onClick={
-                                                    handleAddCommentThird
-                                                  }
-                                                >
-                                                  コメントする
-                                                </a>
-                                              </span>
-                                            </p>
-                                          </>
-                                        ) : (
-                                          <div></div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </li>
                                   <li className="box-status">
                                     <div>
                                       <ul className="list-status">
                                         {idStatus.length > 0 && (
                                           <>
                                             {renderItem(
-                                              idStatus[0].id,
+                                              idStatus[0].id, //trong database id_status = 1 nhưng do chạy vòng lặp nên sẽ đếm từ 0
                                               statusItems[0].label,
                                               isChecked,
-                                              handleStatusClick,
+                                              isMember
+                                                ? noop
+                                                : handleStatusClick,
                                               approve.statusattrTexts ===
                                                 idStatus[7].name,
                                             )}
-
                                             {renderItem(
-                                              idStatus[4].id,
+                                              idStatus[3].id, //trong database id_status = 2
+                                              statusItems[1].label,
+                                              isChecked,
+                                              isMember
+                                                ? noop
+                                                : handleStatusClick,
+                                              approve.statusattrTexts ===
+                                                idStatus[6].name,
+                                            )}
+                                            {renderItem(
+                                              idStatus[1].id,
+                                              statusItems[2].label,
+                                              isChecked,
+                                              isMember
+                                                ? noop
+                                                : handleStatusClick,
+                                              approve.statusattrTexts ===
+                                                idStatus[1].name,
+                                            )}
+                                            {renderItem(
+                                              idStatus[2].id,
                                               statusItems[3].label,
                                               isChecked,
-                                              handleStatusClick,
+                                              isMember
+                                                ? noop
+                                                : handleStatusClick,
+                                              approve.statusattrTexts ===
+                                                idStatus[2].name,
+                                            )}
+                                            {renderItem(
+                                              idStatus[4].id,
+                                              statusItems[4].label,
+                                              isChecked,
+                                              isMember
+                                                ? noop
+                                                : handleStatusClick,
                                               approve.statusattrTexts ===
                                                 idStatus[4].name,
+                                            )}
+
+                                            {renderItem(
+                                              idStatus[5].id,
+                                              statusItems[5].label,
+                                              isChecked,
+                                              isMember
+                                                ? noop
+                                                : handleStatusClick,
+                                              approve.statusattrTexts ===
+                                                idStatus[5].name,
                                             )}
                                           </>
                                         )}
@@ -957,13 +672,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                 </li>
                                 <li>
                                   <div className="box-approves__item">
-                                    <div className="box-approves__item__title">
-                                      {isAdmin ? (
-                                        <span className="active">1</span>
-                                      ) : (
-                                        <span>1</span>
-                                      )}
-                                    </div>
                                     <div className="box-approves__item__content">
                                       <p className="box-approves__item__content__text">
                                         承認者名：
@@ -989,7 +697,9 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                     ）
                                                   </span>
 
-                                                  {isAdmin ? (
+                                                  {isAdmin &&
+                                                  commentItem.user_id ===
+                                                    users.id ? (
                                                     <>
                                                       <span
                                                         className="btn-delete"
@@ -1055,186 +765,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                     </div>
                                   </div>
                                 </li>
-                                <li>
-                                  <div className="box-approves__item">
-                                    <div className="box-approves__item__title">
-                                      {isManager ? (
-                                        <span className="active">2</span>
-                                      ) : (
-                                        <span>2</span>
-                                      )}
-                                    </div>
-                                    <div className="box-approves__item__content">
-                                      <p className="box-approves__item__content__text">
-                                        承認者名：
-                                        {commentSeCond.length > 0 &&
-                                          commentSeCond[0].realname}
-                                        （申請日時：
-                                        {accordionItems.date}
-                                        {'\u00A0\u00A0'}
-                                        {accordionItems.time}）
-                                      </p>
-                                      {commentSeCond.length > 0 && (
-                                        <div className="box-approves__item__content__comment">
-                                          {commentSeCond.map(
-                                            (commentItem: any, index: any) => (
-                                              <div
-                                                key={index}
-                                                className="box-approves__item__content__comment__item"
-                                              >
-                                                <p className="box-approves__item__content__comment__head">
-                                                  <span className="box-approves__item__content__comment__title">
-                                                    {commentItem.realname}
-                                                    ：（{commentItem.createdAt}
-                                                    ）
-                                                  </span>
-                                                  {isManager ? (
-                                                    <>
-                                                      <span
-                                                        className="btn-delete"
-                                                        onClick={() =>
-                                                          handleDeleteSeCond(
-                                                            commentItem.id,
-                                                          )
-                                                        }
-                                                      >
-                                                        <img
-                                                          src={require('../../../../assets/close.png')}
-                                                          alt="delete"
-                                                          className="fluid-image"
-                                                        />
-                                                      </span>
-                                                    </>
-                                                  ) : (
-                                                    <span></span>
-                                                  )}
-                                                </p>
-                                                <p className="box-approves__item__content__comment__text">
-                                                  {commentItem.note}
-                                                </p>
-                                              </div>
-                                            ),
-                                          )}
-                                        </div>
-                                      )}
-                                      {isManager ? (
-                                        <>
-                                          <textarea
-                                            placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
-                                            value={commentValue}
-                                            onChange={(event) =>
-                                              setCommentValue(
-                                                event.target.value,
-                                              )
-                                            }
-                                          />
-                                          <p className="box-approves__item__content__btn">
-                                            <span>
-                                              <a
-                                                className="btncomment btn02"
-                                                onClick={handleAddCommentSeCond}
-                                              >
-                                                コメントする
-                                              </a>
-                                            </span>
-                                          </p>
-                                        </>
-                                      ) : (
-                                        <div></div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </li>
-                                <li>
-                                  <div className="box-approves__item">
-                                    <div className="box-approves__item__title">
-                                      {isLeader ? (
-                                        <span className="active">3</span>
-                                      ) : (
-                                        <span>3</span>
-                                      )}
-                                    </div>
-                                    <div className="box-approves__item__content">
-                                      <p className="box-approves__item__content__text">
-                                        承認者名：
-                                        {commentThird.length > 0 &&
-                                          commentThird[0].realname}
-                                        （申請日時：
-                                        {accordionItems.date}
-                                        {'\u00A0\u00A0'}
-                                        {accordionItems.time}）
-                                      </p>
-                                      {commentThird.length > 0 && (
-                                        <div className="box-approves__item__content__comment">
-                                          {commentThird.map(
-                                            (commentItem: any, index: any) => (
-                                              <div
-                                                key={index}
-                                                className="box-approves__item__content__comment__item"
-                                              >
-                                                <p className="box-approves__item__content__comment__head">
-                                                  <span className="box-approves__item__content__comment__title">
-                                                    {commentItem.realname}
-                                                    ：（{commentItem.createdAt}
-                                                    ）
-                                                  </span>
-                                                  {isLeader ? (
-                                                    <>
-                                                      <span
-                                                        className="btn-delete"
-                                                        onClick={() =>
-                                                          handleDeleteThird(
-                                                            commentItem.id,
-                                                          )
-                                                        }
-                                                      >
-                                                        <img
-                                                          src={require('../../../../assets/close.png')}
-                                                          alt="delete"
-                                                          className="fluid-image"
-                                                        />
-                                                      </span>
-                                                    </>
-                                                  ) : (
-                                                    <span></span>
-                                                  )}
-                                                </p>
-                                                <p className="box-approves__item__content__comment__text">
-                                                  {commentItem.note}
-                                                </p>
-                                              </div>
-                                            ),
-                                          )}
-                                        </div>
-                                      )}
-                                      {isLeader ? (
-                                        <>
-                                          <textarea
-                                            placeholder="コメント入力者の名前：（2024/00/00　00：00：00）コメントが入ります。コメントが入ります。コメントが入ります。"
-                                            value={commentValueThird}
-                                            onChange={(event) =>
-                                              setCommentValueThird(
-                                                event.target.value,
-                                              )
-                                            }
-                                          />
-                                          <p className="box-approves__item__content__btn">
-                                            <span>
-                                              <a
-                                                className="btncomment btn02"
-                                                onClick={handleAddCommentThird}
-                                              >
-                                                コメントする
-                                              </a>
-                                            </span>
-                                          </p>
-                                        </>
-                                      ) : (
-                                        <div></div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </li>
                                 <li className="box-status">
                                   <div>
                                     {isLeader || isAdmin || isManager ? (
@@ -1242,7 +772,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                         {idStatus.length > 0 && (
                                           <>
                                             {renderItem(
-                                              idStatus[0].id,
+                                              idStatus[0].id, //trong database id_status = 1 nhưng do chạy vòng lặp nên sẽ đếm từ 0
                                               statusItems[0].label,
                                               isChecked,
                                               handleStatusClick,
@@ -1250,7 +780,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                 idStatus[7].name,
                                             )}
                                             {renderItem(
-                                              idStatus[3].id,
+                                              idStatus[3].id, //trong database id_status = 2
                                               statusItems[1].label,
                                               isChecked,
                                               handleStatusClick,
@@ -1258,8 +788,16 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                 idStatus[6].name,
                                             )}
                                             {renderItem(
-                                              idStatus[2].id,
+                                              idStatus[1].id,
                                               statusItems[2].label,
+                                              isChecked,
+                                              handleStatusClick,
+                                              approve.statusattrTexts ===
+                                                idStatus[1].name,
+                                            )}
+                                            {renderItem(
+                                              idStatus[2].id,
+                                              statusItems[3].label,
                                               isChecked,
                                               handleStatusClick,
                                               approve.statusattrTexts ===
@@ -1267,7 +805,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                             )}
                                             {renderItem(
                                               idStatus[4].id,
-                                              statusItems[3].label,
+                                              statusItems[4].label,
                                               isChecked,
                                               handleStatusClick,
                                               approve.statusattrTexts ===
@@ -1276,7 +814,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
 
                                             {renderItem(
                                               idStatus[5].id,
-                                              statusItems[4].label,
+                                              statusItems[5].label,
                                               isChecked,
                                               handleStatusClick,
                                               approve.statusattrTexts ===
