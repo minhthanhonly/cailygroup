@@ -1,6 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { axiosPrivate } from "../../api/axios";
 import { Heading2 } from "../../components/Heading";
-import { ElementStore, ReactFormBuilder } from "react-form-builder2";
+import { isValidForm } from "../../components/Validate";
+import { ElementStore, ReactFormBuilder, Registry } from "react-form-builder2";
 import FormElementsEdit from "../Form/form-elements-edit";
 import F_Text from "../Form/Field/F_Text";
 import F_TextAndLabel from "../Form/Field/F_TextAndLabel";
@@ -17,19 +20,60 @@ import TravelExpenses from "../Estimate/TravelExpenses";
 import ExpenseReport from "../Estimate/ExpenseReport";
 import PriceBusinessReport from "../Estimate/PriceBusinessReport";
 import TravelAllowance from "../Estimate/TravelAllowance";
-import { useEffect, useState } from "react";
-import { axiosPrivate } from "../../api/axios";
+
+Registry.register('F_Text', F_Text);
+Registry.register('F_TextAndLabel', F_TextAndLabel);
+Registry.register('F_InputText', F_InputText);
+Registry.register('F_Checkbox', F_Checkbox);
+Registry.register('F_CheckboxAndDate', F_CheckboxAndDate);
+Registry.register('F_CheckboxAndTitle', F_CheckboxAndTitle);
+Registry.register('F_CheckboxAndInputText', F_CheckboxAndInputText);
+Registry.register('F_RadioButtons', F_RadioButtons);
+Registry.register('F_TextArea', F_TextArea);
+Registry.register('F_DatePicker', F_DatePicker);
+Registry.register('F_InputFile', F_InputFile);
+Registry.register('T_TableTravelExpenses', TravelExpenses);
+Registry.register('T_TableExpenseReport', ExpenseReport);
+Registry.register('T_TablePriceBusinessReport', PriceBusinessReport);
+Registry.register('T_TableTravelAllowance', TravelAllowance);
 
 export default function NewApplicationEdit(){
   const {id} = useParams();
   const [formName, setFormName] = useState('');
-  const [formData, setFormData] = useState<any>([]);
-  const [formValue, setFormValue] = useState({ form_name: '', status: 'publish', owner: 'Admin' });
+  const [formValue, setFormValue] = useState({ form_name: '', form_description: '', status: 1, owner: 'Admin' });
   const [formDescription, setFormDescription] = useState('');
+  const [reactFormData, setReactFormData] = useState<any>([]);
+  const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [msg, setMsg] = useState('');
+
+  const fetchNewApplicationById = async () => {
+    try {
+      const res = await axiosPrivate.get("newapplication/detail/" + id);
+      const data = res.data;
+      const parsedFormJson = JSON.parse(data[0].form);
+      const field = [
+        ...parsedFormJson.reactFormData, // Giữ nguyên các trường từ dữ liệu cũ
+      ];
+
+      setFormValue(data[0]);
+      setFormName(data[0].form_name);
+      setFormDescription(data[0].form_description);
+
+      field.forEach(obj => {
+        reactFormData.push(obj);
+      });
+
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  };
 
   useEffect(()=> {
-    ElementStore.subscribe((state:any)=>handleUpdate(state.data))
+    fetchNewApplicationById();
+    ElementStore.subscribe((state:any)=>handleUpdate(state.data));
   },[])
+
 
   const items = [
     {
@@ -317,27 +361,6 @@ export default function NewApplicationEdit(){
     },
   ];
 
-  const fetchNewApplicationById = async () => {
-    try {
-      const res = await axiosPrivate.get("newapplication/detail/" + id);
-      const data = res.data;
-      const parsedFormJson = JSON.parse(data[0].form);
-      const field = [
-        ...parsedFormJson.reactFormData, // Giữ nguyên các trường từ dữ liệu cũ
-      ];
-      setFormData(field);
-      console.log(field);
-      setFormName(data[0].form_name);
-      setFormDescription(data[0].form_description);
-    } catch (error) {
-      console.error('Error fetching data: ', error);
-    }
-  };
-  0
-  useEffect(() => {
-    fetchNewApplicationById();
-  }, [])
-
   const handleInput = (e) => {
     setFormValue({ ...formValue, [e.target.name]: e.target.value })
   }
@@ -348,40 +371,71 @@ export default function NewApplicationEdit(){
   }
 
   const handleUpdate = (data:any) => {
-    setFormData(data);
+    setReactFormData(data);
   }
 
-  const reactFormData = JSON.stringify(formData)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = isValidForm({ ...formValue }, reactFormData);
+    if (validationErrors === true) {
+      const formDataUpdate = {
+        id: id,
+        form_name: formValue.form_name,
+        formDescription,
+        reactFormData,
+        status: 1,
+        owner: formValue.owner
+      }
+
+      const currentStatus = e.currentTarget.getAttribute('data-status');
+      if (currentStatus === "draft") {
+        formDataUpdate.status = 0;
+      }
+
+      if(formDataUpdate.reactFormData.length === reactFormData.length) {
+        const res = await axiosPrivate.post("newapplication/update", formDataUpdate);
+        if (res.data.success === 'error') {
+          setError('Bị lỗi khi cập nhật Form');
+        } else {
+          setMsg('Cập nhật Form thành công');
+          setTimeout(() => {
+            navigate('/newapplication');
+          }, 2000);
+        }
+      } else {
+        setError('Bị lỗi khi cập nhật Form');
+      }
+    }
+  }
 
   return (
     <>
       <Heading2 text="Edit Form" />
-      {/* {error == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
-      {msg == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>} */}
+      {error == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
+      {msg == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
       <div className="c-form">
         <input
           className="c-form-control"
           type="text"
           name="form_name"
-          defaultValue={formName} onChange={handleInput} placeholder="Enter name here"
+          defaultValue={formValue.form_name} onChange={handleInput} placeholder="Enter name here"
         />
       </div>
       <div className="c-form">
-        <textarea className="c-form-control" name="form_description" placeholder="Enter description here" value={formDescription} onChange={handleTextareaChange}></textarea>
+        <textarea className="c-form-control" name="form_description" placeholder="Enter description here" defaultValue={formValue.form_description} onChange={handleTextareaChange}></textarea>
       </div>
       <div className="c-form mt50">
         <ReactFormBuilder
-          // data={reactFormData}
-          answer_data={formData}
+          data={reactFormData}
           toolbarItems={items}
-          // onSubmit={handleSubmit}
-          // onChange={handleUpdate}
+          onSubmit={handleSubmit}
+          onChange={handleUpdate}
           renderEditForm={props => <FormElementsEdit {...props} />}
         />
       </div>
       <div className="wrp-button">
-        {/* <button className="btn btn--from btn--gray" onClick={handleSubmitDraft}>下書き保存</button>
-        <button className="btn btn--from btn--blue" onClick={handleSubmit}>申請する</button> */}
+        <button className="btn btn--from btn--gray" onClick={handleSubmit} data-status="draft">下書き保存</button>
+        <button className="btn btn--from btn--blue" onClick={handleSubmit} data-status="apply">申請する</button>
       </div>
     </>
   )

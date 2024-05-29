@@ -501,7 +501,7 @@ textarea {
 #l-main:after,
 #l-sub:after,
 #l-footer:after,
-.grid-row:after,
+// .grid-row:after,
 .clearfix:after {
   display: block;
   clear: both;
@@ -1807,6 +1807,9 @@ textarea {
   margin-left: -1rem;
   display: flex;
   flex-wrap: wrap;
+  &--center{
+    justify-content: space-between;
+  }
 }
 .grid-col,
 .grid-col--1,

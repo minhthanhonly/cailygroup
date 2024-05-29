@@ -186,7 +186,7 @@ export const Sidebar = () => {
               </NavLink>
             </li>
           )}
-          {isAdmin || isManager ? (
+          {/* {isAdmin || isManager ? (
             <li className="nav-global__item">
               <NavLink to="/form/add">
                 <span className="icn">
@@ -197,7 +197,7 @@ export const Sidebar = () => {
             </li>
           ) : (
             ''
-          )}
+          )} */}
         </ul>
       </nav>
       <div className="acount">

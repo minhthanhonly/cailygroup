@@ -33,6 +33,7 @@ import FormAdd from './pages/Form/FormAdd';
 import NewApplication from './pages/NewApplication';
 import NewApplicationDetail from './pages/NewApplication/NewApplicationDetail';
 import NewApplicationEdit from './pages/NewApplication/NewApplicationEdit';
+import NewApplicationAdd from './pages/NewApplication/NewApplicationAdd';
 
 export default function App() {
   const { id } = useParams<{ id: string }>();
@@ -107,6 +108,7 @@ export default function App() {
               <Route path="form/add" element={<FormAdd />} />
 
               <Route path="newapplication" element={<NewApplication />} />
+              <Route path="newapplication/add" element={<NewApplicationAdd />} />
               <Route
                 path="newapplication/detail/:id"
                 element={<NewApplicationDetail />}

@@ -20,6 +20,7 @@ import ComponentCheckboxAndDate from "../Form/Component/ComponentCheckboxAndDate
 import ComponentTextAndLabel from "../Form/Component/ComponentTextAndLabel";
 import ComponentRadioButtons from "../Form/Component/ComponentRadioButtons";
 import { emitter } from "../../layouts/components/Sidebar";
+import Modal from "../../components/Modal/Modal";
 
 
 export default function NewApplicationDetail() {
@@ -255,7 +256,6 @@ export default function NewApplicationDetail() {
       // Kiểm tra xem tất cả các phần tử trong mảng có true không
       const allTrueArrValid: boolean = arrValid.every(x => x === true);
 
-
       if (allTrueArrValid === true) {
         const res = await axiosPrivate.post("newapplication/add", appJsonString);
         if (res.data.success === 'error') {
@@ -339,6 +339,15 @@ export default function NewApplicationDetail() {
     return null;
   });
 
+  const [isModalOpen, setModalOpen] = useState(false);
+  const openModal = ($id: number) => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   return (
     <>
       <Heading2 text={formName} />
@@ -384,7 +393,7 @@ export default function NewApplicationDetail() {
       }
       </form>
       <div className="box-router">
-        <div className="box-router__title">承認ルート</div>
+        <p className="box-router__title">承認ルート</p>
         <div className="grid-row box-router__grid">
           <div className="box-router__name">
             <p>承認者: </p> <p>齋藤社長</p>
@@ -394,7 +403,7 @@ export default function NewApplicationDetail() {
           </div>
         </div>
         <div className="box-router__edit">
-          <p className="plus-row">承認ルートを編集</p>
+          <button className="plus-row" onClick={openModal}>承認ルートを編集</button>
         </div>
       </div>
       <div className="wrp-button mt50">
@@ -402,6 +411,39 @@ export default function NewApplicationDetail() {
         <button className="btn btn--from btn--blue" onClick={handleSubmit} data-status="apply">申請する</button>
       </div>
       <ButtonBack onHandle={handleBackIndex} />
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        {
+          <>
+            <Heading2 text="パネルを表示" />
+            <div className="grid-row">
+              <div className="grid-col--6">
+                <div className="form-group form-group--01 form">
+                  <label className="lbl--01">承認者</label>
+                  <div className="select__box group">
+                    <select name="user_group">
+                      <option value="-1">----------------------- Chọn nhóm -----------------------</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="grid-col--6">
+                <div className="form-group form-group--01 form">
+                  <label className="lbl--01">共有者</label>
+                  <div className="select__box group">
+                    <select name="user_group">
+                      <option value="-1">----------------------- Chọn nhóm -----------------------</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="wrp-button">
+              <button className="btn btn--green">確定</button>
+              <button className="btn btn--orange" onClick={closeModal}>キャンセル</button>
+            </div>
+          </>
+        }
+      </Modal>
     </>
   )
 }

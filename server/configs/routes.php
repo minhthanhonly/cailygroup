@@ -116,8 +116,8 @@
     // Newapplication
     $routes['newapplication'] = 'newapplication';
     $routes['newapplication/add'] = 'newapplication/add';
+    $routes['newapplication/update'] = 'newapplication/update';
     $routes['newapplication/upload'] = 'newapplication/upload';
     $routes['newapplication/detail/.+-(\d+)'] = 'newapplication/detail/$1';
     $routes['newapplication/delete'] = 'newapplication/delete';
-    
 ?>

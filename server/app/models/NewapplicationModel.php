@@ -63,8 +63,6 @@
 			$adminName = $config['name_admin'];
 			
 			if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-
 				$appJsonString = file_get_contents("php://input");
 				$appPostData = json_decode(file_get_contents("php://input"));
 
@@ -129,6 +127,37 @@
 				$sql = "INSERT INTO application_details (datajson, owner, id_status, user_id, createdAt, updatedAt) 
 				VALUES ('$appJsonString', '$userNameReg', '$id_status', '$user_id', NOW(), NOW())";
 
+				$result = $conn->query($sql);
+
+				if($result) {
+					$result = "ok";
+					echo json_encode(['success' => $result]);
+					return;
+				} else {
+					$result = "error";
+					echo json_encode(['success' => $result]);
+					return;
+				}
+			}
+		}
+
+		function postUpdate(){
+			global $conn;
+			
+			if ($_SERVER["REQUEST_METHOD"] === "POST") {
+				$appJsonString = file_get_contents("php://input");
+				$appPostData = json_decode(file_get_contents("php://input"));
+
+				// Lấy dữ liệu từ phần thân của yêu cầu
+				$id = $appPostData->id;
+				$form_name = $appPostData->form_name;
+				$form_description = $appPostData->formDescription;
+				$status = $appPostData->status;
+				$owner = $appPostData->owner;
+				
+				//Cập nhật dữ liệu vào cơ sở dữ liệu
+				$sql = "UPDATE forms SET form_name='$form_name', form_description='$form_description', form='$appJsonString', status='$status', owner='$owner' WHERE id='$id'";
+				
 				$result = $conn->query($sql);
 
 				if($result) {

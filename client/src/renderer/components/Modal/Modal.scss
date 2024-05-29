@@ -111,6 +111,10 @@
     padding-right: 1.5rem;
     font-size: 1.6rem;
     font-weight: bold;
+    &.lbl--01{
+      width: 10rem;
+      justify-content: flex-start;
+    }
   }
   .form-user img {
     width: auto;
@@ -128,6 +132,20 @@
   }
   .form-group {
     width: 90rem;
+    &--01{
+      width: 100%;
+      align-items: center;
+      .lbl--01{
+        width: 10rem;
+        font-size: 1.6rem;
+      }
+      .select__box{
+        width: calc(100% - 10rem);
+      }
+      .select__box.group select{
+        min-width: 20rem;
+      }
+    }
   }
   .holiday {
     align-items: center;

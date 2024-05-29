@@ -105,7 +105,8 @@
         border: 1px solid;
         background-color: red;
         border-radius: 50%;
-        width: 20px;
+        width: 2.5rem;
+        height: 2.5rem;
         position: relative;
         display: inline-block;
         text-align: center;
@@ -360,6 +361,9 @@
     }
     &__edit{
         text-align: right;
+    }
+    p {
+      font-size: 1.6rem;
     }
 
 

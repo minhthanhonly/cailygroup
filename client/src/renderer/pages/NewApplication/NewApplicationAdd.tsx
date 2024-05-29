@@ -1,30 +1,30 @@
 import { ElementStore, ReactFormBuilder } from "react-form-builder2";
 import 'react-form-builder2/dist/app.css';
 import '@fortawesome/fontawesome-free/css/all.css';
-import './Form.scss';
+import '../Form/Form.scss';
 import { useEffect, useState } from "react";
 import { Heading2 } from "../../components/Heading";
 import { isValidForm } from "../../components/Validate";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import FormElementsEdit from "./form-elements-edit";
-import F_Text from "./Field/F_Text";
-import F_InputText from "./Field/F_InputText";
-import F_Checkbox from "./Field/F_Checkbox";
-import F_TextArea from "./Field/F_TextArea";
-import F_DatePicker from "./Field/F_DatePicker";
-import F_RadioButtons from "./Field/F_RadioButtons";
-import F_InputFile from "./Field/F_InputFile";
-import F_CheckboxAndInputText from "./Field/F_CheckboxAndInputText";
-import F_CheckboxAndTitle from "./Field/F_CheckboxAndTitle";
-import F_CheckboxAndDate from "./Field/F_CheckboxAndDate";
-import F_TextAndLabel from "./Field/F_TextAndLabel";
+import FormElementsEdit from "../Form/form-elements-edit";
+import F_Text from "../Form/Field/F_Text";
+import F_InputText from "../Form/Field/F_InputText";
+import F_Checkbox from "../Form/Field/F_Checkbox";
+import F_TextArea from "../Form/Field/F_TextArea";
+import F_DatePicker from "../Form/Field/F_DatePicker";
+import F_RadioButtons from "../Form/Field/F_RadioButtons";
+import F_InputFile from "../Form/Field/F_InputFile";
+import F_CheckboxAndInputText from "../Form/Field/F_CheckboxAndInputText";
+import F_CheckboxAndTitle from "../Form/Field/F_CheckboxAndTitle";
+import F_CheckboxAndDate from "../Form/Field/F_CheckboxAndDate";
+import F_TextAndLabel from "../Form/Field/F_TextAndLabel";
 import TravelExpenses from "../Estimate/TravelExpenses";
 import ExpenseReport from "../Estimate/ExpenseReport";
 import PriceBusinessReport from "../Estimate/PriceBusinessReport";
 import TravelAllowance from "../Estimate/TravelAllowance";
 
-export default function FormAdd() {
+export default function NewApplicationAdd() {
   const axiosPrivate = useAxiosPrivate();
   const [formValue, setFormValue] = useState({ form_name: '', status: 1, owner: 'Admin' });
   const [formDescription, setFormDescription] = useState('');

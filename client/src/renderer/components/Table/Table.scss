@@ -78,6 +78,12 @@
       padding: 1rem;
     }
     &--01{
+      tr.--hidden{
+        display: none;
+      }
+      tr.--draft{
+        background-color: var(--grey01);
+      }
       th{
         padding: 2.5rem 3rem;
         width: 36.6rem;
@@ -346,6 +352,9 @@
   color: #FF0000
 }
 .link{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   font-size: 18px;
   color: #111111;
   font-weight: bold;
@@ -360,5 +369,14 @@
     border-top: 5.5px solid transparent;
     border-bottom: 5.5px solid transparent;
     border-left: 10px solid #F38E0A;
+  }
+  & .mark{
+    margin-left: 1rem;
+    padding: .2rem .5rem;
+    border-radius: 1rem;
+    display: inline-block;
+    font-size: 1.2rem;
+    color: var(--white);
+    background-color: var(--grey);
   }
 }
