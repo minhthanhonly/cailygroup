@@ -26,7 +26,6 @@
             return;
             $conn->close();
         }
-
         function getApplicationOther($userId) {
             global $conn;
             $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
@@ -56,7 +55,6 @@
             // Đóng kết nối cơ sở dữ liệu
             $conn->close();
         }
-        
         function getAllStatus(){
             global $conn;
             $sql = "SELECT * FROM status";
@@ -74,7 +72,6 @@
             return;
             $conn->close();
         }
-
         function getApplicationByIdStatus($idStatus){
             global $conn;
             $statusFilter = isset($_GET['id_status']) ? mysqli_real_escape_string($conn, $_GET['id_status']) : '-1';
@@ -92,7 +89,6 @@
             echo json_encode($data);
             return;
         }
-
         function getApplicationForId($id){
             global $conn;
             $sql = "SELECT *
@@ -109,8 +105,6 @@
             echo json_encode($register); // Trả về đối tượng JSON
             $conn->close();
         }
-        
-        
         function updateStatus($id, $id_status) {
             global $conn;
             if ($_SERVER["REQUEST_METHOD"] === "PUT") {
@@ -162,9 +156,6 @@
                 $conn->close();
             }
         }
-
-        
-
         function getComment($id){
             global $conn;
             $selectQuery = "SELECT comment.*,
@@ -185,7 +176,6 @@
                 echo json_encode($data);
             $conn->close();
         }
-
         function getUsers($id){
             global $conn;
             $sql = "SELECT application_details.*,users.realname FROM application_details JOIN users ON application_details.user_id = users.id WHERE application_details.id = $id";
@@ -203,7 +193,6 @@
             return;
             $conn->close();
         }
-
         function addComment($user_id,$aplication_id,$authority_id, $note, $createdAt)
         {
             global $conn;
@@ -239,9 +228,6 @@
                 mysqli_stmt_close($stmt);
             }
         }
-
-        
-        
         function deleteComment($id){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
@@ -260,7 +246,6 @@
             }
             $conn->close();
         }
-
         function deleteaccodion($id){
             global $conn;
 
@@ -294,7 +279,6 @@
             $stmt->close();
             $conn->close();
         }
-
         function postMail(){
 			global $conn;
 			if ($_SERVER["REQUEST_METHOD"] === "POST") {
