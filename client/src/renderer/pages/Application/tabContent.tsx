@@ -424,10 +424,10 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                           承認者名：
                                           {commentFirst.length > 0 &&
                                             commentFirst[0].realname}
-                                          （申請日時：
+                                          {/* （申請日時：
                                           {accordionItems.date}
                                           {'\u00A0\u00A0'}
-                                          {accordionItems.time}）
+                                          {accordionItems.time}） */}
                                         </p>
                                         {commentFirst.length > 0 && (
                                           <div className="box-approves__item__content__comment">
@@ -672,10 +672,10 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                         承認者名：
                                         {commentFirst.length > 0 &&
                                           commentFirst[0].realname}
-                                        （申請日時：
+                                        {/* （申請日時：
                                         {accordionItems.date}
                                         {'\u00A0\u00A0'}
-                                        {accordionItems.time}）
+                                        {accordionItems.time}） */}
                                       </p>
                                       {commentFirst.length > 0 && (
                                         <div className="box-approves__item__content__comment">
