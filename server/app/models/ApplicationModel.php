@@ -163,7 +163,9 @@
             }
         }
 
-        function getCommentForUserFirst($id){
+        
+
+        function getComment($id){
             global $conn;
             $selectQuery = "SELECT comment.*,
                         users.realname,
@@ -237,122 +239,10 @@
                 mysqli_stmt_close($stmt);
             }
         }
-        
-        function deleteCommentFirst($id){
-            global $conn;
-            $data = json_decode(file_get_contents("php://input"), true);
-            if (isset($id)) {
-                $deleteQuery = "DELETE FROM comment WHERE id = $id";
-                if (mysqli_query($conn, $deleteQuery)) {
-                    http_response_code(200);
-                echo json_encode(['errCode' => 0]);
-                } else {
-                    http_response_code(500);
-                echo json_encode(['errCode' => 1, 'message' => 'không thể Xóa comment']);
-                }
-            } else {
-                http_response_code(400);
-                echo json_encode(['errCode' => 2, 'message' => 'không thể tìm thấy comment của người dùng']);
-            }
-            $conn->close();
-        }
 
-        function getCommentForUserSecond($id){
-            global $conn;
-            $selectQuery = "SELECT comment.*,
-                        users.realname,
-                        authority.authority_name,
-                        comment.createdAt AS createdAt
-                    FROM comment
-                    JOIN users ON comment.user_id = users.id
-                    JOIN application_details ON application_details.id = comment.aplication_id
-                    JOIN authority ON comment.authority_id = authority.id
-                    WHERE comment.aplication_id  = $id and comment.authority_id = 2";
-            $result = mysqli_query($conn, $selectQuery);
-                $data = [];
-
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $data[] = $row;
-                }
-                http_response_code(200);
-                echo json_encode($data);
-            $conn->close();
-        }
-        function addCommentSeCond($user_id,$aplication_id,$authority_id, $note, $createdAt)
-        {
-            global $conn;
-            if ($_SERVER["REQUEST_METHOD"] === "POST") {
-                $commentPostData = json_decode(file_get_contents("php://input"));
-                $user_id = $commentPostData->user_id;
-                $aplication_id = $commentPostData->aplication_id;
-                $authority_id = $commentPostData->authority_id;
-                $note = trim($commentPostData->note); // Loại bỏ các khoảng trắng dư thừa
-                if (empty($note)) {
-                    http_response_code(400);
-                    echo json_encode(["error" => "Không thể thêm comment: Nội dung trống"]);
-                    exit();
-                }
-                $insertQuery = "INSERT INTO comment (user_id,aplication_id,authority_id, note, createdAt) 
-                            VALUES (?, ?, ?,?,NOW())";
-                $stmt = mysqli_prepare($conn, $insertQuery);
-                if (!$stmt) {
-                    http_response_code(500);
-                    echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($conn)]);
-                    exit();
-                }
-                mysqli_stmt_bind_param($stmt, "siis", $user_id, $aplication_id,$authority_id, $note);
-                if (mysqli_stmt_execute($stmt)) {
-                    http_response_code(201);
-                    echo json_encode(["message" => "Thêm thành công"]);
-                } else {
-                    http_response_code(500);
-                    echo json_encode(["error" => "Thêm không thành công: " . mysqli_error($conn)]);
-                }
-                mysqli_stmt_close($stmt);
-            }
-        }
-        function deleteCommentSeCond($id){
-            global $conn;
-            $data = json_decode(file_get_contents("php://input"), true);
-            if (isset($id)) {
-                $deleteQuery = "DELETE FROM comment WHERE id = $id";
-                if (mysqli_query($conn, $deleteQuery)) {
-                    http_response_code(200);
-                echo json_encode(['errCode' => 0]);
-                } else {
-                    http_response_code(500);
-                echo json_encode(['errCode' => 1, 'message' => 'không thể Xóa comment']);
-                }
-            } else {
-                http_response_code(400);
-                echo json_encode(['errCode' => 2, 'message' => 'không thể tìm thấy comment của người dùng']);
-            }
-            $conn->close();
-        }
-
-        function getCommentForUserThird($id){
-            global $conn;
-            $selectQuery = "SELECT comment.*,
-                        users.realname,
-                        authority.authority_name,
-                        comment.createdAt AS createdAt
-                    FROM comment
-                    JOIN users ON comment.user_id = users.id
-                    JOIN application_details ON application_details.id = comment.aplication_id
-                    JOIN authority ON comment.authority_id = authority.id
-                    WHERE comment.aplication_id  = $id and comment.authority_id = 3";
-            $result = mysqli_query($conn, $selectQuery);
-                $data = [];
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $data[] = $row;
-                }
-                http_response_code(200);
-                echo json_encode($data);
-            $conn->close();
-        }
         
         
-        function deleteCommentThird($id){
+        function deleteComment($id){
             global $conn;
             $data = json_decode(file_get_contents("php://input"), true);
             if (isset($id)) {
@@ -403,40 +293,6 @@
         
             $stmt->close();
             $conn->close();
-        }
-        
-        function addCommentThird($user_id,$aplication_id,$authority_id, $note, $createdAt)
-        {
-            global $conn;
-            if ($_SERVER["REQUEST_METHOD"] === "POST") {
-                $commentPostData = json_decode(file_get_contents("php://input"));
-                $user_id = $commentPostData->user_id;
-                $aplication_id = $commentPostData->aplication_id;
-                $authority_id = $commentPostData->authority_id;
-                $note = trim($commentPostData->note); // Loại bỏ các khoảng trắng dư thừa
-                if (empty($note)) {
-                    http_response_code(400);
-                    echo json_encode(["error" => "Không thể thêm comment: Nội dung trống"]);
-                    exit();
-                }
-                $insertQuery = "INSERT INTO comment (user_id,aplication_id,authority_id, note, createdAt) 
-                            VALUES (?, ?, ?,?,NOW())";
-                $stmt = mysqli_prepare($conn, $insertQuery);
-                if (!$stmt) {
-                    http_response_code(500);
-                    echo json_encode(["error" => "Lỗi khi chuẩn bị câu lệnh: " . mysqli_error($conn)]);
-                    exit();
-                }
-                mysqli_stmt_bind_param($stmt, "siis", $user_id, $aplication_id,$authority_id, $note);
-                if (mysqli_stmt_execute($stmt)) {
-                    http_response_code(201);
-                    echo json_encode(["message" => "Thêm thành công"]);
-                } else {
-                    http_response_code(500);
-                    echo json_encode(["error" => "Thêm không thành công: " . mysqli_error($conn)]);
-                }
-                mysqli_stmt_close($stmt);
-            }
         }
 
         function postMail(){
