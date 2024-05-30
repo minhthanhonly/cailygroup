@@ -83,11 +83,12 @@
     
 
 
-      $routes['epensereport'] = 'expensereport';
+    $routes['epensereport'] = 'expensereport';
 
     // application
 
     $routes['application'] = 'application';
+    $routes['application/edit/.+-(\d+)'] = 'application/edit/$1';
     $routes['application/getforid/.+-(\d+)'] = 'application/getforid/$1';
     $routes['application/getcomment/.+-(\d+)'] = 'application/getcomment/$1';
     $routes['application/deletecomment/.+-(\d+)'] = 'application/deletecomment/$1';

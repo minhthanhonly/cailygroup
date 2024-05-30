@@ -11,6 +11,12 @@
                 return $this->model('ApplicationModel')->getApplication();
             }
         }
+        function edit($id=''){
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('ApplicationModel')->getEdit($id);
+            }
+        }
         function getApplicationByIdStatus($idStatus=''){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){

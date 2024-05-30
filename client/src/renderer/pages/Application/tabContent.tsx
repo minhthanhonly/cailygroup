@@ -8,6 +8,7 @@ import { UserRole } from '../../components/UserRole';
 import { emitter } from '../../layouts/components/Sidebar/index';
 import './Accordion.scss';
 import Modaldelete from '../../components/Modal/Modaldelete';
+import { Link } from 'react-router-dom';
 
 const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -43,7 +44,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
     try {
       const response = await axiosPrivate.get('application/getforid/' + id);
       const data = response.data;
-      //console.log(data);
       setItems(response.data);
       const itemWithStatus = {
         ...JSON.parse(data.datajson), // Sử dụng data.datajson trực tiếp
@@ -614,13 +614,15 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                         </span>
                       </p>
                       <p className="list-accordion__item__head__btn__icn">
-                        <span className="icn-item">
-                          <img
-                            src={editIcon}
-                            alt="edit"
-                            className="fluid-image"
-                          />
-                        </span>
+                        <Link to={'/application/edit/' + Items.id}>
+                          <span className="icn-item">
+                            <img
+                              src={editIcon}
+                              alt="edit"
+                              className="fluid-image"
+                            />
+                          </span>
+                        </Link>
                         <span className="icn-item">
                           <img
                             src={closeIcon}

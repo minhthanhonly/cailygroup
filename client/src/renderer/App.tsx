@@ -34,6 +34,7 @@ import NewApplication from './pages/NewApplication';
 import NewApplicationDetail from './pages/NewApplication/NewApplicationDetail';
 import NewApplicationEdit from './pages/NewApplication/NewApplicationEdit';
 import NewApplicationAdd from './pages/NewApplication/NewApplicationAdd';
+import NewApplicationDetailEdit from './pages/NewApplication/NewApplicationDetailEdit';
 
 export default function App() {
   const { id } = useParams<{ id: string }>();
@@ -99,6 +100,7 @@ export default function App() {
               {/* Khu cua thịnh */}
 
               <Route path="application" element={<Application />} />
+              <Route path="application/edit/:id" element={<NewApplicationDetailEdit />} />
               <Route path="application/:tab" element={<Application />} />
               <Route
                 path="application/getapplicationother/:id"
