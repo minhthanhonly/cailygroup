@@ -208,11 +208,9 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
     }
   }, [accordionItems]);
 
-  const getCommentForUserFirst = async () => {
+  const getComment = async () => {
     try {
-      const response = await axiosPrivate.get(
-        'application/getcommentforuserfirst/' + id,
-      );
+      const response = await axiosPrivate.get('application/getcomment/' + id);
       const commentData = response.data;
       //console.log(commentData);
       // Xử lý dữ liệu dựa trên kiểu dữ liệu trả về
@@ -231,10 +229,10 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   };
 
   useEffect(() => {
-    getCommentForUserFirst();
+    getComment();
   }, []);
 
-  const handleAddCommentForUserFirst = async () => {
+  const handleAddComment = async () => {
     const note = textValue.trim(); // Loại bỏ các khoảng trắng dư thừa
     if (note.length === 0) {
       console.error('Không thể thêm comment: Nội dung trống');
@@ -253,7 +251,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
         'application/addcomment/',
         comment_data,
       );
-      getCommentForUserFirst();
+      getComment();
 
       // Send mail
       const id_status = Items.id_status;
@@ -264,14 +262,14 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
     }
   };
 
-  const handleDeleteCommentForUserFirst = async (commentId: any) => {
+  const handleDeleteComment = async (commentId: any) => {
     try {
       const response = await axiosPrivate.delete(
-        `application/deletecommentfirst/${commentId}`,
+        `application/deletecomment/${commentId}`,
       );
       if (response.status === 200) {
         console.log('Comment deleted successfully');
-        getCommentForUserFirst();
+        getComment();
       } else {
         console.error('Failed to delete comment:', response.statusText);
       }
@@ -426,10 +424,10 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                           承認者名：
                                           {commentFirst.length > 0 &&
                                             commentFirst[0].realname}
-                                          （申請日時：
+                                          {/* （申請日時：
                                           {accordionItems.date}
                                           {'\u00A0\u00A0'}
-                                          {accordionItems.time}）
+                                          {accordionItems.time}） */}
                                         </p>
                                         {commentFirst.length > 0 && (
                                           <div className="box-approves__item__content__comment">
@@ -455,7 +453,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                         <span
                                                           className="btn-delete"
                                                           onClick={() =>
-                                                            handleDeleteCommentForUserFirst(
+                                                            handleDeleteComment(
                                                               commentItem.id,
                                                             )
                                                           }
@@ -468,7 +466,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                         </span>
                                                       </>
                                                     ) : (
-                                                      <span>không có</span>
+                                                      <span></span>
                                                     )}
                                                   </p>
                                                   <p className="box-approves__item__content__comment__text">
@@ -491,9 +489,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                             <span>
                                               <a
                                                 className="btncomment btn02"
-                                                onClick={
-                                                  handleAddCommentForUserFirst
-                                                }
+                                                onClick={handleAddComment}
                                               >
                                                 コメントする
                                               </a>
@@ -570,7 +566,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                               approve.statusattrTexts ===
                                                 idStatus[4].name,
                                             )}
-
                                             {renderItem(
                                               idStatus[5].id,
                                               statusItems[5].label,
@@ -677,10 +672,10 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                         承認者名：
                                         {commentFirst.length > 0 &&
                                           commentFirst[0].realname}
-                                        （申請日時：
+                                        {/* （申請日時：
                                         {accordionItems.date}
                                         {'\u00A0\u00A0'}
-                                        {accordionItems.time}）
+                                        {accordionItems.time}） */}
                                       </p>
                                       {commentFirst.length > 0 && (
                                         <div className="box-approves__item__content__comment">
@@ -704,7 +699,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                                       <span
                                                         className="btn-delete"
                                                         onClick={() =>
-                                                          handleDeleteCommentForUserFirst(
+                                                          handleDeleteComment(
                                                             commentItem.id,
                                                           )
                                                         }
@@ -741,9 +736,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                             <span>
                                               <a
                                                 className="btncomment btn02"
-                                                onClick={
-                                                  handleAddCommentForUserFirst
-                                                }
+                                                onClick={handleAddComment}
                                               >
                                                 コメントする
                                               </a>

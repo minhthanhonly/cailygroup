@@ -87,18 +87,10 @@
     // application
 
     $routes['application'] = 'application';
-    // $routes['application/get'] = 'application/getforid';
     $routes['application/getforid/.+-(\d+)'] = 'application/getforid/$1';
     $routes['application/getcomment/.+-(\d+)'] = 'application/getcomment/$1';
-    $routes['application/getcommentforuserfirst/.+-(\d+)'] = 'application/getcommentforuserfirst/$1';
-    $routes['application/getcommentforusersecond/.+-(\d+)'] = 'application/getcommentforusersecond/$1';
-    $routes['application/getcommentforuserthird/.+-(\d+)'] = 'application/getcommentforuserthird/$1';
     $routes['application/deletecomment/.+-(\d+)'] = 'application/deletecomment/$1';
-    $routes['application/deletecommentsecond/.+-(\d+)'] = 'application/deletecommentsecond/$1';
-    $routes['application/deletecommentthird/.+-(\d+)'] = 'application/deletecommentthird/$1';
     $routes['application/addcomment'] = 'application/addcomment';
-    $routes['application/addcommentsecond'] = 'application/addcommentsecond';
-    $routes['application/addcommentthird'] = 'application/addcommentthird';
     $routes['tabcontent'] = 'tabcontent';
     $routes['application/updatestatus'] = 'application/updatestatus';
     $routes['application/getapplicationbyidstatus/.+-(\d+)'] = 'application/getapplicationbyidstatus/$1';
