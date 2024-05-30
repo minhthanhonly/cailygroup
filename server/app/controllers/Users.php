@@ -54,5 +54,12 @@
                 return $this->model('UsersModel')->getMembersByGroup($id);
             }
         }
+
+        function membersbyauthority(){
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('UsersModel')->getMembersByAuthority();
+            }
+        }
     }
 ?>

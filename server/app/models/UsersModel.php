@@ -201,6 +201,36 @@
 			// Đóng kết nối
 			$conn->close();
 		}
+
+		function getMembersByAuthority(){
+			global $conn;
+			$idManager = 2;
+			$idLeader = 3;
+
+			// Thực hiện truy vấn SELECT
+			$sql = "SELECT u.id, u.realname, a.authority_name
+			FROM users AS u
+			JOIN authority AS a ON u.authority = a.id
+			WHERE u.authority='$idManager' OR u.authority='$idLeader'";
+			
+			$result = $conn->query($sql);
+
+			// Kiểm tra và hiển thị kết quả
+			if ($result->num_rows > 0) {
+				while ($row = $result->fetch_assoc()) {
+					$data[] = $row;
+				}
+			} else {
+				$data = [];
+			}
+
+			header('Content-Type: application/json');
+			echo json_encode($data);
+			return;
+
+			// Đóng kết nối
+			$conn->close();
+		}
 	}
 
 ?>

@@ -95,6 +95,43 @@
         &.--w10{
           width: 10rem;
         }
+        &.--w5{
+          width: 5rem;
+        }
+        &.--w3{
+          width: 3rem;
+        }
+        &.--w2{
+          width: 2rem;
+        }
+      }
+    }
+    &--02{
+      th{
+        padding: 1rem;
+        font-size: 1.6rem;
+        text-align: center;
+        border: .1rem solid #d8d8d8;
+      }
+      td{
+        padding: 0.7rem 1rem;
+        vertical-align: middle;
+        border: .1rem solid #d8d8d8;
+        &.--center{
+          text-align: center;
+        }
+        &.--w10{
+          width: 10rem;
+        }
+        &.--w5{
+          width: 5rem;
+        }
+        &.--w3{
+          width: 3rem;
+        }
+        &.--w2{
+          width: 2rem;
+        }
       }
     }
   }

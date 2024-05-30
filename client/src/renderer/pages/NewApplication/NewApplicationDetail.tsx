@@ -2,7 +2,7 @@ import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosPrivate, BASE_URL } from "../../api/axios";
 import { isValidCheck, isValidNumber, isValidText, isValidTextArea, isValidtextTable } from "../../components/Validate/";
-import { Heading2 } from "../../components/Heading";
+import { Heading2, Heading3 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import ComponentInputText from "../Form/Component/ComponentInputText";
 import ComponentText from "../Form/Component/ComponentText";
@@ -27,11 +27,19 @@ export default function NewApplicationDetail() {
   const { id } = useParams();
   const [formName, setFormName] = useState('');
   const [formData, setFormData] = useState<any>([]);
-  const navigate = useNavigate();
+  const [status, setStatus] = useState<number>(0);
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
+  const navigate = useNavigate();
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const [pfile, setPfile] = useState('');
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [listOfGroups, setListOfGroups] = useState<any>([]);
+  const [listOfMembers, setListOfMembers] = useState<any>([]);
+  const [authorizer, setAuthorizer] = useState<any>([]);
+  const [coOwner, setCoOwner] = useState<any>([]);
+  const [selectedAuth, setSelectedAuth] = useState<any>([]);
+  const [selectedGroup, setSelectedGroup] = useState<any>([]);
   const fileData = new FormData();
   const childRef = useRef(null);
   const childRefOfCheckbox = useRef(null);
@@ -47,11 +55,12 @@ export default function NewApplicationDetail() {
       ];
       setFormData(field);
       setFormName(data[0].form_name);
+      setStatus(data[0].status)
     } catch (error) {
       console.error('Error fetching data: ', error);
     }
   };
-  0
+
   useEffect(() => {
     fetchNewApplicationById();
   }, [])
@@ -210,12 +219,16 @@ export default function NewApplicationDetail() {
         userNameReg: '',
         userEmailReg: '',
         user_id: 0,
+        authorizer: [],
+        coOwner: []
       };
       appJSON.appName = formName;
       appJSON.formData = formDataIsGrouped;
       appJSON.userNameReg = users.realname;
       appJSON.userEmailReg = users.user_email;
       appJSON.user_id = users.id;
+      appJSON.authorizer = selectedAuth;
+      appJSON.coOwner = selectedGroup;
 
       const currentStatus = e.currentTarget.getAttribute('data-status');
       if (currentStatus === "draft") {
@@ -339,14 +352,96 @@ export default function NewApplicationDetail() {
     return null;
   });
 
-  const [isModalOpen, setModalOpen] = useState(false);
+  /*
+  * LẤY DANH SÁCH NHÓM
+  */
+  const fetchGroup = async () => {
+    try {
+      const res = await axiosPrivate.get("groups/");
+      setListOfGroups(res.data);
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  };
+
+  /*
+  * LẤY DANH SÁCH THÀNH VIÊN LÀ MANAGER VÀ LEADER
+  */
+  const fetchMembersByAuthority = async () => {
+    try {
+      const res = await axiosPrivate.get("users/membersbyauthority");
+      setListOfMembers(res.data);
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      fetchGroup();
+      fetchMembersByAuthority();
+    }
+  }, [isModalOpen])
+
   const openModal = ($id: number) => {
     setModalOpen(true);
   };
 
   const closeModal = () => {
     setModalOpen(false);
+    setCoOwner([]);
+    setAuthorizer([]);
+    setSelectedAuth([]);
+    setSelectedGroup([]);
   };
+
+  /*
+  * XỬ LÝ CHỌN THÀNH VIÊN ỦY QUYỀN
+  */
+  const handleCheckboxMember = (e) => {
+    const {value, name, checked} = e.target;
+    if(checked){
+      setSelectedAuth([...selectedAuth, value]);
+      setAuthorizer([...authorizer, name]);
+    } else{
+      setSelectedAuth((prevData)=>{
+				return prevData.filter((id)=>{
+					return id!==value
+				})
+			})
+      setAuthorizer((prevData)=>{
+				return prevData.filter((realname)=>{
+					return realname!==name
+				})
+			})
+    }
+  }
+
+  /*
+  * XỬ LÝ CHỌN NHÓM ĐƯỢC CHIA SẺ
+  */
+  const handleCheckboxGroup = (e) => {
+    const {value, name, checked} = e.target;
+    if(checked){
+      setSelectedGroup([...selectedGroup, value]);
+      setCoOwner([...coOwner, name]);
+    } else{
+      setSelectedGroup((prevData)=>{
+				return prevData.filter((id)=>{
+					return id!==value
+				})
+			})
+      setCoOwner((prevData)=>{
+				return prevData.filter((group_name)=>{
+					return group_name!==name
+				})
+			})
+    }
+  }
+
+  const handleModal = () => {
+    setModalOpen(false);
+  }
 
   return (
     <>
@@ -396,20 +491,27 @@ export default function NewApplicationDetail() {
         <p className="box-router__title">承認ルート</p>
         <div className="grid-row box-router__grid">
           <div className="box-router__name">
-            <p>承認者: </p> <p>齋藤社長</p>
+            <p>承認者:</p>
+            <p>
+              {authorizer.map((auth, index) => {
+                return(<span key={index}>{auth}{index !== authorizer.length - 1 && ', '}</span>)
+              })}
+            </p>
           </div>
           <div className="box-router__name">
-            <p>共有者: </p> <p>総務</p>
+            <p>共有者: </p>
+            <p>
+              {coOwner.map((group, index) => {
+                return(<span key={index}>{group}{index !== coOwner.length - 1 && ', '}</span>)
+              })}
+            </p>
           </div>
         </div>
         <div className="box-router__edit">
           <button className="plus-row" onClick={openModal}>承認ルートを編集</button>
         </div>
       </div>
-      <div className="wrp-button mt50">
-        <button className="btn btn--from btn--gray" onClick={handleSubmit} data-status="draft">下書き保存</button>
-        <button className="btn btn--from btn--blue" onClick={handleSubmit} data-status="apply">申請する</button>
-      </div>
+      {(status == 1) ? <div className="wrp-button mt50"><button className="btn btn--from btn--gray" onClick={handleSubmit} data-status="draft">下書き保存</button><button className="btn btn--from btn--blue" onClick={handleSubmit} data-status="apply">申請する</button></div> : ''}
       <ButtonBack onHandle={handleBackIndex} />
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {
@@ -417,28 +519,66 @@ export default function NewApplicationDetail() {
             <Heading2 text="パネルを表示" />
             <div className="grid-row">
               <div className="grid-col--6">
-                <div className="form-group form-group--01 form">
-                  <label className="lbl--01">承認者</label>
-                  <div className="select__box group">
-                    <select name="user_group">
-                      <option value="-1">----------------------- Chọn nhóm -----------------------</option>
-                    </select>
-                  </div>
-                </div>
+                <table className="table-base table-base--02">
+                  <tbody>
+                    <tr>
+                      <th colSpan={4}>承認者</th>
+                    </tr>
+                    <tr>
+                      <td className="--w5 --center">順序数</td>
+                      <td className="--center">氏名</td>
+                      <td className="--center">権限</td>
+                      <td className="--w2"></td>
+                    </tr>
+                    {listOfMembers.map((item, index) => {
+                      return(
+                        <tr key={index}>
+                          <td className="--center">{index}</td>
+                          <td className="--center">{item.realname}</td>
+                          <td className="--center">{item.authority_name}</td>
+                          <td>
+                            <label className="c-form-label--03">
+                              <input type="checkbox" className="c-form-control" checked={selectedAuth.includes(item.id) || authorizer.includes(item.realname)} value={item.id} name={item.realname} onChange={handleCheckboxMember} />
+                              <span className="checkmark mr0"></span>
+                            </label>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
               </div>
               <div className="grid-col--6">
-                <div className="form-group form-group--01 form">
-                  <label className="lbl--01">共有者</label>
-                  <div className="select__box group">
-                    <select name="user_group">
-                      <option value="-1">----------------------- Chọn nhóm -----------------------</option>
-                    </select>
-                  </div>
-                </div>
+                <table className="table-base table-base--02">
+                  <tbody>
+                    <tr>
+                      <th colSpan={3}>共有者</th>
+                    </tr>
+                    <tr>
+                      <td className="--w5 --center">順序数</td>
+                      <td className="--center">チーム名</td>
+                      <td className="--w2"></td>
+                    </tr>
+                    {listOfGroups.map((item, index) => {
+                      return(
+                        <tr key={index}>
+                          <td className="--center">{index}</td>
+                          <td className="--center">{item.group_name}</td>
+                          <td>
+                            <label className="c-form-label--03">
+                              <input type="checkbox" className="c-form-control" checked={selectedGroup.includes(item.id) || coOwner.includes(item.group_name)} value={item.id} name={item.group_name} onChange={handleCheckboxGroup} />
+                              <span className="checkmark mr0"></span>
+                            </label>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div className="wrp-button">
-              <button className="btn btn--green">確定</button>
+            <div className="wrp-button mt20">
+              <button className="btn btn--green" onClick={handleModal}>確定</button>
               <button className="btn btn--orange" onClick={closeModal}>キャンセル</button>
             </div>
           </>
