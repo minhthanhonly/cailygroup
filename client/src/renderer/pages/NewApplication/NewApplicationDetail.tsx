@@ -28,6 +28,7 @@ export default function NewApplicationDetail() {
   const [formName, setFormName] = useState('');
   const [formData, setFormData] = useState<any>([]);
   const [status, setStatus] = useState<number>(0);
+  const [appId, setAppId] = useState('');
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
@@ -55,7 +56,8 @@ export default function NewApplicationDetail() {
       ];
       setFormData(field);
       setFormName(data[0].form_name);
-      setStatus(data[0].status)
+      setStatus(data[0].status);
+      setAppId(data[0].id);
     } catch (error) {
       console.error('Error fetching data: ', error);
     }
@@ -212,6 +214,7 @@ export default function NewApplicationDetail() {
 
       // Tạo đối tượng JSON
       const appJSON: { [key: string]: any } = {
+        appId: '',
         appName: '',
         formData: [],
         tableData: [],
@@ -222,6 +225,7 @@ export default function NewApplicationDetail() {
         authorizer: [],
         coOwner: []
       };
+      appJSON.appId = appId;
       appJSON.appName = formName;
       appJSON.formData = formDataIsGrouped;
       appJSON.userNameReg = users.realname;
