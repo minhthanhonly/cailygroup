@@ -5,57 +5,58 @@ export const Register = ({ id }) => {
   const axiosPrivate = useAxiosPrivate();
   const [accordionItems, setAccordionItems] = useState<any>([]);
 
-  useEffect(() => {
-    const Load = async () => {
-      try {
-        const response = await axiosPrivate.get('application/getforid/' + id);
-        const data = response.data;
-        // Phân tích JSON
-        const parsedDataJson = JSON.parse(data.datajson);
-        //kiểm tra và lấy dữ liệu file nếu có
-        if (parsedDataJson.formData) {
-          parsedDataJson.formData = parsedDataJson.formData.map((item) => {
-            if (item.type && item.type.includes('file') && item.value) {
-              const [localFile, url, fileName] = item.value;
-              item.fileInfo = { localFile, url, fileName };
-            }
-            return item;
-          });
-        }
-        const hasFormData =
-          parsedDataJson.formData && parsedDataJson.formData.length > 0;
-        const hasTableData =
-          parsedDataJson.tableData && parsedDataJson.tableData.length > 0;
-        if (hasFormData && hasTableData) {
-          // Trường hợp: formData không rỗng và tableData không rỗng
-          let periodValue = [];
-          for (const item of parsedDataJson.formData) {
-            if (item.label === '期間') {
-              periodValue.push(item.value);
-            }
+  const Load = async () => {
+    try {
+      const response = await axiosPrivate.get('application/getforid/' + id);
+      const data = response.data;
+      // Phân tích JSON
+      const parsedDataJson = JSON.parse(data.datajson);
+      //kiểm tra và lấy dữ liệu file nếu có
+      if (parsedDataJson.formData) {
+        parsedDataJson.formData = parsedDataJson.formData.map((item) => {
+          if (item.type && item.type.includes('file') && item.value) {
+            const [localFile, url, fileName] = item.value;
+            item.fileInfo = { localFile, url, fileName };
           }
-          parsedDataJson.periodValues = periodValue;
-          setAccordionItems(parsedDataJson);
-        } else if (hasFormData) {
-          // Trường hợp : formData không rỗng
-          let periodValue = [];
-          for (const item of parsedDataJson.formData) {
-            if (item.label === '期間') {
-              periodValue.push(item.value);
-            }
-          }
-          parsedDataJson.periodValues = periodValue;
-          setAccordionItems(parsedDataJson);
-        } else if (hasTableData) {
-          //trường hợp : tableData không rỗng
-          setAccordionItems(parsedDataJson);
-        } else {
-          //console.log('Cả formData và tableData đều rỗng');
-        }
-      } catch (error) {
-        console.error('Error fetching data: ', error);
+          return item;
+        });
       }
-    };
+      const hasFormData =
+        parsedDataJson.formData && parsedDataJson.formData.length > 0;
+      const hasTableData =
+        parsedDataJson.tableData && parsedDataJson.tableData.length > 0;
+      if (hasFormData && hasTableData) {
+        // Trường hợp: formData không rỗng và tableData không rỗng
+        let periodValue = [];
+        for (const item of parsedDataJson.formData) {
+          if (item.label === '期間') {
+            periodValue.push(item.value);
+          }
+        }
+        parsedDataJson.periodValues = periodValue;
+        setAccordionItems(parsedDataJson);
+      } else if (hasFormData) {
+        // Trường hợp : formData không rỗng
+        let periodValue = [];
+        for (const item of parsedDataJson.formData) {
+          if (item.label === '期間') {
+            periodValue.push(item.value);
+          }
+        }
+        parsedDataJson.periodValues = periodValue;
+        setAccordionItems(parsedDataJson);
+      } else if (hasTableData) {
+        //trường hợp : tableData không rỗng
+        setAccordionItems(parsedDataJson);
+      } else {
+        //console.log('Cả formData và tableData đều rỗng');
+      }
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  };
+
+  useEffect(() => {
     Load();
   }, [id]);
 
