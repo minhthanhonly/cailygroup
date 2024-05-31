@@ -614,8 +614,15 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                         </span>
                       </p>
                       <p className="list-accordion__item__head__btn__icn">
-                        <Link to={'/application/edit/' + Items.id + '/' + accordionItems.appId}>
-                          <span className="icn-item">
+                        <Link
+                          to={
+                            '/application/edit/' +
+                            Items.id +
+                            '/' +
+                            accordionItems.appId
+                          }
+                        >
+                          <span className="icn-item icn-edit">
                             <img
                               src={editIcon}
                               alt="edit"
