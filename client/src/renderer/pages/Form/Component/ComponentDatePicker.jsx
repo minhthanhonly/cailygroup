@@ -74,6 +74,8 @@ const ComponentDatePicker = forwardRef((props, ref) => {
     },
   }));
 
+  const filterDaysVal = props.value.find(item => item.includes('日間'));
+
   return (
     <div className="c-form">
       <div className="c-form-inner">
@@ -87,6 +89,7 @@ const ComponentDatePicker = forwardRef((props, ref) => {
               props.customOptions.map((option, index) => (
                 <div className="c-form-item" key={index}>
                   <DatePicker
+                    value={props.value[index]}
                     onChange={(e) => handleChange(e, index)}
                     format="YYYY-MM-DD"
                     inputClass="c-form-control"
@@ -112,7 +115,7 @@ const ComponentDatePicker = forwardRef((props, ref) => {
             }
             {props.days === true ?
               <div className="c-form-item ml0">
-                <input type="text" name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleDaysChange} title="days" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" ref={inputRef} />
+                <input type="text" defaultValue={filterDaysVal} name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleDaysChange} title="days" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" ref={inputRef} />
                 <label className="c-form-label--02">日間</label>
               </div>
               : ''

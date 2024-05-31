@@ -30,7 +30,7 @@ const ComponentTextArea = forwardRef((props, ref) => {
         {props.required === true ? <span className="c-form-label--required txt-red">（必須）</span> : ''}
       </label>
       <div className="c-form-content">
-        <textarea className="c-form-control" placeholder="入力してください" name={props.id} aria-label={props.label} title={props.label} required={props.required}/>
+        <textarea defaultValue={props.value} className="c-form-control" placeholder="入力してください" name={props.id} aria-label={props.label} title={props.label} required={props.required}/>
       </div>
     </div>
   </div>

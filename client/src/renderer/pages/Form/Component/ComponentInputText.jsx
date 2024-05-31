@@ -29,7 +29,7 @@ const ComponentInputText = forwardRef((props, ref) => {
           {props.required === true ? <span className="c-form-label--required txt-red">（必須）</span> : ''}
         </label>
         <div className="c-form-content">
-          <input type="text" className="c-form-control" placeholder="入力してください" name={props.id} onChange={handleChange} aria-label={props.label} title={props.label} required={props.required} ref={inputTextRef} />
+          <input type="text" defaultValue={props.value} className="c-form-control" placeholder="入力してください" name={props.id} onChange={handleChange} aria-label={props.label} title={props.label} required={props.required} ref={inputTextRef} />
         </div>
       </div>
     </div>

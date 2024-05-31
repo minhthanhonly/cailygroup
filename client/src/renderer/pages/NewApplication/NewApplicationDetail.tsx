@@ -325,6 +325,7 @@ export default function NewApplicationDetail() {
               timesto={item.props[0].timesto}
               parentCallback={callBackFunction}
               ref={valRel}
+              value={[]}
             /> : (item.key === 'F_InputFile') ?
             <Component
               id={item.id}
