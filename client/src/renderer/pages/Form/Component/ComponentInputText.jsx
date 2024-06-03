@@ -14,8 +14,10 @@ const ComponentInputText = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     validate: () => {
       let valid = true;
-      if (isValue === '' && props.required === true) {
-        valid = isValidText(isValue, props.label);
+      if(props.required === true){
+        if(isValue === '') {
+          valid = isValidText(isValue, props.label);
+        }
       }
       return valid;
     },

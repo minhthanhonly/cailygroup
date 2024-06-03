@@ -138,6 +138,7 @@ export default function NewApplicationDetailEdit(){
       // Lấy tất cả các đối tượng trong Form
       for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i] as HTMLInputElement;
+        console.log(element.value);
 
         // Bắt lỗi Validate của Textarea
         if (element.required) {
