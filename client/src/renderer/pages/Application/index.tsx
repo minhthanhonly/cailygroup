@@ -34,7 +34,7 @@ export const Application = () => {
     try {
       let response;
 
-      if (isAdmin || isManager || isLeader) {
+      if (isAdmin || isManager) {
         response = await axiosPrivate.get('application', {
           params: { id_status: -1 },
         });
