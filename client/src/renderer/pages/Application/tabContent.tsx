@@ -51,7 +51,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
       };
       setAccordionItems(itemWithStatus);
     } catch (error) {
-      console.error('Error fetching data: ', error);
+      //console.error('Error fetching data: ', error);
     }
   };
   useEffect(() => {
