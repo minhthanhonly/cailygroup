@@ -346,7 +346,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
       {userData.length > 0 ? (
         userData.map((user, index) => (
           <div key={index}>
-            {isMember ? ( // Nếu là thành viên, kiểm tra điều kiện user.realname === users.realname
+            {isMember || isLeader ? ( // Nếu là thành viên, kiểm tra điều kiện user.realname === users.realname
               user.realname === users.realname ? (
                 <div className="list-accordion__parent">
                   <div
