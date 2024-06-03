@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { axiosPrivate } from "../../api/axios";
+import { axiosPrivate, BASE_URL } from "../../api/axios";
 import { useEffect, useRef, useState } from "react";
 import ComponentInputText from "../Form/Component/ComponentInputText";
 import ComponentText from "../Form/Component/ComponentText";
@@ -19,6 +19,7 @@ import ComponentRadioButtons from "../Form/Component/ComponentRadioButtons";
 import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import Modal from "../../components/Modal/Modal";
+import { isValidTextArea, isValidtextTable } from "../../components/Validate";
 
 export default function NewApplicationDetailEdit(){
   const {id, appId} = useParams();
@@ -39,6 +40,13 @@ export default function NewApplicationDetailEdit(){
   const childRefOfCheckbox = useRef(null);
   const childRefOfInputText = useRef(null);
 
+  const fileData = new FormData();
+
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+  /*
+  * LẤY THÔNG TIN CHI TIẾT CỦA ĐĂNG KÝ
+  */
   const fetchApplicationById = async () => {
     const res = await axiosPrivate.get("application/edit/" + id);
     const data = res.data;
@@ -47,10 +55,15 @@ export default function NewApplicationDetailEdit(){
       ...parsedDataJson.formData, // Giữ nguyên các trường từ dữ liệu cũ
     ];
     setFormDataVal(field);
-    setAppName(parsedDataJson.appName);
+    // setAppName(parsedDataJson.appName);
+    setFormName(parsedDataJson.appName);
     setSelectedAuth(parsedDataJson.authorizer);
+    setSelectedGroup(parsedDataJson.coOwner);
   }
 
+  /*
+  * LẤY RA FORM THEME CỦA ĐĂNG KÝ
+  */
   const fetchApplicationDetailById = async () => {
     try {
       const getAppDetail = await axiosPrivate.get("newapplication/detail/" + appId);
@@ -95,6 +108,191 @@ export default function NewApplicationDetailEdit(){
   // Lấy giá trị của File Upload khi Remove File
   const fileClearCallBackFunction = (childData) => {
     setPfile(childData);
+  }
+
+  // Truy cập vào Form
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Xử lý khi gửi Form Public
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const arrValid: any = [];
+
+    // Bắt lỗi Validate
+    let valid = true;
+    let check: any = { childRef: childRef.current, childRefOfCheckbox: childRefOfCheckbox.current, childRefOfInputText: childRefOfInputText.current };
+    for (var key in check) {
+      if (check[key] !== null) {
+        if (check[key].validate() == false) {
+          valid = false;
+        }
+      }
+    }
+    arrValid.push(valid);
+
+    if (formRef.current) {
+      const formElements = formRef.current.elements;
+      const formData: string[] = [];
+      let newObj: any = {};
+
+      // Lấy tất cả các đối tượng trong Form
+      for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i] as HTMLInputElement;
+
+        // Bắt lỗi Validate của Textarea
+        if (element.required) {
+          if (element.type === 'textarea') {
+            let validTextAreaErrors = false;
+            validTextAreaErrors = isValidTextArea(element.value, element.title);
+            arrValid.push(validTextAreaErrors);
+          }
+        }
+
+        // Lấy các thuộc tính của đối tượng
+        if (element.value && element.type != 'checkbox') {
+          if (element.ariaLabel === null) {
+            newObj = {
+              id: element.name,
+              label: label,
+              value: element.value,
+            }
+          } else if (element.ariaDescription) {
+            newObj = {
+              id: element.name,
+              label: label,
+              value: element.value + element.ariaLabel,
+            }
+          } else {
+            newObj = {
+              id: element.name,
+              label: element.title,
+              value: element.value,
+            }
+          }
+          formData.push(newObj);
+        }
+
+        if (element.type === 'checkbox' && element.checked === true) {
+          newObj = {
+            id: element.name,
+            label: element.title,
+            value: element.value,
+          }
+          formData.push(newObj);
+        }
+
+        if (element.type === 'file' && element.value) {
+          fileData.append('pfile', pfile);
+          newObj = {
+            id: element.name,
+            label: element.title,
+            value: BASE_URL + 'upload/' + pfile.name,
+            type: 'file',
+          }
+          formData.push(newObj);
+        }
+      }
+
+      // Gom các đối tượng cod id giống nhau vào một nhóm
+      const groupedItems = formData.reduce((dataField, item) => {
+        // Nếu chưa có nhóm cho id này thì tạo mảng mới
+        if (!dataField[item.id]) {
+          dataField[item.id] = { id: item.id, label: item.label };
+        }
+
+        // Duyệt qua các thuộc tính của đối tượng hiện tại
+        Object.keys(item).forEach(key => {
+          if (key !== 'id' && key !== 'label') { // bỏ qua thuộc tính id khi gộp
+            if (!dataField[item.id][key]) {
+
+              dataField[item.id][key] = [];
+            }
+            dataField[item.id][key].push(item[key]);
+          }
+        });
+
+        return dataField;
+      }, {})
+
+      // Chuyển đổi từ đối tượng thành mảng các nhóm nếu cần
+      const formDataIsGrouped = Object.values(groupedItems);
+
+      // Tạo đối tượng JSON
+      const appJSON: { [key: string]: any } = {
+        appId: '',
+        appName: '',
+        formData: [],
+        tableData: [],
+        id_status: 1,
+        userNameReg: '',
+        userEmailReg: '',
+        user_id: 0,
+        authorizer: [],
+        coOwner: []
+      };
+      appJSON.appId = appId;
+      appJSON.appName = formName;
+      appJSON.formData = formDataIsGrouped;
+      appJSON.userNameReg = users.realname;
+      appJSON.userEmailReg = users.user_email;
+      appJSON.user_id = users.id;
+      appJSON.authorizer = selectedAuth;
+      appJSON.coOwner = selectedGroup;
+
+      const currentStatus = e.currentTarget.getAttribute('data-status');
+      if (currentStatus === "draft") {
+        appJSON.id_status = 5;
+      }
+
+      // if (formRefHaveTable.current) {
+      //   //Lấy giá trị của Table
+      //   appJSON.tableData = estimate;
+
+      //   //Bắt lỗi Validate các thành phần trong Table
+      //   const formElementsInTable = formRefHaveTable.current.elements;
+
+      //   // Lấy tất cả các đối tượng trong Form
+      //   for (let i = 0; i < formElementsInTable.length; i++) {
+      //     const element = formElementsInTable[i] as HTMLInputElement;
+
+      //     if (element.value === "") {
+      //       let validInputTextErrors = false;
+      //       validInputTextErrors = isValidtextTable(element.value, element.title);
+      //       arrValid.push(validInputTextErrors);
+      //       return
+      //     }
+      //   }
+      // } else {
+      //   appJSON.tableData = [];
+      // }
+
+      // Chuyển đổi JSON thành chuỗi JSON
+      const appJsonString = JSON.stringify(appJSON);
+
+      if (pfile) {
+        const resUpload = await axiosPrivate.post("newapplication/upload", fileData, {
+          headers: { 'Content-Type': "multipart/form-data" },
+        });
+      }
+
+      // Kiểm tra xem tất cả các phần tử trong mảng có true không
+      const allTrueArrValid: boolean = arrValid.every(x => x === true);
+      console.log(appJsonString);
+
+      // if (allTrueArrValid === true) {
+      //   console.log(appJsonString);
+      //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
+      //   if (res.data.success === 'error') {
+      //     setError('Bị lỗi khi đăng ký');
+      //   } else {
+      //     setMsg('Bạn đã đăng ký thành công');
+      //     emitter.emit('reloadSidebar');
+      //     setTimeout(() => {
+      //       navigate('/application/');
+      //     }, 2000);
+      //   }
+      // }
+    }
   }
 
   const newformData = formData.map(item1 => {
@@ -185,6 +383,11 @@ export default function NewApplicationDetailEdit(){
   };
 
   /*
+  * LẤY THÔNG TIN NHÓM ĐƯỢC CHIA SẺ
+  */
+  let getGroup = listOfGroups.filter((item: { id: any; }) => selectedGroup.find((item2: any) => item.id === item2 ));
+
+  /*
   * LẤY DANH SÁCH THÀNH VIÊN LÀ MANAGER VÀ LEADER
   */
   const fetchMembersByAuthority = async () => {
@@ -196,24 +399,15 @@ export default function NewApplicationDetailEdit(){
     }
   };
 
-  const fetchMembersById = () => {
-    selectedAuth.map(async (id, index) => {
-      const res = await axiosPrivate.get("users/edit/" + id);
-      console.log(res.data.realname);
-      setAuthorizer([...authorizer, res.data.realname])
-    })
-
-    console.log(authorizer);
-  }
+  /*
+  * LẤY THÔNG TIN NGƯỜI ỦY QUYỀN CỦA BẢN ĐĂNG KÝ
+  */
+  let getAuth = listOfMembers.filter((item: { id: any; }) => selectedAuth.find((item2: any) => item.id === item2 ));
 
   useEffect(() => {
-    if (isModalOpen) {
-      fetchGroup();
-      fetchMembersByAuthority();
-      // fetchMembersById();
-    }
-    fetchMembersById();
-  }, [isModalOpen])
+    fetchGroup();
+    fetchMembersByAuthority();
+  }, []);
 
   const openModal = ($id: number) => {
     setModalOpen(true);
@@ -221,29 +415,19 @@ export default function NewApplicationDetailEdit(){
 
   const closeModal = () => {
     setModalOpen(false);
-    setCoOwner([]);
-    setAuthorizer([]);
-    setSelectedAuth([]);
-    setSelectedGroup([]);
   };
 
    /*
   * XỬ LÝ CHỌN THÀNH VIÊN ỦY QUYỀN
   */
-   const handleCheckboxMember = (e) => {
+  const handleCheckboxMember = (e) => {
     const {value, name, checked} = e.target;
     if(checked){
       setSelectedAuth([...selectedAuth, value]);
-      setAuthorizer([...authorizer, name]);
     } else{
       setSelectedAuth((prevData)=>{
 				return prevData.filter((id)=>{
 					return id!==value
-				})
-			})
-      setAuthorizer((prevData)=>{
-				return prevData.filter((realname)=>{
-					return realname!==name
 				})
 			})
     }
@@ -275,27 +459,37 @@ export default function NewApplicationDetailEdit(){
     setModalOpen(false);
   }
 
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setCoOwner([]);
+    setSelectedAuth([]);
+    setSelectedGroup([]);
+  }
+
   return (
     <>
-      <Heading2 text={appName} />
+      <Heading2 text={formName} />
       <div className="c-row"><p className="txt-lead">下記の通り申請致します。 </p></div>
-      {renderedComponents}
+      <form ref={formRef}>
+        {renderedComponents}
+      </form>
+
       <div className="box-router">
         <p className="box-router__title">承認ルート</p>
         <div className="grid-row box-router__grid">
           <div className="box-router__name">
             <p>承認者:</p>
             <p>
-              {authorizer.map((auth, index) => {
-                return(<span key={index}>{auth}{index !== authorizer.length - 1 && ', '}</span>)
+              {getAuth.map((auth, index) => {
+                return(<span key={index}>{auth.realname}{index !== getAuth.length - 1 && ', '}</span>)
               })}
             </p>
           </div>
           <div className="box-router__name">
             <p>共有者: </p>
             <p>
-              {coOwner.map((group, index) => {
-                return(<span key={index}>{group}{index !== coOwner.length - 1 && ', '}</span>)
+              {getGroup.map((group, index) => {
+                return(<span key={index}>{group.group_name}{index !== getGroup.length - 1 && ', '}</span>)
               })}
             </p>
           </div>
@@ -306,7 +500,7 @@ export default function NewApplicationDetailEdit(){
       </div>
       <div className="wrp-button mt50">
         <button className="btn btn--from btn--gray" data-status="draft">下書き保存</button>
-        <button className="btn btn--from btn--blue" data-status="apply">更新します。</button>
+        <button className="btn btn--from btn--blue" onClick={handleSubmit} data-status="apply">更新します。</button>
       </div>
       <ButtonBack onHandle={handleBackIndex} />
       <Modal isOpen={isModalOpen} onClose={closeModal}>
@@ -362,7 +556,7 @@ export default function NewApplicationDetailEdit(){
                           <td className="--center">{item.group_name}</td>
                           <td>
                             <label className="c-form-label--03">
-                              <input type="checkbox" className="c-form-control" checked={selectedGroup.includes(item.id) || coOwner.includes(item.group_name)} value={item.id} name={item.group_name} onChange={handleCheckboxGroup} />
+                              <input type="checkbox" className="c-form-control" checked={selectedGroup.includes(item.id) || coOwner.includes(item.group_name) || (selectedGroup[index] == item.id) ? true : false} value={item.id} name={item.group_name} onChange={handleCheckboxGroup} />
                               <span className="checkmark mr0"></span>
                             </label>
                           </td>
@@ -375,7 +569,7 @@ export default function NewApplicationDetailEdit(){
             </div>
             <div className="wrp-button mt20">
               <button className="btn btn--green" onClick={handleModal}>確定</button>
-              <button className="btn btn--orange" onClick={closeModal}>キャンセル</button>
+              <button className="btn btn--orange" onClick={handleCloseModal}>キャンセル</button>
             </div>
           </>
         }

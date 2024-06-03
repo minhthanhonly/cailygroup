@@ -74,7 +74,7 @@ const ComponentDatePicker = forwardRef((props, ref) => {
     },
   }));
 
-  const filterDaysVal = props.value.find(item => item.includes('日間'));
+  const filterDaysVal = props.value.find(item => item.includes('日間') ? true : false);
 
   return (
     <div className="c-form">
