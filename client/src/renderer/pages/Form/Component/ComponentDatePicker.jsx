@@ -43,7 +43,7 @@ const ComponentDatePicker = forwardRef((props, ref) => {
         valid = isValidNumber(isValue, '日間');
       }
 
-      if(props.required === true){
+      if(props.required === true) {
         // timesto
         if (props.timesto === true) {
           if (time === '') {
@@ -74,7 +74,11 @@ const ComponentDatePicker = forwardRef((props, ref) => {
     },
   }));
 
-  const filterDaysVal = props.value.find(item => item.includes('日間'));
+  const filterDaysVal = props.value.find(item => item.includes('日間') ? true : false);
+  let newfilterDaysVal = '';
+  if(filterDaysVal){
+    newfilterDaysVal = filterDaysVal.replace(/日間/g, '');
+  }
 
   return (
     <div className="c-form">
@@ -115,7 +119,7 @@ const ComponentDatePicker = forwardRef((props, ref) => {
             }
             {props.days === true ?
               <div className="c-form-item ml0">
-                <input type="text" defaultValue={filterDaysVal} name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleDaysChange} title="days" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" ref={inputRef} />
+                <input type="text" defaultValue={newfilterDaysVal} name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleDaysChange} title="days" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" ref={inputRef} />
                 <label className="c-form-label--02">日間</label>
               </div>
               : ''

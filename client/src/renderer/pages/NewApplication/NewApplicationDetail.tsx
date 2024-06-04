@@ -394,10 +394,6 @@ export default function NewApplicationDetail() {
 
   const closeModal = () => {
     setModalOpen(false);
-    setCoOwner([]);
-    setAuthorizer([]);
-    setSelectedAuth([]);
-    setSelectedGroup([]);
   };
 
   /*
@@ -446,6 +442,14 @@ export default function NewApplicationDetail() {
 
   const handleModal = () => {
     setModalOpen(false);
+  }
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setAuthorizer([]);
+    setCoOwner([]);
+    setSelectedAuth([]);
+    setSelectedGroup([]);
   }
 
   return (
@@ -584,7 +588,7 @@ export default function NewApplicationDetail() {
             </div>
             <div className="wrp-button mt20">
               <button className="btn btn--green" onClick={handleModal}>確定</button>
-              <button className="btn btn--orange" onClick={closeModal}>キャンセル</button>
+              <button className="btn btn--orange" onClick={handleCloseModal}>キャンセル</button>
             </div>
           </>
         }
