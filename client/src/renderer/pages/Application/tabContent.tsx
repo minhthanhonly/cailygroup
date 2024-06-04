@@ -10,7 +10,7 @@ import './Accordion.scss';
 import Modaldelete from '../../components/Modal/Modaldelete';
 import { Link } from 'react-router-dom';
 
-const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
+const TabContent = ({ id, sendDataToParent, sendIdToParent, datauserloadname }) => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
   const isAdmin = users.roles === UserRole.ADMIN;
   const isManager = users.roles === UserRole.MANAGER;
@@ -37,6 +37,8 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const [idStatus, setIdStatus] = useState<any>([]);
   const [userData, setUserData] = useState([]);
 
+  const [userLoadName, setuserLoadName] = useState<any>([]);
+
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
@@ -44,9 +46,18 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const Load = async () => {
     try {
       const response = await axiosPrivate.get('application/getforid/' + id);
+
+      //   const userLoadName = await axiosPrivate.get('users');
+
+      // console.log("userLoadName", userLoadName);
+
+
+      const dataUserGroup = userLoadName.data;
       const data = response.data;
       setItems(response.data);
 
+
+      setuserLoadName(dataUserGroup);
       const itemWithStatus = {
         ...JSON.parse(data.datajson), // Sử dụng data.datajson trực tiếp
         id_status: data.id_status,
@@ -331,10 +342,13 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const getUser = async () => {
     try {
       const response = await axiosPrivate.get('application/getusers/' + id);
+      const responseLoadData = await axiosPrivate.get('application');
       const usersData = response.data;
+      // console.log("usersData", responseLoadData);
+
       if (Array.isArray(usersData)) {
         setUserData(usersData);
-        //console.log(userData);
+        // console.log("userData", userData);
       } else {
         console.error('Error fetching data: Response data is not an array');
       }
@@ -350,264 +364,286 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
 
 
   const logCoOwner = (data: any) => {
-    console.log("coOwner", data.coOwner);
+    // console.log("coOwner", data.coOwner);
   };
-  console.log("Item111111111111", dataItemsJion.coOwner);
-  console.log("user_group_id", users.user_group_id);
+  // console.log("Item111111111111", dataItemsJion.coOwner);
+  // console.log("user_group", userLoadName);
+  // console.log("users", users.user_group_id);
 
 
+  const shouldRenderContent = (item: any) => {
+    return users.user_group_id === item;
+  };
+
+  const shouldRenderContentLeader = () => {
+
+    const coOwnerMatch = dataItemsJion.coOwner && dataItemsJion.coOwner.map((coOwnerItem: any) => {
+      return coOwnerItem === users.user_group_id;
+    });
+
+    return coOwnerMatch.includes(true);
+  };
   return (
     <>
+
 
 
       {userData.length > 0 ? (
         userData.map((user, index) => (
           <div key={index}>
             {isMember ? ( // Nếu là thành viên, kiểm tra điều kiện user.realname === users.realname
-              user.realname === users.realname ? (
-                <div className="list-accordion__parent">
-                  <div
-                    className={`list-accordion__item ${isOpen ? 'open' : ''}`}
-                  >
-                    <div
-                      className="list-accordion__item__head"
-                      onClick={toggleAccordion}
-                    >
-                      <div className="list-accordion__item__head__title">
-                        <p className="list-accordion__item__head__title__title ">
-                          {accordionItems.appName}
-                        </p>
-                        <span className="list-accordion__item__head__title__subtitle">
-                          髙崎: {Items.owner}（{Items.createdAt} ）
-                        </span>
-                      </div>
-                      <div className="list-accordion__item__head__btn">
-                        <p className="list-accordion__item__head__btn__btn">
-                          <span className={approve.approveClass}>
-                            {approve.approveTexts}
-                          </span>
-                        </p>
-                        <p className="list-accordion__item__head__btn__icn">
-                          <span className="icn-item">
-                            <img
-                              src={closeIcon}
-                              alt="close"
-                              className="fluid-image"
-                            />
-                          </span>
-                          <span
-                            className="icn-item"
-                            onClick={(event) => {
-                              openModaldelete(Items.id);
-                            }}
-                          >
-                            <img
-                              src={deleteIcon}
-                              alt="delete"
-                              className="fluid-image"
-                            />
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="list-accordion__item__content">
-                      {isOpen && (
-                        <div className="list-accordion__item__content__inner">
-                          <div className="list-accordion__item__content__item">
-                            <Register id={id} />
-                            <div className="box-approves">
-                              <div className="box-approves__inner">
-                                <p className="box-approves__headding">
-                                  承認状況
-                                </p>
-                                <ul>
-                                  <li>
-                                    <div className="box-approves__item">
-                                      <div className="box-approves__item__title">
-                                        <span>申</span>
-                                      </div>
-                                      <div className="box-approves__item__content">
-                                        <p className="box-approves__item__content__text">
-                                          申請者名：{Items.owner}（申請日時：
-                                          {Items.createdAt}）
-                                        </p>
-                                      </div>
+              <>
+                {dataItemsJion ? (
+                  <div>
+                    {dataItemsJion.coOwner && dataItemsJion.coOwner.length > 0 ? (
+                      dataItemsJion.coOwner.map((item: any, index: number) => (
+                        <div key={index}>
+                          {shouldRenderContent(item) && (
+                            <div>
+                              <div className="list-accordion__parent">
+                                <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
+                                  <div className="list-accordion__item__head" onClick={toggleAccordion} >
+                                    <div className="list-accordion__item__head__title">
+                                      <p className="list-accordion__item__head__title__title">  {accordionItems.appName}     </p>
+                                      <span className="list-accordion__item__head__title__subtitle">    髙崎: {Items.owner}（{Items.createdAt} ） </span>
                                     </div>
-                                  </li>
-                                  <li>
-                                    <div className="box-approves__item">
-                                      <div className="box-approves__item__content">
-                                        <p className="box-approves__item__content__text">
-                                          承認者名：
-                                          {commentFirst.length > 0 &&
-                                            commentFirst[0].realname}
-                                          {/* （申請日時：
-                                          {accordionItems.date}
-                                          {'\u00A0\u00A0'}
-                                          {accordionItems.time}） */}
-                                        </p>
-                                        {commentFirst.length > 0 && (
-                                          <div className="box-approves__item__content__comment">
-                                            {commentFirst.map(
-                                              (
-                                                commentItem: any,
-                                                index: any,
-                                              ) => (
-                                                <div
-                                                  key={index}
-                                                  className="box-approves__item__content__comment__item"
-                                                >
-                                                  <p className="box-approves__item__content__comment__head">
-                                                    <span className="box-approves__item__content__comment__title">
-                                                      {commentItem.realname}
-                                                      ：（
-                                                      {commentItem.createdAt}）
-                                                    </span>
-                                                    {isMember &&
-                                                      commentItem.user_id ===
-                                                      users.id ? (
-                                                      <>
-                                                        <span
-                                                          className="btn-delete"
-                                                          onClick={() =>
-                                                            handleDeleteComment(
-                                                              commentItem.id,
-                                                            )
-                                                          }
-                                                        >
-                                                          <img
-                                                            src={require('../../../../assets/close.png')}
-                                                            alt="delete"
-                                                            className="fluid-image"
-                                                          />
-                                                        </span>
-                                                      </>
-                                                    ) : (
-                                                      <span></span>
-                                                    )}
-                                                  </p>
-                                                  <p className="box-approves__item__content__comment__text">
-                                                    {commentItem.note}
-                                                  </p>
-                                                </div>
-                                              ),
-                                            )}
-                                          </div>
-                                        )}
-                                        <>
-                                          <textarea
-                                            placeholder="ココメントを入力（任意1000文字以内）"
-                                            value={textValue}
-                                            onChange={(event) =>
-                                              setTextValue(event.target.value)
-                                            }
-                                          />
-                                          <p className="box-approves__item__content__btn">
-                                            <span>
-                                              <a
-                                                className="btncomment btn02"
-                                                onClick={handleAddComment}
-                                              >
-                                                コメントする
-                                              </a>
-                                            </span>
-                                          </p>
-                                        </>
+                                    <div className="list-accordion__item__head__btn">
+                                      <p className="list-accordion__item__head__btn__btn"><span className={approve.approveClass}> {approve.approveTexts} </span> </p>
+                                      <p className="list-accordion__item__head__btn__icn">
 
-                                        <p className="list-btn">
-                                          <span className="list-btn__item">
-                                            <span
-                                              className={
-                                                approve.statusattrClass
-                                              }
-                                            >
-                                              {approve.statusattrTexts}
-                                            </span>
-                                          </span>
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </li>
-                                  <li className="box-status">
-                                    <div>
-                                      <ul className="list-status">
-                                        {idStatus.length > 0 && (
+                                        {user.realname === users.realname ? (
+
+                                          // Content to render if the condition is true
                                           <>
-                                            {renderItem(
-                                              idStatus[0].id, //trong database id_status = 1 nhưng do chạy vòng lặp nên sẽ đếm từ 0
-                                              statusItems[0].label,
-                                              isChecked,
-                                              isMember
-                                                ? noop
-                                                : handleStatusClick,
-                                              approve.statusattrTexts ===
-                                              idStatus[7].name,
-                                            )}
-                                            {renderItem(
-                                              idStatus[3].id, //trong database id_status = 2
-                                              statusItems[1].label,
-                                              isChecked,
-                                              isMember
-                                                ? noop
-                                                : handleStatusClick,
-                                              approve.statusattrTexts ===
-                                              idStatus[6].name,
-                                            )}
-                                            {renderItem(
-                                              idStatus[1].id,
-                                              statusItems[2].label,
-                                              isChecked,
-                                              isMember
-                                                ? noop
-                                                : handleStatusClick,
-                                              approve.statusattrTexts ===
-                                              idStatus[1].name,
-                                            )}
-                                            {renderItem(
-                                              idStatus[2].id,
-                                              statusItems[3].label,
-                                              isChecked,
-                                              isMember
-                                                ? noop
-                                                : handleStatusClick,
-                                              approve.statusattrTexts ===
-                                              idStatus[2].name,
-                                            )}
-                                            {renderItem(
-                                              idStatus[4].id,
-                                              statusItems[4].label,
-                                              isChecked,
-                                              isMember
-                                                ? noop
-                                                : handleStatusClick,
-                                              approve.statusattrTexts ===
-                                              idStatus[4].name,
-                                            )}
-                                            {renderItem(
-                                              idStatus[5].id,
-                                              statusItems[5].label,
-                                              isChecked,
-                                              isMember
-                                                ? noop
-                                                : handleStatusClick,
-                                              approve.statusattrTexts ===
-                                              idStatus[5].name,
-                                            )}
+                                            <Link to={'/application/edit/' + Items.id + '/' + accordionItems.appId}  >
+                                              <span className="icn-item icn-edit">
+                                                <img src={editIcon} alt="edit" className="fluid-image" />
+                                              </span>
+                                            </Link>
+                                            <span className="icn-item">
+                                              <img
+                                                src={closeIcon}
+                                                alt="close"
+                                                className="fluid-image"
+                                              />
+                                            </span>
+                                            <span
+                                              className="icn-item"
+                                              onClick={(event) => {
+                                                openModaldelete(Items.id);
+                                              }}
+                                            >
+                                              <img
+                                                src={deleteIcon}
+                                                alt="delete"
+                                                className="fluid-image"
+                                              />
+                                            </span>
                                           </>
+                                        ) : (
+                                          // Content to render if the condition is false (optional)
+                                          null
                                         )}
-                                      </ul>
+
+                                      </p>
                                     </div>
-                                  </li>
-                                </ul>
+                                  </div>
+                                  <div className="list-accordion__item__content">
+                                    {isOpen && (
+                                      <div className="list-accordion__item__content__inner">
+                                        <div className="list-accordion__item__content__item">
+                                          <Register id={id} />
+                                          <div className="box-approves">
+                                            <div className="box-approves__inner">
+                                              <p className="box-approves__headding">承認状況</p>
+                                              <ul>
+                                                <li>
+                                                  <div className="box-approves__item">
+                                                    <div className="box-approves__item__title">
+                                                      <span>申</span>
+                                                    </div>
+                                                    <div className="box-approves__item__content">
+                                                      <p className="box-approves__item__content__text">
+                                                        申請者名：{Items.owner}（申請日時：
+                                                        {Items.createdAt}）
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                                <li>
+                                                  <div className="box-approves__item">
+                                                    <div className="box-approves__item__content">
+                                                      <p className="box-approves__item__content__text">
+                                                        承認者名：
+                                                        {commentFirst.length > 0 &&
+                                                          commentFirst[0].realname}
+
+                                                      </p>
+                                                      {commentFirst.length > 0 && (
+                                                        <div className="box-approves__item__content__comment">
+                                                          {commentFirst.map(
+                                                            (commentItem: any, index: any) => (
+                                                              <div
+                                                                key={index}
+                                                                className="box-approves__item__content__comment__item"
+                                                              >
+                                                                <p className="box-approves__item__content__comment__head">
+                                                                  <span className="box-approves__item__content__comment__title">
+                                                                    {commentItem.realname}
+                                                                    ：（{commentItem.createdAt}
+                                                                    ）
+                                                                  </span>
+
+                                                                  {isAdmin &&
+                                                                    commentItem.user_id ===
+                                                                    users.id ? (
+                                                                    <>
+                                                                      <span
+                                                                        className="btn-delete"
+                                                                        onClick={() =>
+                                                                          handleDeleteComment(
+                                                                            commentItem.id,
+                                                                          )
+                                                                        }
+                                                                      >
+                                                                        <img
+                                                                          src={require('../../../../assets/close.png')}
+                                                                          alt="delete"
+                                                                          className="fluid-image"
+                                                                        />
+                                                                      </span>
+                                                                    </>
+                                                                  ) : (
+                                                                    <span></span>
+                                                                  )}
+                                                                </p>
+                                                                <p className="box-approves__item__content__comment__text">
+                                                                  {commentItem.note}
+                                                                </p>
+                                                              </div>
+                                                            ),
+                                                          )}
+                                                        </div>
+                                                      )}
+                                                      {isAdmin ? (
+                                                        <>
+                                                          <textarea
+                                                            placeholder="ココメントを入力（任意1000文字以内）"
+                                                            value={textValue}
+                                                            onChange={(event) =>
+                                                              setTextValue(event.target.value)
+                                                            }
+                                                          />
+                                                          <p className="box-approves__item__content__btn">
+                                                            <span>
+                                                              <a
+                                                                className="btncomment btn02"
+                                                                onClick={handleAddComment}
+                                                              >
+                                                                コメントする
+                                                              </a>
+                                                            </span>
+                                                          </p>
+                                                        </>
+                                                      ) : (
+                                                        <div></div>
+                                                      )}
+                                                      <p className="list-btn">
+                                                        <span className="list-btn__item">
+                                                          <span
+                                                            className={approve.statusattrClass}
+                                                          >
+                                                            {approve.statusattrTexts}
+                                                          </span>
+                                                        </span>
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                                <li className="box-status">
+                                                  <div>
+                                                    {isLeader || isAdmin || isManager ? (
+                                                      <ul className="list-status">
+                                                        {idStatus.length > 0 && (
+                                                          <>
+                                                            {renderItem(
+                                                              idStatus[0].id, //trong database id_status = 1 nhưng do chạy vòng lặp nên sẽ đếm từ 0
+                                                              statusItems[0].label,
+                                                              isChecked,
+                                                              handleStatusClick,
+                                                              approve.statusattrTexts ===
+                                                              idStatus[7].name,
+                                                            )}
+                                                            {renderItem(
+                                                              idStatus[3].id, //trong database id_status = 2
+                                                              statusItems[1].label,
+                                                              isChecked,
+                                                              handleStatusClick,
+                                                              approve.statusattrTexts ===
+                                                              idStatus[6].name,
+                                                            )}
+                                                            {renderItem(
+                                                              idStatus[1].id,
+                                                              statusItems[2].label,
+                                                              isChecked,
+                                                              handleStatusClick,
+                                                              approve.statusattrTexts ===
+                                                              idStatus[1].name,
+                                                            )}
+                                                            {renderItem(
+                                                              idStatus[2].id,
+                                                              statusItems[3].label,
+                                                              isChecked,
+                                                              handleStatusClick,
+                                                              approve.statusattrTexts ===
+                                                              idStatus[2].name,
+                                                            )}
+                                                            {renderItem(
+                                                              idStatus[4].id,
+                                                              statusItems[4].label,
+                                                              isChecked,
+                                                              handleStatusClick,
+                                                              approve.statusattrTexts ===
+                                                              idStatus[4].name,
+                                                            )}
+
+                                                            {renderItem(
+                                                              idStatus[5].id,
+                                                              statusItems[5].label,
+                                                              isChecked,
+                                                              handleStatusClick,
+                                                              approve.statusattrTexts ===
+                                                              idStatus[5].name,
+                                                            )}
+                                                          </>
+                                                        )}
+                                                      </ul>
+                                                    ) : (
+                                                      <ul></ul>
+                                                    )}
+                                                  </div>
+                                                </li>
+                                              </ul>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          )}
                         </div>
-                      )}
-                    </div>
+                      ))
+                    ) : (
+                      <p></p>
+                    )}
                   </div>
-                </div>
-              ) : null
+                ) : (
+                  <p></p>
+                )}
+              </>
             ) : (
               // Nếu không phải thành viên, hiển thị tất cả dữ liệu
 
@@ -620,14 +656,15 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                           <div>
                             {(() => {
                               // Khai báo biến kiểm tra người dùng là admin hay manager
-                              const isAdminOrManager = users.userid === 'lead';
+                              const isAdminOrManager = users.userid === ' ';
 
                               // Nếu dataItemsJion.authorizer tồn tại và có phần tử
                               if (dataItemsJion.authorizer && dataItemsJion.authorizer.length > 0) {
                                 // Duyệt qua từng phần tử trong mảng authorizer
                                 return dataItemsJion.authorizer.map((item: any, index: number) => (
                                   <div key={index}>
-                                    {item === users.id || isAdminOrManager ? (
+                                    {/* <p>{users.id} --- {item}</p> */}
+                                    {item === users.id || shouldRenderContentLeader() ? (
                                       <>
                                         <div className="list-accordion__parent">
                                           <div className={`list-accordion__item ${isOpen ? 'open' : ''}`}>
@@ -863,7 +900,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                                 // Nếu dataItemsJion.authorizer không tồn tại hoặc không có phần tử
                                 return (
                                   <>
-                                    {!(dataItemsJion.coOwner && dataItemsJion.coOwner.includes(users.user_group_id)) && isAdminOrManager && (
+                                    {!(dataItemsJion.authorizer && dataItemsJion.authorizer.includes(users.user_group_id)) && (
                                       <div>
 
                                       </div>
@@ -874,7 +911,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                             })()}
                           </div>
                         ) : (
-                          <p>Loading...</p>
+                          <p></p>
                         )}
                       </div>
                     </>
@@ -1105,8 +1142,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                     </div>
                   )}
                 </div>
-
-
               </>
             )}
           </div>

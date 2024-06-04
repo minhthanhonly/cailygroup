@@ -39,7 +39,8 @@ export const Application = () => {
           params: { id_status: -1 },
         });
         //console.log('1');
-      } else {
+      }
+      else {
         response = await axiosPrivate.get(
           'application/getapplicationother/' + users.id,
           {
@@ -118,6 +119,60 @@ export const Application = () => {
     };
     LoadTab();
   }, [activeTab]);
+
+
+  const [userLoadName, setuserLoadName] = useState<any>([]);
+
+  useEffect(() => {
+    const getTables = async () => {
+      try {
+        const responseLoadData = await axiosPrivate.get('application');
+        const reloadData = responseLoadData.data;
+        setuserLoadName(reloadData);
+        // console.log("usersData", reloadData);
+      } catch (err) {
+        console.error('Lỗi khi lấy dữ liệu:', err);
+      }
+    };
+    getTables();
+  }, []);
+
+
+
+
+
+  const renderTabContent = () => {
+
+    if (currentItems.length === 0) {
+      return userLoadName.length > 0 ? (
+        userLoadName.map((item: any, index: any) => (
+          <TabContent
+            key={index}
+            id={item.id}
+            datauserloadname={userLoadName} // Truyền dữ liệu từng phần tử từ userLoadName
+            sendDataToParent={handleDataFromChild}
+            sendIdToParent={handleDeleteAccodion}
+          />
+        ))
+      ) : (
+        <p></p>
+      )
+    }
+
+    return userLoadName.length > 0 ? (
+      userLoadName.map((item: any, index: any) => (
+        <TabContent
+          key={index}
+          id={item.id}
+          datauserloadname={userLoadName} // Truyền dữ liệu từng phần tử từ userLoadName
+          sendDataToParent={handleDataFromChild}
+          sendIdToParent={handleDeleteAccodion}
+        />
+      ))
+    ) : (
+      <p></p>
+    )
+  };
   const itemsPerPage = 10;
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const handlePageChange = (page: number) => {
@@ -128,6 +183,7 @@ export const Application = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
+
 
   const handleDataFromChild = (id_status: any) => {
     setIdstatus(id_status);
@@ -156,10 +212,17 @@ export const Application = () => {
     Load();
   }, [activeTab]);
 
+
+  console.log("currentItems", currentItems);
+
+
   //  tab
   const tabs = ['tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'tab6', 'tab7'];
   return (
+
+
     <div>
+
       <div className="grid-row grid-flex">
         <Heading2 text="申請状況" />
         <Link to="/search">
@@ -242,17 +305,18 @@ export const Application = () => {
                   (tab) =>
                     activeTab === tab && (
                       <div className="table_content" key={tab}>
-                        {Array.isArray(items) && items.length > 0 && (
-                          <div>
-                            {currentItems.map((item: any, index: any) => (
-                              <TabContent
-                                key={index}
-                                id={item.id}
-                                sendDataToParent={handleDataFromChild}
-                                sendIdToParent={handleDeleteAccodion}
-                              />
-                            ))}
-                          </div>
+                        {userLoadName.length > 0 ? (
+                          userLoadName.map((item: any, index: any) => (
+                            <TabContent
+                              key={index}
+                              id={item.id}
+                              datauserloadname={userLoadName} // Truyền dữ liệu từng phần tử từ userLoadName
+                              sendDataToParent={handleDataFromChild}
+                              sendIdToParent={handleDeleteAccodion}
+                            />
+                          ))
+                        ) : (
+                          <p></p>
                         )}
                       </div>
                     ),
