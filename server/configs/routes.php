@@ -74,7 +74,7 @@
     $routes['estimate'] = 'estimate';
 
 
-        // dataseach
+    // dataseach
     $routes['search'] = 'search';
     $routes['search/data'] = 'search/data';
 
@@ -110,6 +110,7 @@
     // Newapplication
     $routes['newapplication'] = 'newapplication';
     $routes['newapplication/add'] = 'newapplication/add';
+    $routes['newapplication/updatedetail'] = 'newapplication/updatedetail';
     $routes['newapplication/update'] = 'newapplication/update';
     $routes['newapplication/upload'] = 'newapplication/upload';
     $routes['newapplication/detail/.+-(\d+)'] = 'newapplication/detail/$1';

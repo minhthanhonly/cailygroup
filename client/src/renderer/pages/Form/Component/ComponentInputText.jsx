@@ -1,10 +1,16 @@
-import { useImperativeHandle, forwardRef, useRef, useState } from "react";
+import { useImperativeHandle, forwardRef, useRef, useState, useEffect } from "react";
 import { isValidText } from "../../../components/Validate";
 
 /* =======================================================================* */
 
 const ComponentInputText = forwardRef((props, ref) => {
   const [isValue, setIsValue] = useState('');
+
+  useEffect(() => {
+    if(props.value) {
+      setIsValue(props.value);
+    }
+  },[])
 
   const handleChange = (e) => {
     setIsValue(e.target.value);
@@ -31,7 +37,7 @@ const ComponentInputText = forwardRef((props, ref) => {
           {props.required === true ? <span className="c-form-label--required txt-red">（必須）</span> : ''}
         </label>
         <div className="c-form-content">
-          <input type="text" defaultValue={props.value} className="c-form-control" placeholder="入力してください" name={props.id} onChange={handleChange} aria-label={props.label} title={props.label} required={props.required} ref={inputTextRef} />
+          <input type="text" value={isValue} className="c-form-control" placeholder="入力してください" name={props.id} onChange={handleChange} aria-label={props.label} title={props.label} required={props.required} ref={inputTextRef} />
         </div>
       </div>
     </div>

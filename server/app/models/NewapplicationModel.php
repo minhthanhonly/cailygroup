@@ -141,6 +141,37 @@
 			}
 		}
 
+		function postUpdateDetail(){
+			global $conn;
+			
+			if ($_SERVER["REQUEST_METHOD"] === "POST") {
+				$appJsonString = file_get_contents("php://input");
+				$appPostData = json_decode(file_get_contents("php://input"));
+
+				$id = $appPostData->id;
+				$appName = $appPostData->appName;
+				$userNameReg = $appPostData->userNameReg;
+				$id_status =  $appPostData->id_status;
+				$user_id =  $appPostData->user_id;
+				
+
+				// Cập nhật dữ liệu vào cơ sở dữ liệu
+				$sql = "UPDATE application_details SET datajson='$appJsonString', owner='$userNameReg', id_status='$id_status', user_id='$user_id', updatedAt=NOW() WHERE id='$id'";
+
+				$result = $conn->query($sql);
+
+				if($result) {
+					$result = "ok";
+					echo json_encode(['success' => $result]);
+					return;
+				} else {
+					$result = "error";
+					echo json_encode(['success' => $result]);
+					return;
+				}
+			}
+		}
+
 		function postUpdate(){
 			global $conn;
 			

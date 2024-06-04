@@ -1,6 +1,6 @@
 
 
-import { useImperativeHandle, forwardRef, useRef, useState } from "react";
+import { useImperativeHandle, forwardRef, useRef, useState, useEffect } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-multi-date-picker';
 import { isValidNumber, isValidText, isValidTime } from "../../../components/Validate";
@@ -11,7 +11,30 @@ const ComponentDatePicker = forwardRef((props, ref) => {
   const [isValue, setIsValue] = useState('');
   const [isDateValue, setIsDateValue] = useState({});
   const customOptions = props.customOptions.length;
-  const [valid, setIsValid] = useState(false);
+  let newfilterDaysVal = '';
+  let isDateArrValue = [];
+
+  if(props.value){
+    const filterDaysVal = props.value.find(item => item.includes('日間') ? true : false);
+    if(filterDaysVal){
+      newfilterDaysVal = filterDaysVal.replace(/日間/g, '');
+    }
+
+    let filteredArrVal = props.value.filter(function(item) {
+      return !item.includes('日間');
+    });
+
+    filteredArrVal.map((value, index) => {
+      isDateArrValue.push(value);
+      Object.assign(isDateValue, {[index]: true});
+    })
+  }
+
+  useEffect(() => {
+    if(props.value) {
+      setIsValue(newfilterDaysVal);
+    }
+  },[])
 
   const handleTimeChange = (e) => {
     setTime(e.target.value);
@@ -20,7 +43,7 @@ const ComponentDatePicker = forwardRef((props, ref) => {
     setTimeTo(e.target.value);
   };
 
-  const handleChange = (e, index) => {
+  const handleChange = (e, index, date) => {
     props.parentCallback(props.label);
     setIsDateValue({...isDateValue, [index]: e.isValid});
   };
@@ -33,9 +56,11 @@ const ComponentDatePicker = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     validate: () => {
       let valid = true;
+
       if (Object.values(isDateValue).length !== customOptions && props.required === true) {
         valid = isValidText("", props.label);
       }
+
       if (isValue === '' && props.required === true && props.days === true) {
         valid = isValidText(isValue, '日間');
       }
@@ -74,12 +99,6 @@ const ComponentDatePicker = forwardRef((props, ref) => {
     },
   }));
 
-  const filterDaysVal = props.value.find(item => item.includes('日間') ? true : false);
-  let newfilterDaysVal = '';
-  if(filterDaysVal){
-    newfilterDaysVal = filterDaysVal.replace(/日間/g, '');
-  }
-
   return (
     <div className="c-form">
       <div className="c-form-inner">
@@ -93,8 +112,8 @@ const ComponentDatePicker = forwardRef((props, ref) => {
               props.customOptions.map((option, index) => (
                 <div className="c-form-item" key={index}>
                   <DatePicker
-                    value={props.value[index]}
-                    onChange={(e) => handleChange(e, index)}
+                    value={isDateArrValue[index]}
+                    onChange={(e, date) => handleChange(e, index, date)}
                     format="YYYY-MM-DD"
                     inputClass="c-form-control"
                     placeholder="yyyy/mm/dd"
@@ -119,7 +138,7 @@ const ComponentDatePicker = forwardRef((props, ref) => {
             }
             {props.days === true ?
               <div className="c-form-item ml0">
-                <input type="text" defaultValue={newfilterDaysVal} name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleDaysChange} title="days" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" ref={inputRef} />
+                <input type="text" value={isValue} name={props.id} className="c-form-control c-form-control--02" placeholder="数字を入力" onChange={handleDaysChange} title="days" aria-label="日間" aria-description={true} required={props.required} data-type="is-Number" ref={inputRef} />
                 <label className="c-form-label--02">日間</label>
               </div>
               : ''
