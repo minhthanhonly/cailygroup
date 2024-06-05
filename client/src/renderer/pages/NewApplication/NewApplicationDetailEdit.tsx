@@ -161,7 +161,6 @@ export default function NewApplicationDetailEdit() {
       // Lấy tất cả các đối tượng trong Form
       for (let i = 0; i < formElements.length; i++) {
         const element = formElements[i] as HTMLInputElement;
-        console.log(element.value);
 
         // Bắt lỗi Validate của Textarea
         if (element.required) {
@@ -305,6 +304,7 @@ export default function NewApplicationDetailEdit() {
       const allTrueArrValid: boolean = arrValid.every(x => x === true);
 
       if (allTrueArrValid === true) {
+        // console.log(appJsonString);
         const res = await axiosPrivate.post("newapplication/updatedetail", appJsonString);
         if (res.data.success === 'error') {
           setError('Bị lỗi khi chỉnh sửa');
