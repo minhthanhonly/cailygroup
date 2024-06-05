@@ -20,9 +20,30 @@ interface Row {
 
 export default function TravelAllowance(props) {
 
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+  const { callback } = props;
+
+
+
   const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
-  const [rows, setRows] = useState([{ 日付: currentDate, id: 0, 鉄道名: '', 路線名: '', 利用区間_: '', 利用区間: '', マンスリーチケット: 0, 往復: 0, 備考: '', 合計: 0, },]);
+
+  const initialRows = callback ? callback.map((item: { id: any; 日付: any; 鉄道名: any; 路線名: any; 利用区間_: any; 利用区間: any; マンスリーチケット: any; 往復: any; 備考: any; 合計: any; }) => ({
+    id: item.id,
+    日付: item.日付,
+    鉄道名: item.鉄道名,
+    路線名: item.路線名,
+    利用区間_: item.利用区間_,
+    利用区間: item.利用区間,
+    マンスリーチケット: item.マンスリーチケット,
+    往復: item.往復,
+    備考: item.備考,
+    合計: item.合計,
+
+
+  })) : [{ 日付: currentDate, id: 0, 鉄道名: '', 路線名: '', 利用区間_: '', 利用区間: '', マンスリーチケット: 0, 往復: 0, 備考: '', 合計: 0 }];
+
+
+  const [rows, setRows] = useState(initialRows);
   const [isNew, setNew] = useState(1);
   const [isChange, setChange] = useState(0);
   const [isChangePrice, setChangePrice] = useState(0);

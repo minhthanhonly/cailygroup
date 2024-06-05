@@ -22,15 +22,35 @@ interface Row {
 
 export default function TravelExpenses(props) {
 
-    const users = JSON.parse(localStorage.getItem('users') || '{}');
-    const axiosPrivate = useAxiosPrivate();
+    const { callback } = props;
+
+
+    console.log("callback", callback);
+
+
     const [日付, setDate] = useState(new Date());
     const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
-    const [rows, setRows] = useState<Row[]>([{ 日付: currentDate, id: 0, 路線: '', 乗車駅: '', 下車駅: '', 金額: 0, 備考: '', 合計: 0 }]);
+
+    const initialRows = callback ? callback.map((item: { id: any; 日付: any; 路線: any; 乗車駅: any; 下車駅: any; 金額: any; 備考: any; 合計: any; }) => ({
+        id: item.id,
+        日付: item.日付,
+        路線: item.路線,
+        乗車駅: item.乗車駅,
+        下車駅: item.下車駅,
+        金額: item.金額,
+        備考: item.備考,
+        合計: item.合計,
+
+
+
+    })) : [{ 日付: currentDate, id: 0, 路線: '', 乗車駅: '', 下車駅: '', 金額: 0, 備考: '', 合計: 0 }];
+    const [rows, setRows] = useState<Row[]>(initialRows);
     const [total, setTotal] = useState(0);
     const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
 
-    const [mealExpenses, setMealExpenses] = useState<string[]>(new Array(rows.length).fill(''));
+    const initialMealExpenses = callback ? callback.map((item: { 金額: { toLocaleString: () => any; }; }) => item.金額.toLocaleString()) : new Array(rows.length).fill('');
+
+    const [mealExpenses, setMealExpenses] = useState<string[]>(initialMealExpenses);
 
     const handleLeaveDateChange = () => {
         const newRows = [...rows];
@@ -66,6 +86,29 @@ export default function TravelExpenses(props) {
 
         return sum;
     };
+
+    // const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    //     let inputValue = event.target.value;
+    //     inputValue = inputValue.replace(/[^0-9]/g, '');
+
+    //     if (inputValue === '') {
+    //         inputValue = '0';
+    //     }
+
+    //     const newValue = parseInt(inputValue, 10);
+    //     const formattedValue = newValue.toLocaleString();
+
+    //     const newMealExpenses = [...mealExpenses];
+    //     newMealExpenses[index] = formattedValue;
+    //     setMealExpenses(newMealExpenses);
+
+    //     const newRows: Row[] = [...rows];
+    //     if (newRows[index]) {
+    //         newRows[index].金額 = newValue;
+    //         newRows[index].合計 = calculateRowTotal(newRows[index]); // Cập nhật totalrows của hàng
+    //         setRows(newRows);
+    //     }
+    // };
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
         let inputValue = event.target.value;

@@ -22,8 +22,8 @@ import Modal from "../../components/Modal/Modal";
 import { isValidTextArea, isValidtextTable } from "../../components/Validate";
 import { emitter } from "../../layouts/components/Sidebar";
 
-export default function NewApplicationDetailEdit(){
-  const {id, appId} = useParams();
+export default function NewApplicationDetailEdit() {
+  const { id, appId } = useParams();
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
@@ -47,24 +47,35 @@ export default function NewApplicationDetailEdit(){
 
   const users = JSON.parse(localStorage.getItem('users') || '{}');
 
+
+  const [dataTableEdit, setDataTableEdit] = useState([]);
+
   /*
   * LẤY THÔNG TIN CHI TIẾT CỦA ĐĂNG KÝ
   */
   const fetchApplicationById = async () => {
-    const res = await axiosPrivate.get("application/edit/" + id);
-    const data = res.data;
-    const parsedDataJson = JSON.parse(data.datajson);
-    const field = [
-      ...parsedDataJson.formData, // Giữ nguyên các trường từ dữ liệu cũ
-    ];
-    setFormDataVal(field);
-    // setAppName(parsedDataJson.appName);
-    setFormName(parsedDataJson.appName);
-    setSelectedAuth(parsedDataJson.authorizer);
-    setSelectedGroup(parsedDataJson.coOwner);
+    try {
 
-    console.log(parsedDataJson.tableData)
+      const res = await axiosPrivate.get("application/edit/" + id);
+      const data = res.data;
+      const parsedDataJson = JSON.parse(data.datajson);
+      const field = [
+        ...parsedDataJson.formData, // Giữ nguyên các trường từ dữ liệu cũ
+      ];
+      setFormDataVal(field);
+      // setAppName(parsedDataJson.appName);
+      setFormName(parsedDataJson.appName);
+      setSelectedAuth(parsedDataJson.authorizer);
+      setSelectedGroup(parsedDataJson.coOwner);
+      setDataTableEdit(parsedDataJson.tableData);
+
+      console.log("Fetched data: ", parsedDataJson.tableData);
+    } catch (error) {
+      console.error("Error fetching application data:", error);
+    }
+
   }
+
 
   /*
   * LẤY RA FORM THEME CỦA ĐĂNG KÝ
@@ -83,10 +94,10 @@ export default function NewApplicationDetailEdit(){
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchApplicationById();
     fetchApplicationDetailById();
-  },[])
+  }, [])
 
   const handleBackIndex = () => {
     navigate('/newapplication');
@@ -103,6 +114,8 @@ export default function NewApplicationDetailEdit(){
   // Lấy giá trị của thành phần trong Table
   const [estimate, setEstimate] = useState('');
   const callBackFunction2 = (childData) => {
+
+
     setEstimate(childData)
   }
 
@@ -312,7 +325,7 @@ export default function NewApplicationDetailEdit(){
   })
 
   // Gọi ra các thành phần của FORM
-  const componentMap: { [key: string]: React.FC<{ id: string, label: string, text?: string, required: boolean, value?: any, customProps?: any, customOptions?: any, days?: boolean, times?: boolean, timesto?: boolean, parentCallback?: any, ref?: any, parentFileCallback?: any, parentClearFileCallback?: any}> } = {
+  const componentMap: { [key: string]: React.FC<{ id: string, label: string, text?: string, required: boolean, value?: any, customProps?: any, customOptions?: any, days?: boolean, times?: boolean, timesto?: boolean, parentCallback?: any, ref?: any, parentFileCallback?: any, parentClearFileCallback?: any }> } = {
     'F_Text': ComponentText,
     'F_TextAndLabel': ComponentTextAndLabel,
     'F_InputText': ComponentInputText,
@@ -333,8 +346,8 @@ export default function NewApplicationDetailEdit(){
     if (Component) {
       let valRel: any = null;
       (item.key === 'F_InputText') ? valRel = childRefOfInputText :
-      (item.key === 'F_DatePicker') ? valRel = childRef :
-      (item.key === 'F_TitleAndCheckbox' || item.key === 'F_Checkbox' || item.key === 'F_CheckboxAndInputText') ? valRel = childRefOfCheckbox : valRel;
+        (item.key === 'F_DatePicker') ? valRel = childRef :
+          (item.key === 'F_TitleAndCheckbox' || item.key === 'F_Checkbox' || item.key === 'F_CheckboxAndInputText') ? valRel = childRefOfCheckbox : valRel;
       return (
         <div className="c-row" key={index}>
           {(item.key === 'F_DatePicker') ?
@@ -350,30 +363,30 @@ export default function NewApplicationDetailEdit(){
               ref={valRel}
               value={item.value}
             /> : (item.key === 'F_InputFile') ?
-            <Component
-              id={item.id}
-              label={item.label}
-              required={item.required}
-              value={item.value}
-              parentFileCallback={fileCallBackFunction}
-              parentClearFileCallback={fileClearCallBackFunction}
-            /> : (item.key === 'F_TextAndLabel') ?
-            <Component
-              id={item.id}
-              label={item.label}
-              text={item.props[0].text}
-              required={item.required}
-            /> :
-            <Component
-              id={item.id}
-              value={item.value}
-              label={item.label}
-              text={item.content}
-              required={item.required}
-              customProps={item.props}
-              customOptions={item.custom_options}
-              ref={valRel}
-            />
+              <Component
+                id={item.id}
+                label={item.label}
+                required={item.required}
+                value={item.value}
+                parentFileCallback={fileCallBackFunction}
+                parentClearFileCallback={fileClearCallBackFunction}
+              /> : (item.key === 'F_TextAndLabel') ?
+                <Component
+                  id={item.id}
+                  label={item.label}
+                  text={item.props[0].text}
+                  required={item.required}
+                /> :
+                <Component
+                  id={item.id}
+                  value={item.value}
+                  label={item.label}
+                  text={item.content}
+                  required={item.required}
+                  customProps={item.props}
+                  customOptions={item.custom_options}
+                  ref={valRel}
+                />
           }
         </div>
       );
@@ -396,7 +409,7 @@ export default function NewApplicationDetailEdit(){
   /*
   * LẤY THÔNG TIN NHÓM ĐƯỢC CHIA SẺ
   */
-  let getGroup = listOfGroups.filter((item: { id: any; }) => selectedGroup.find((item2: any) => item.id === item2 ));
+  let getGroup = listOfGroups.filter((item: { id: any; }) => selectedGroup.find((item2: any) => item.id === item2));
 
   /*
   * LẤY DANH SÁCH THÀNH VIÊN LÀ MANAGER VÀ LEADER
@@ -413,7 +426,7 @@ export default function NewApplicationDetailEdit(){
   /*
   * LẤY THÔNG TIN NGƯỜI ỦY QUYỀN CỦA BẢN ĐĂNG KÝ
   */
-  let getAuth = listOfMembers.filter((item: { id: any; }) => selectedAuth.find((item2: any) => item.id === item2 ));
+  let getAuth = listOfMembers.filter((item: { id: any; }) => selectedAuth.find((item2: any) => item.id === item2));
 
   useEffect(() => {
     fetchGroup();
@@ -428,19 +441,19 @@ export default function NewApplicationDetailEdit(){
     setModalOpen(false);
   };
 
-   /*
-  * XỬ LÝ CHỌN THÀNH VIÊN ỦY QUYỀN
-  */
+  /*
+ * XỬ LÝ CHỌN THÀNH VIÊN ỦY QUYỀN
+ */
   const handleCheckboxMember = (e) => {
-    const {value, name, checked} = e.target;
-    if(checked){
+    const { value, name, checked } = e.target;
+    if (checked) {
       setSelectedAuth([...selectedAuth, value]);
-    } else{
-      setSelectedAuth((prevData)=>{
-				return prevData.filter((id)=>{
-					return id!==value
-				})
-			})
+    } else {
+      setSelectedAuth((prevData) => {
+        return prevData.filter((id) => {
+          return id !== value
+        })
+      })
     }
   }
 
@@ -448,21 +461,21 @@ export default function NewApplicationDetailEdit(){
   * XỬ LÝ CHỌN NHÓM ĐƯỢC CHIA SẺ
   */
   const handleCheckboxGroup = (e) => {
-    const {value, name, checked} = e.target;
-    if(checked){
+    const { value, name, checked } = e.target;
+    if (checked) {
       setSelectedGroup([...selectedGroup, value]);
       setCoOwner([...coOwner, name]);
-    } else{
-      setSelectedGroup((prevData)=>{
-				return prevData.filter((id)=>{
-					return id!==value
-				})
-			})
-      setCoOwner((prevData)=>{
-				return prevData.filter((group_name)=>{
-					return group_name!==name
-				})
-			})
+    } else {
+      setSelectedGroup((prevData) => {
+        return prevData.filter((id) => {
+          return id !== value
+        })
+      })
+      setCoOwner((prevData) => {
+        return prevData.filter((group_name) => {
+          return group_name !== name
+        })
+      })
     }
   }
 
@@ -477,6 +490,13 @@ export default function NewApplicationDetailEdit(){
     setSelectedGroup([]);
   }
 
+
+
+  useEffect(() => {
+    console.log("dataTableEdit:", dataTableEdit);
+  }, [dataTableEdit]);
+
+  console.log("estimate", estimate);
   return (
     <>
       <Heading2 text={formName} />
@@ -487,39 +507,39 @@ export default function NewApplicationDetailEdit(){
         {renderedComponents}
       </form>
       <form ref={formRefHaveTable}>
-      {
-        formData.map((item, index) => {
-          switch (item.key) {
-            case 'T_TableTravelExpenses':
-              return (
-                <div className="c-row" key={index}>
-                  <TravelExpenses id_table={undefined} parentCallback={callBackFunction2} />
-                </div>
-              )
-            case 'T_TableExpenseReport':
-              return (
-                <div className="c-row" key={index}>
-                  <ExpenseReport id_table={undefined} parentCallback={callBackFunction2} />
-                </div>
-              )
-            case 'T_TablePriceBusinessReport':
-              return (
-                <div className="c-row" key={index}>
-                  <PriceBusinessReport id_table={undefined} parentCallback={callBackFunction2} />
-                </div>
-              )
-            case 'T_TableTravelAllowance':
-              return (
-                <div className="c-row" key={index}>
-                  <TravelAllowance id_table={undefined} parentCallback={callBackFunction2} value={} />
-                </div>
-              )
-            default:
-              formHTML += "";
-              break;
-          }
-        })
-      }
+        {
+          formData.map((item, index) => {
+            switch (item.key) {
+              case 'T_TableTravelExpenses':
+                return (
+                  <div className="c-row" key={index}>
+                    <TravelExpenses id_table={undefined} parentCallback={callBackFunction2} callback={dataTableEdit} />
+                  </div>
+                )
+              case 'T_TableExpenseReport':
+                return (
+                  <div className="c-row" key={index}>
+                    <ExpenseReport id_table={undefined} parentCallback={callBackFunction2} callback={dataTableEdit} />
+                  </div>
+                )
+              case 'T_TablePriceBusinessReport':
+                return (
+                  <div className="c-row" key={index}>
+                    <PriceBusinessReport id_table={undefined} parentCallback={callBackFunction2} callback={dataTableEdit} />
+                  </div>
+                )
+              case 'T_TableTravelAllowance':
+                return (
+                  <div className="c-row" key={index}>
+                    <TravelAllowance id_table={undefined} parentCallback={callBackFunction2} callback={dataTableEdit} />
+                  </div>
+                )
+              default:
+                formHTML += "";
+                break;
+            }
+          })
+        }
       </form>
 
       <div className="box-router">
@@ -529,7 +549,7 @@ export default function NewApplicationDetailEdit(){
             <p>承認者:</p>
             <p>
               {getAuth.map((auth, index) => {
-                return(<span key={index}>{auth.realname}{index !== getAuth.length - 1 && ', '}</span>)
+                return (<span key={index}>{auth.realname}{index !== getAuth.length - 1 && ', '}</span>)
               })}
             </p>
           </div>
@@ -537,7 +557,7 @@ export default function NewApplicationDetailEdit(){
             <p>共有者: </p>
             <p>
               {getGroup.map((group, index) => {
-                return(<span key={index}>{group.group_name}{index !== getGroup.length - 1 && ', '}</span>)
+                return (<span key={index}>{group.group_name}{index !== getGroup.length - 1 && ', '}</span>)
               })}
             </p>
           </div>
@@ -569,7 +589,7 @@ export default function NewApplicationDetailEdit(){
                       <td className="--w2"></td>
                     </tr>
                     {listOfMembers.map((item, index) => {
-                      return(
+                      return (
                         <tr key={index}>
                           <td className="--center">{index}</td>
                           <td className="--center">{item.realname}</td>
@@ -598,7 +618,7 @@ export default function NewApplicationDetailEdit(){
                       <td className="--w2"></td>
                     </tr>
                     {listOfGroups.map((item, index) => {
-                      return(
+                      return (
                         <tr key={index}>
                           <td className="--center">{index}</td>
                           <td className="--center">{item.group_name}</td>
