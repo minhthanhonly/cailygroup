@@ -28,6 +28,9 @@ const ComponentDatePicker = forwardRef((props, ref) => {
       isDateArrValue.push(value);
       Object.assign(isDateValue, {[index]: true});
     })
+
+    // Truyền Label
+    props.parentCallback(props.label);
   }
 
   useEffect(() => {
