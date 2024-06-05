@@ -48,8 +48,6 @@ export default function NewApplicationDetailEdit() {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
 
 
-  const [dataTableEdit, setDataTableEdit] = useState([]);
-
   /*
   * LẤY THÔNG TIN CHI TIẾT CỦA ĐĂNG KÝ
   */
@@ -67,7 +65,8 @@ export default function NewApplicationDetailEdit() {
       setFormName(parsedDataJson.appName);
       setSelectedAuth(parsedDataJson.authorizer);
       setSelectedGroup(parsedDataJson.coOwner);
-      setDataTableEdit(parsedDataJson.tableData);
+
+      setEstimate(parsedDataJson.tableData);
 
       console.log("Fetched data: ", parsedDataJson.tableData);
     } catch (error) {
@@ -269,27 +268,27 @@ export default function NewApplicationDetailEdit() {
         appJSON.id_status = 5;
       }
 
-      // if (formRefHaveTable.current) {
-      //   //Lấy giá trị của Table
-      //   appJSON.tableData = estimate;
+      if (formRefHaveTable.current) {
+        //Lấy giá trị của Table
+        appJSON.tableData = estimate;
 
-      //   //Bắt lỗi Validate các thành phần trong Table
-      //   const formElementsInTable = formRefHaveTable.current.elements;
+        //Bắt lỗi Validate các thành phần trong Table
+        const formElementsInTable = formRefHaveTable.current.elements;
 
-      //   // Lấy tất cả các đối tượng trong Form
-      //   for (let i = 0; i < formElementsInTable.length; i++) {
-      //     const element = formElementsInTable[i] as HTMLInputElement;
+        // Lấy tất cả các đối tượng trong Form
+        for (let i = 0; i < formElementsInTable.length; i++) {
+          const element = formElementsInTable[i] as HTMLInputElement;
 
-      //     if (element.value === "") {
-      //       let validInputTextErrors = false;
-      //       validInputTextErrors = isValidtextTable(element.value, element.title);
-      //       arrValid.push(validInputTextErrors);
-      //       return
-      //     }
-      //   }
-      // } else {
-      //   appJSON.tableData = [];
-      // }
+          if (element.value === "") {
+            let validInputTextErrors = false;
+            validInputTextErrors = isValidtextTable(element.value, element.title);
+            arrValid.push(validInputTextErrors);
+            return
+          }
+        }
+      } else {
+        appJSON.tableData = [];
+      }
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
@@ -491,11 +490,6 @@ export default function NewApplicationDetailEdit() {
   }
 
 
-
-  useEffect(() => {
-    console.log("dataTableEdit:", dataTableEdit);
-  }, [dataTableEdit]);
-
   console.log("estimate", estimate);
   return (
     <>
@@ -513,25 +507,25 @@ export default function NewApplicationDetailEdit() {
               case 'T_TableTravelExpenses':
                 return (
                   <div className="c-row" key={index}>
-                    <TravelExpenses id_table={undefined} parentCallback={callBackFunction2} callback={dataTableEdit} />
+                    <TravelExpenses id_table={undefined} parentCallback={callBackFunction2} callback={estimate} />
                   </div>
                 )
               case 'T_TableExpenseReport':
                 return (
                   <div className="c-row" key={index}>
-                    <ExpenseReport id_table={undefined} parentCallback={callBackFunction2} callback={dataTableEdit} />
+                    <ExpenseReport id_table={undefined} parentCallback={callBackFunction2} callback={estimate} />
                   </div>
                 )
               case 'T_TablePriceBusinessReport':
                 return (
                   <div className="c-row" key={index}>
-                    <PriceBusinessReport id_table={undefined} parentCallback={callBackFunction2} callback={dataTableEdit} />
+                    <PriceBusinessReport id_table={undefined} parentCallback={callBackFunction2} callback={estimate} />
                   </div>
                 )
               case 'T_TableTravelAllowance':
                 return (
                   <div className="c-row" key={index}>
-                    <TravelAllowance id_table={undefined} parentCallback={callBackFunction2} callback={dataTableEdit} />
+                    <TravelAllowance id_table={undefined} parentCallback={callBackFunction2} callback={estimate} />
                   </div>
                 )
               default:

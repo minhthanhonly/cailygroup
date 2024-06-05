@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from 'react-multi-date-picker';
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { toast } from "react-toastify";
 import moment from "moment";
 
 import { DateObject } from 'react-multi-date-picker';
@@ -25,60 +23,65 @@ interface Row {
 
 export default function PriceBusinessReport(props) {
 
+
+    const { callback } = props;
+
     const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
 
-    const [rows, setRows] = useState<Row[]>([{ id: 0, 項目: '', 日付: currentDate, 交通費: 0, 宿泊費: 0, 交際費: 0, 食費: 0, その他: 0, 備考: '', 合計: 0, 精算額: 0, }]);
+
+    const initialRows = callback ? callback.map((item: { id: any; 日付: any; 項目: any; 交通費: any; 宿泊費: any; 交際費: any; 食費: any; その他: any; 備考: any; 合計: any; 精算額: any; 仮払金: any; 日: any; }) => ({
+        id: item.id,
+        日付: item.日付,
+        項目: item.項目,
+        交通費: item.交通費,
+        宿泊費: item.宿泊費,
+        交際費: item.交際費,
+        食費: item.食費,
+        その他: item.その他,
+        備考: item.備考,
+        合計: item.合計,
+        精算額: item.精算額,
+        仮払金: item.仮払金,
+        日: item.日,
+
+
+    })) : [{ id: 0, 項目: '', 日付: currentDate, 交通費: 0, 宿泊費: 0, 交際費: 0, 食費: 0, その他: 0, 備考: '', 合計: 0, 精算額: 0, }];
+
+    const [rows, setRows] = useState<Row[]>(initialRows);
     const [日付, setDate] = useState(new Date());
 
-    const [inputValue, setInputValue] = useState<number>(0);
-    const [inputDate, setInputDate] = useState<number>(0);
-    // const [totalPriceDate, setPriceDate] = useState<number>(0);
-    const [totalSum, setTotalSum] = useState<number>(0);
 
-    const [addressDomesticForeign, setAddressDomesticForeign] = useState('');
-    const [dateRange, setDateRange] = useState<{ dateStart: Date | null, dateEnd: Date | null }>({
-        dateStart: 日付,
-        dateEnd: 日付
+    const [inputValue, setInputValue] = useState<number>(() => {
+        const initialInputValue = callback ? parseFloat(callback[0]?.仮払金?.toLocaleString().replace(/[^0-9.-]+/g, '')) : 0;
+        return initialInputValue;
     });
 
-    const handleLeaveDateChange = (date: Date | null, type: 'start' | 'end') => {
-        setDateRange(prevState => ({
-            ...prevState,
-            [type === 'start' ? 'dateStart' : 'dateEnd']: date
-        }));
-    };
+    const [inputDate, setInputDate] = useState<number>(() => {
+        const initialInputDate = callback ? parseFloat(callback[0]?.日?.toLocaleString().replace(/[^0-9.-]+/g, '')) : 0;
+        return initialInputDate;
+    });
 
 
+    useEffect(() => {
+        if (callback) {
 
-    const handleInputChangeAdress = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAddressDomesticForeign(event.target.value);
-        // Đây là nơi bạn có thể thực hiện các xử lý khác dựa trên giá trị mới của inputText
-    };
-
-    const [visibleErrors, setVisibleErrors] = useState<string[]>([]);
-
-    const validateInput = (value: string, fieldName: string, index: number) => {
-        const newVisibleErrors = [...visibleErrors];
-
-        if (!value && !newVisibleErrors.includes(fieldName)) {
-            newVisibleErrors.push(fieldName); // Thêm lỗi chỉ khi giá trị rỗng và lỗi chưa được hiển thị
-        } else if (value && newVisibleErrors.includes(fieldName)) {
-            // Loại bỏ lỗi nếu giá trị không rỗng và lỗi đã được hiển thị
-            const errorIndex = newVisibleErrors.indexOf(fieldName);
-            newVisibleErrors.splice(errorIndex, 1);
+            const inputDate2 = callback.reduce((acc: any, item: { 日: any; }) => acc + item.日, 0);
+            const 仮払金2 = callback.reduce((acc: any, item: { 仮払金: any; }) => acc + item.仮払金, 0);
+            setInputValue(Number(仮払金2));
+            setInputDate(inputDate2);
+            const newRows: Row[] = [...rows];
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 精算額: finalTotalPrice }));
+            props.parentCallback(newRowsWithTotal); // callback props ve cha
         }
-
-        setVisibleErrors(newVisibleErrors);
-    };
-
+    }, []);
+    // const [totalPriceDate, setPriceDate] = useState<number>(0);
+    const [totalSum, setTotalSum] = useState<number>(0);
 
     const [calculatedPrice, setCalculatedPrice] = useState(0);
     const [finalPayment, setFinalPayment] = useState(0);
     const [finalTotalPrice, setFinalTotalPrice] = useState(0);
 
-
-
-
+    console.log("finalTotalPrice", finalTotalPrice);
 
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
@@ -87,14 +90,11 @@ export default function PriceBusinessReport(props) {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
 
-
-
-            const newRowsWithTotal = newRows.map(row => ({
-                ...row, 精算額: finalTotalPriceState,
-            }));
-
-            props.parentCallback(newRowsWithTotal); // callback props ve cha
-            return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
+            const newTotal = calculateTotal(newRows); // Tính toán tổng mới
+            // Thêm total vào mỗi đối tượng trong newRows
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 合計金額: newTotal }));
+            props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
+            return newRowsWithTotal;
         });
     };
 
@@ -113,7 +113,6 @@ export default function PriceBusinessReport(props) {
         }
     };
     const handleLeaveDateChange02 = (date: DateObject | DateObject[] | null, index: number) => {
-        console.log("Date received:", date);
         const newRows = [...rows];
         if (date && !Array.isArray(date)) { // Kiểm tra nếu date không phải là một mảng
             const normalDate = date.toDate(); // Chuyển đổi đối tượng ngày sang một đối tượng ngày thông thường
@@ -124,11 +123,16 @@ export default function PriceBusinessReport(props) {
 
     // ham changed and reda
 
-    const [priceTrain, setpriceTrain] = useState<string[]>(new Array(rows.length).fill(''));
-    const [priceHouse, setpriceHouse] = useState<string[]>(new Array(rows.length).fill(''));
-    const [priceCustomer, setpriceCustomer] = useState<string[]>(new Array(rows.length).fill(''));
-    const [priceEat, setpriceEat] = useState<string[]>(new Array(rows.length).fill(''));
-    const [priceOther, setpriceOther] = useState<string[]>(new Array(rows.length).fill(''));
+    const priceTraines = callback ? callback.map((item: { 交通費: { toLocaleString: () => any; }; }) => item.交通費.toLocaleString()) : new Array(rows.length).fill('');
+    const priceHousees = callback ? callback.map((item: { 宿泊費: { toLocaleString: () => any; }; }) => item.宿泊費.toLocaleString()) : new Array(rows.length).fill('');
+    const priceCustomeres = callback ? callback.map((item: { 交際費: { toLocaleString: () => any; }; }) => item.交際費.toLocaleString()) : new Array(rows.length).fill('');
+    const priceEates = callback ? callback.map((item: { 食費: { toLocaleString: () => any; }; }) => item.食費.toLocaleString()) : new Array(rows.length).fill('');
+    const priceOtheres = callback ? callback.map((item: { その他: { toLocaleString: () => any; }; }) => item.その他.toLocaleString()) : new Array(rows.length).fill('');
+    const [priceTrain, setpriceTrain] = useState<string[]>(priceTraines);
+    const [priceHouse, setpriceHouse] = useState<string[]>(priceHousees);
+    const [priceCustomer, setpriceCustomer] = useState<string[]>(priceCustomeres);
+    const [priceEat, setpriceEat] = useState<string[]>(priceEates);
+    const [priceOther, setpriceOther] = useState<string[]>(priceOtheres);
 
     const [total, setTotal] = useState(0);
 
@@ -142,18 +146,12 @@ export default function PriceBusinessReport(props) {
         setCalculatedPrice(newCalculatedPrice);
         setFinalPayment(newFinalPayment);
         setFinalTotalPrice(newFinalTotalPrice);
-        setFinalTotalPriceState(newFinalTotalPrice);
 
-        const newRowsWithTotal = rows.map(row => ({
-            ...row,
-            精算額: newFinalTotalPrice,
-        }));
 
-        setRows(newRowsWithTotal);
-        props.parentCallback(newRowsWithTotal);
+
     }, [inputValue, inputDate, totalSum]);
 
-    const [finalTotalPriceState, setFinalTotalPriceState] = useState(newFinalTotalPrice);
+
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: '交通費' | '宿泊費' | '交際費' | '食費' | 'その他') => {
         let inputValue = event.target.value;
@@ -172,6 +170,8 @@ export default function PriceBusinessReport(props) {
         if (rowToUpdate) {
             rowToUpdate[field] = newValue;
             setRows(newRows);
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 精算額: finalTotalPrice }));
+            props.parentCallback(newRowsWithTotal); // callback props ve cha
         }
 
         if (field === '交通費') {
@@ -255,39 +255,23 @@ export default function PriceBusinessReport(props) {
 
         if (type === 'value') {
             setInputValue(valueToSet);
+            const newRows: Row[] = [...rows];
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 仮払金: valueToSet, 精算額: finalTotalPrice }));
+            props.parentCallback(newRowsWithTotal); // callback props ve cha
             //  updateParentCallback(valueToSet, inputDate);
         } else if (type === 'date') {
             setInputDate(valueToSet);
+            const newRows: Row[] = [...rows];
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 日: valueToSet, 精算額: finalTotalPrice }));
+            props.parentCallback(newRowsWithTotal); // callback props ve cha
             // updateParentCallback(inputValue, valueToSet);
         }
     };
 
 
 
-    useEffect(() => {
-        setFinalTotalPriceState(newFinalTotalPrice);
-    }, [newFinalTotalPrice]);
-
-    // const updateParentCallback = (newValue: number, newPrice: number) => {
-
-    //     const newCalculatedPrice = newPrice * 3000;
-    //     console.log("newCalculatedPrice", newCalculatedPrice);
-    //     const newFinalPayment = totalSum - newValue;
-    //     console.log("newFinalPayment", newFinalPayment);
-
-    //     const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
-    //     console.log("newFinalTotalPrice", newFinalTotalPrice);
 
 
-    //     setFinalTotalPriceState(newFinalTotalPrice);
-
-    //     const newRowsWithTotal = rows.map(row => ({
-    //         ...row,
-    //         精算額: finalTotalPriceState,
-    //     }));
-
-    //     props.parentCallback(newRowsWithTotal);
-    // };
 
     useEffect(() => {
         calculateTotalSum();

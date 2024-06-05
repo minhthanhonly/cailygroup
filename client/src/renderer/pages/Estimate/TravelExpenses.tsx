@@ -87,28 +87,6 @@ export default function TravelExpenses(props) {
         return sum;
     };
 
-    // const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    //     let inputValue = event.target.value;
-    //     inputValue = inputValue.replace(/[^0-9]/g, '');
-
-    //     if (inputValue === '') {
-    //         inputValue = '0';
-    //     }
-
-    //     const newValue = parseInt(inputValue, 10);
-    //     const formattedValue = newValue.toLocaleString();
-
-    //     const newMealExpenses = [...mealExpenses];
-    //     newMealExpenses[index] = formattedValue;
-    //     setMealExpenses(newMealExpenses);
-
-    //     const newRows: Row[] = [...rows];
-    //     if (newRows[index]) {
-    //         newRows[index].金額 = newValue;
-    //         newRows[index].合計 = calculateRowTotal(newRows[index]); // Cập nhật totalrows của hàng
-    //         setRows(newRows);
-    //     }
-    // };
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
         let inputValue = event.target.value;
@@ -125,11 +103,15 @@ export default function TravelExpenses(props) {
         newMealExpenses[index] = formattedValue;
         setMealExpenses(newMealExpenses);
 
+
         const newRows: Row[] = [...rows];
         if (newRows[index]) {
             newRows[index].金額 = newValue;
             newRows[index].合計 = calculateRowTotal(newRows[index]); // Cập nhật totalrows của hàng
             setRows(newRows);
+            const newTotal = calculateTotal(newRows);
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 合計金額: newTotal }));
+            props.parentCallback(newRowsWithTotal);
         }
     };
 

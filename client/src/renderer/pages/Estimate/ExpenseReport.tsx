@@ -23,17 +23,73 @@ interface Row {
 
 export default function ExpenseReport(props) {
 
+    const { callback } = props;
+
+
 
     const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
 
+
+
+
+
+
     const [日付, setDate] = useState(new Date());
+
+    const initialRows = callback ? callback.map((item: { id: any; 日付: any; 内容: any; 支払先: any; 税抜: any; 消費税: any; 軽減税率: any; 合計金額: any; 備考: any; 合計: any; TotalPriceNotTax2: any; TotalPriceTax2: any; }) => ({
+        id: item.id,
+        日付: item.日付,
+        内容: item.内容,
+        支払先: item.支払先,
+        税抜: item.税抜,
+        消費税: item.消費税,
+        軽減税率: item.軽減税率,
+        合計金額: item.合計金額,
+        備考: item.備考,
+        合計: item.合計,
+        TotalPriceNotTax2: item.TotalPriceNotTax2,
+
+        TotalPriceTax2: item.TotalPriceTax2,
+
+
+
+
+    })) : [{ id: 0, 日付: currentDate, 内容: '', 支払先: '', 税抜: 0, 消費税: 0, 軽減税率: false, 備考: '', 合計金額: 0, 合計: 0, TotalPriceTax2: 0, TotalPriceNotTax2: 0, }];
     // const [rows, setRows] = useState([{ id: 0, values: ['', ''] }]);
-    const [rows, setRows] = useState<Row[]>([{ id: 0, 日付: currentDate, 内容: '', 支払先: '', 税抜: 0, 消費税: 0, 軽減税率: false, 備考: '', 合計金額: 0, 合計: 0 }]);
-    const [total, setTotal] = useState(0);
+    const [rows, setRows] = useState<Row[]>(initialRows);
+    const [合計金額, setTotal] = useState(0);
     const [totalPriceNotTax, setTotalPriceNotTax] = useState<number>(0);
     const [totalpriceTax, setTotalPriceTax] = useState(0);
-    const [税抜, setPriceNotax] = useState<string[]>(new Array(rows.length).fill(''));
-    const [消費税, setTax] = useState<string[]>(new Array(rows.length).fill(''));
+
+
+
+
+    useEffect(() => {
+        if (callback) {
+            // Tính tổng của TotalPriceNotTax2 và TotalPriceTax2 từ các phần tử trong callback
+            const totalNotTax2 = callback.reduce((acc: any, item: { TotalPriceNotTax2: any; }) => acc + item.TotalPriceNotTax2, 0);
+            const totalTax2 = callback.reduce((acc: any, item: { TotalPriceTax2: any; }) => acc + item.TotalPriceTax2, 0);
+            // Cập nhật giá trị cho TotalPriceNotTax2 và TotalPriceTax2
+            setTotalPriceNotTax(totalNotTax2);
+            setTotalPriceTax(totalTax2);
+            const totalTaxIncluded = totalTax2 + totalNotTax2;
+            const newRows: Row[] = [...rows];
+            // Thêm total vào mỗi đối tượng trong newRows
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 合計金額: totalTaxIncluded, TotalPriceNotTax2: totalNotTax2, TotalPriceTax2: totalTax2 }));
+            props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
+        }
+    }, []);
+
+
+    const 税抜ses = callback ? callback.map((item: { 税抜: { toLocaleString: () => any; }; }) => item.税抜.toLocaleString()) : new Array(rows.length).fill('');
+    const 消費税ses = callback ? callback.map((item: { 消費税: { toLocaleString: () => any; }; }) => item.消費税.toLocaleString()) : new Array(rows.length).fill('');
+    const checkedStateses = callback ? callback.map((item: { 軽減税率: boolean; }) => item.軽減税率) : [];
+
+
+    const [checkedState, setCheckedState] = useState(checkedStateses);
+
+    const [税抜, setPriceNotax] = useState<string[]>(税抜ses);
+    const [消費税, setTax] = useState<string[]>(消費税ses);
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: '税抜' | '消費税') => {
         let inputValue = event.target.value.replace(/[^0-9]/g, '');
@@ -48,6 +104,11 @@ export default function ExpenseReport(props) {
             rowToUpdate[field] = newValue;
             rowToUpdate.合計金額 = rowToUpdate.税抜 + rowToUpdate.消費税;
             setRows(newRows);
+            const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
+            // Thêm total vào mỗi đối tượng trong newRows
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 合計金額: totalTaxIncluded }));
+            props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
+
         }
 
         if (field === '税抜') {
@@ -69,6 +130,9 @@ export default function ExpenseReport(props) {
 
         const totalTaxIncluded = total + total2;
         //props.parentCallback({ rows: newRows, total: totalTaxIncluded.toLocaleString() });
+        // Thêm total vào mỗi đối tượng trong newRows
+        const newRowsWithTotal = newRows.map(row => ({ ...row, 合計金額: totalTaxIncluded, TotalPriceNotTax2: total, TotalPriceTax2: total2 }));
+        props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
     };
 
     const calculateRowTotal = (row: Row) => {
@@ -106,27 +170,38 @@ export default function ExpenseReport(props) {
     const addRow = () => {
         const newRow: Row = { id: rows.length, 日付: currentDate, 内容: '', 支払先: '', 税抜: 0, 消費税: 0, 軽減税率: false, 備考: '', 合計金額: 0, 合計: 0 };
         setRows(prevRows => [...prevRows, newRow]);
-        setCheckedState(prevState => [...prevState, false]);
+        setCheckedState((prevState: any) => [...prevState, false]);
     };
 
+
+    // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
+    //     const { value } = event.target;
+    //     setRows((prevRows: Row[]) => {
+    //         const newRows = [...prevRows];
+    //         newRows[index] = { ...newRows[index], [field]: value };
+
+    //         const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
+    //         // Thêm total vào mỗi đối tượng trong newRows
+    //         const newRowsWithTotal = newRows.map(row => ({ ...row, 合計金額: totalTaxIncluded }));
+    //         props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
+    //         // props.parentCallback(newRows, total: totalTaxIncluded.toLocaleString() });
+    //         // props.parentCallback(newRows); // callback props ve cha
+
+    //         return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
+    //     });
+    // };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
         const { value } = event.target;
         setRows((prevRows: Row[]) => {
             const newRows = [...prevRows];
             newRows[index] = { ...newRows[index], [field]: value };
-
             const totalTaxIncluded = totalPriceNotTax + totalpriceTax;
-            // Thêm total vào mỗi đối tượng trong newRows
-            const newRowsWithTotal = newRows.map(row => ({ ...row, 合計金額: totalTaxIncluded }));
-            props.parentCallback(newRowsWithTotal); // Gửi dữ liệu mới và tổng mới lên component cha
-            // props.parentCallback(newRows, total: totalTaxIncluded.toLocaleString() });
-            // props.parentCallback(newRows); // callback props ve cha
-
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 合計金額: totalTaxIncluded, TotalPriceNotTax2: totalPriceNotTax, TotalPriceTax2: totalpriceTax }));
+            props.parentCallback(newRowsWithTotal); // callback props ve cha
             return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
         });
     };
-
 
 
 
@@ -134,7 +209,7 @@ export default function ExpenseReport(props) {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
-    const [checkedState, setCheckedState] = useState(new Array(rows.length).fill(0));
+
 
     const handleCheckboxChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = event.target.checked;
@@ -147,6 +222,7 @@ export default function ExpenseReport(props) {
         setRows(newRows);
 
         console.log("Checked state updated: ", newCheckedState);
+
     };
 
     return (
@@ -173,8 +249,8 @@ export default function ExpenseReport(props) {
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
                                     <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={日付} format="YYYY-MM-DD HH:mm:ss" /></td>
-                                    <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, '内容')} /></td>
-                                    <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, '支払先')} /></td>
+                                    <td><input type="text" placeholder='入力してください' value={row.内容} onChange={(e) => handleInputChange(e, index, '内容')} /></td>
+                                    <td><input type="text" placeholder='入力してください' value={row.支払先} onChange={(e) => handleInputChange(e, index, '支払先')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={税抜[index]} onChange={(e) => handleNumberChange(e, index, '税抜')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={消費税[index]} onChange={(e) => handleNumberChange(e, index, '消費税')} /></td>
                                     <td className='tdCheckbox form-checkbox'>
@@ -183,12 +259,13 @@ export default function ExpenseReport(props) {
                                             className="custom-check-box"
                                             type="checkbox"
                                             id={`checkbox-${index}`}
+
                                             checked={checkedState[index]}
                                             onChange={(e) => handleCheckboxChange(index, e)}
                                         />
                                         <label htmlFor={`checkbox-${index}`}></label>
                                     </td>
-                                    <td><input type="text" placeholder='入力してください' onChange={(e) => handleInputChange(e, index, '備考')} /></td>
+                                    <td><input type="text" placeholder='入力してください' value={row.備考} onChange={(e) => handleInputChange(e, index, '備考')} /></td>
                                 </tr>
                             ))}
                         </tbody>
@@ -206,7 +283,7 @@ export default function ExpenseReport(props) {
                             </tr>
                             <tr>
                                 <th className='rowspan'>合計（税込）</th>
-                                <td colSpan={2}>{(totalPriceNotTax + totalpriceTax).toLocaleString()}</td>
+                                <td colSpan={2}>{(合計金額).toLocaleString()}</td>
                             </tr>
                         </tbody>
                     </table>

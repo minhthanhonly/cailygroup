@@ -81,12 +81,12 @@ export default function TravelAllowance(props) {
     if (isStartNow) setIsStartNow(false);
   };
 
-  const [monthlyticket, setmonthlyticket] = useState<string[]>(
-    new Array(rows.length).fill(''),
-  );
-  const [roundtrip, setroundtrip] = useState<string[]>(
-    new Array(rows.length).fill(''),
-  );
+  const monthlyticketses = callback ? callback.map((item: { マンスリーチケット: { toLocaleString: () => any; }; }) => item.マンスリーチケット.toLocaleString()) : new Array(rows.length).fill('');
+  const roundtripses = callback ? callback.map((item: { 往復: { toLocaleString: () => any; }; }) => item.往復.toLocaleString()) : new Array(rows.length).fill('');
+
+
+  const [monthlyticket, setmonthlyticket] = useState<string[]>(monthlyticketses);
+  const [roundtrip, setroundtrip] = useState<string[]>(roundtripses);
 
   const handleNumberChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -111,6 +111,9 @@ export default function TravelAllowance(props) {
     if (rowToUpdate) {
       rowToUpdate[field] = newValue;
       setRows(newRows);
+      const totalTaxIncluded = Number(monthlyticket) + Number(roundtrip);
+      const newRowsWithTotal = newRows.map(row => ({ ...row, total: totalTaxIncluded }));
+      props.parentCallback(newRowsWithTotal); // callback props ve cha
     }
 
     if (field === 'マンスリーチケット') {
@@ -224,16 +227,12 @@ export default function TravelAllowance(props) {
                 <th>鉄道名</th>
                 <th>路線名</th>
                 <th className="w500">利用区間</th>
-                <th>
-                  1ヵ月の定期代 <br />
-                  (普通運賃往復の場合)
-                </th>
+                <th>1ヵ月の定期代 <br />(普通運賃往復の場合)</th>
                 <th>備考</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((row, index) => (
-
                 <tr>
                   <td>
                     {showDatePicker && (
