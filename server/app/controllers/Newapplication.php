@@ -20,6 +20,13 @@
             }
         }
 
+        function updatedetail(){
+            $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
+            if($is_jwt_valid == 1){
+                return $this->model('NewapplicationModel')->postUpdateDetail();
+            }
+        }
+
         function update(){
             $is_jwt_valid = Controller::is_jwt_valid($this->__construct());
             if($is_jwt_valid == 1){

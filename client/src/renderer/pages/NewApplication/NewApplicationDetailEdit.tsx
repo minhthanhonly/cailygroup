@@ -20,10 +20,13 @@ import { Heading2 } from "../../components/Heading";
 import { ButtonBack } from "../../components/Button/ButtonBack";
 import Modal from "../../components/Modal/Modal";
 import { isValidTextArea, isValidtextTable } from "../../components/Validate";
+import { emitter } from "../../layouts/components/Sidebar";
 
 export default function NewApplicationDetailEdit(){
   const {id, appId} = useParams();
   const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [msg, setMsg] = useState('');
   const [formName, setFormName] = useState('');
   const [appName, setAppName] = useState();
   const [formData, setFormData] = useState<any>([]);
@@ -59,6 +62,8 @@ export default function NewApplicationDetailEdit(){
     setFormName(parsedDataJson.appName);
     setSelectedAuth(parsedDataJson.authorizer);
     setSelectedGroup(parsedDataJson.coOwner);
+
+    console.log(parsedDataJson.tableData)
   }
 
   /*
@@ -87,6 +92,8 @@ export default function NewApplicationDetailEdit(){
     navigate('/newapplication');
   }
 
+  let formHTML: any = "";
+
   // Lấy giá trị label của thành phần trong Form
   const [label, setLabel] = useState('');
   const callBackFunction = (childData) => {
@@ -112,6 +119,9 @@ export default function NewApplicationDetailEdit(){
 
   // Truy cập vào Form
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Truy cập vào Form có Table
+  const formRefHaveTable = useRef<HTMLFormElement>(null);
 
   // Xử lý khi gửi Form Public
   const handleSubmit = async (e) => {
@@ -220,6 +230,7 @@ export default function NewApplicationDetailEdit(){
 
       // Tạo đối tượng JSON
       const appJSON: { [key: string]: any } = {
+        id: '',
         appId: '',
         appName: '',
         formData: [],
@@ -231,6 +242,7 @@ export default function NewApplicationDetailEdit(){
         authorizer: [],
         coOwner: []
       };
+      appJSON.id = id;
       appJSON.appId = appId;
       appJSON.appName = formName;
       appJSON.formData = formDataIsGrouped;
@@ -278,21 +290,19 @@ export default function NewApplicationDetailEdit(){
 
       // Kiểm tra xem tất cả các phần tử trong mảng có true không
       const allTrueArrValid: boolean = arrValid.every(x => x === true);
-      console.log(appJsonString);
 
-      // if (allTrueArrValid === true) {
-      //   console.log(appJsonString);
-      //   const res = await axiosPrivate.post("newapplication/add", appJsonString);
-      //   if (res.data.success === 'error') {
-      //     setError('Bị lỗi khi đăng ký');
-      //   } else {
-      //     setMsg('Bạn đã đăng ký thành công');
-      //     emitter.emit('reloadSidebar');
-      //     setTimeout(() => {
-      //       navigate('/application/');
-      //     }, 2000);
-      //   }
-      // }
+      if (allTrueArrValid === true) {
+        const res = await axiosPrivate.post("newapplication/updatedetail", appJsonString);
+        if (res.data.success === 'error') {
+          setError('Bị lỗi khi chỉnh sửa');
+        } else {
+          setMsg('Bạn đã cập nhật thành công');
+          emitter.emit('reloadSidebar');
+          setTimeout(() => {
+            navigate('/application/');
+          }, 2000);
+        }
+      }
     }
   }
 
@@ -470,9 +480,46 @@ export default function NewApplicationDetailEdit(){
   return (
     <>
       <Heading2 text={formName} />
+      {error == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-red">{error}</p></div>}
+      {msg == '' ? '' : <div className="box-bg --full mb20"><p className="bg bg-green">{msg}</p></div>}
       <div className="c-row"><p className="txt-lead">下記の通り申請致します。 </p></div>
       <form ref={formRef}>
         {renderedComponents}
+      </form>
+      <form ref={formRefHaveTable}>
+      {
+        formData.map((item, index) => {
+          switch (item.key) {
+            case 'T_TableTravelExpenses':
+              return (
+                <div className="c-row" key={index}>
+                  <TravelExpenses id_table={undefined} parentCallback={callBackFunction2} />
+                </div>
+              )
+            case 'T_TableExpenseReport':
+              return (
+                <div className="c-row" key={index}>
+                  <ExpenseReport id_table={undefined} parentCallback={callBackFunction2} />
+                </div>
+              )
+            case 'T_TablePriceBusinessReport':
+              return (
+                <div className="c-row" key={index}>
+                  <PriceBusinessReport id_table={undefined} parentCallback={callBackFunction2} />
+                </div>
+              )
+            case 'T_TableTravelAllowance':
+              return (
+                <div className="c-row" key={index}>
+                  <TravelAllowance id_table={undefined} parentCallback={callBackFunction2} value={} />
+                </div>
+              )
+            default:
+              formHTML += "";
+              break;
+          }
+        })
+      }
       </form>
 
       <div className="box-router">
