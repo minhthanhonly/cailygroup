@@ -3,11 +3,14 @@
 import { useImperativeHandle, forwardRef, useRef, useState, useEffect } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-multi-date-picker';
+import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import { isValidNumber, isValidText, isValidTime } from "../../../components/Validate";
 
 const ComponentDatePicker = forwardRef((props, ref) => {
   const [time, setTime] = useState('');
   const [timeTo, setTimeTo] = useState('');
+  const [isTimeValue, setIsTimeValue] = useState(false);
+  const [isHour, setIsHour] = useState(1);
   const [isValue, setIsValue] = useState('');
   const [isDateValue, setIsDateValue] = useState({});
   const customOptions = props.customOptions.length;
@@ -39,11 +42,34 @@ const ComponentDatePicker = forwardRef((props, ref) => {
     }
   },[])
 
-  const handleTimeChange = (e) => {
-    setTime(e.target.value);
-  };
-  const handleTimeToChange = (e) => {
-    setTimeTo(e.target.value);
+  const handleTimeChange = (e, input, isTyping) => {
+    setIsTimeValue(true);
+    console.log(e);
+    console.log(input.value);
+    console.log(isTyping);
+    // if(input) {
+    //   setTime(input.value);
+    //   setIsTimeValue(true);
+    // }
+
+    // if(isTyping === true){
+    //   setIsHour(e.hour);
+    // }
+	};
+
+  const handleTimeToChange = (e, input, isTyping) => {
+    // if (!isTyping) return setTimeTo(e);
+
+    if(input) {
+      // setTime(input.value);
+      setIsTimeValue(true);
+      console.log(input.value);
+    }
+
+    if(isTyping){
+      setTime(input.value);
+      setIsTimeValue(true);
+    }
   };
 
   const handleChange = (e, index, date) => {
@@ -74,12 +100,17 @@ const ComponentDatePicker = forwardRef((props, ref) => {
       if(props.required === true) {
         // timesto
         if (props.timesto === true) {
-          if (time === '') {
-            valid = isValidText(time, '時 (From)');
+
+          if(time === '' && isTimeValue === false) {
+            valid = isValidText(time, '時 (From)')
+          } else if(isHour === 0) {
+            valid = isValidText(time, '時 (From)')
           }
-          if (time) {
-            valid = isValidTime(time, '時 (From)');
-          }
+
+          console.log(isHour);
+          // if (time) {
+          //   valid = isValidTime(time, '時 (From)');
+          // }
           if (timeTo === '') {
             valid = isValidText(timeTo, '時 (To)');
           }
@@ -131,10 +162,39 @@ const ComponentDatePicker = forwardRef((props, ref) => {
             {props.timesto === true ?
               <div className="c-form-inner">
                 <div className="c-form-item--02">
-                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} title={props.label} aria-label={props.label} ref={inputRef} />
+                  <DatePicker
+                    value={time}
+                    onChange={(e, { input, isTyping }) => handleTimeChange(e, input, isTyping)}
+                    format="hh:mm A"
+                    plugins={[<TimePicker position="bottom" format="hh:ii" hideSeconds="true" />]}
+                    hideWeekDays
+                    disableDayPicker
+                    inputClass="c-form-control"
+                    placeholder="hh:mm"
+                    name={props.id}
+                    required={props.required}
+                    title={props.label}
+                    ref={inputRef}
+                  />
+
+                  {/* <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} title={props.label} aria-label={props.label} ref={inputRef} /> */}
                 </div>
                 <div className="c-form-item--02">
-                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={timeTo} onChange={handleTimeToChange} title={props.label} aria-label={props.label} ref={inputRef} />
+                  <DatePicker
+                    value={timeTo}
+                    onChange={(e, { input, isTyping }) => handleTimeToChange(e, input, isTyping)}
+                    format="hh:mm A"
+                    plugins={[<TimePicker position="bottom" format="hh:ii" hideSeconds="true" />]}
+                    hideWeekDays
+                    disableDayPicker
+                    inputClass="c-form-control"
+                    placeholder="hh:mm"
+                    name={props.id}
+                    required={props.required}
+                    title={props.label}
+                    ref={inputRef}
+                  />
+                  {/* <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={timeTo} onChange={handleTimeToChange} title={props.label} aria-label={props.label} ref={inputRef} /> */}
                 </div>
               </div>
               : ''

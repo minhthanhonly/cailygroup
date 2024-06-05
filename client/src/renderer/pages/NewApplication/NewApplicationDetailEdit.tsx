@@ -269,27 +269,30 @@ export default function NewApplicationDetailEdit() {
         appJSON.id_status = 5;
       }
 
-      // if (formRefHaveTable.current) {
-      //   //Lấy giá trị của Table
-      //   appJSON.tableData = estimate;
+      if (formRefHaveTable.current) {
+        //Lấy giá trị của Table
+        appJSON.tableData = estimate;
 
-      //   //Bắt lỗi Validate các thành phần trong Table
-      //   const formElementsInTable = formRefHaveTable.current.elements;
+        //Bắt lỗi Validate các thành phần trong Table
+        const formElementsInTable = formRefHaveTable.current.elements;
 
-      //   // Lấy tất cả các đối tượng trong Form
-      //   for (let i = 0; i < formElementsInTable.length; i++) {
-      //     const element = formElementsInTable[i] as HTMLInputElement;
+        // Lấy tất cả các đối tượng trong Form
+        for (let i = 0; i < formElementsInTable.length; i++) {
+          const element = formElementsInTable[i] as HTMLInputElement;
 
-      //     if (element.value === "") {
-      //       let validInputTextErrors = false;
-      //       validInputTextErrors = isValidtextTable(element.value, element.title);
-      //       arrValid.push(validInputTextErrors);
-      //       return
-      //     }
-      //   }
-      // } else {
-      //   appJSON.tableData = [];
-      // }
+
+          console.log(element.value);
+
+          if (element.value === "") {
+            let validInputTextErrors = false;
+            validInputTextErrors = isValidtextTable(element.value, element.title);
+            arrValid.push(validInputTextErrors);
+            return
+          }
+        }
+      } else {
+        appJSON.tableData = [];
+      }
 
       // Chuyển đổi JSON thành chuỗi JSON
       const appJsonString = JSON.stringify(appJSON);
@@ -305,16 +308,17 @@ export default function NewApplicationDetailEdit() {
 
       if (allTrueArrValid === true) {
         // console.log(appJsonString);
-        const res = await axiosPrivate.post("newapplication/updatedetail", appJsonString);
-        if (res.data.success === 'error') {
-          setError('Bị lỗi khi chỉnh sửa');
-        } else {
-          setMsg('Bạn đã cập nhật thành công');
-          emitter.emit('reloadSidebar');
-          setTimeout(() => {
-            navigate('/application/');
-          }, 2000);
-        }
+        // const res = await axiosPrivate.post("newapplication/updatedetail", appJsonString);
+        console.log(appJsonString)
+        // if (res.data.success === 'error') {
+        //   setError('Bị lỗi khi chỉnh sửa');
+        // } else {
+        //   setMsg('Bạn đã cập nhật thành công');
+        //   emitter.emit('reloadSidebar');
+        //   setTimeout(() => {
+        //     navigate('/application/');
+        //   }, 2000);
+        // }
       }
     }
   }
