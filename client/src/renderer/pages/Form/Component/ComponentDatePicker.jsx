@@ -9,8 +9,6 @@ import { isValidNumber, isValidText, isValidTime } from "../../../components/Val
 const ComponentDatePicker = forwardRef((props, ref) => {
   const [time, setTime] = useState('');
   const [timeTo, setTimeTo] = useState('');
-  const [isTimeValue, setIsTimeValue] = useState(false);
-  const [isHour, setIsHour] = useState(1);
   const [isValue, setIsValue] = useState('');
   const [isDateValue, setIsDateValue] = useState({});
   const customOptions = props.customOptions.length;
@@ -33,7 +31,7 @@ const ComponentDatePicker = forwardRef((props, ref) => {
 
     filteredArrVal.map((value, index) => {
       isDateArrValue.push(value);
-      // Object.assign(isDateValue, {[index]: true});
+      Object.assign(isDateValue, {[index]: true});
     })
 
     // Truyền Label
@@ -162,6 +160,7 @@ const ComponentDatePicker = forwardRef((props, ref) => {
                     required={props.required}
                     title={option.text}
                     ref={inputRef}
+                    editable={false}
                   />
                 </div>
               ))
