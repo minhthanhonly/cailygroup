@@ -268,3 +268,11 @@ export const isValidtextTable = (Value: string, Label: string) => {
   }
   return true;
 }
+
+export const isValidTextJapan = (Value: string) => {
+  if (!Value) {
+    toast.error("Tên file không được chứa ký tự tiếng Nhật.");
+    return false;
+  }
+  return true;
+}
