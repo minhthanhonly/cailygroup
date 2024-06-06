@@ -1,9 +1,22 @@
-import { useImperativeHandle, forwardRef, useRef, useState } from "react";
+import { useImperativeHandle, forwardRef, useRef, useState, useEffect } from "react";
 import { isValidCheck } from "../../../components/Validate";
 
 const ComponentCheckbox = forwardRef((props, ref) => {
   const [selectedCheckbox, setSelectedCheckbox] = useState('');
   const [isChecked, setIsChecked] = useState(false);
+
+  let newCheckboxVal = '';
+  if(props.value) {
+    props.value.map((item, index) => {
+      newCheckboxVal = item;
+    })
+  }
+
+  useEffect(() => {
+    if(props.value) {
+      setSelectedCheckbox(newCheckboxVal);
+    }
+  },[])
 
   const handleCheckboxChange = (e) => {
     const { value } = e.target;
