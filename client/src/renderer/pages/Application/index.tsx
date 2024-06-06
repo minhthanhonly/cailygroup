@@ -69,8 +69,20 @@ export const Application = () => {
           },
         );
 
+        // Loại bỏ các mục dữ liệu đã chia sẻ từ userDataResponse.data
+        const userData = userDataResponse.data.filter((item) => {
+          const dataJson = JSON.parse(item.datajson);
+          if (
+            dataJson.coOwner &&
+            dataJson.coOwner.includes(users.user_group_id.toString())
+          ) {
+            return false; // Loại bỏ nếu có trong mảng coOwner
+          }
+          return true;
+        });
+
         response = {
-          data: userDataResponse.data.concat(sharedData),
+          data: userData.concat(sharedData),
         };
       }
 
@@ -158,8 +170,21 @@ export const Application = () => {
             }
           });
 
+          // Loại bỏ các mục dữ liệu đã chia sẻ từ userDataResponse.data
+          const userData = userDataResponse.data.filter((userDataItem) => {
+            const dataJson = JSON.parse(userDataItem.datajson);
+            if (
+              dataJson.coOwner &&
+              dataJson.coOwner.includes(users.user_group_id.toString())
+            ) {
+              // Trả về false nếu có trong mảng coOwner
+              return false;
+            }
+            return true;
+          });
+
           response = {
-            data: userDataResponse.data.concat(sharedData),
+            data: userData.concat(sharedData),
           };
         }
         const data = response.data;
@@ -177,7 +202,7 @@ export const Application = () => {
       }
     };
     LoadTab();
-  }, [activeTab]);
+  }, [activeTab, isAdmin, isManager, isLeader, users.id, users.user_group_id]);
 
   const itemsPerPage = 10;
   const totalPages = Math.ceil(items.length / itemsPerPage);
