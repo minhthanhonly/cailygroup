@@ -1,4 +1,4 @@
-import { useImperativeHandle, forwardRef, useRef, useState } from "react";
+import { useImperativeHandle, forwardRef, useRef, useState, useEffect } from "react";
 import { isValidCheck } from "../../../components/Validate";
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-multi-date-picker';
@@ -7,6 +7,30 @@ const ComponentCheckboxAndDate = forwardRef((props, ref) => {
   const [selectedCheckbox, setSelectedCheckbox] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isDate, setIsDate] = useState('');
+
+  let isDateOld = '';
+  let selectedCheckboxOld = '';
+
+  if(props.value) {
+    isDateOld = props.value.find(item => /^\d{4}-\d{2}-\d{2}/.test(item));
+
+    if(isDateOld === undefined) {
+      props.value.map(item => {
+        selectedCheckboxOld = item;
+      })
+    }
+  }
+
+  useEffect(() => {
+    if(props.value) {
+      if(isDateOld === undefined) {
+        setSelectedCheckbox(selectedCheckboxOld);
+      } else {
+        setIsDate(isDateOld);
+        setIsChecked(true);
+      }
+    }
+  },[])
 
   const handleCheckboxChange = (e) => {
     setSelectedCheckbox(e.target.value);
