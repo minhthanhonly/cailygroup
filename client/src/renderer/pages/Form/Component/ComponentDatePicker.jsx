@@ -2,7 +2,7 @@
 
 import { useImperativeHandle, forwardRef, useRef, useState, useEffect } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
-import DatePicker from 'react-multi-date-picker';
+import DatePicker,  { DateObject } from 'react-multi-date-picker';
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import { isValidNumber, isValidText, isValidTime } from "../../../components/Validate";
 
@@ -16,6 +16,8 @@ const ComponentDatePicker = forwardRef((props, ref) => {
   const customOptions = props.customOptions.length;
   let newfilterDaysVal = '';
   let isDateArrValue = [];
+  let timeOld = '';
+  let timeOld2 = '';
 
   if(props.value){
     const filterDaysVal = props.value.find(item => item.includes('日間') ? true : false);
@@ -23,53 +25,69 @@ const ComponentDatePicker = forwardRef((props, ref) => {
       newfilterDaysVal = filterDaysVal.replace(/日間/g, '');
     }
 
-    let filteredArrVal = props.value.filter(function(item) {
-      return !item.includes('日間');
-    });
+    // let filteredArrVal = props.value.filter(function(item) {
+    //   return !item.includes('日間');
+    // });
+
+    let filteredArrVal = props.value.filter(item => /^\d{4}-\d{2}-\d{2}/.test(item));
 
     filteredArrVal.map((value, index) => {
       isDateArrValue.push(value);
-      Object.assign(isDateValue, {[index]: true});
+      // Object.assign(isDateValue, {[index]: true});
     })
 
     // Truyền Label
     props.parentCallback(props.label);
+
+    // Lấy ra thời gian trong mảng value
+    const filterTimeVal = props.value.filter(item => item.includes('AM') || item.includes('PM') ? true : false);
+    if(filterTimeVal.length > 0){
+
+      // Lấy ra thời gian from
+      const [newHour, newMinute, aMpM]  = filterTimeVal[0].split(/:| /);
+      let hourUpdate = 0;
+      if(aMpM == "PM"){
+        hourUpdate += hourUpdate + parseInt(newHour) + 12;
+      } else {
+        hourUpdate += hourUpdate + parseInt(newHour);
+      }
+
+      timeOld = new Date();
+      timeOld.setHours(hourUpdate);
+      timeOld.setMinutes(newMinute);
+
+      // Lấy ra thời gian to
+      const [newHour2, newMinute2, aMpM2]  = filterTimeVal[1].split(/:| /);
+      let hourUpdate2 = 0;
+      if(aMpM2 == "PM"){
+        hourUpdate2 += hourUpdate2 + parseInt(newHour2) + 12;
+      } else {
+        hourUpdate2 += hourUpdate2 + parseInt(newHour2);
+      }
+
+      timeOld2 = new Date();
+      timeOld2.setHours(hourUpdate2);
+      timeOld2.setMinutes(newMinute2);
+    }
   }
 
   useEffect(() => {
     if(props.value) {
       setIsValue(newfilterDaysVal);
+      setTime(timeOld);
+      setTimeTo(timeOld2)
     }
   },[])
 
-  const handleTimeChange = (e, input, isTyping) => {
-    setIsTimeValue(true);
-    console.log(e);
-    console.log(input.value);
-    console.log(isTyping);
-    // if(input) {
-    //   setTime(input.value);
-    //   setIsTimeValue(true);
-    // }
 
-    // if(isTyping === true){
-    //   setIsHour(e.hour);
-    // }
+  const handleTimeChange = (e) => {
+    let timeObj = new Date(e);
+    setTime(timeObj);
 	};
 
-  const handleTimeToChange = (e, input, isTyping) => {
-    // if (!isTyping) return setTimeTo(e);
-
-    if(input) {
-      // setTime(input.value);
-      setIsTimeValue(true);
-      console.log(input.value);
-    }
-
-    if(isTyping){
-      setTime(input.value);
-      setIsTimeValue(true);
-    }
+  const handleTimeToChange = (e) => {
+    let timeToObj = new Date(e);
+    setTimeTo(timeToObj);
   };
 
   const handleChange = (e, index, date) => {
@@ -100,22 +118,11 @@ const ComponentDatePicker = forwardRef((props, ref) => {
       if(props.required === true) {
         // timesto
         if (props.timesto === true) {
-
-          if(time === '' && isTimeValue === false) {
-            valid = isValidText(time, '時 (From)')
-          } else if(isHour === 0) {
-            valid = isValidText(time, '時 (From)')
+          if(time === '') {
+            valid = isValidText(time, '時 (From)');
           }
-
-          console.log(isHour);
-          // if (time) {
-          //   valid = isValidTime(time, '時 (From)');
-          // }
           if (timeTo === '') {
             valid = isValidText(timeTo, '時 (To)');
-          }
-          if (timeTo) {
-            valid = isValidTime(timeTo, '時 (To)');
           }
         }
 
@@ -164,9 +171,9 @@ const ComponentDatePicker = forwardRef((props, ref) => {
                 <div className="c-form-item--02">
                   <DatePicker
                     value={time}
-                    onChange={(e, { input, isTyping }) => handleTimeChange(e, input, isTyping)}
+                    onChange={handleTimeChange}
                     format="hh:mm A"
-                    plugins={[<TimePicker position="bottom" format="hh:ii" hideSeconds="true" />]}
+                    plugins={[<TimePicker position="bottom" hideSeconds="true" />]}
                     hideWeekDays
                     disableDayPicker
                     inputClass="c-form-control"
@@ -175,16 +182,15 @@ const ComponentDatePicker = forwardRef((props, ref) => {
                     required={props.required}
                     title={props.label}
                     ref={inputRef}
+                    editable={false}
                   />
-
-                  {/* <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={time} onChange={handleTimeChange} title={props.label} aria-label={props.label} ref={inputRef} /> */}
                 </div>
                 <div className="c-form-item--02">
                   <DatePicker
                     value={timeTo}
-                    onChange={(e, { input, isTyping }) => handleTimeToChange(e, input, isTyping)}
+                    onChange={handleTimeToChange}
                     format="hh:mm A"
-                    plugins={[<TimePicker position="bottom" format="hh:ii" hideSeconds="true" />]}
+                    plugins={[<TimePicker position="bottom" hideSeconds="true" />]}
                     hideWeekDays
                     disableDayPicker
                     inputClass="c-form-control"
@@ -193,8 +199,8 @@ const ComponentDatePicker = forwardRef((props, ref) => {
                     required={props.required}
                     title={props.label}
                     ref={inputRef}
+                    editable={false}
                   />
-                  {/* <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm" defaultValue={timeTo} onChange={handleTimeToChange} title={props.label} aria-label={props.label} ref={inputRef} /> */}
                 </div>
               </div>
               : ''

@@ -274,17 +274,17 @@ export default function NewApplicationDetail() {
       const allTrueArrValid: boolean = arrValid.every(x => x === true);
 
       if (allTrueArrValid === true) {
-        console.log(appJsonString);
-        // const res = await axiosPrivate.post("newapplication/add", appJsonString);
-        // if (res.data.success === 'error') {
-        //   setError('Bị lỗi khi đăng ký');
-        // } else {
-        //   setMsg('Bạn đã đăng ký thành công');
-        //   emitter.emit('reloadSidebar');
-        //   setTimeout(() => {
-        //     navigate('/application/');
-        //   }, 2000);
-        // }
+        // console.log(appJsonString);
+        const res = await axiosPrivate.post("newapplication/add", appJsonString);
+        if (res.data.success === 'error') {
+          setError('Bị lỗi khi đăng ký');
+        } else {
+          setMsg('Bạn đã đăng ký thành công');
+          emitter.emit('reloadSidebar');
+          setTimeout(() => {
+            navigate('/application/');
+          }, 2000);
+        }
       }
     }
   }
