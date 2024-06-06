@@ -37,22 +37,18 @@ export const Application = () => {
         params: { id_status: -1 },
       });
       const dbs = datashare.data;
-      //console.log(dbs);
       let response;
 
       if (isAdmin || isManager || isLeader) {
         response = await axiosPrivate.get('application', {
           params: { id_status: -1 },
         });
-        //console.log('1');
       } else {
-        // Mảng chứa dữ liệu được chia sẻ cho user hiện tại
         let sharedData = [];
 
         dbs.forEach((item) => {
           const dataJson = JSON.parse(item.datajson);
 
-          // Kiểm tra authorizer
           if (
             dataJson.authorizer &&
             dataJson.authorizer.includes(users.id.toString())
@@ -66,7 +62,6 @@ export const Application = () => {
           }
         });
 
-        // Gọi API để lấy dữ liệu của người dùng
         const userDataResponse = await axiosPrivate.get(
           'application/getapplicationother/' + users.id,
           {
@@ -74,20 +69,25 @@ export const Application = () => {
           },
         );
 
-        // Kết hợp dữ liệu của người dùng và dữ liệu được chia sẻ
         response = {
           data: userDataResponse.data.concat(sharedData),
         };
-        //console.log('2');
       }
 
-      const data = response.data;
-      //console.log(data); // Log dữ liệu để kiểm tra
+      let data = response.data;
+
+      // Phân tích và sắp xếp dữ liệu theo trường createdAt giảm dần
+      data.sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateB - dateA; // Sắp xếp giảm dần
+      });
+
+      //console.log(data);
+
       setStatusTotal(data.length);
 
-      // Tạo một bản sao của statusCount
       let updatedStatusCount = [0, 0, 0, 0, 0, 0, 0];
-      // Cập nhật updatedStatusCount dựa trên dữ liệu mới
       data.forEach((item) => {
         const statusIndex = parseInt(item.id_status);
         if (
@@ -98,7 +98,7 @@ export const Application = () => {
           updatedStatusCount[statusIndex] += 1;
         }
       });
-      // Cập nhật statusCount
+
       setStatusCount(updatedStatusCount);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -163,6 +163,13 @@ export const Application = () => {
           };
         }
         const data = response.data;
+        // Phân tích và sắp xếp dữ liệu theo trường createdAt giảm dần
+        data.sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+          return dateB - dateA; // Sắp xếp giảm dần
+        });
+        //console.log(data);
         setItems(data);
         setCurrentPage(1);
       } catch (error) {
