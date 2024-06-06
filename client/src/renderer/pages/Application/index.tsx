@@ -8,6 +8,7 @@ import TabContent from '../Application/tabContent';
 import { toast } from 'react-toastify';
 import { PaginationJp } from '../../components/PaginationJp';
 import { emitter } from '../../layouts/components/Sidebar';
+import { stringify } from 'querystring';
 
 export const Application = () => {
   const users = JSON.parse(localStorage.getItem('users') || '{}');
@@ -32,6 +33,11 @@ export const Application = () => {
 
   const Load = async () => {
     try {
+      const datashare = await axiosPrivate.get('application', {
+        params: { id_status: -1 },
+      });
+      const dbs = datashare.data;
+      //console.log(dbs);
       let response;
 
       if (isAdmin || isManager || isLeader) {
@@ -40,12 +46,38 @@ export const Application = () => {
         });
         //console.log('1');
       } else {
-        response = await axiosPrivate.get(
+        // Mảng chứa dữ liệu được chia sẻ cho user hiện tại
+        let sharedData = [];
+
+        dbs.forEach((item) => {
+          const dataJson = JSON.parse(item.datajson);
+
+          // Kiểm tra authorizer
+          if (
+            dataJson.authorizer &&
+            dataJson.authorizer.includes(users.id.toString())
+          ) {
+            sharedData.push(item);
+          } else if (
+            dataJson.coOwner &&
+            dataJson.coOwner.includes(users.user_group_id.toString())
+          ) {
+            sharedData.push(item);
+          }
+        });
+
+        // Gọi API để lấy dữ liệu của người dùng
+        const userDataResponse = await axiosPrivate.get(
           'application/getapplicationother/' + users.id,
           {
             params: { id_status: -1 },
           },
         );
+
+        // Kết hợp dữ liệu của người dùng và dữ liệu được chia sẻ
+        response = {
+          data: userDataResponse.data.concat(sharedData),
+        };
         //console.log('2');
       }
 
@@ -95,29 +127,51 @@ export const Application = () => {
         let response;
         if (isAdmin || isManager || isLeader) {
           response = await axiosPrivate.get('application', {
-            params: {
-              id_status: idStatus,
-            },
+            params: { id_status: idStatus },
           });
         } else {
-          response = await axiosPrivate.get(
+          const userDataResponse = await axiosPrivate.get(
             'application/getapplicationother/' + users.id,
             {
-              params: {
-                id_status: idStatus,
-              },
+              params: { id_status: idStatus },
             },
           );
+          // Lấy dữ liệu chia sẻ từ hàm Load()
+          const datashare = await axiosPrivate.get('application', {
+            params: { id_status: idStatus },
+          });
+          const dbs = datashare.data;
+          let sharedData = [];
+
+          dbs.forEach((item) => {
+            const dataJson = JSON.parse(item.datajson);
+            if (
+              dataJson.authorizer &&
+              dataJson.authorizer.includes(users.id.toString())
+            ) {
+              sharedData.push(item);
+            } else if (
+              dataJson.coOwner &&
+              dataJson.coOwner.includes(users.user_group_id.toString())
+            ) {
+              sharedData.push(item);
+            }
+          });
+
+          response = {
+            data: userDataResponse.data.concat(sharedData),
+          };
         }
         const data = response.data;
         setItems(data);
         setCurrentPage(1);
       } catch (error) {
-        console.error('Lỗi khi cập nhật trạng thái :', error);
+        console.error('Lỗi khi cập nhật trạng thái:', error);
       }
     };
     LoadTab();
   }, [activeTab]);
+
   const itemsPerPage = 10;
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const handlePageChange = (page: number) => {
