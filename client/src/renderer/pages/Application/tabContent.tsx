@@ -360,28 +360,50 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                   {approve.approveTexts}
                 </span>
               </p>
-              <p className="list-accordion__item__head__btn__icn">
-                <Link
-                  to={
-                    '/application/edit/' + Items.id + '/' + accordionItems.appId
-                  }
-                >
-                  <span className="icn-item icn-edit">
-                    <img src={editIcon} alt="edit" className="fluid-image" />
-                  </span>
-                </Link>
-                <span className="icn-item">
-                  <img src={closeIcon} alt="close" className="fluid-image" />
-                </span>
-                <span
-                  className="icn-item"
-                  onClick={(event) => {
-                    openModaldelete(Items.id);
-                  }}
-                >
-                  <img src={deleteIcon} alt="delete" className="fluid-image" />
-                </span>
-              </p>
+
+              {userData.length > 0 &&
+                userData.map((user, index) =>
+                  user.realname === users.realname ? (
+                    <p
+                      className="list-accordion__item__head__btn__icn"
+                      key={index}
+                    >
+                      <Link
+                        to={
+                          '/application/edit/' +
+                          Items.id +
+                          '/' +
+                          accordionItems.appId
+                        }
+                      >
+                        <span className="icn-item icn-edit">
+                          <img
+                            src={editIcon}
+                            alt="edit"
+                            className="fluid-image"
+                          />
+                        </span>
+                      </Link>
+                      <span className="icn-item">
+                        <img
+                          src={closeIcon}
+                          alt="close"
+                          className="fluid-image"
+                        />
+                      </span>
+                      <span
+                        className="icn-item"
+                        onClick={() => openModaldelete(Items.id)}
+                      >
+                        <img
+                          src={deleteIcon}
+                          alt="delete"
+                          className="fluid-image"
+                        />
+                      </span>
+                    </p>
+                  ) : null,
+                )}
             </div>
           </div>
           <div className="list-accordion__item__content">

@@ -187,7 +187,7 @@ export const Application = () => {
     setIdstatus(id_status);
     setActiveTab('tab2');
     toast.success('Bạn đã cập nhật trạng thái thành công !');
-    //Load();
+    Load();
   };
   const handleDeleteAccodion = async (id: any) => {
     try {
