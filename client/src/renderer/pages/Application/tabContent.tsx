@@ -350,7 +350,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                 {accordionItems.appName}
               </p>
               <span className="list-accordion__item__head__title__subtitle">
-                髙崎: {Items.owner}（{Items.createdAt} ）
+                {Items.owner}（{Items.createdAt} ）
               </span>
             </div>
             <div className="list-accordion__item__head__btn">
