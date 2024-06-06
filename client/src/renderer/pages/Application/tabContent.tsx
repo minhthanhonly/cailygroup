@@ -323,11 +323,10 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
 
   const getUser = async () => {
     try {
-      const response = await axiosPrivate.get('application/getusers/' + id);
+      const response = await axiosPrivate.get(`application/getusers/${id}`);
       const usersData = response.data;
       if (Array.isArray(usersData)) {
         setUserData(usersData);
-        //console.log(userData);
       } else {
         console.error('Error fetching data: Response data is not an array');
       }
@@ -338,7 +337,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [id]);
   const noop = () => {}; // No-op function
 
   return (
@@ -362,19 +361,14 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
               </p>
 
               {userData.length > 0 &&
-                userData.map((user, index) =>
-                  user.realname === users.realname ? (
+                userData.map((user, index) => {
+                  return user.realname === users.realname ? (
                     <p
                       className="list-accordion__item__head__btn__icn"
                       key={index}
                     >
                       <Link
-                        to={
-                          '/application/edit/' +
-                          Items.id +
-                          '/' +
-                          accordionItems.appId
-                        }
+                        to={`/application/edit/${Items.id}/${accordionItems.appId}`}
                       >
                         <span className="icn-item icn-edit">
                           <img
@@ -402,8 +396,8 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
                         />
                       </span>
                     </p>
-                  ) : null,
-                )}
+                  ) : null;
+                })}
             </div>
           </div>
           <div className="list-accordion__item__content">
