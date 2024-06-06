@@ -31,6 +31,20 @@ export default function ComponentInputFile(props) {
     }
   };
 
+  const japaneseCharactersRegex = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\u3400-\u4DBF]/; // Biểu thức chính quy cho ký tự tiếng Nhật
+  // const specialCharactersRegex = /[!@#$%^&*()+\=\[\]{};':"\\|,.<>\/?]/; // Biểu thức chính quy cho ký tự đặc biệt
+  const spaceRegex = /\s/; // Biểu thức chính quy cho khoảng trắng
+
+  if (japaneseCharactersRegex.test(selectedFileName)) {
+    alert("ファイル名に日本語を含めることはできません。");
+    setSelectedFileName('') // Xóa giá trị nhập nếu không hợp lệ
+  }
+
+  if (spaceRegex.test(selectedFileName)) {
+    alert("ファイル名にはスペース、アクセント、特殊文字を含めることはできません。");
+    setSelectedFileName('') // Xóa giá trị nhập nếu không hợp lệ
+  }
+
   return (
     <div className="c-form">
       <div className="c-form-inner">
