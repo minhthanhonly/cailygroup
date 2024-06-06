@@ -39,6 +39,7 @@
           right: 0;
           display: flex;
           justify-content: end;
+          margin-bottom: 2rem;
           a {
             transition: all 0.5s ease;
             position: absolute;
@@ -56,7 +57,7 @@
           }
         }
         &__icn {
-          margin-top: 2rem;
+          //margin-top: 2rem;
           line-height: 1;
           text-align: right;
           .icn-item {

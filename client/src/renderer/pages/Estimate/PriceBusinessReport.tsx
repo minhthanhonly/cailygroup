@@ -28,7 +28,6 @@ export default function PriceBusinessReport(props) {
 
     const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
 
-
     const initialRows = callback ? callback.map((item: { id: any; 日付: any; 項目: any; 交通費: any; 宿泊費: any; 交際費: any; 食費: any; その他: any; 備考: any; 合計: any; 精算額: any; 仮払金: any; 日: any; }) => ({
         id: item.id,
         日付: item.日付,
@@ -137,19 +136,6 @@ export default function PriceBusinessReport(props) {
     const [total, setTotal] = useState(0);
 
 
-    const newCalculatedPrice = inputDate * 3000;
-    const newFinalPayment = totalSum - inputValue;
-    const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
-    useEffect(() => {
-
-
-        setCalculatedPrice(newCalculatedPrice);
-        setFinalPayment(newFinalPayment);
-        setFinalTotalPrice(newFinalTotalPrice);
-
-
-
-    }, [inputValue, inputDate, totalSum]);
 
 
 
@@ -170,8 +156,7 @@ export default function PriceBusinessReport(props) {
         if (rowToUpdate) {
             rowToUpdate[field] = newValue;
             setRows(newRows);
-            const newRowsWithTotal = newRows.map(row => ({ ...row, 精算額: finalTotalPrice }));
-            props.parentCallback(newRowsWithTotal); // callback props ve cha
+
         }
 
         if (field === '交通費') {
@@ -201,6 +186,8 @@ export default function PriceBusinessReport(props) {
             newRows[index].合計 = calculateRowTotal(newRows[index]);
             setpriceOther(newpriceOther);
         }
+        const newRowsWithTotal = newRows.map(row => ({ ...row, 精算額: newFinalTotalPrice }));
+        props.parentCallback(newRowsWithTotal); // callback props ve cha
 
     };
 
@@ -225,6 +212,7 @@ export default function PriceBusinessReport(props) {
             totalRowsSum += row.合計;
         });
 
+
         return sum;
     };
 
@@ -235,11 +223,14 @@ export default function PriceBusinessReport(props) {
             return acc + totalForRow;
         }, 0);
         setTotalSum(newTotalSum);
+
+
     };
 
     const calculateRowSum = (row: Row) => {
         const valuesBeforeColumn5 = [row.交通費, row.宿泊費, row.交際費, row.食費, row.その他].slice(0, 5);
         const totalForRow = valuesBeforeColumn5.reduce((acc, currentValue) => acc + currentValue, 0);
+
         return totalForRow;
     };
     const formatNumberWithCommas = (value: number) => {
@@ -256,26 +247,42 @@ export default function PriceBusinessReport(props) {
         if (type === 'value') {
             setInputValue(valueToSet);
             const newRows: Row[] = [...rows];
-            const newRowsWithTotal = newRows.map(row => ({ ...row, 仮払金: valueToSet, 精算額: finalTotalPrice }));
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 仮払金: valueToSet, 精算額: newFinalTotalPrice }));
             props.parentCallback(newRowsWithTotal); // callback props ve cha
             //  updateParentCallback(valueToSet, inputDate);
         } else if (type === 'date') {
             setInputDate(valueToSet);
             const newRows: Row[] = [...rows];
-            const newRowsWithTotal = newRows.map(row => ({ ...row, 日: valueToSet, 精算額: finalTotalPrice }));
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 日: valueToSet, 精算額: newFinalTotalPrice }));
             props.parentCallback(newRowsWithTotal); // callback props ve cha
             // updateParentCallback(inputValue, valueToSet);
         }
     };
 
-
-
-
-
-
     useEffect(() => {
         calculateTotalSum();
-    }, [rows]); // Lắng nghe sự thay đổi của mảng rows ////  
+    }, [rows]); // Lắng nghe sự thay đổi của mảng rows ////
+
+    const newCalculatedPrice = inputDate * 3000;
+    const newFinalPayment = totalSum - inputValue;
+    const newFinalTotalPrice = newFinalPayment + newCalculatedPrice;
+    useEffect(() => {
+        setCalculatedPrice(newCalculatedPrice);
+        setFinalPayment(newFinalPayment);
+        setFinalTotalPrice(newFinalTotalPrice);
+
+        console.log("newCalculatedPrice", newCalculatedPrice);
+        console.log("newFinalPayment", newFinalPayment);
+        console.log("newFinalTotalPrice", newFinalTotalPrice);
+
+        if (callback) {
+            const newRows: Row[] = [...rows];
+            const newRowsWithTotal = newRows.map(row => ({ ...row, 精算額: newFinalTotalPrice }));
+            props.parentCallback(newRowsWithTotal);
+        }
+
+    }, [inputValue, inputDate, totalSum]);
+
 
     const addRow = () => {
         const newRow = { id: rows.length, 項目: '', 日付: currentDate, 交通費: 0, 宿泊費: 0, 交際費: 0, 食費: 0, その他: 0, 備考: '', 合計: 0, 精算額: 0 };

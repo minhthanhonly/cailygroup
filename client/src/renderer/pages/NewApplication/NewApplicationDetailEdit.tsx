@@ -306,17 +306,17 @@ export default function NewApplicationDetailEdit() {
 
       if (allTrueArrValid === true) {
         // console.log(appJsonString);
-        // const res = await axiosPrivate.post("newapplication/updatedetail", appJsonString);
+        const res = await axiosPrivate.post("newapplication/updatedetail", appJsonString);
         console.log(appJsonString)
-        // if (res.data.success === 'error') {
-        //   setError('Bị lỗi khi chỉnh sửa');
-        // } else {
-        //   setMsg('Bạn đã cập nhật thành công');
-        //   emitter.emit('reloadSidebar');
-        //   setTimeout(() => {
-        //     navigate('/application/');
-        //   }, 2000);
-        // }
+        if (res.data.success === 'error') {
+          setError('Bị lỗi khi chỉnh sửa');
+        } else {
+          setMsg('Bạn đã cập nhật thành công');
+          emitter.emit('reloadSidebar');
+          setTimeout(() => {
+            navigate('/application/');
+          }, 2000);
+        }
       }
     }
   }

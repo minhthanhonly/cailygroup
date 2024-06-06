@@ -136,10 +136,10 @@ export const Search = () => {
         [type === 'start'
           ? 'dateStart'
           : type === 'startUpdate'
-          ? 'dateStartUpdate'
-          : type === 'endUpdate'
-          ? 'dateEndUpdate'
-          : 'dateEnd']: _date,
+            ? 'dateStartUpdate'
+            : type === 'endUpdate'
+              ? 'dateEndUpdate'
+              : 'dateEnd']: _date,
       }));
     } else if (_date instanceof moment) {
       // Sử dụng moment.Moment thay vì DateObject
@@ -150,10 +150,10 @@ export const Search = () => {
         [type === 'start'
           ? 'dateStart'
           : type === 'startUpdate'
-          ? 'dateStartUpdate'
-          : type === 'endUpdate'
-          ? 'dateEndUpdate'
-          : 'dateEnd']: _date.toDate(), // Chuyển đổi sang đối tượng Date
+            ? 'dateStartUpdate'
+            : type === 'endUpdate'
+              ? 'dateEndUpdate'
+              : 'dateEnd']: _date.toDate(), // Chuyển đổi sang đối tượng Date
       }));
     } else {
       console.log('Date is null or not valid');
@@ -210,8 +210,8 @@ export const Search = () => {
     inputValue = inputValue.toString();
     inputValue = inputValue.replace(/,/g, '');
     if (!isNaN(Number(inputValue))) {
-      const formattedValue = formatNumberWithCommas(Number(inputValue));
-      setTextValue(formattedValue);
+      const formattedValue = Number(inputValue);
+      setTextValue(String(formattedValue));
     } else {
       setTextValue(inputValue);
     }
@@ -487,9 +487,8 @@ export const Search = () => {
                               <div className="list-accordion__parent">
                                 <div
                                   key={index}
-                                  className={`list-accordion__item ${
-                                    openTabId === item.id ? 'open' : ''
-                                  }`}
+                                  className={`list-accordion__item ${openTabId === item.id ? 'open' : ''
+                                    }`}
                                 >
                                   <div
                                     className="list-accordion__item__head"
@@ -498,7 +497,7 @@ export const Search = () => {
                                     <div className="list-accordion__item__head__title">
                                       <p className="list-accordion__item__head__title__title">
                                         {jsonData.appName &&
-                                        jsonData.appName.length > 0
+                                          jsonData.appName.length > 0
                                           ? jsonData.appName
                                           : 'No data available'}
                                       </p>
@@ -511,15 +510,14 @@ export const Search = () => {
                                     <div className="list-accordion__item__head__btn">
                                       <p className="list-accordion__item__head__btn__btn">
                                         <span
-                                          className={`lbl01 ${
-                                            [
-                                              'lbl-blue',
-                                              'lbl-yellow',
-                                              'lbl-red',
-                                              'lbl-white',
-                                              'lbl-brown',
-                                            ][numberStatus - 1]
-                                          }`}
+                                          className={`lbl01 ${[
+                                            'lbl-blue',
+                                            'lbl-yellow',
+                                            'lbl-red',
+                                            'lbl-white',
+                                            'lbl-brown',
+                                          ][numberStatus - 1]
+                                            }`}
                                         >
                                           {
                                             [
