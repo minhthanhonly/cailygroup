@@ -65,10 +65,9 @@ export default function NewApplicationDetailEdit() {
       setFormName(parsedDataJson.appName);
       setSelectedAuth(parsedDataJson.authorizer);
       setSelectedGroup(parsedDataJson.coOwner);
-
       setEstimate(parsedDataJson.tableData);
 
-      console.log("Fetched data: ", parsedDataJson.tableData);
+      console.log(field);
     } catch (error) {
       console.error("Error fetching application data:", error);
     }
@@ -493,8 +492,6 @@ export default function NewApplicationDetailEdit() {
     setSelectedGroup([]);
   }
 
-
-  console.log("estimate", estimate);
   return (
     <>
       <Heading2 text={formName} />
