@@ -39,7 +39,23 @@ const ComponentDatePicker = forwardRef((props, ref) => {
 
     // Lấy ra thời gian trong mảng value
     const filterTimeVal = props.value.filter(item => item.includes('AM') || item.includes('PM') ? true : false);
-    if(filterTimeVal.length > 0){
+    if(filterTimeVal.length === 1){
+
+      // Lấy ra thời gian
+      const [newHour, newMinute, aMpM]  = filterTimeVal[0].split(/:| /);
+      let hourUpdate = 0;
+      if(aMpM == "PM"){
+        hourUpdate += hourUpdate + parseInt(newHour) + 12;
+      } else {
+        hourUpdate += hourUpdate + parseInt(newHour);
+      }
+
+      timeOld = new Date();
+      timeOld.setHours(hourUpdate);
+      timeOld.setMinutes(newMinute);
+    }
+
+    if(filterTimeVal.length > 1){
 
       // Lấy ra thời gian from
       const [newHour, newMinute, aMpM]  = filterTimeVal[0].split(/:| /);
@@ -129,9 +145,6 @@ const ComponentDatePicker = forwardRef((props, ref) => {
           if (time === '') {
             valid = isValidText(time, '時');
           }
-          if (time) {
-            valid = isValidTime(time, '時');
-          }
         }
       }
       return valid;
@@ -214,7 +227,23 @@ const ComponentDatePicker = forwardRef((props, ref) => {
             {props.times === true ?
               <div className="c-form-inner">
                 <div className="c-form-item--02">
-                  <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm　修正後の時間" onChange={handleTimeChange} title={props.label} aria-label={props.label}/>
+                  <DatePicker
+                    value={time}
+                    onChange={handleTimeChange}
+                    format="hh:mm A"
+                    plugins={[<TimePicker position="bottom" hideSeconds="true" />]}
+                    hideWeekDays
+                    disableDayPicker
+                    inputClass="c-form-control"
+                    placeholder="hh:mm　修正後の時間"
+                    name={props.id}
+                    required={props.required}
+                    title={props.label}
+                    ref={inputRef}
+                    editable={false}
+                  />
+
+                  {/* <input type="text" name={props.id} className="c-form-control" placeholder="hh:mm　修正後の時間" onChange={handleTimeChange} title={props.label} aria-label={props.label}/> */}
                 </div>
               </div>
               : ''

@@ -1,10 +1,36 @@
-import { useImperativeHandle, forwardRef, useRef, useState } from "react";
+import { useImperativeHandle, forwardRef, useRef, useState, useEffect } from "react";
 import { isValidCheck, isValidText } from "../../../components/Validate";
 
 const ComponentCheckboxAndInputText = forwardRef((props, ref) => {
   const [selectedCheckbox, setSelectedCheckbox] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isValue, setIsValue] = useState('');
+
+  let newCheckboxVal = '';
+  let newCheckboxArrVal = [];
+  let isValOld = ''
+
+  if(props.value) {
+    props.value.map((item, index) => {
+      props.customOptions.filter(item2 => item2.text === item ? newCheckboxArrVal.push(item) : false);
+    })
+
+    newCheckboxArrVal.map((item) => {
+      newCheckboxVal = item;
+    })
+
+    isValOld = props.value.find(item => !item.includes(newCheckboxVal) ? true : false);
+  }
+
+
+
+  useEffect(() => {
+    if(props.value) {
+      setSelectedCheckbox(newCheckboxVal);
+      setIsValue(isValOld);
+      setIsChecked(true);
+    }
+  },[])
 
   const handleCheckboxChange = (e) => {
     const { value } = e.target;
@@ -22,6 +48,7 @@ const ComponentCheckboxAndInputText = forwardRef((props, ref) => {
       let valid = true;
       if(props.required === true) {
         if (isChecked === false) {
+          console.log("check");
           valid = isValidCheck(isChecked, props.label);
         }
         if (isValue === '') {
@@ -66,7 +93,7 @@ const ComponentCheckboxAndInputText = forwardRef((props, ref) => {
             }
           </div>
           <div className='c-form-row'>
-            <input type="text" name={props.id} className="c-form-control" defaultValue={isValue} onChange={handleChange} aria-label={props.label} title={props.label} required={props.required} placeholder='出張先を入力' ref={checkboxRef} />
+            <input type="text" name={props.id} className="c-form-control" value={isValue} onChange={handleChange} aria-label={props.label} title={props.label} required={props.required} placeholder='出張先を入力' ref={checkboxRef} />
           </div>
         </div>
       </div>

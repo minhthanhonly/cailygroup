@@ -15,6 +15,7 @@ const ComponentCheckbox = forwardRef((props, ref) => {
   useEffect(() => {
     if(props.value) {
       setSelectedCheckbox(newCheckboxVal);
+      setIsChecked(true)
     }
   },[])
 
