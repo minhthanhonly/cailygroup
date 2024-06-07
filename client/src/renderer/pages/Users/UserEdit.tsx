@@ -97,8 +97,10 @@ export default function UserEdit() {
         user_email: formValue.user_email
       }
 
+      console.log(formData);
+
       const res = await axiosPrivate.post("users/update", formData);
-      const res2 = await axiosPrivate.get("users/detail/"+formValue.userid);
+      const res2 = await axiosPrivate.get("users/detail/"+ formData.id);
 
       if(res.data.success){
         setMessage(res.data.success);
@@ -116,7 +118,7 @@ export default function UserEdit() {
           }
           localStorage.setItem('users', JSON.stringify(users));
           setAuth({ isLoggedIn, roles, users });
-          navigate('/users/detail/'+formValue.userid);
+          navigate('/users/detail/'+id);
         }, 2000);
       }
     }

@@ -48,7 +48,6 @@ const ComponentCheckboxAndInputText = forwardRef((props, ref) => {
       let valid = true;
       if(props.required === true) {
         if (isChecked === false) {
-          console.log("check");
           valid = isValidCheck(isChecked, props.label);
         }
         if (isValue === '') {

@@ -1,5 +1,5 @@
 import { useImperativeHandle, forwardRef, useRef, useState, useEffect } from "react";
-import { isValidCheck } from "../../../components/Validate";
+import { isValidCheck, isValidChooseDate } from "../../../components/Validate";
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-multi-date-picker';
 
@@ -54,6 +54,23 @@ const ComponentCheckboxAndDate = forwardRef((props, ref) => {
     setSelectedCheckbox('');
   };
 
+  const checkboxRef = useRef(null);
+  useImperativeHandle(ref, () => ({
+    validate: () => {
+      let valid = true;
+      if(props.required === true) {
+        if (isChecked === false && selectedCheckbox === '') {
+          valid = isValidCheck(isChecked, props.label);
+        }
+        console.log(isDate);
+        if (isChecked === true && isDate === '') {
+          valid = isValidChooseDate(isDate);
+        }
+      }
+      return valid;
+    },
+  }));
+
   return (
     <div className="c-form">
       <div className="c-form-inner">
@@ -71,6 +88,7 @@ const ComponentCheckboxAndDate = forwardRef((props, ref) => {
                       <input
                       id={props.id}
                       type="checkbox"
+                      ref={checkboxRef}
                       checked={selectedCheckbox === option.text}
                       className="c-form-control"
                       value={option.text}
@@ -86,7 +104,7 @@ const ComponentCheckboxAndDate = forwardRef((props, ref) => {
             }
             <div className="c-form-item--03">
               <label className="c-form-label--03">
-                <input type='checkbox' className="c-form-control" checked={isChecked} value={null} name={props.id} onChange={handleCheckboxChange02} title={props.label} /><span className="checkmark"></span>
+                <input type='checkbox' className="c-form-control" checked={isChecked} value={null} name={props.id} onChange={handleCheckboxChange02} title={props.label} /><span className="checkmark" ref={checkboxRef}></span>
                 <DatePicker
                   onChange={(date) => handleChange(date)}
                   value={isDate}
