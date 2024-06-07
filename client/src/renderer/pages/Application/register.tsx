@@ -15,12 +15,14 @@ export const Register = ({ id }) => {
       if (parsedDataJson.formData) {
         parsedDataJson.formData = parsedDataJson.formData.map((item) => {
           if (item.type && item.type.includes('file') && item.value) {
-            const [localFile, url, fileName] = item.value;
+            const [localFile, url] = item.value;
+            const fileName = url ? url.split('/').pop() : null;
             item.fileInfo = { localFile, url, fileName };
           }
           return item;
         });
       }
+
       const hasFormData =
         parsedDataJson.formData && parsedDataJson.formData.length > 0;
       const hasTableData =
