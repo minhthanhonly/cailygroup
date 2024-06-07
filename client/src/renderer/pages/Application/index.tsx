@@ -39,7 +39,7 @@ export const Application = () => {
       const dbs = datashare.data;
       let response;
 
-      if (isAdmin || isManager || isLeader) {
+      if (isAdmin || isManager) {
         response = await axiosPrivate.get('application', {
           params: { id_status: -1 },
         });
@@ -94,9 +94,7 @@ export const Application = () => {
         const dateB = new Date(b.createdAt);
         return dateB - dateA; // Sắp xếp giảm dần
       });
-
       //console.log(data);
-
       setStatusTotal(data.length);
 
       let updatedStatusCount = [0, 0, 0, 0, 0, 0, 0];
@@ -137,7 +135,7 @@ export const Application = () => {
           idStatus = 6;
         }
         let response;
-        if (isAdmin || isManager || isLeader) {
+        if (isAdmin || isManager) {
           response = await axiosPrivate.get('application', {
             params: { id_status: idStatus },
           });
