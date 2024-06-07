@@ -70,6 +70,8 @@ export const Sidebar = () => {
     if (isLeader) {
       emitter.on('reloadSidebar', (data) => {
         if (typeof data === 'number') {
+          console.log("data", data);
+
           setCountItem(data);
         }
         // console.log('Received data from reloadSidebar event:', data);
@@ -215,7 +217,15 @@ export const Sidebar = () => {
                   </>
                 ) : (
                   <>
-                    {countItem}
+                    {countItem === 0 ? (
+                      <>
+                        {countIdStatusOne}
+                      </>
+                    ) : (
+                      <>
+                        {countItem}
+                      </>
+                    )}
                   </>
                 )} </span>
               </NavLink>
