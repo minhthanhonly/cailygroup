@@ -17,17 +17,11 @@ interface Row {
     備考: string;
     合計: number;
     精算額: number;
-
 }
 
-
 export default function PriceBusinessReport(props) {
-
-
     const { callback } = props;
-
     const currentDate = moment().format('YYYY/MM/DD');
-
     const initialRows = callback ? callback.map((item: { id: any; 日付: any; 項目: any; 交通費: any; 宿泊費: any; 交際費: any; 食費: any; その他: any; 備考: any; 合計: any; 精算額: any; 仮払金: any; 日: any; }) => ({
         id: item.id,
         日付: item.日付,
@@ -78,10 +72,6 @@ export default function PriceBusinessReport(props) {
     const [calculatedPrice, setCalculatedPrice] = useState(0);
     const [finalPayment, setFinalPayment] = useState(0);
     const [finalTotalPrice, setFinalTotalPrice] = useState(0);
-
-    console.log("finalTotalPrice", finalTotalPrice);
-
-
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
         const { value } = event.target;
         setRows((prevRows: Row[]) => {
@@ -131,13 +121,7 @@ export default function PriceBusinessReport(props) {
     const [priceCustomer, setpriceCustomer] = useState<string[]>(priceCustomeres);
     const [priceEat, setpriceEat] = useState<string[]>(priceEates);
     const [priceOther, setpriceOther] = useState<string[]>(priceOtheres);
-
     const [total, setTotal] = useState(0);
-
-
-
-
-
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: '交通費' | '宿泊費' | '交際費' | '食費' | 'その他') => {
         let inputValue2 = event.target.value;
         // Loại bỏ các ký tự không phải số
@@ -155,10 +139,8 @@ export default function PriceBusinessReport(props) {
         if (rowToUpdate) {
             rowToUpdate[field] = newValue;
             setRows(newRows);
-
             // const newRowsWithTotal = newRows.map(row => ({ ...row, 日: inputDate, 仮払金: inputValue, 精算額: finalTotalPrice }));
             // props.parentCallback(newRowsWithTotal); // callback props ve cha
-
         }
 
         if (field === '交通費') {
@@ -188,9 +170,6 @@ export default function PriceBusinessReport(props) {
             newRows[index].合計 = calculateRowTotal(newRows[index]);
             setpriceOther(newpriceOther);
         }
-
-
-
     };
 
     const calculateRowTotal = (row: Row) => {
@@ -241,8 +220,6 @@ export default function PriceBusinessReport(props) {
         return totalForRow;
     };
 
-
-
     const formatNumberWithCommas = (value: number) => {
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
@@ -268,9 +245,6 @@ export default function PriceBusinessReport(props) {
         }
     };
 
-    console.log("inputDate ====>", inputDate);
-
-
     useEffect(() => {
         calculateTotalSum();
     }, [rows]); // Lắng nghe sự thay đổi của mảng rows ////
@@ -283,8 +257,6 @@ export default function PriceBusinessReport(props) {
         setCalculatedPrice(newCalculatedPrice);
         setFinalPayment(newFinalPayment);
         setFinalTotalPrice(newFinalTotalPrice);
-        console.log("newFinalTotalPrice", newFinalTotalPrice);
-
         if (callback) {
             const newRows: Row[] = [...rows];
             const newRowsWithTotal = newRows.map(row => ({ ...row, 日: inputDate, 仮払金: inputValue, 精算額: newFinalTotalPrice }));
@@ -348,8 +320,6 @@ export default function PriceBusinessReport(props) {
                                     <td><input type="text" value={row.備考} onChange={(e) => handleInputChange(e, index, '備考')} placeholder='入力してください' /></td>
                                 </tr>
                             ))}
-
-
                         </tbody>
                     </table>
                     <p onClick={addRow} className='plus-row'> 行を追加する</p>
@@ -391,8 +361,6 @@ export default function PriceBusinessReport(props) {
                     </table>
                 </div>
             </div>
-
-
         </>
     )
 

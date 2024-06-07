@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import './Menberdetails.scss';
 
 type MenberdetailsProps = {
-  id: string;
+  id: number;
   userid: string;
   realname: string;
   group_name: string;

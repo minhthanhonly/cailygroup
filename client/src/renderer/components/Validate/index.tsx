@@ -43,6 +43,7 @@ const useridName = "ID User";
 const passwordName = "Mật khẩu";
 const passwordConfirmName = "Mật khẩu (Xác nhận)";
 const realnameName = "Họ và tên";
+const userEmail = "Email";
 const userGroupName = "Nhóm";
 const authorityName = "Quyền truy cập";
 
@@ -53,6 +54,7 @@ type paraUser = {
   password_confirm: string,
   passwordNew: string,
   realname: string,
+  user_email: string,
   authority: string,
   user_group: string,
 }
@@ -97,6 +99,16 @@ export const isValidUser = ({ ...paraUser }, olduserid: string) => {
     return false;
   }
 
+  if (!paraUser.user_email) {
+    toast.error(ERROR['require'] + userEmail);
+    return false;
+  }
+
+  if (!validateEmail(paraUser.user_email)) {
+    toast.error(userEmail + " nhập vào không hợp lệ.");
+    return false;
+  }
+
   if (!paraUser.user_group || paraUser.user_group == '-1') {
     toast.error(ERROR['choose'] + userGroupName);
     return false;
@@ -116,6 +128,16 @@ type selectedValue = {
   user_group: string,
 }
 export const isValidUserEdit = ({ ...paraUser }, { ...selectedValue }, password: string, password_confirm: string) => {
+  if (!paraUser.user_email) {
+    toast.error(ERROR['require'] + userEmail);
+    return false;
+  }
+
+  if (!validateEmail(paraUser.user_email)) {
+    toast.error(userEmail + " nhập vào không hợp lệ.");
+    return false;
+  }
+
   if (isZenSpace(password)) {
     toast.error("Giá trị nhập vào " + passwordName + " không hợp lệ.");
     return false;
@@ -219,6 +241,14 @@ export const isValidForm = ({ ...paraForm }, reactFormData: any) => {
 export const isValidText = (Value: string, Label: string) => {
   if (!Value) {
     toast.error(Label + ERROR_JP['require']);
+    return false;
+  }
+  return true;
+}
+
+export const isValidChooseDate = (Value: string) => {
+  if (!Value) {
+    toast.error("日付を選択してください");
     return false;
   }
   return true;

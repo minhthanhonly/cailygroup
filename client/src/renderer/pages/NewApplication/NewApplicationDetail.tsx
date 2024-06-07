@@ -43,8 +43,12 @@ export default function NewApplicationDetail() {
   const [selectedGroup, setSelectedGroup] = useState<any>([]);
   const fileData = new FormData();
   const childRef = useRef(null);
-  const childRefOfCheckbox = useRef(null);
   const childRefOfInputText = useRef(null);
+  const childRefOfCheckbox = useRef(null);
+  const childRefOfCheckboxAndDate = useRef(null);
+  const childRefOfCheckboxAndTitle = useRef(null);
+  const childRefOfCheckboxAndInputText = useRef(null);
+  const childRefOfRadioButtons = useRef(null);
 
   const fetchNewApplicationById = async () => {
     try {
@@ -115,7 +119,15 @@ export default function NewApplicationDetail() {
 
     // Bắt lỗi Validate
     let valid = true;
-    let check: any = { childRef: childRef.current, childRefOfCheckbox: childRefOfCheckbox.current, childRefOfInputText: childRefOfInputText.current };
+    let check: any = {
+      childRef: childRef.current,
+      childRefOfInputText: childRefOfInputText.current,
+      childRefOfCheckbox: childRefOfCheckbox.current,
+      childRefOfCheckboxAndDate: childRefOfCheckboxAndDate.current,
+      childRefOfCheckboxAndTitle: childRefOfCheckboxAndTitle.current,
+      childRefOfCheckboxAndInputText: childRefOfCheckboxAndInputText.current,
+      childRefOfRadioButtons: childRefOfRadioButtons.current,
+    };
     for (var key in check) {
       if (check[key] !== null) {
         if (check[key].validate() == false) {
@@ -297,11 +309,12 @@ export default function NewApplicationDetail() {
     'F_TextArea': ComponentTextArea,
     'F_DatePicker': ComponentDatePicker,
     'F_RadioButtons': ComponentRadioButtons,
-    'F_TitleAndCheckbox': ComponentCheckboxAndTitle,
     'F_Checkbox': ComponentCheckbox,
-    'F_CheckboxAndInputText': ComponentCheckboxAndInputText,
     'F_CheckboxAndDate': ComponentCheckboxAndDate,
+    'F_CheckboxAndTitle': ComponentCheckboxAndTitle,
+    'F_CheckboxAndInputText': ComponentCheckboxAndInputText,
     'F_InputFile': ComponentInputFile,
+
     // Thêm các ánh xạ khác nếu cần
   };
 
@@ -312,7 +325,11 @@ export default function NewApplicationDetail() {
       let valRel: any = null;
       (item.key === 'F_InputText') ? valRel = childRefOfInputText :
       (item.key === 'F_DatePicker') ? valRel = childRef :
-      (item.key === 'F_TitleAndCheckbox' || item.key === 'F_Checkbox' || item.key === 'F_CheckboxAndInputText') ? valRel = childRefOfCheckbox : valRel;
+      (item.key === 'F_Checkbox') ? valRel = childRefOfCheckbox :
+      (item.key === 'F_CheckboxAndDate') ? valRel = childRefOfCheckboxAndDate :
+      (item.key === 'F_CheckboxAndTitle') ? valRel = childRefOfCheckboxAndTitle :
+      (item.key === 'F_CheckboxAndInputText') ? valRel = childRefOfCheckboxAndInputText :
+      (item.key === 'F_RadioButtons') ? valRel = childRefOfRadioButtons : valRel;
       return (
         <div className="c-row" key={index}>
           {(item.key === 'F_DatePicker') ?

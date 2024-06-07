@@ -94,7 +94,10 @@ export const Application = () => {
         const dateB = new Date(b.createdAt);
         return dateB - dateA; // Sắp xếp giảm dần
       });
+<<<<<<< HEAD
       //console.log(data);
+=======
+>>>>>>> 22d51ea57abad116132024039855d3f0e76396ee
       setStatusTotal(data.length);
 
       let updatedStatusCount = [0, 0, 0, 0, 0, 0, 0];
@@ -192,7 +195,6 @@ export const Application = () => {
           const dateB = new Date(b.createdAt);
           return dateB - dateA; // Sắp xếp giảm dần
         });
-        //console.log(data);
         setItems(data);
         setCurrentPage(1);
       } catch (error) {

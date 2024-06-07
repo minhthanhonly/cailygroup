@@ -290,7 +290,6 @@ function Dashboard() {
       const re = await axiosPrivate.post('timecarddetails/update', {
         dataTime,
       });
-      console.log(re.data);
 
       loadStart();
       setCheckEnd(true);

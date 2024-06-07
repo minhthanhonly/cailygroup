@@ -190,10 +190,6 @@ export default function ExpenseReport(props) {
         setCheckedState((prevState: any) => [...prevState, false]);
     };
 
-
-    console.log("日付", 日付);
-
-
     // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
     //     const { value } = event.target;
     //     setRows((prevRows: Row[]) => {
@@ -240,9 +236,6 @@ export default function ExpenseReport(props) {
         const newRows = [...rows];
         newRows[index] = { ...newRows[index], 軽減税率: isChecked };
         setRows(newRows);
-
-        console.log("Checked state updated: ", newCheckedState);
-
     };
 
     const handleDateChange = (date: any, index: number) => {

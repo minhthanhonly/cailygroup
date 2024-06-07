@@ -31,10 +31,6 @@ export const SearchData: React.FC<SearchDataProps> = ({ id, table }) => {
 
         Load();
     }, [id]);
-
-    console.log("accordionItems", accordionItems);
-
-
     return (
         <>
             {accordionItems &&

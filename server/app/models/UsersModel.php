@@ -27,14 +27,15 @@
 			$conn->close();
 		}
 
-		function getDetail($userid){
+		function getDetail($id){
 			global $conn;
 
 			// Thực hiện truy vấn SELECT
-			$sql = "SELECT users.*, groups.group_name, authority.authority_name FROM users 
-			JOIN groups ON users.user_group = groups.id
-			JOIN authority ON users.authority = authority.id
-			WHERE userid='$userid'";
+			$sql = "SELECT u.*, g.group_name, a.authority_name
+			FROM users AS u
+			JOIN groups AS g ON u.user_group = g.id
+			JOIN authority AS a ON u.authority = a.id
+			WHERE u.id='$id'";
 
 			$result = $conn->query($sql);
 
@@ -42,10 +43,8 @@
 			if ($result->num_rows > 0) {
 				// Duyệt qua từng dòng dữ liệu
 				while ($row = $result->fetch_assoc()) {
-					$data[] = $row;
+					$data = $row;
 				}
-			} else {
-				$data = [];
 			}
 
 			echo json_encode($data);

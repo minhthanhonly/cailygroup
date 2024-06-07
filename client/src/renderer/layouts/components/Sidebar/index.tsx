@@ -211,7 +211,7 @@ export const Sidebar = () => {
           </figure>
           <div className="acount__info">
             <NavLink
-              to={'/users/detail/' + users.userid}
+              to={'/users/detail/' + users.id}
               className="acount__name"
             >
               {users.realname}

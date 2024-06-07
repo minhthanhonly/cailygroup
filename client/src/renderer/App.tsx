@@ -63,7 +63,7 @@ export default function App() {
               />
               <Route path="holidays" element={<Timecard />} />
               <Route path="users/edit/:id" element={<UserEdit />} />
-              <Route path="users/detail/:userid" element={<UserDetail />} />
+              <Route path="users/detail/:id" element={<UserDetail />} />
               <Route path="members" element={<Members />} />
               <Route path="members/add" element={<MemberAdd />} />
               <Route path="members/edit/:id" element={<MemberEdit />} />
