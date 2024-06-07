@@ -18,18 +18,15 @@ interface Row {
 }
 
 
-
-
 export default function TravelExpenses(props) {
 
     const { callback } = props;
-
 
     console.log("callback", callback);
 
 
     const [日付, setDate] = useState(new Date());
-    const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
+    const currentDate = moment().format('YYYY/MM/DD');
 
     const initialRows = callback ? callback.map((item: { id: any; 日付: any; 路線: any; 乗車駅: any; 下車駅: any; 金額: any; 備考: any; 合計: any; }) => ({
         id: item.id,
@@ -134,6 +131,18 @@ export default function TravelExpenses(props) {
     };
 
 
+
+
+    const handleDateChange = (date: any, index: number) => {
+        const formattedDate = date.format('YYYY/MM/DD');
+        setRows((prevRows: Row[]) => {
+            const newRows = [...prevRows];
+            newRows[index].日付 = formattedDate;
+            const newRowsWithTotal = newRows.map(row => ({ ...row }));
+            props.parentCallback(newRowsWithTotal);
+            return newRows;
+        });
+    };
     return (
         <>
             <div className="table tbl_custom">
@@ -152,7 +161,13 @@ export default function TravelExpenses(props) {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={日付} format="YYYY/MM/DD HH:mm:ss" /></td>
+                                    <td>
+                                        <DatePicker
+                                            value={row.日付 ? new Date(row.日付) : new Date()}
+                                            onChange={(date) => handleDateChange(date, index)}
+                                            format="YYYY/MM/DD"
+                                        />
+                                    </td>
                                     <td><input type="text" value={row.路線} onChange={(e) => handleInputChange(e, index, '路線')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.乗車駅} onChange={(e) => handleInputChange(e, index, '乗車駅')} placeholder='入力してください' /></td>
                                     <td><input type="text" value={row.下車駅} onChange={(e) => handleInputChange(e, index, '下車駅')} placeholder='入力してください' /></td>
