@@ -11,16 +11,26 @@ export const Register = ({ id }) => {
       const data = response.data;
       // Phân tích JSON
       const parsedDataJson = JSON.parse(data.datajson);
-      //kiểm tra và lấy dữ liệu file nếu có
+
+      // Lọc bỏ phần tử có id là 'info-file'
+      if (parsedDataJson.formData) {
+        parsedDataJson.formData = parsedDataJson.formData.filter(
+          (item) => item.id !== 'info-file',
+        );
+      }
+
+      // kiểm tra và lấy dữ liệu file nếu có
       if (parsedDataJson.formData) {
         parsedDataJson.formData = parsedDataJson.formData.map((item) => {
           if (item.type && item.type.includes('file') && item.value) {
-            const [localFile, url, fileName] = item.value;
+            const [localFile, url] = item.value;
+            const fileName = url ? url.split('/').pop() : null;
             item.fileInfo = { localFile, url, fileName };
           }
           return item;
         });
       }
+
       const hasFormData =
         parsedDataJson.formData && parsedDataJson.formData.length > 0;
       const hasTableData =

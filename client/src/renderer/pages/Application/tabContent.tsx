@@ -244,6 +244,9 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
         user_id: users.id,
         aplication_id: id,
         authority_id: 1,
+        roles: users.roles,
+        user_email: users.user_email,
+        authorizer: accordionItems.authorizer,
       };
 
       setTextValue('');
@@ -256,7 +259,6 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
       // Send mail
       const id_status = Items.id_status;
       sendMailWhenCmt(id_status, comment_data, 'cmt');
-      // const parsedFormJson = JSON.parse(data[0].form);
     } catch (error) {
       console.error('Lỗi khi thêm comment:', error);
     }
