@@ -6,7 +6,6 @@ import moment from 'moment';
 
 interface Row {
   id: number;
-  日付: string;
   鉄道名: string;
   路線名: string;
   利用区間_: string;
@@ -27,9 +26,8 @@ export default function TravelAllowance(props) {
 
   const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
 
-  const initialRows = callback ? callback.map((item: { id: any; 日付: any; 鉄道名: any; 路線名: any; 利用区間_: any; 利用区間: any; マンスリーチケット: any; 往復: any; 備考: any; 合計: any; }) => ({
+  const initialRows = callback ? callback.map((item: { id: any; 鉄道名: any; 路線名: any; 利用区間_: any; 利用区間: any; マンスリーチケット: any; 往復: any; 備考: any; 合計: any; }) => ({
     id: item.id,
-    日付: item.日付,
     鉄道名: item.鉄道名,
     路線名: item.路線名,
     利用区間_: item.利用区間_,
@@ -40,46 +38,45 @@ export default function TravelAllowance(props) {
     合計: item.合計,
 
 
-  })) : [{ 日付: currentDate, id: 0, 鉄道名: '', 路線名: '', 利用区間_: '', 利用区間: '', マンスリーチケット: 0, 往復: 0, 備考: '', 合計: 0 }];
+  })) : [{ id: 0, 鉄道名: '', 路線名: '', 利用区間_: '', 利用区間: '', マンスリーチケット: 0, 往復: 0, 備考: '', 合計: 0 }];
 
 
   const [rows, setRows] = useState(initialRows);
-  const [isNew, setNew] = useState(1);
-  const [isChange, setChange] = useState(0);
-  const [isChangePrice, setChangePrice] = useState(0);
-  const [isStartNow, setIsStartNow] = useState(false);
-  const [isStartDate, setIsStartDate] = useState(false);
-  const [日付, setDate] = useState(new Date());
+  // const [isNew, setNew] = useState(1);
+  // const [isChange, setChange] = useState(0);
+  // const [isChangePrice, setChangePrice] = useState(0);
+  // const [isStartNow, setIsStartNow] = useState(false);
+  // const [isStartDate, setIsStartDate] = useState(false);
 
-  const handleLeaveDateChange = (_date: DateObject | DateObject[] | null) => {
-    const newRows = [...rows];
-    setRows(newRows);
-  };
-  const handleNewCheck = () => {
-    setNew(isNew === 2 ? 0 : isNew + 1);
-    if (isChange === 1) setChange(0); // Bỏ chọn nếu nút trễ đã được chọn
-    if (isChangePrice === 1) setChangePrice(0);
-  };
+  // const handleLeaveDateChange = (_date: DateObject | DateObject[] | null) => {
+  //   const newRows = [...rows];
+  //   setRows(newRows);
+  // };
+  // const handleNewCheck = () => {
+  //   setNew(isNew === 2 ? 0 : isNew + 1);
+  //   if (isChange === 1) setChange(0); // Bỏ chọn nếu nút trễ đã được chọn
+  //   if (isChangePrice === 1) setChangePrice(0);
+  // };
 
-  const handleisChangeCheck = () => {
-    setChange(isChange === 2 ? 0 : isChange + 1);
-    if (isNew === 1) setNew(0); // Bỏ chọn nếu nút sớm đã được chọn
-    if (isChangePrice === 1) setChangePrice(0);
-  };
+  // const handleisChangeCheck = () => {
+  //   setChange(isChange === 2 ? 0 : isChange + 1);
+  //   if (isNew === 1) setNew(0); // Bỏ chọn nếu nút sớm đã được chọn
+  //   if (isChangePrice === 1) setChangePrice(0);
+  // };
 
-  const handleChangePriceCheck = () => {
-    setChangePrice(isChangePrice === 2 ? 0 : isChangePrice + 1);
-    if (isNew === 1) setNew(0); // Bỏ chọn nếu nút sớm đã được chọn
-    if (isChange === 1) setChange(0); // Bỏ chọn nếu nút trễ đã được chọn
-  };
-  const handleStartNowCheck = () => {
-    setIsStartNow(!isStartNow);
-    if (isStartDate) setIsStartDate(false);
-  };
-  const handleStartDateCheck = () => {
-    setIsStartDate(!isStartDate);
-    if (isStartNow) setIsStartNow(false);
-  };
+  // const handleChangePriceCheck = () => {
+  //   setChangePrice(isChangePrice === 2 ? 0 : isChangePrice + 1);
+  //   if (isNew === 1) setNew(0); // Bỏ chọn nếu nút sớm đã được chọn
+  //   if (isChange === 1) setChange(0); // Bỏ chọn nếu nút trễ đã được chọn
+  // };
+  // const handleStartNowCheck = () => {
+  //   setIsStartNow(!isStartNow);
+  //   if (isStartDate) setIsStartDate(false);
+  // };
+  // const handleStartDateCheck = () => {
+  //   setIsStartDate(!isStartDate);
+  //   if (isStartNow) setIsStartNow(false);
+  // };
 
   const monthlyticketses = callback ? callback.map((item: { マンスリーチケット: { toLocaleString: () => any; }; }) => item.マンスリーチケット.toLocaleString()) : new Array(rows.length).fill('');
   const roundtripses = callback ? callback.map((item: { 往復: { toLocaleString: () => any; }; }) => item.往復.toLocaleString()) : new Array(rows.length).fill('');
@@ -112,7 +109,7 @@ export default function TravelAllowance(props) {
       rowToUpdate[field] = newValue;
       setRows(newRows);
       const totalTaxIncluded = Number(monthlyticket) + Number(roundtrip);
-      const newRowsWithTotal = newRows.map(row => ({ ...row, total: totalTaxIncluded }));
+      const newRowsWithTotal = newRows.map(row => ({ ...row, 合計: totalTaxIncluded }));
       props.parentCallback(newRowsWithTotal); // callback props ve cha
     }
 
@@ -165,15 +162,15 @@ export default function TravelAllowance(props) {
 
   const [address, setAddress] = useState('');
   const [station, setstation] = useState('');
-  const handleInputChange02 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    if (name === 'address') {
-      setAddress(value);
-      // Thực hiện các xử lý khác dựa trên giá trị mới của address
-    } else {
-      setstation(value);
-    }
-  };
+  // const handleInputChange02 = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = event.target;
+  //   if (name === 'address') {
+  //     setAddress(value);
+  //     // Thực hiện các xử lý khác dựa trên giá trị mới của address
+  //   } else {
+  //     setstation(value);
+  //   }
+  // };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
     const { value } = event.target;
@@ -182,7 +179,7 @@ export default function TravelAllowance(props) {
       newRows[index] = { ...newRows[index], [field]: value };
 
       const totalTaxIncluded = Number(monthlyticket) + Number(roundtrip);
-      const newRowsWithTotal = newRows.map(row => ({ ...row, total: totalTaxIncluded }));
+      const newRowsWithTotal = newRows.map(row => ({ ...row }));
       props.parentCallback(newRowsWithTotal); // callback props ve cha
       return newRowsWithTotal; // Trả về một giá trị từ hàm setRows
     });
@@ -204,16 +201,15 @@ export default function TravelAllowance(props) {
   );
 
   const addRow = () => {
-    const newRow = { id: rows.length, 日付: currentDate, 鉄道名: '', 路線名: '', 利用区間_: '', 利用区間: '', マンスリーチケット: 0, 往復: 0, 備考: '', 合計: 0 };
+    const newRow = { id: rows.length, 鉄道名: '', 路線名: '', 利用区間_: '', 利用区間: '', マンスリーチケット: 0, 往復: 0, 備考: '', 合計: 0 };
     setRows([...rows, newRow]);
   };
 
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
   const formatNumberWithCommass = (value: number) => {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
+
 
 
   return (
@@ -235,13 +231,6 @@ export default function TravelAllowance(props) {
               {rows.map((row, index) => (
                 <tr>
                   <td>
-                    {showDatePicker && (
-                      <DatePicker
-                        onChange={(_date) => handleLeaveDateChange(_date)}
-                        value={日付}
-                        format="YYYY-MM-DD HH:mm:ss"
-                      />
-                    )}
                     <input
                       type="text"
                       value={row.鉄道名}

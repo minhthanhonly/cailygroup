@@ -48,7 +48,7 @@ export const Application = () => {
 
         dbs.forEach((item) => {
           const dataJson = JSON.parse(item.datajson);
-
+          //kiểm tra sự tồn tại của authorizer và coOwner
           if (
             dataJson.authorizer &&
             dataJson.authorizer.includes(users.id.toString())
