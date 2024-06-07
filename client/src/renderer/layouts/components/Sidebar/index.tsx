@@ -143,14 +143,14 @@ export const Sidebar = () => {
           ) : (
             ''
           )}
-          <li className="nav-global__item">
+          {/* <li className="nav-global__item">
             <NavLink to="/module">
               <span className="icn">
                 <FontAwesomeIcon icon={faCalendarDays} />
               </span>
               module
             </NavLink>
-          </li>
+          </li> */}
           {/* <li className="nav-global__item">
             <NavLink to="/estimate">
               <span className="icn">
