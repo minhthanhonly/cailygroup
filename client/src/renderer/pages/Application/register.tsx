@@ -26,11 +26,6 @@ export const Register = ({ id }) => {
             const [localFile, url] = item.value;
             const fileName = url ? url.split('/').pop() : null;
             item.fileInfo = { localFile, url, fileName };
-
-            // Log thông tin file
-            console.log('localFile:', localFile);
-            console.log('url:', url);
-            console.log('fileName:', fileName);
           }
           return item;
         });
