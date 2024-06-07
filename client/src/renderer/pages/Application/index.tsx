@@ -105,10 +105,14 @@ export const Application = () => {
           statusIndex < updatedStatusCount.length
         ) {
           updatedStatusCount[statusIndex] += 1;
+
+
         }
       });
 
       setStatusCount(updatedStatusCount);
+      console.log("updatedStatusCount", updatedStatusCount);
+
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -237,6 +241,11 @@ export const Application = () => {
   useEffect(() => {
     Load();
   }, [activeTab]);
+
+  const dataToPass = statusCount[1];
+  emitter.emit('reloadSidebar', dataToPass);
+  console.log(":{statusCount[1]}", statusCount[1]);
+
 
   //  tab
   const tabs = ['tab1', 'tab2', 'tab3', 'tab4', 'tab5', 'tab6', 'tab7'];

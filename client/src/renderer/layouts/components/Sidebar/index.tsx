@@ -18,7 +18,7 @@ import {
   faNewspaper,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import axios from '../../../api/axios';
 import { Button } from '../../../components/Button';
 import useAuth from '../../../hooks/useAuth';
@@ -57,16 +57,52 @@ export const Sidebar = () => {
 
   const [countIdStatusOne, setCountIdStatusOne] = useState(0);
 
+
+  const [countItem, setCountItem] = useState(0);
   useEffect(() => {
+
     if (firstLoad) {
+      handleReloadSidebar(countItem);
       reloadSidebar(); // Gọi reloadSidebar khi render lần đầu tiên
       setFirstLoad(false); // Đánh dấu đã render lần đầu tiên
     }
-    emitter.on('reloadSidebar', reloadSidebar);
+
+    if (isLeader) {
+      emitter.on('reloadSidebar', (data) => {
+        if (typeof data === 'number') {
+          setCountItem(data);
+        }
+        // console.log('Received data from reloadSidebar event:', data);
+        // Do something with the received data here
+      });
+    }
+    if (isAdmin || isManager) {
+      emitter.on('reloadSidebar', reloadSidebar);
+    }
+
     return () => {
-      emitter.off('reloadSidebar', reloadSidebar);
+      if (isAdmin || isManager) {
+        emitter.off('reloadSidebar', reloadSidebar);
+      }
+      else {
+        emitter.off('reloadSidebar', (data) => {
+          if (typeof data === 'number') {
+            setCountItem(data);
+          }
+          // console.log('Received data from reloadSidebar event:', data);
+          // Do something with the received data here
+        });
+      }
     };
   }, [firstLoad]);
+
+  const handleReloadSidebar = (data: SetStateAction<number>) => {
+    if (typeof data === 'number') {
+      setCountItem(data);
+    }
+    // console.log('Received data from reloadSidebar event:', data);
+    // Do something with the received data here
+  };
 
   const reloadSidebar = async () => {
     try {
@@ -173,7 +209,15 @@ export const Sidebar = () => {
                 <span className="icn">
                   <FontAwesomeIcon icon={faCalendarDays} />
                 </span>
-                申請状況 <span className="boder_count">{countIdStatusOne}</span>
+                申請状況 <span className="boder_count"> {isAdmin || isManager ? (
+                  <>
+                    {countIdStatusOne}
+                  </>
+                ) : (
+                  <>
+                    {countItem}
+                  </>
+                )} </span>
               </NavLink>
             </li>
           ) : (
