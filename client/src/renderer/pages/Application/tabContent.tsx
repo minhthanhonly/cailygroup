@@ -22,7 +22,7 @@ const TabContent = ({ id, sendDataToParent, sendIdToParent }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [commentFirst, setCommentFirst] = useState<any>([]);
   const [textValue, setTextValue] = useState('');
-  const [commentValue, setCommentValue] = useState('');
+  // const [commentValue, setCommentValue] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [approve, setApprove] = useState({
     approveTexts: '',
