@@ -292,6 +292,8 @@
                 $userCmt = $mailData->userCmt;
                 $dataCmt = $mailData->dataCmt;
                 $action = $mailData->action;
+                $roles = $mailData->dataCmt->roles;
+                $userEmailCmt = $mailData->dataCmt->user_email;
 
                 // -------------------------- Mail Content --------------------------
                 $content = '';
@@ -344,8 +346,8 @@
                     $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
                 
                     //Recipients
-                    $mail->setFrom('caily-noreply@caily.com.vn', 'CAILY GROUP - '.$appName);   // Email và tên người gửi
-                    $mail->addAddress($userEmailReg, $userNameReg);     //Add a recipient
+                    $mail->setFrom('caily-noreply@caily.com.vn', 'CAILY GROUP - '.$appName);
+                    $mail->addAddress($userEmailReg, $userNameReg);
                     $mail->addReplyTo('noreply@caily.com.vn', 'Noreply');
                 
                     //Content
