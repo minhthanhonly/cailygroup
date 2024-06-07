@@ -27,14 +27,11 @@ export default function ExpenseReport(props) {
 
 
 
-    const currentDate = moment().format('YYYY/MM/DD HH:mm:ss');
-
-
-
-
 
 
     const [日付, setDate] = useState(new Date());
+    const currentDate = moment().format('YYYY/MM/DD');
+
 
     const initialRows = callback ? callback.map((item: { id: any; 日付: any; 内容: any; 支払先: any; 税抜: any; 消費税: any; 軽減税率: any; 合計金額: any; 備考: any; 合計: any; TotalPriceNotTax2: any; TotalPriceTax2: any; }) => ({
         id: item.id,
@@ -67,8 +64,8 @@ export default function ExpenseReport(props) {
     useEffect(() => {
         if (callback) {
             // Tính tổng của TotalPriceNotTax2 và TotalPriceTax2 từ các phần tử trong callback
-            const totalNotTax2 = callback.reduce((acc: any, item: { TotalPriceNotTax2: any; }) => acc + item.TotalPriceNotTax2, 0);
-            const totalTax2 = callback.reduce((acc: any, item: { TotalPriceTax2: any; }) => acc + item.TotalPriceTax2, 0);
+            const totalNotTax2 = callback.reduce((acc: any, item: { TotalPriceNotTax2: any; }) => item.TotalPriceNotTax2, 0);
+            const totalTax2 = callback.reduce((acc: any, item: { TotalPriceTax2: any; }) => item.TotalPriceTax2, 0);
             // Cập nhật giá trị cho TotalPriceNotTax2 và TotalPriceTax2
             setTotalPriceNotTax(totalNotTax2);
             setTotalPriceTax(totalTax2);
@@ -84,12 +81,14 @@ export default function ExpenseReport(props) {
     const 税抜ses = callback ? callback.map((item: { 税抜: { toLocaleString: () => any; }; }) => item.税抜.toLocaleString()) : new Array(rows.length).fill('');
     const 消費税ses = callback ? callback.map((item: { 消費税: { toLocaleString: () => any; }; }) => item.消費税.toLocaleString()) : new Array(rows.length).fill('');
     const checkedStateses = callback ? callback.map((item: { 軽減税率: boolean; }) => item.軽減税率) : [];
+    //const 日付ses = callback ? callback.map((item: { 日付: string }) => moment(item.日付).toDate()) : new Array(rows.length).fill(new Date());
 
 
     const [checkedState, setCheckedState] = useState(checkedStateses);
 
     const [税抜, setPriceNotax] = useState<string[]>(税抜ses);
     const [消費税, setTax] = useState<string[]>(消費税ses);
+    //const [日付, setDate] = useState<Date[]>(日付ses);
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: '税抜' | '消費税') => {
         let inputValue = event.target.value.replace(/[^0-9]/g, '');
@@ -159,11 +158,29 @@ export default function ExpenseReport(props) {
         return sum;
     };
 
+    // const handleLeaveDateChange = (index: number, date: any) => {
+    //     const momentDate = moment(date); // Chuyển đổi giá trị ngày thành đối tượng Moment
+    //     if (!momentDate.isValid()) {
+    //         console.error('Invalid date:', date);
+    //         return;
+    //     }
+    //     const formattedDate = momentDate.format('YYYY/MM/DD');
+    //     const newRows = [...rows];
+    //     newRows[index].日付 = formattedDate;
+    //     setRows(newRows);
+    //     const newDateArray = [...日付];
+    //     newDateArray[index] = momentDate.toDate(); // Lưu giá trị là Date object
+    //     setDate(newDateArray);
+    //     const newRowsWithTotal = newRows.map(row => ({ ...row }));
+    //     props.parentCallback(newRowsWithTotal);
+    // };
 
-    const handleLeaveDateChange = () => {
-        const newRows = [...rows];
-        setRows(newRows);
-    };
+    // const handleLeaveDateChange = () => {
+    //     const newRows = [...rows];
+    //     setRows(newRows);
+    //     const newRowsWithTotal = newRows.map(row => ({ ...row, }));
+    //     props.parentCallback(newRowsWithTotal);
+    // };
 
 
     // thêm
@@ -172,6 +189,9 @@ export default function ExpenseReport(props) {
         setRows(prevRows => [...prevRows, newRow]);
         setCheckedState((prevState: any) => [...prevState, false]);
     };
+
+
+    console.log("日付", 日付);
 
 
     // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, field: keyof Row) => {
@@ -225,6 +245,17 @@ export default function ExpenseReport(props) {
 
     };
 
+    const handleDateChange = (date: any, index: number) => {
+        const formattedDate = date.format('YYYY/MM/DD');
+        setRows((prevRows: Row[]) => {
+            const newRows = [...prevRows];
+            newRows[index].日付 = formattedDate;
+            const newRowsWithTotal = newRows.map(row => ({ ...row }));
+            props.parentCallback(newRowsWithTotal);
+            return newRows;
+        });
+    };
+
     return (
         <>
             {/* <h2 className="hdglv2"><span>交通費清算書</span></h2>
@@ -248,7 +279,13 @@ export default function ExpenseReport(props) {
                         <tbody>
                             {rows.map((row, index) => (
                                 <tr key={row.id}>
-                                    <td> <DatePicker onChange={(_date) => handleLeaveDateChange()} value={日付} format="YYYY-MM-DD HH:mm:ss" /></td>
+                                    <td>
+                                        <DatePicker
+                                            value={row.日付 ? new Date(row.日付) : new Date()}
+                                            onChange={(date) => handleDateChange(date, index)}
+                                            format="YYYY/MM/DD"
+                                        />
+                                    </td>
                                     <td><input type="text" placeholder='入力してください' value={row.内容} onChange={(e) => handleInputChange(e, index, '内容')} /></td>
                                     <td><input type="text" placeholder='入力してください' value={row.支払先} onChange={(e) => handleInputChange(e, index, '支払先')} /></td>
                                     <td><input className="numberInput" type="text" placeholder='0' value={税抜[index]} onChange={(e) => handleNumberChange(e, index, '税抜')} /></td>
