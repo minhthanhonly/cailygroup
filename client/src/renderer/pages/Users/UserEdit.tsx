@@ -97,8 +97,6 @@ export default function UserEdit() {
         user_email: formValue.user_email
       }
 
-      console.log(formData);
-
       const res = await axiosPrivate.post("users/update", formData);
       const res2 = await axiosPrivate.get("users/detail/"+ formData.id);
 

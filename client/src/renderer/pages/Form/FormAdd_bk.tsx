@@ -341,7 +341,6 @@ export default function FormAdd() {
     if (validationErrors === true) {
       const formData = { form_name: formValue.form_name, formDescription, reactFormData, status: formValue.status, owner: formValue.owner }
       if(formData.reactFormData.length === reactFormData.length) {
-        console.log(reactFormData);
         // const res = await axiosPrivate.post("form/add", formData);
         // if (res.data.success === 'error') {
         //   setError('Bị lỗi khi thêm Form mới');

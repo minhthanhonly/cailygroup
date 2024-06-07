@@ -62,7 +62,6 @@ const ComponentCheckboxAndDate = forwardRef((props, ref) => {
         if (isChecked === false && selectedCheckbox === '') {
           valid = isValidCheck(isChecked, props.label);
         }
-        console.log(isDate);
         if (isChecked === true && isDate === '') {
           valid = isValidChooseDate(isDate);
         }

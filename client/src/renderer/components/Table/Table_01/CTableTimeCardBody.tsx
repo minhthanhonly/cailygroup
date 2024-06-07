@@ -325,7 +325,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         dataTimeCard,
       });
 
-      //  console.log(responseTimeCard.data);
       const responseConfig = await axiosPrivate.post('config');
       const configData = responseConfig.data;
       const openlunchValue = findConfigValue(configData, 'openlunch');
@@ -346,8 +345,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           dataTimeCardDetails,
         },
       );
-
-      // console.log(responseTimeCardDetails.data);
 
       fetchTimecardOpen();
       setTimeout(() => {
@@ -390,7 +387,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
     const responseConfig = await axiosPrivate.post('config');
     const configData = responseConfig.data;
     const opentimeValue = findConfigValue(configData, 'opentime');
-    console.log("opentimeValuessss", opentimeValue);
 
     const closetimeValue = findConfigValue(configData, 'closetime');
     const openlunchValue = findConfigValue(configData, 'openlunch');
@@ -501,12 +497,10 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         timecard_timeover: time.timecard_timeover,
         timecard_timeinterval: time.timecard_timeinterval,
       };
-      console.log(dataTime);
       try {
         const response = await axiosPrivate.post('timecarddetails/update', {
           dataTime,
         });
-        console.log(response.data);
         fetchTimecardOpen();
       } catch (error) {
         console.error('Lỗi khi cập nhật trạng thái:', error);
@@ -661,7 +655,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           comment: commentText,
         },
       );
-      console.log(response.data);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -676,7 +669,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       const response = await axiosPrivate.post('dayoffs/updatecomment/' + id, {
         comment: commentText,
       });
-      console.log(response.data);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái:', error);
     }
@@ -690,11 +682,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
       timecard_temp: commentText,
       owner: users.realname,
     };
-    console.log(dataTimeCard);
     const responseTimeCard = await axiosPrivate.post('timecards/add', {
       dataTimeCard,
     });
-    console.log(responseTimeCard.data);
     fetchTimecardOpen();
     closeModal();
   };
@@ -705,7 +695,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         comment: commentText,
       },
     );
-    console.log(response.data);
     fetchTimecardOpen();
     closeModal();
   };
@@ -747,7 +736,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           timecard_comment: timecardNote,
           editor: users.realname,
         });
-        console.log(response, response.data);
         fetchTimecardOpen();
         setTimeout(() => {
           calculateTotalTime();
@@ -805,11 +793,9 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
           timecard_temp: '',
           owner: users.realname,
         };
-        console.log(dataTimeCard);
         const responseTimeCard = await axiosPrivate.post('timecards/add', {
           dataTimeCard,
         });
-        console.log(responseTimeCard.data);
         let time = await workingTime(timecard_open_time, timecardEnd);
         const dataTimeCardDetails = {
           id_groupwaretimecard: responseTimeCard.data.id_timecard,
@@ -827,8 +813,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
             dataTimeCardDetails,
           },
         );
-
-        console.log(responseTimeCardDetails.data);
         fetchTimecardOpen();
         setTimeout(() => {
           calculateTotalTime();
@@ -863,7 +847,6 @@ let CTableTimeCardBody = (Props: CombinedProps) => {
         let response = await axiosPrivate.post('dayoffs/refuse/' + dayoffId, {
           data,
         });
-        console.log(response.data);
         fetchDayoffs();
         fetchTimecardOpen();
       } catch (error) {

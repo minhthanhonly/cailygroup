@@ -69,7 +69,6 @@ const TableCalendar: React.FC = () => {
       setEndTimes(newEndTimes);
 
       setCurrentDayIndex(index); // Đặt index của ngày hiện tại
-      console.log('Current Day Index:', index);
     }
   };
 
@@ -85,7 +84,6 @@ const TableCalendar: React.FC = () => {
     const isHighlighted =
       selectedDate && date.toDateString() === selectedDate.toDateString();
     const hasStartButton = index === currentDayIndex && !startTimes[index];
-    console.log('Has Start Button:', hasStartButton);
 
     return dayOfWeek === 0
       ? 'sunday'

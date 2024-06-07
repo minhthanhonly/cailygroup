@@ -66,8 +66,6 @@ export default function NewApplicationDetailEdit() {
       setSelectedAuth(parsedDataJson.authorizer);
       setSelectedGroup(parsedDataJson.coOwner);
       setEstimate(parsedDataJson.tableData);
-
-      console.log(field);
     } catch (error) {
       console.error("Error fetching application data:", error);
     }
@@ -277,10 +275,6 @@ export default function NewApplicationDetailEdit() {
         // Lấy tất cả các đối tượng trong Form
         for (let i = 0; i < formElementsInTable.length; i++) {
           const element = formElementsInTable[i] as HTMLInputElement;
-
-
-          console.log(element.value);
-
           if (element.value === "") {
             let validInputTextErrors = false;
             validInputTextErrors = isValidtextTable(element.value, element.title);
@@ -305,9 +299,7 @@ export default function NewApplicationDetailEdit() {
       const allTrueArrValid: boolean = arrValid.every(x => x === true);
 
       if (allTrueArrValid === true) {
-        // console.log(appJsonString);
         const res = await axiosPrivate.post("newapplication/updatedetail", appJsonString);
-        console.log(appJsonString)
         if (res.data.success === 'error') {
           setError('Bị lỗi khi chỉnh sửa');
         } else {

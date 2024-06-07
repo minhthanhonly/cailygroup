@@ -19,12 +19,7 @@ interface Row {
 
 
 export default function TravelExpenses(props) {
-
     const { callback } = props;
-
-    console.log("callback", callback);
-
-
     const [日付, setDate] = useState(new Date());
     const currentDate = moment().format('YYYY/MM/DD');
 
@@ -37,9 +32,6 @@ export default function TravelExpenses(props) {
         金額: item.金額,
         備考: item.備考,
         合計: item.合計,
-
-
-
     })) : [{ 日付: currentDate, id: 0, 路線: '', 乗車駅: '', 下車駅: '', 金額: 0, 備考: '', 合計: 0 }];
     const [rows, setRows] = useState<Row[]>(initialRows);
     const [total, setTotal] = useState(0);

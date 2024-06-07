@@ -33,7 +33,6 @@ const Tabs = (statusCounts: number[]) =>[
 
 
 const NavForm: React.FC<{ number: number[] }> = ({ number }) => {
-  //console.log(number)
   return(
     <>
       <ListTabs branch={Tabs(number)}/>
