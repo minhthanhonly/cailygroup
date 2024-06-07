@@ -206,7 +206,6 @@
   "build": {
     "productName": "Caily app",
     "appId": "2024.CailyGroup",
-    "version": "2.0.0",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
