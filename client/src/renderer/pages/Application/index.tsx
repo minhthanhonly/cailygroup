@@ -94,10 +94,6 @@ export const Application = () => {
         const dateB = new Date(b.createdAt);
         return dateB - dateA; // Sắp xếp giảm dần
       });
-<<<<<<< HEAD
-      //console.log(data);
-=======
->>>>>>> 22d51ea57abad116132024039855d3f0e76396ee
       setStatusTotal(data.length);
 
       let updatedStatusCount = [0, 0, 0, 0, 0, 0, 0];
