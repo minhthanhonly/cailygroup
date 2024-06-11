@@ -554,7 +554,7 @@ export default function NewApplicationDetailEdit() {
         </div>
       </div>
       <div className="wrp-button mt50">
-        <button className="btn btn--from btn--gray" data-status="draft">下書き保存</button>
+        <button className="btn btn--from btn--gray" onClick={handleSubmit} data-status="draft">下書き保存</button>
         <button className="btn btn--from btn--blue" onClick={handleSubmit} data-status="apply">更新します。</button>
       </div>
       <ButtonBack onHandle={handleBackIndex} />
